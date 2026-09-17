@@ -191,7 +191,7 @@ com interação direta dos alunos.
 - **Cesta de referência das aulas (15 ativos):** PETR4, VALE3, ITUB4, BBDC4, BBAS3, ABEV3, WEGE3,
   EGIE3, SUZB3, RENT3, B3SA3, MGLU3, BOVA11, IVVB11 e GOLD11. Tem pares do mesmo setor (bancos),
   exportadoras sensíveis ao câmbio, ETFs de índice, de S&P 500 em reais e de ouro, e um ativo com
-  histórico mais curto (GOLD11, 1.423 pregões contra 1.908 dos demais), que vira conteúdo de
+  histórico mais curto (GOLD11, com primeira cotação em 11/12/2020), que vira conteúdo de
   tratamento de ausências na Aula 01.
 - **Três visões de preço, medidas em 17/09/2026.** O `Close` do Yahoo já vem ajustado por
   desdobramento: nenhuma queda diária da cesta é artefato de evento corporativo, e as maiores são
@@ -201,8 +201,10 @@ com interação direta dos alunos.
   de MGLU3 (fator 0,1 em 27/05/2024) e o desdobramento de B3SA3 (fator 3 em 17/05/2021) aparecem
   como saltos. O `Adj Close` ainda desconta proventos: no primeiro pregão da janela, o da PETR4 vale
   26,13% do `Close`.
-- **Falhas reais do provedor:** BOVA11 e IVVB11 sem cotação em 24/10/2025, pregão normal da B3;
-  GOLD11 com primeiro pregão em 11/12/2020.
+- **Falhas reais do provedor:** BOVA11, IVVB11 e GOLD11 sem cotação em 24/10/2025, pregão normal
+  da B3; GOLD11 com 484 pregões vazios antes da primeira cotação, em 11/12/2020. Descartar as datas
+  com ausência mantém 1.423 dos 1.908 pregões e tira março de 2020 da cesta inteira: a volatilidade
+  anual da PETR4 cai de 39,25% para 33,41%.
 - **Contrato:** primeira coluna `data` (AAAA-MM-DD), uma coluna por ticker sem o sufixo `.SA`;
   séries do BCB com `data` e `valor`. Documentado em `dados/README.md`, regenerado por
   `tools/baixar_dados.py` e travado por `tools/tests/test_dados.py`.
