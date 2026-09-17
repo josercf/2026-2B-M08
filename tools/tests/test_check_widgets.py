@@ -89,3 +89,9 @@ def test_main_reprova_quando_nenhum_widget_e_medido_e_sem_problema():
 
 def test_fixture_do_tema_monta_o_widget_de_demonstracao():
     assert check_widgets.main([os.path.join(check_widgets.RAIZ, "aulas", "_fixture-tema.html")]) == 0
+
+
+def test_widgets_da_aula01_montam_com_os_dados_reais(porta):
+    r = _checar(porta, "fixture_widgets_aula01.html")
+    assert (r["declarados"], r["medidos"]) == (2, 2)
+    assert r["problemas"] == []
