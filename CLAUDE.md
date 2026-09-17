@@ -26,10 +26,8 @@ animações, pandas para os dados e yfinance para a coleta.
 ```bash
 # Preview local (obrigatório servir por HTTP: os decks usam caminhos relativos para assets/)
 python3 -m http.server 8000                 # a partir da raiz do repositório
-# http://localhost:8000/                     raiz servida; o portal index.html ainda não existe
-# http://localhost:8000/aulas/aulaNN.html    deck de uma aula
-# http://localhost:8000/aulas/_fixture-tema.html  deck de referência de cada classe do tema
-# http://localhost:8000/aulas/aulaNN.html?print-pdf   layout de impressão, para exportar o PDF
+# http://localhost:8000/                          raiz servida; o portal index.html ainda não existe
+# http://localhost:8000/aulas/_fixture-tema.html   deck de referência de cada classe do tema
 
 # Suíte de testes (validadores, dados, mídia, widgets e planejamento)
 .venv/bin/python -m pytest tools/tests -v
@@ -41,29 +39,34 @@ python3 -m http.server 8000                 # a partir da raiz do repositório
 .venv/bin/python tools/check_links.py
 
 # Layout dos decks: estouro de 1280x720, bloco sobreposto, título colidindo com a marca
-.venv/bin/python tools/check_slides.py aulas/_fixture-tema.html aulas/aulaNN.html
-.venv/bin/python tools/check_slides.py --shots /tmp/shots aulas/_fixture-tema.html aulas/aulaNN.html
+.venv/bin/python tools/check_slides.py aulas/_fixture-tema.html
+.venv/bin/python tools/check_slides.py --shots /tmp/shots aulas/_fixture-tema.html
 
 # Widgets do deck: todos os declarados montam (data-pronto="sim") e o console fica sem erro
-.venv/bin/python tools/check_widgets.py aulas/_fixture-tema.html aulas/aulaNN.html
+.venv/bin/python tools/check_widgets.py aulas/_fixture-tema.html
 
-# Regerar o snapshot de dados/ (precisa de rede e do yfinance do .venv)
+# Regerar o JSON do widget do fixture do tema, a partir de dados/
+.venv/bin/python tools/dados_widgets_fixture.py
+
+# Regerar o snapshot de dados/: precisa de rede e sobrescreve os oito CSVs versionados
 .venv/bin/python tools/baixar_dados.py
-
-# Regerar o JSON que alimenta os widgets de uma aula, a partir de dados/
-.venv/bin/python tools/dados_widgets_aulaNN.py
-
-# Regerar as animações MP4 e os pôsteres de uma aula, a partir de dados/ (precisa de ffmpeg)
-.venv/bin/python tools/animacoes_aulaNN.py
-
-# Executar um notebook do início ao fim, sem rede, como o CI faz
-M08_OFFLINE=1 jupyter nbconvert --to notebook --execute --output-dir /tmp/nb notebooks/aulaNN.ipynb
-# equivalente dentro do ambiente: .venv/bin/python -m nbconvert --to notebook --execute ...
 ```
 
-Os scripts `dados_widgets_aulaNN.py` e `animacoes_aulaNN.py` nascem junto da aula. Hoje existe o
-`tools/dados_widgets_fixture.py`, que alimenta o widget do fixture do tema. `docs/ANDAMENTO.md` diz
-quais aulas já têm os seus.
+Todo comando acima roda como está escrito, com a pasta `aulas/` contendo só o fixture do tema.
+O `baixar_dados.py` depende de provedor externo: em 17/09/2026, numa primeira tentativa, a API do
+SGS respondeu HTTP 200 com página HTML em duas das quatro séries, o script parou em erro de JSON,
+e a tentativa seguinte completou a coleta. Ele é chamado só quando a janela do case muda, e o
+`dados/README.md`, seção 7, diz o que conferir antes de aceitar uma coleta nova.
+
+Quando uma aula existir, o deck dela, de nome `aulas/aulaNN.html`, entra nos mesmos comandos do
+`check_slides.py` e do `check_widgets.py`, ao lado do fixture, e abre no preview pela URL
+equivalente, com `?print-pdf` para exportar o PDF. Cada aula traz também os scripts dela, que
+nascem com ela: `tools/dados_widgets_aulaNN.py` para o JSON dos widgets e
+`tools/animacoes_aulaNN.py` para as animações MP4 e os pôsteres, que precisa de ffmpeg. O notebook
+da aula roda sem rede, como no CI, por
+`M08_OFFLINE=1 jupyter nbconvert --to notebook --execute --output-dir /tmp/nb notebooks/aulaNN.ipynb`,
+e o equivalente dentro do ambiente é `.venv/bin/python -m nbconvert`. O `docs/ANDAMENTO.md` diz
+quais aulas já existem.
 
 ## 3. Arquitetura de conteúdo em três camadas
 
@@ -137,6 +140,7 @@ Fatos do snapshot que o material usa e que `tools/tests/test_dados.py` trava:
 - **Ausências reais do provedor.** BOVA11, IVVB11 e GOLD11 ficam sem cotação em 24/10/2025, pregão
   normal da B3. A GOLD11 acumula 485 pregões sem cotação, dos quais 484 são anteriores à primeira
   cotação do fundo, em 11/12/2020.
+
 Fato medido no design, seção 8, e repetido no `PLANO_DE_ENSINO.md`, seção 3, que nenhum teste
 trava ainda:
 
@@ -225,8 +229,10 @@ Deste módulo:
   `document.fonts.ready`; quem se registra depois disso encontra a montagem já feita, e o elemento
   fica com `data-pronto="erro"` e "widget sem registro" no console.
 - **`dropna` na cesta tira março de 2020 de todos os ativos.** Descartar as datas com ausência
-  mantém 1.423 dos 1.908 pregões e derruba a volatilidade anual da PETR4 de 39,25% para 33,41%.
-  Qualquer número de deck que dependa do tratamento de ausência declara qual tratamento usou.
+  mantém 1.423 dos 1.908 pregões e derruba a volatilidade anual da PETR4 de 39,25% para 33,41%,
+  números medidos no design, seção 8. Nenhum teste os trava ainda, e a task de medição da Aula
+  01 é que vai travá-los. Qualquer número de deck que dependa do tratamento de ausência declara
+  qual tratamento usou.
 - **Servidor de teste de uma única thread trava com o Chromium.** A preconexão especulativa do
   navegador fica aberta e muda, e um `TCPServer` de uma thread para de atender. Os validadores
   usam `ThreadingTCPServer`, com a regressão em `tools/tests/test_servidor.py`.
