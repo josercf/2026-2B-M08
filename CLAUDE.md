@@ -12,10 +12,10 @@ Acervo de Computação do **LBL 08 AdmTech, Imersão no mercado financeiro** (Gr
 artefato COM por sprint e duas atividades ponderadas de 3 pontos.
 
 O repositório é um site estático de decks Reveal.js, materiais de apoio, páginas de referências e
-notebooks, feito para publicar no GitHub Pages. O repositório remoto e a publicação ainda não
-existem (ver a seção 10 e `docs/ANDAMENTO.md`). O que se edita é HTML, CSS, JavaScript puro,
-Markdown, notebooks Jupyter e os scripts Python de `tools/`. Não existe build, bundler nem
-gerenciador de pacote de JavaScript na raiz.
+notebooks, feito para publicar no GitHub Pages. O repositório remoto `josercf/2026-2B-M08` está
+no GitHub e publica em <https://josercf.github.io/2026-2B-M08/>. O que se edita é HTML, CSS,
+JavaScript puro, Markdown, notebooks Jupyter e os scripts Python de `tools/`. Não existe build,
+bundler nem gerenciador de pacote de JavaScript na raiz.
 
 A única dependência de execução é Python. O ambiente local é o `.venv`, criado com
 `--system-site-packages`: `.venv/bin/python` tem Playwright para os validadores, matplotlib para as
@@ -253,13 +253,13 @@ Em funcionamento hoje:
 | `tools/check_widgets.py` | abre cada deck, conta os widgets declarados, exige `data-pronto="sim"` em todos e zero erro de console |
 | `tools/tests/` | suíte pytest dos validadores, dos dados, da mídia, dos componentes e do planejamento |
 
-Previstos no design, seção 13, e ainda não criados (ver `docs/ANDAMENTO.md`):
+Em funcionamento agora:
 
-| Ferramenta | Escopo |
+| Ferramenta | O que faz |
 |---|---|
 | Hook `PostToolUse` em `.claude/settings.json` | dispara `check_slides.py` e `check_brand.py` ao editar `aulas/*.html` |
-| Agente `construtor-aulas` | constrói uma aula inteira, incluindo animações, widgets e a seção "Preparação" do material |
-| Agente `revisor-slides` | revisa um deck, incluindo vídeo, widget depois de interação, fragments revelados e a abertura por verificação do preparo |
+| Agente `construtor-aulas` em `.claude/agents/construtor-aulas.md` | constrói uma aula inteira, incluindo animações, widgets e a seção "Preparação" do material |
+| Agente `revisor-slides` em `.claude/agents/revisor-slides.md` | revisa um deck, incluindo vídeo, widget depois de interação, fragments revelados e a abertura por verificação do preparo |
 | `.github/workflows/validate.yml` | instala ffmpeg e Chromium, roda os quatro validadores, a suíte pytest e os notebooks com `M08_OFFLINE=1`, e exige árvore de trabalho limpa |
 | `.github/workflows/static.yml` | publica no GitHub Pages a cada push em `main` |
 
@@ -298,14 +298,8 @@ git commit -m "feat(aula01): deck da Aula 01
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 ```
 
-O repositório no GitHub ainda não existe (ver `docs/ANDAMENTO.md`). Quando existir, o remoto é
-`git@github.com-josercf:josercf/2026-2B-M08.git`, que usa o host do `~/.ssh/config` que autentica
-como `josercf`:
-
-```bash
-git remote add origin git@github.com-josercf:josercf/2026-2B-M08.git
-git push -u origin main
-```
-
-O portal fica em <https://josercf.github.io/2026-2B-M08/>, e `REPO_BLOB` em
+O repositório está no GitHub em `git@github.com-josercf:josercf/2026-2B-M08.git`, que usa o host
+do `~/.ssh/config` que autentica como `josercf`. O remoto está configurado como `origin` e a
+branch `main` está sincronizada com o repositório remoto. O portal publica em
+<https://josercf.github.io/2026-2B-M08/> via `.github/workflows/static.yml`, e `REPO_BLOB` em
 `tools/check_links.py` é `https://github.com/josercf/2026-2B-M08/blob/main/`.

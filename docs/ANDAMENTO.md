@@ -94,11 +94,19 @@ botões de cada aula saem desabilitados, sem `href`, porque nenhum artefato exis
 `tools/tests/test_portal.py` trava as seis instruções, as cinco sprints e a regra do botão
 desabilitado sem `href`.
 
+**Automação, hook e publicação** (`.claude/settings.json`, `.claude/agents/construtor-aulas.md`,
+`.claude/agents/revisor-slides.md`, `.github/workflows/validate.yml`, `.github/workflows/static.yml`,
+repositório `josercf/2026-2B-M08` no GitHub). O hook `PostToolUse` dispara validadores ao editar
+decks. Os agentes `construtor-aulas` e `revisor-slides` constroem e revisam aulas, incluindo
+animações, widgets e preparação. O workflow `validate.yml` roda a suíte de testes e validadores no
+CI. O workflow `static.yml` publica o acervo no GitHub Pages a cada push em `main`, que responde
+em <https://josercf.github.io/2026-2B-M08/>. Os dois workflows completaram com êxito. Testes: **99
+passando e 3 ignorados**.
+
 ## Em andamento
 
 | Etapa | Escopo | Estado |
 |---|---|---|
-| Automação e publicação | agentes `construtor-aulas` e `revisor-slides`, hook `PostToolUse`, `.github/workflows/validate.yml`, `.github/workflows/static.yml` e o repositório `josercf/2026-2B-M08` no GitHub | a fazer; nada disso existe hoje, e o acervo roda inteiro em local |
 | Aula 01, padrão-ouro | medições travadas em teste, duas animações, os widgets, o notebook, o deck, o material, as referências, as notas do professor e a ADR de escopo da aula | a fazer |
 
 As Aulas 02 a 06 só começam depois da Aula 01 revisada, porque ela é o padrão que elas copiam
