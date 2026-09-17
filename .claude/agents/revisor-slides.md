@@ -211,11 +211,17 @@ que o script cobre, confira manualmente:
 ## 6. Numeração de rodapé
 
 ```bash
-grep -o '<div class="footer-page">[0-9]*</div>' aulas/aulaNN.html
+grep -oE 'class="footer-page">[0-9]+' aulas/aulaNN.html
 ```
 
-A sequência precisa ser crescente e casar com a posição real de cada `section` no DOM. Inserir ou
-remover slide sem renumerar é o erro mais comum depois de uma edição.
+O rodapé deste tema é `<p class="footer-page">`, dentro de `slide-footer`. A sequência precisa
+crescer de um em um, sem repetir e sem pular, na ordem em que as `section` aparecem no DOM.
+Inserir ou remover slide sem renumerar é o erro mais comum depois de uma edição.
+
+A capa, o divisor de seção e o encerramento não levam rodapé (`cover-slide`, `section-slide` e
+`end-slide` no `aulas/_fixture-tema.html`), então o primeiro número aparece no terceiro slide do
+fixture. Saída vazia nesse `grep` quer dizer rodapé ausente ou markup diferente do tema: investigue
+antes de dar a numeração como correta.
 
 ## Formato do relatório
 

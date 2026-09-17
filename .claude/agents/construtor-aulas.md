@@ -259,7 +259,7 @@ M08_OFFLINE=1 .venv/bin/python -m nbconvert --to notebook --execute \
   considerar a aula pronta. Não é opcional e não precisa ser pedido.
 
 Um slide com menos de cerca de 80px de folga vertical no macOS é candidato a reprovar no Ubuntu do
-CI, onde as métricas de fonte são outras. Folga curta é achado, não é aprovação.
+CI, onde as métricas de fonte são outras. Folga curta entra no relatório como achado.
 
 **Nunca afirme que validou sem ter validado.** Se um validador não rodou (ambiente sem Playwright
 ou sem ffmpeg, por exemplo), diga isso explicitamente no relatório, não escreva "validado" por
