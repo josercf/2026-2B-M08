@@ -95,3 +95,28 @@ def test_violacoes_acusa_video_fora_do_contrato(tmp_path):
     erros = " | ".join(midia.violacoes(midia.metadados(saida)))
     for trecho in ("640x360", "yuv444p", "25/1", "áudio"):
         assert trecho in erros, trecho
+
+
+def test_violacoes_isola_codec_duracao_e_bytes_fora_do_contrato():
+    """codec, duração e bytes disparam violação mesmo com o resto conforme.
+
+    O teste com ffmpeg acima codifica em h264, dura 1 segundo e pesa poucos
+    KB, então nunca exercita esses três ramos de violacoes(). Aqui o
+    metadado é montado à mão, sem codificar nada, para isolar exatamente
+    codec, duração e bytes, com resolução, pix_fmt, fps e áudio conformes.
+    """
+    meta = {
+        "codec": "hevc",
+        "largura": 1280,
+        "altura": 720,
+        "pix_fmt": "yuv420p",
+        "fps": "30/1",
+        "duracao": 75.0,
+        "bytes": 5 * 1024 * 1024,
+        "tem_audio": False,
+    }
+    erros = midia.violacoes(meta)
+    assert len(erros) == 3
+    texto = " | ".join(erros)
+    for trecho in ("hevc", "75.0", str(5 * 1024 * 1024)):
+        assert trecho in texto, trecho
