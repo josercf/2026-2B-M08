@@ -1,7 +1,7 @@
 // ATENCAO, heranca da FIAP: o PDF gerado por este script (botao "Exportar
-// PDF", URL com ?print-pdf) revela o gabarito de todos os quizzes do deck.
-// Esse PDF traz a resposta certa marcada e NAO deve ser distribuido para a
-// turma antes da aula.
+// PDF", URL com ?print-pdf) revela o gabarito de todos os quizzes do deck E de
+// todas as escolhas de destino (.escolha). Esse PDF traz a resposta certa
+// marcada e NAO deve ser distribuido para a turma antes da aula.
 //
 // Injeta um botao flutuante que reabre a URL atual com ?print-pdf, o
 // parametro que o proprio Reveal.js usa para empilhar os slides em modo de
@@ -51,13 +51,34 @@
     }
   }
 
+  function revelarEscolhas() {
+    if (!window.IntelIEscolha) return;
+    var blocos = document.querySelectorAll('.escolha');
+    for (var i = 0; i < blocos.length; i++) {
+      // Mesmo raciocinio do gabarito dos quizzes: marcar TODOS os destinos
+      // aceitaveis, senao o professor confere a aula achando que a foto do
+      // time tem uma resposta unica.
+      var corretas = blocos[i].querySelectorAll('[data-correct="true"]');
+      for (var j = 0; j < corretas.length; j++) {
+        if (j === 0) {
+          window.IntelIEscolha.responder(blocos[i], corretas[j]);
+        } else {
+          corretas[j].classList.add('certa');
+        }
+      }
+    }
+  }
+
   function estaEmModoImpressao() {
     return window.location.search.indexOf('print-pdf') !== -1;
   }
 
   function iniciar() {
     criarBotao();
-    if (estaEmModoImpressao()) revelarGabarito();
+    if (estaEmModoImpressao()) {
+      revelarGabarito();
+      revelarEscolhas();
+    }
   }
 
   if (document.readyState === 'loading') {

@@ -76,7 +76,10 @@ body {
   font-size: var(--escala-complementar);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--seg-texto-suave);
+  /* Nao usar --seg-texto-suave aqui: sobre branco ele mede 2,04:1 de contraste,
+     abaixo do minimo WCAG de 4,5:1. O peso visual menor vem do font-size
+     reduzido acima, que e o caminho prescrito pela skill inteli-deck-design. */
+  color: var(--seg-texto);
   margin: 0 0 6px;
 }
 
@@ -140,7 +143,7 @@ body {
 .sprint-datas {
   margin: 0;
   font-size: var(--escala-complementar);
-  color: var(--seg-texto-suave);
+  color: var(--seg-texto);
 }
 
 .sprint-entrega {
@@ -201,7 +204,7 @@ body {
 .card-data {
   margin: 0;
   font-size: var(--escala-complementar);
-  color: var(--seg-texto-suave);
+  color: var(--seg-texto);
   white-space: nowrap;
 }
 

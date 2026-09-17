@@ -516,3 +516,132 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   margin-bottom: 10px;
   font-size: var(--escala-complementar);
 }
+
+/* ==========================================================================
+   Componentes de metodologia ativa portados da Formação GitLab
+   (josercf/treinamento-gitlab) em 17/09/2026: cronômetro e escolha.
+   ========================================================================== */
+
+/* Cronometro de atividade cronometrada. Ele mora DENTRO do .slide-title-area,
+   e nao solto com position: absolute, por dois motivos: o canto superior
+   direito ja e do logo e do resguardo da marca (p.51), e um bloco absoluto na
+   faixa do titulo cruzaria o retangulo do .slide-title-area, que o
+   check_slides.py leria como bloco sobreposto. */
+.slide-title-area-cronometro {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  /* Reserva a coluna do logo. Sem isto o cronometro encosta no canto superior
+     direito, que e da marca: medido em screenshot, o logo de 96px de largura
+     ocupa ate y=78, e o cronometro alinhado ao fim do titulo comeca em y=74.
+     O check_slides.py nao pega essa colisao, porque ele tira o logo da
+     checagem de sobreposicao de proposito (senao todo slide daria falso
+     positivo) e so mede a colisao do TITULO com a marca. */
+  padding-right: 140px;
+}
+
+.cronometro {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--seg-superficie);
+  border: 1px solid var(--seg-borda);
+  border-radius: 999px;
+  padding: 6px 20px 6px 6px;
+  flex: none;
+}
+
+.cronometro-play {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--seg-primaria);
+  cursor: pointer;
+}
+
+.cronometro-play .material-symbols-outlined {
+  font-size: 26px;
+  color: var(--seg-base);
+}
+
+.cronometro-tempo {
+  margin: 0;
+  font-size: var(--escala-subtitulo);
+  line-height: 1;
+}
+
+/* Tempo esgotado: o coral e filete de destaque no segmento Graduacao (p.68),
+   e aqui ele e a unica coisa da tela que muda de cor, entao chama o olho sem
+   precisar de animacao. O fundo continua sendo --seg-superficie: coral chapado
+   atras de texto roxo nao tem contraste de leitura em projecao. */
+.cronometro.esgotado {
+  border-color: var(--seg-destaque);
+}
+
+.cronometro.esgotado .cronometro-play {
+  background: var(--seg-destaque);
+}
+
+/* Grade de escolha: oito itens, cada um com tres destinos possiveis. Duas
+   colunas de quatro, porque uma coluna unica de oito nao cabe nos 720px com o
+   texto do item em 18px, que e o piso de legibilidade em projecao. */
+.escolha-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 20px;
+}
+
+.escolha {
+  background: var(--seg-superficie);
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.escolha-item { margin: 0 0 10px; }
+
+.escolha-opcoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.escolha-opcoes li {
+  background: var(--seg-base);
+  border: 1px solid var(--seg-borda);
+  border-radius: 999px;
+  padding: 6px 4px;
+  text-align: center;
+  cursor: pointer;
+  font-size: var(--escala-complementar);
+}
+
+/* Estados escritos pelo inteli-escolha.js. Seletor composto pelo mesmo motivo
+   documentado no quiz mais abaixo: ".escolha-opcoes li" ja define fundo e
+   borda com especificidade (0,1,1), e uma classe sozinha (0,0,1) perderia o
+   empate, deixando o clique sem efeito visivel na tela.
+   A opcao errada usa box-shadow, e nao border-width maior: aumentar a borda
+   de 1px para 2px empurraria as outras duas opcoes da linha e o item inteiro
+   pularia no momento do clique. */
+.escolha-opcoes li.certa {
+  background: var(--seg-secundaria);
+  border-color: var(--seg-secundaria);
+}
+
+.escolha-opcoes li.errada {
+  box-shadow: inset 0 0 0 2px var(--seg-destaque);
+}
+
+.escolha-opcoes li.revelada {
+  background: var(--seg-secundaria);
+  border-color: var(--seg-secundaria);
+}
+
