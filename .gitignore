@@ -3,3 +3,20 @@ __pycache__/
 *.pyc
 .ipynb_checkpoints/
 .pytest_cache/
+.venv/
+
+# Planilhas exportadas da Adalove e da alocação de professores têm dado pessoal
+# de aluno e de professor, e o repositório é publicado inteiro no GitHub Pages.
+*.xlsx
+*.xls
+
+# A chave da OpenRouter da Aula 06 vive em variável de ambiente, nunca no git.
+.env
+.env.*
+
+# Enunciado, tabela por RA e barema das ponderadas vivem na Adalove.
+Ponderada*
+ponderada*
+
+# Saídas de execução dos notebooks.
+saida/
