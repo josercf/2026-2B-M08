@@ -26,7 +26,7 @@ animações, pandas para os dados e yfinance para a coleta.
 ```bash
 # Preview local (obrigatório servir por HTTP: os decks usam caminhos relativos para assets/)
 python3 -m http.server 8000                 # a partir da raiz do repositório
-# http://localhost:8000/                          raiz servida; o portal index.html ainda não existe
+# http://localhost:8000/                          portal com as seis instruções; botões ficam desabilitados até o artefato existir
 # http://localhost:8000/aulas/_fixture-tema.html   deck de referência de cada classe do tema
 
 # Suíte de testes (validadores, dados, mídia, widgets e planejamento)
@@ -94,8 +94,9 @@ dependência.
      tocar em qualquer slide ou no tema.
 
 3. **Materiais** (este repositório)
-   - `index.html`: portal com um card por instrução, agrupado por sprint. Ainda não existe (ver
-     `docs/ANDAMENTO.md`).
+   - `index.html`: portal com um card por instrução, agrupado por sprint. Existe, com as seis
+     instruções; os quatro botões de cada card ficam desabilitados até o artefato correspondente
+     existir, e a task que constrói cada artefato habilita o botão dele (ver `docs/ANDAMENTO.md`).
    - `aulas/aulaNN.html`: um deck Reveal.js autocontido por aula. Hoje a pasta tem apenas o
      `aulas/_fixture-tema.html`, que é o deck de referência de cada classe do tema.
    - `materiais/`, `referencias/`, `notebooks/`, `exemplos/api-carteira/`: os demais artefatos por
