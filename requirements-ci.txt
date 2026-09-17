@@ -1,0 +1,16 @@
+# Dependências da validação do acervo (.github/workflows/validate.yml).
+# Sem versão fixada: os notebooks rodam no Colab, que atualiza os pacotes sozinho.
+#
+# Validadores
+playwright        # tools/check_slides.py e tools/check_widgets.py
+pytest            # tools/tests/
+#
+# Execução dos notebooks
+nbconvert
+jupyter
+ipykernel
+#
+# Notebooks, medições, animações e JSON dos widgets
+pandas
+numpy
+matplotlib
