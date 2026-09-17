@@ -176,8 +176,10 @@ com interação direta dos alunos.
 
 | Arquivo | Conteúdo | Fonte |
 |---|---|---|
-| `dados/precos_ajustados.csv` | fechamento ajustado por proventos e desdobramentos, 15 ativos | Yahoo Finance via yfinance 1.7.0 |
-| `dados/precos_brutos.csv` | fechamento sem ajuste, os mesmos 15 ativos | Yahoo Finance via yfinance 1.7.0 |
+| `dados/precos_ajustados.csv` | `Adj Close`: fechamento ajustado por desdobramentos e proventos, 15 ativos | Yahoo Finance via yfinance 1.7.0 |
+| `dados/precos_fechamento.csv` | `Close`: fechamento ajustado só por desdobramentos, os mesmos 15 ativos | Yahoo Finance via yfinance 1.7.0 |
+| `dados/eventos_desdobramento.csv` | desdobramentos e grupamentos no período: `ticker`, `data`, `fator` | Yahoo Finance via yfinance 1.7.0 |
+| `dados/eventos_proventos.csv` | proventos em dinheiro por ação: `ticker`, `data`, `valor` | Yahoo Finance via yfinance 1.7.0 |
 | `dados/cdi_diario.csv` | CDI, taxa diária em % | BCB SGS, série 12 |
 | `dados/selic_meta.csv` | meta da Selic, % a.a. | BCB SGS, série 432 |
 | `dados/ipca_mensal.csv` | IPCA, variação mensal em % | BCB SGS, série 433 |
@@ -191,6 +193,16 @@ com interação direta dos alunos.
   exportadoras sensíveis ao câmbio, ETFs de índice, de S&P 500 em reais e de ouro, e um ativo com
   histórico mais curto (GOLD11, 1.423 pregões contra 1.908 dos demais), que vira conteúdo de
   tratamento de ausências na Aula 01.
+- **Três visões de preço, medidas em 17/09/2026.** O `Close` do Yahoo já vem ajustado por
+  desdobramento: nenhuma queda diária da cesta é artefato de evento corporativo, e as maiores são
+  choques reais (PETR4 -29,70% em 09/03/2020, VALE3 -24,56% em 28/01/2019). O preço como foi
+  negociado na época é reconstruído multiplicando o `Close` pelos fatores de desdobramento
+  posteriores a cada data, a partir de `eventos_desdobramento.csv`; é nessa visão que o grupamento
+  de MGLU3 (fator 0,1 em 27/05/2024) e o desdobramento de B3SA3 (fator 3 em 17/05/2021) aparecem
+  como saltos. O `Adj Close` ainda desconta proventos: no primeiro pregão da janela, o da PETR4 vale
+  26,13% do `Close`.
+- **Falhas reais do provedor:** BOVA11 e IVVB11 sem cotação em 24/10/2025, pregão normal da B3;
+  GOLD11 com primeiro pregão em 11/12/2020.
 - **Contrato:** primeira coluna `data` (AAAA-MM-DD), uma coluna por ticker sem o sufixo `.SA`;
   séries do BCB com `data` e `valor`. Documentado em `dados/README.md`, regenerado por
   `tools/baixar_dados.py` e travado por `tools/tests/test_dados.py`.
@@ -209,13 +221,14 @@ Cada linha abaixo é o escopo mínimo. O roteiro minuto a minuto vive em
 ### Aula 01: Aquisição de Dados de Mercado (semana 1, Sprint 1)
 
 - **Pergunta do case:** os dados que vão sustentar a recomendação ao parceiro são confiáveis?
-- **Conteúdo:** coletor parametrizado com yfinance; preço bruto e preço ajustado; desdobramento e
-  grupamento aparecendo como falso colapso no preço bruto; ausências e calendário de pregões;
-  reprodutibilidade (snapshot, requirements, execução do zero); SPEC.md e ADR como disciplina de
-  projeto.
-- **Animações:** o falso colapso do preço bruto no evento corporativo; o mapa de ausências se
-  formando conforme os ativos entram na coleta.
-- **Widgets:** alternância entre preço bruto e ajustado com zoom no evento; escolha entre descartar
+- **Conteúdo:** coletor parametrizado com yfinance; as três visões de preço (negociado, ajustado por
+  desdobramento, ajustado por proventos) e o que cada uma responde; o salto do grupamento de MGLU3
+  e do desdobramento de B3SA3 no preço negociado; o peso dos proventos no retorno da PETR4;
+  ausências reais do provedor e calendário de pregões; reprodutibilidade (snapshot, requirements,
+  execução do zero); SPEC.md e ADR como disciplina de projeto.
+- **Animações:** as três visões de preço de um mesmo ativo se separando nos eventos; o mapa de
+  ausências se formando conforme os ativos entram na coleta.
+- **Widgets:** alternância entre as três visões de preço com zoom no evento; escolha entre descartar
   datas e preencher para a frente, mostrando pregões perdidos e o desvio padrão resultante.
 - **Autoestudos (REVISAO):** "Coleta de dados financeiros e DataFrames com Pandas"; "Cotações do
   Yahoo Finance no Colab, do jeito reaproveitável".
