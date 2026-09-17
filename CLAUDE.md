@@ -12,9 +12,10 @@ Acervo de Computação do **LBL 08 AdmTech, Imersão no mercado financeiro** (Gr
 artefato COM por sprint e duas atividades ponderadas de 3 pontos.
 
 O repositório é um site estático de decks Reveal.js, materiais de apoio, páginas de referências e
-notebooks, publicado no GitHub Pages. O que se edita é HTML, CSS, JavaScript puro, Markdown,
-notebooks Jupyter e os scripts Python de `tools/`. Não existe build, bundler nem gerenciador de
-pacote de JavaScript na raiz.
+notebooks, feito para publicar no GitHub Pages. O repositório remoto e a publicação ainda não
+existem (ver a seção 10 e `docs/ANDAMENTO.md`). O que se edita é HTML, CSS, JavaScript puro,
+Markdown, notebooks Jupyter e os scripts Python de `tools/`. Não existe build, bundler nem
+gerenciador de pacote de JavaScript na raiz.
 
 A única dependência de execução é Python. O ambiente local é o `.venv`, criado com
 `--system-site-packages`: `.venv/bin/python` tem Playwright para os validadores, matplotlib para as
@@ -25,7 +26,7 @@ animações, pandas para os dados e yfinance para a coleta.
 ```bash
 # Preview local (obrigatório servir por HTTP: os decks usam caminhos relativos para assets/)
 python3 -m http.server 8000                 # a partir da raiz do repositório
-# http://localhost:8000/                     portal (index.html)
+# http://localhost:8000/                     raiz servida; o portal index.html ainda não existe
 # http://localhost:8000/aulas/aulaNN.html    deck de uma aula
 # http://localhost:8000/aulas/_fixture-tema.html  deck de referência de cada classe do tema
 # http://localhost:8000/aulas/aulaNN.html?print-pdf   layout de impressão, para exportar o PDF
@@ -41,7 +42,7 @@ python3 -m http.server 8000                 # a partir da raiz do repositório
 
 # Layout dos decks: estouro de 1280x720, bloco sobreposto, título colidindo com a marca
 .venv/bin/python tools/check_slides.py aulas/_fixture-tema.html aulas/aulaNN.html
-.venv/bin/python tools/check_slides.py --shots /tmp/shots     # com screenshot dos problemas
+.venv/bin/python tools/check_slides.py --shots /tmp/shots aulas/_fixture-tema.html aulas/aulaNN.html
 
 # Widgets do deck: todos os declarados montam (data-pronto="sim") e o console fica sem erro
 .venv/bin/python tools/check_widgets.py aulas/_fixture-tema.html aulas/aulaNN.html
@@ -90,15 +91,16 @@ dependência.
      tocar em qualquer slide ou no tema.
 
 3. **Materiais** (este repositório)
-   - `index.html`: portal com um card por instrução, agrupado por sprint.
-   - `aulas/aulaNN.html`: um deck Reveal.js autocontido por aula, mais `aulas/_fixture-tema.html`,
-     que é o deck de referência de cada classe do tema.
+   - `index.html`: portal com um card por instrução, agrupado por sprint. Ainda não existe (ver
+     `docs/ANDAMENTO.md`).
+   - `aulas/aulaNN.html`: um deck Reveal.js autocontido por aula. Hoje a pasta tem apenas o
+     `aulas/_fixture-tema.html`, que é o deck de referência de cada classe do tema.
    - `materiais/`, `referencias/`, `notebooks/`, `exemplos/api-carteira/`: os demais artefatos por
      aula e o exemplo parcial da Aula 05. Essas pastas nascem conforme cada aula é construída, e
      `docs/ANDAMENTO.md` diz o que já existe.
    - `dados/`: o snapshot do case (ver seção 4 e `dados/README.md`).
-   - `assets/{css,js,js/widgets,img,video,data}/`: tema, scripts, marca, animações e JSON dos
-     widgets.
+   - `assets/{css,js,js/widgets,img,data}/`: tema, scripts, marca e JSON dos widgets. O
+     `assets/video/` nasce com a primeira animação.
    - `docs/adrs/`: as decisões não triviais, começando pelas seis da fundação.
 
 O deck é inicializado com `width: 1280, height: 720, center: false, margin: 0`, e o tema fixa cada
@@ -126,7 +128,7 @@ Decks, materiais, notebooks, widgets, animações e testes leem número apenas d
 | `ipca_mensal.csv` | variação mensal do IPCA | BCB SGS, série 433 | 92 |
 | `ptax_venda.csv` | dólar americano, venda, PTAX | BCB SGS, série 1 | 1.926 |
 
-Fatos do snapshot que o material usa e que os testes travam:
+Fatos do snapshot que o material usa e que `tools/tests/test_dados.py` trava:
 
 - **Três visões de preço.** O `Close` já vem dividido pelos fatores de desdobramento, grupamento e
   bonificação. O `Adj Close` desconta também os proventos: no primeiro pregão da janela, o da
@@ -135,8 +137,12 @@ Fatos do snapshot que o material usa e que os testes travam:
 - **Ausências reais do provedor.** BOVA11, IVVB11 e GOLD11 ficam sem cotação em 24/10/2025, pregão
   normal da B3. A GOLD11 acumula 485 pregões sem cotação, dos quais 484 são anteriores à primeira
   cotação do fundo, em 11/12/2020.
+Fato medido no design, seção 8, e repetido no `PLANO_DE_ENSINO.md`, seção 3, que nenhum teste
+trava ainda:
+
 - **Efeito de descartar as datas com ausência.** Sobram 1.423 dos 1.908 pregões, março de 2020 sai
-  da cesta inteira e a volatilidade anual da PETR4 cai de 39,25% para 33,41%.
+  da cesta inteira e a volatilidade anual da PETR4 cai de 39,25% para 33,41%. A task de medição da
+  Aula 01 é que vai travar esses três números em teste; até lá, citar a fonte junto do número.
 
 O contrato de coluna, os links conferidos das séries do Banco Central, a classificação dos 15
 eventos corporativos e o procedimento de regeneração estão em `dados/README.md`. A decisão está na

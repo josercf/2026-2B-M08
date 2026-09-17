@@ -9,8 +9,7 @@
 O módulo tem 10 semanas e aulas de várias disciplinas. A aba "Organização de Aula" da planilha
 "Revisão LBL 8 AdmTech - 2026-2B" numera as aulas do módulo inteiro, e as seis instruções de
 Computação caem nos números 5, 13, 22, 28, 38 e 43, citados do `REVISAO-LBL08-COMPUTACAO.md`
-(16/06/2026). Nenhuma dessas seis instruções acontece em semanas consecutivas: elas ficam nas
-semanas 1, 3, 5, 6, 8 e 9.
+(16/06/2026). As seis instruções ficam nas semanas 1, 3, 5, 6, 8 e 9 do módulo.
 
 O acervo precisa de um nome de arquivo por aula para o deck, o material, as referências, o
 notebook, as notas do professor, as animações, os widgets e os scripts de medição. Usar a

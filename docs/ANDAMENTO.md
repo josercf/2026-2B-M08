@@ -5,9 +5,13 @@ Estado atual do repositório, para quem estiver retomando o trabalho. Fonte: o p
 acervo e a Aula 01 como padrão-ouro das cinco aulas restantes. O design que originou o plano está
 em `docs/superpowers/specs/2026-09-17-modulo-08-admtech-computacao-design.md`.
 
-Suíte de testes em 17/09/2026: **85 testes passando e 3 ignorados**. Os três ignorados são as
-parametrizações de vídeo de `tools/tests/test_midia.py`, que ficam vazias até as animações da Aula
-01 existirem.
+Suíte de testes em 17/09/2026: **96 testes passando e 3 ignorados**, de 99 coletados. Os três
+ignorados são as parametrizações de vídeo de `tools/tests/test_midia.py`, que ficam vazias até as
+animações da Aula 01 existirem. Para conferir a contagem em qualquer momento:
+
+```bash
+.venv/bin/python -m pytest tools/tests -q
+```
 
 ## Pronto
 
@@ -31,7 +35,7 @@ por nome.
 
 **Dados do case versionados** (`dados/`, `tools/baixar_dados.py`, `dados/README.md`,
 `tools/tests/test_dados.py`). Snapshot coletado em 17/09/2026, na janela de 02/01/2019 a
-31/08/2026, com os números abaixo travados em teste.
+31/08/2026, com os números abaixo travados em `tools/tests/test_dados.py`.
 
 | Item medido | Valor |
 |---|---|
@@ -43,8 +47,11 @@ por nome.
 | `Adj Close` da PETR4 no primeiro pregão, em relação ao `Close` | 26,13% |
 | Pregões sem cotação da GOLD11, dos quais 484 antes da primeira cotação (11/12/2020) | 485 |
 | ETFs sem cotação em 24/10/2025, pregão normal da B3 | BOVA11, IVVB11 e GOLD11 |
-| Pregões que sobram ao descartar as datas com ausência | 1.423 de 1.908 |
-| Volatilidade anual da PETR4, antes e depois desse descarte | 39,25% e 33,41% |
+
+Descartar as datas com ausência mantém 1.423 dos 1.908 pregões, tira março de 2020 da cesta
+inteira e derruba a volatilidade anual da PETR4 de 39,25% para 33,41%. Esses três números vêm do
+design, seção 8, e do `PLANO_DE_ENSINO.md`, seção 3, e nenhum teste os trava ainda: quem vai
+travá-los é a task de medição da Aula 01.
 
 **Contrato de vídeo das animações** (`tools/midia.py`, `tools/tests/test_midia.py`). MP4 H.264,
 `yuv420p`, 1280x720, 30 quadros por segundo, sem áudio, até 60 segundos e 3 MB, com pôster PNG.

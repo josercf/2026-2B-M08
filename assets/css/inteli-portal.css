@@ -76,7 +76,7 @@ body {
   font-size: var(--escala-complementar);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  /* Nao usar --seg-texto-suave aqui: sobre branco ele mede 2,04:1 de contraste,
+  /* Nao usar --seg-texto-suave aqui: sobre branco ele mede 2,03:1 de contraste,
      abaixo do minimo WCAG de 4,5:1. O peso visual menor vem do font-size
      reduzido acima, que e o caminho prescrito pela skill inteli-deck-design. */
   color: var(--seg-texto);

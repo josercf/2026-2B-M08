@@ -9,8 +9,8 @@
 O Encontro de Instrução do Inteli tem 2 horas, divididas em autoestudo prévio na Adalove, daily da
 equipe de 15 minutos e 105 minutos de metodologia ativa em sete blocos de até 15 minutos
 (`inteli-course-design`, seção 1). O conteúdo de cada uma das seis instruções de Computação deste
-módulo soma exposição conceitual, demonstração sobre dado real e prática no notebook, e os 105
-minutos não cabem as três coisas: a semana 8, por exemplo, tem HTTP, FastAPI e HTML/JS no mesmo
+módulo soma exposição conceitual, demonstração sobre dado real e prática no notebook, e as três
+coisas não cabem nos 105 minutos: a semana 8, por exemplo, tem HTTP, FastAPI e HTML/JS no mesmo
 encontro (design, seção 16).
 
 A quarta decisão de 17/09/2026 é que as aulas seguem sala de aula invertida explícita, com uso

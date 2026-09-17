@@ -63,27 +63,28 @@ avança no artefato da sprint, o desafio do notebook e a leitura complementar.
 
 ```
 .
-├── index.html                     portal com um card por instrução, agrupado por sprint
+├── index.html                     portal com um card por instrução, por sprint (a construir)
 ├── README.md                      este documento, para o aluno
 ├── CLAUDE.md                      guia de quem edita o acervo
 ├── PLANO_DE_ENSINO.md             case, dados, cronograma, entregas e pendências (fonte da verdade)
 ├── PLANEJAMENTO_AULA_A_AULA.md    roteiro em sete blocos de cada encontro (fonte da verdade)
-├── aulas/                         um deck Reveal.js por aula (aulaNN.html)
-├── materiais/                     material de apoio, com preparação pré-aula e aprofundamento
-├── referencias/                   autoestudos da semana e leitura complementar, por aula
-├── notebooks/                     laboratório executável de cada aula, com badge do Colab
-├── exemplos/api-carteira/         API mínima e página da Aula 05
+├── aulas/                         um deck Reveal.js por aula (aulaNN.html); hoje só o fixture do tema
+├── materiais/                     material de apoio, com preparação pré-aula (a construir)
+├── referencias/                   autoestudos da semana e leitura complementar (a construir)
+├── notebooks/                     laboratório executável de cada aula, com badge do Colab (a construir)
+├── exemplos/api-carteira/         API mínima e página da Aula 05 (a construir)
 ├── dados/                         snapshot da B3 e séries do Banco Central, com README próprio
-├── assets/                        CSS, JS, imagens, vídeos e JSON compartilhados pelos decks
+├── assets/                        CSS, JS, imagens e JSON dos decks; os vídeos entram com a 1a animação
 └── docs/
     ├── autoestudos-por-semana.md  autoestudos e instruções por semana, com título exato
     ├── adrs/                      decisões de arquitetura do acervo
     └── ANDAMENTO.md               o que está pronto, o que está em andamento e o que falta
 ```
 
-As pastas `materiais/`, `referencias/`, `notebooks/` e `exemplos/` nascem conforme cada aula é
-construída, e nem toda aula tem os quatro artefatos publicados ainda. O estado atual está em
-`docs/ANDAMENTO.md`.
+O portal `index.html` e as pastas `materiais/`, `referencias/`, `notebooks/` e `exemplos/` ainda
+não existem, e `aulas/` tem por enquanto apenas o deck de referência do tema
+(`_fixture-tema.html`). Eles nascem conforme cada aula é construída, e nem toda aula vai ter os
+quatro artefatos publicados ao mesmo tempo. O estado atual está em `docs/ANDAMENTO.md`.
 
 ## Portal
 

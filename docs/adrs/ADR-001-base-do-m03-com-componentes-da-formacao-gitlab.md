@@ -28,12 +28,13 @@ O acervo parte da base do M03 e incorpora o cronômetro e a escolha da Formaçã
 1. O M03 é o acervo com as correções mais recentes de layout, de impressão e de validação de link
    (design, seção 12), e as correções de 04/09 e 08/09/2026 valem igual aqui, porque o tema e o
    CSS de impressão são os mesmos.
-2. A Formação GitLab tem os dois componentes que sustentam duas das cinco técnicas de metodologia
-   ativa da seção 6 do design: o cronômetro visível nas atividades de "pensar, discutir em dupla,
-   compartilhar" e de programação em dupla, e a escolha coletiva de vários itens num mesmo slide.
-   O M03 não tem nenhum dos dois.
-3. A versão da Formação GitLab do `inteli-portal.css` substitui `--seg-texto-suave`, medido em
-   2,04:1 de contraste, por `--seg-texto` em três pontos do portal, acima do mínimo da WCAG.
+2. A Formação GitLab tem os dois componentes que sustentam três das cinco técnicas de metodologia
+   ativa da seção 6 do design: o cronômetro visível em "pensar, discutir em dupla, compartilhar" e
+   na programação em dupla, e a escolha coletiva de vários itens num mesmo slide. O M03 não tem
+   nenhum dos dois.
+3. A versão da Formação GitLab do `inteli-portal.css` substitui `--seg-texto-suave`, que mede
+   2,03:1 de contraste sobre o branco de `--seg-base`, por `--seg-texto` em três pontos do portal,
+   acima do mínimo da WCAG.
 4. O `inteli-print.js` da Formação GitLab revela na impressão o gabarito das `.escolha` e dos
    quizzes; a versão do M03 revela apenas o dos quizzes.
 
@@ -51,7 +52,7 @@ Formação GitLab. A origem final dos dois é a Formação GitLab.
 | `assets/css/inteli-material.css` | M03 | estilo das páginas de leitura, idêntico |
 | `assets/css/inteli-print.css` | M03 | idêntico |
 | `assets/css/inteli-theme.css` | M03 mais Formação GitLab | base do M03, com o bloco de cronômetro e escolha anexado da Formação GitLab e, depois, o bloco de widget e vídeo escrito neste acervo |
-| `assets/css/inteli-portal.css` | Formação GitLab | copiado do M03 primeiro, substituído depois pela versão com o contraste corrigido |
+| `assets/css/inteli-portal.css` | Formação GitLab | copiado do M03 primeiro, substituído depois pela versão com o contraste corrigido; o comentário teve o valor medido acertado de 2,04:1 para 2,03:1 |
 | `assets/img/inteli-logo-positiva.svg`, `inteli-logo-negativa.svg`, `inteli-logo-mono.svg`, `inteli-grafismo-graduacao.svg` | M03 | marca e grafismo, idênticos |
 | `assets/js/inteli-quiz.js` | M03 | idêntico |
 | `assets/js/inteli-zoom.js` | M03 | idêntico |
@@ -60,7 +61,7 @@ Formação GitLab. A origem final dos dois é a Formação GitLab.
 | `assets/js/inteli-escolha.js` | Formação GitLab | novo no acervo |
 | `aulas/_fixture-tema.html` | M03 | adaptado: "Módulo 03 IN" virou "Módulo 08 AdmTech" em cinco pontos, e o fixture ganhou os slides de cronômetro, escolha e widget deste acervo |
 | `tools/check_brand.py` | M03 | adaptado: `.venv` acrescentado a `IGNORAR` |
-| `tools/check_links.py` | M03 | adaptado: `REPO_BLOB` para `https://github.com/josercf/2026-2B-M08/blob/main/` e `.venv` em `IGNORAR` |
+| `tools/check_links.py` | M03 | adaptado: `REPO_BLOB` para `https://github.com/josercf/2026-2B-M08/blob/main/` e `.claude` e `.venv` acrescentados a `IGNORAR` |
 | `tools/check_slides.py` | M03 | copiado idêntico e, depois, com o servidor local passado a `ThreadingTCPServer` (ADR-005) |
 | `pytest.ini` | M03 | idêntico |
 | `tools/tests/__init__.py`, `test_assets_marca.py`, `test_check_brand.py`, `test_check_links.py`, `test_check_slides.py`, `fixture_layout.html`, `fixture_sem_slides.html` | M03 | idênticos |
