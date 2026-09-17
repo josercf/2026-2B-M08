@@ -54,9 +54,9 @@ def test_widget_declarado_e_nao_medido_reprova(porta):
 
 def test_conexao_recusada_no_goto_vira_problema_em_vez_de_excecao():
     # Porta livre sem nenhum servidor escutando: pagina.goto() dentro de
-    # _medir lanca antes de qualquer resposta HTTP existir. Isto tem de virar
-    # um problema no resultado do deck, e nao subir cru e interromper checar()
-    # no meio de uma lista com varios decks.
+    # _medir lança antes de qualquer resposta HTTP existir. Isto tem de virar
+    # um problema no resultado do deck, e não subir cru e interromper checar()
+    # no meio de uma lista com vários decks.
     porta_sem_servidor = check_slides.porta_livre()
     r = _checar(porta_sem_servidor, "fixture_widget_ok.html")
     assert r["medidos"] == 0
@@ -73,16 +73,16 @@ def test_main_com_deck_inexistente_reprova():
 
 
 def test_main_reprova_quando_deck_tem_problema():
-    # Passa por main() de ponta a ponta (nao so checar()) ate a agregacao de
-    # falhas: um deck com problema tem de derrubar o codigo de saida para 1.
+    # Passa por main() de ponta a ponta (não só checar()) até a agregação de
+    # falhas: um deck com problema tem de derrubar o código de saída para 1.
     caminho = os.path.join(AQUI, "fixture_widget_erro.html")
     assert check_widgets.main([caminho]) == 1
 
 
 def test_main_reprova_quando_nenhum_widget_e_medido_e_sem_problema():
     # Deck sem nenhum data-widget: zero declarado, zero medido, nenhum
-    # problema. main() tem de reprovar pelo fallback de "nada medido", nao
-    # pela agregacao de problemas (que aqui fica vazia).
+    # problema. main() tem de reprovar pelo fallback de "nada medido", não
+    # pela agregação de problemas (que aqui fica vazia).
     caminho = os.path.join(AQUI, "fixture_sem_slides.html")
     assert check_widgets.main([caminho]) == 1
 

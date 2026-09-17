@@ -1,13 +1,13 @@
-"""Regressao da flakiness relatada no Task 6: uma conexao TCP aberta e muda
-nao pode travar a proxima requisicao real do servidor de teste.
+"""Regressão da flakiness relatada no Task 6: uma conexão TCP aberta e muda
+não pode travar a próxima requisição real do servidor de teste.
 
-O Chromium abre conexoes especulativas de preconexao que as vezes nao chegam
-a mandar nenhum byte. Um servidor de uma thread so (socketserver.TCPServer)
-aceita essa conexao ociosa e fica preso dentro do readline() dela, porque nao
-ha nada para ler; nenhuma outra requisicao e atendida ate ela fechar. Isso
+O Chromium abre conexões especulativas de preconexão que às vezes não chegam
+a mandar nenhum byte. Um servidor de uma única thread (socketserver.TCPServer)
+aceita essa conexão ociosa e fica preso dentro do readline() dela, porque não
+há nada para ler; nenhuma outra requisição é atendida até ela fechar. Isso
 apareceu no Chromium como net::ERR_CONNECTION_RESET ou
-net::ERR_SOCKET_NOT_CONNECTED num recurso aleatorio da pagina, sem relacao
-com o conteudo servido. Ver check_slides.servir().
+net::ERR_SOCKET_NOT_CONNECTED num recurso aleatório da página, sem relação
+com o conteúdo servido. Ver check_slides.servir().
 """
 import os
 import socket
@@ -23,10 +23,10 @@ import check_slides  # noqa: E402
 def test_conexao_ociosa_nao_trava_a_proxima_requisicao_real():
     porta = check_slides.porta_livre()
     httpd = check_slides.servir(porta)
-    # Conexao TCP crua que completa o handshake e nao manda nenhum byte, como
-    # a preconexao especulativa do Chromium. Um pequeno respiro depois de
-    # abri-la da tempo do servidor aceitar essa conexao primeiro, para o
-    # teste reproduzir o travamento de forma deterministica, e nao por sorte
+    # Conexão TCP crua que completa o handshake e não manda nenhum byte, como
+    # a preconexão especulativa do Chromium. Um pequeno respiro depois de
+    # abri-la dá tempo do servidor aceitar essa conexão primeiro, para o
+    # teste reproduzir o travamento de forma determinística, e não por sorte
     # de agendamento de thread.
     ociosa = socket.create_connection(("127.0.0.1", porta), timeout=3)
     try:

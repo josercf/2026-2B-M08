@@ -53,15 +53,15 @@ def porta_livre():
 
 
 def servir(porta):
-    # ThreadingTCPServer, e nao TCPServer. O Chromium abre varias conexoes em
-    # paralelo por pagina, inclusive conexoes especulativas de preconexao que
-    # as vezes nao chegam a mandar nenhum byte. Um servidor de uma thread so
-    # aceita essa conexao ociosa e trava dentro do readline() dela, porque
-    # nao ha nenhum dado para ler; nenhuma outra requisicao real e atendida
-    # ate a ociosa fechar. Do lado do navegador isso aparecia como
+    # ThreadingTCPServer, e não TCPServer. O Chromium abre várias conexões em
+    # paralelo por página, inclusive conexões especulativas de preconexão que
+    # às vezes não chegam a mandar nenhum byte. Um servidor de uma única
+    # thread aceita essa conexão ociosa e trava dentro do readline() dela,
+    # porque não há nenhum dado para ler; nenhuma outra requisição real é
+    # atendida até a ociosa fechar. Do lado do navegador isso aparecia como
     # net::ERR_CONNECTION_RESET ou net::ERR_SOCKET_NOT_CONNECTED num recurso
-    # aleatorio da pagina, sem relacao com o que estava sendo servido. Com
-    # uma thread por conexao a ociosa fica presa sozinha, e as demais seguem.
+    # aleatório da página, sem relação com o que estava sendo servido. Com
+    # uma thread por conexão, a ociosa fica presa sozinha, e as demais seguem.
     handler = lambda *a, **k: http.server.SimpleHTTPRequestHandler(  # noqa: E731
         *a, directory=RAIZ, **k
     )
