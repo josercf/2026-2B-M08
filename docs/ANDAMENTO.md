@@ -5,7 +5,7 @@ Estado atual do repositório, para quem estiver retomando o trabalho. Fonte: o p
 acervo e a Aula 01 como padrão-ouro das cinco aulas restantes. O design que originou o plano está
 em `docs/superpowers/specs/2026-09-17-modulo-08-admtech-computacao-design.md`.
 
-Suíte de testes em 17/09/2026: **96 testes passando e 3 ignorados**, de 99 coletados. Os três
+Suíte de testes em 17/09/2026: **99 testes passando e 3 ignorados**, de 102 coletados. Os três
 ignorados são as parametrizações de vídeo de `tools/tests/test_midia.py`, que ficam vazias até as
 animações da Aula 01 existirem. Para conferir a contagem em qualquer momento:
 
@@ -86,11 +86,18 @@ pronto para lançar na planilha.
 | 005 | Animações são MP4 H.264 geradas por matplotlib sobre `dados/`, e widgets são JavaScript puro alimentado por JSON gerado de `dados/` |
 | 006 | Os arquivos das instruções de Computação se chamam `aula01` a `aula06`, na ordem em que acontecem |
 
+**Portal** (`index.html`, `tools/tests/test_portal.py`). Um `card-aula` por instrução, agrupado
+nas cinco sprints (a Sprint 3 leva as aulas 03 e 04), com título, semana, aula do módulo e resumo
+de uma frase tirados do `PLANO_DE_ENSINO.md` e da spec, seção 9. Um `card-contexto` por entrega COM
+(A1 a A5) e por ponderada (Sprint 3 e Sprint 5), com peso e data marcados "a confirmar". Os quatro
+botões de cada aula saem desabilitados, sem `href`, porque nenhum artefato existe ainda;
+`tools/tests/test_portal.py` trava as seis instruções, as cinco sprints e a regra do botão
+desabilitado sem `href`.
+
 ## Em andamento
 
 | Etapa | Escopo | Estado |
 |---|---|---|
-| Portal | `index.html` com um card por instrução, agrupado por sprint, com os dois números de cada aula e o estado de confirmação de data e peso | a fazer |
 | Automação e publicação | agentes `construtor-aulas` e `revisor-slides`, hook `PostToolUse`, `.github/workflows/validate.yml`, `.github/workflows/static.yml` e o repositório `josercf/2026-2B-M08` no GitHub | a fazer; nada disso existe hoje, e o acervo roda inteiro em local |
 | Aula 01, padrão-ouro | medições travadas em teste, duas animações, os widgets, o notebook, o deck, o material, as referências, as notas do professor e a ADR de escopo da aula | a fazer |
 
