@@ -13,8 +13,8 @@ abaixo têm título exato conferido contra `docs/autoestudos-por-semana.md`.
 - Daily da equipe, 15 minutos: o que fiz, o que vou fazer, impedimentos.
 - Metodologia ativa, 105 minutos em sete blocos de 15 minutos. Nenhum bloco passa de 15 minutos
   sem interação direta dos alunos: cada bloco abaixo fecha em uma interação nomeada (Peer
-  Instruction, prever e observar, pensar e compartilhar, dupla no notebook, escolha coletiva ou
-  quiz) antes de abrir o seguinte.
+  Instruction, prever e observar, pensar e compartilhar, dupla no notebook, escolha coletiva, quiz
+  ou pergunta disparada) antes de abrir o seguinte.
 
 Os horários de relógio dependem da Adalove (pendência P1 do plano de ensino). Por isso os blocos
 aparecem em minutos corridos, de 0 a 105, contados do fim da daily, e nenhuma hora de relógio
@@ -214,7 +214,9 @@ Metodologia ativa (105 min)
     para a melhor sorteada encostar na ótima.
   Bloco 5 (60 a 75 min)  Otimização com restrições: função objetivo, soma dos pesos igual a 1,
     limites sem venda a descoberto e `scipy.optimize.minimize` com SLSQP. Variância mínima e máximo
-    Sharpe resolvidos ao vivo, com a animação do SLSQP retomada quadro a quadro.
+    Sharpe resolvidos ao vivo, com a animação do SLSQP retomada quadro a quadro. Antes de rodar o
+    otimizador, a turma prevê qual das duas carteiras vai concentrar mais peso num único ativo, e a
+    previsão fica no quadro para ser comparada com o resultado na tela.
   Bloco 6 (75 a 90 min)  Dupla no notebook: otimizador das duas carteiras e fronteira de 50 pontos
     de retorno alvo desenhada sobre a nuvem do bloco 3. Cronômetro de 12 minutos.
   Bloco 7 (90 a 105 min)  Quiz de verificação de três perguntas e amarração com a Sprint 3: o A3
@@ -337,5 +339,7 @@ Depois do encontro
 ---
 
 Os valores numéricos das Aulas 02 a 06 não entram agora: cada aula mede os seus na própria task de
-medições, e este planejamento é atualizado com eles. Os números da Aula 01 são os medidos no ensaio
-de 17/09/2026 e travados em teste.
+medições, e este planejamento é atualizado com eles. Os números da Aula 01 vêm do ensaio de
+17/09/2026, e a task de medições da Aula 01 é que vai travá-los em teste. Até lá, sete deles ficam
+sem cobertura de teste: 1.423 pregões, 39,25%, 33,41%, 67,17%, 1,51%, 87,12% e 616,00%. O único já
+travado em `tools/tests/test_dados.py` é a razão de 26,13% entre o Adj Close e o Close da PETR4.

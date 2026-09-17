@@ -8,7 +8,7 @@ versionados em `dados/`.
 
 A Adalove da turma 2026-2B e as planilhas do módulo ainda não foram lidas. Toda data, todo horário
 e todo peso abaixo aparece com a marca "a confirmar na Adalove", e as lacunas estão numeradas de
-P1 a P8 na seção 8. Nenhuma delas foi preenchida por estimativa.
+P1 a P7 na seção 8. Nenhuma delas foi preenchida por estimativa.
 
 ## 1. Identificação
 
@@ -36,7 +36,7 @@ Premissas registradas no `REVISAO-LBL08-COMPUTACAO.md`:
 3. Selic, IPCA e CDI entram como referência: o CDI como taxa livre de risco no Índice de Sharpe, a
    Selic como ciclo que explica correlações do período e o IPCA como régua de retorno real.
 4. Os gestores do parceiro definem a tolerância a risco, e o otimizador devolve a carteira ótima
-   para o nível escolhido. A decisão de alocação continua com quem tem o mandato.
+   para o nível escolhido.
 
 O arco das cinco sprints leva do dado bruto à decisão assistida: coleta (A1), risco e retorno por
 ativo (A2), simulação de Monte Carlo (A3), otimização exposta em aplicação web (A4) e
@@ -70,7 +70,7 @@ Datas e horários dependem da Adalove e da planilha de alocação de professores
 Aula do módulo é a numeração da aba "Organização de Aula" da planilha, citada do
 `REVISAO-LBL08-COMPUTACAO.md`.
 
-| Acervo | Data | Semana | Aula do módulo | Sprint | Instrução | Entrega que a aula alimenta |
+| Acervo | Data | Semana | Aula do módulo | Sprint | Instrução | Entrega que a aula alimenta (peso citado do REVISAO, a confirmar na Adalove) |
 |---|---|---|---|---|---|---|
 | aula01 | a confirmar na Adalove | 1 | 5 | 1 | Aquisição de Dados de Mercado: Coleta Confiável e Reproduzível | A1 Coletor e Processador de Dados de Mercado (3) |
 | aula02 | a confirmar na Adalove | 3 | 13 | 2 | Dados Financeiros: Do Preço ao Retorno | A2 Módulo de Análise de Risco e Retorno Individual (sem peso) |
@@ -144,17 +144,18 @@ fecha com interação direta dos alunos.
 
 ## 8. Pendências abertas
 
-De P1 a P4 estão as fontes oficiais que ainda não foram lidas. De P5 a P8, as pendências de
+De P1 a P4 estão as fontes oficiais que ainda não foram lidas. De P5 a P7, as pendências de
 conteúdo levantadas em 17/09/2026, que dependem da coordenação e não foram alteradas
-unilateralmente neste acervo.
+unilateralmente neste acervo. O texto da coluna Pendência é o mesmo em
+`docs/revisao-planilha-2026-09-17.md`, seção 8, para as quatro que a coordenação precisa responder
+(P4 a P7).
 
 | # | Pendência | Efeito no acervo | Como fecha |
 |---|---|---|---|
 | P1 | Adalove do LBL 08 AdmTech 2026-2B, com datas, horários, autoestudos e pesos oficiais, não lida | toda data e todo horário do acervo aparece como "a confirmar na Adalove"; o roteiro usa blocos relativos, sem hora de relógio | ler a Adalove da turma e substituir as marcas |
 | P2 | Planilha "Revisão LBL 8 AdmTech - 2026-2B" (Google Sheets privada) não lida, HTTP 401 sem sessão | os pesos dos artefatos e a organização das aulas vêm do REVISAO de junho como base provisória | abrir a planilha com sessão autenticada e conferir abas "Organização de Aula" e "Artefatos" |
 | P3 | Planilha de alocação de professores, coluna de ADM, não lida | o dia da semana de cada instrução do professor é desconhecido, o que também define a folga real do A4 | ler a coluna de ADM e registrar os dias |
-| P4 | LBL do parceiro na Adalove não lido, e o projeto não tem TAPI | nome, setor e premissas do parceiro ficam sem citação direta no acervo | ler o LBL e registrar as premissas com a fonte |
+| P4 | O parceiro tem nome e premissas descritos no LBL da Adalove, o projeto não tem TAPI, e o LBL não foi lido | nome, setor e premissas ficam sem citação direta, e a cesta de 15 ativos da B3 documentada em `dados/README.md` é a referência das aulas até lá | ler o LBL, registrar as premissas com a fonte e trocar a cesta pelos ativos do parceiro, se as premissas pedirem |
 | P5 | O A2 (Sprint 2, semana 4) cobra matriz de correlação e de covariância, que a Instrução 3 só ensina na semana 5 | a Aula 02 avisa a turma em voz alta e o material de apoio antecipa o mínimo necessário | decidir com a coordenação entre mover o item do A2 ou antecipar o conteúdo |
 | P6 | O A4 vence na mesma semana da instrução que ensina a parte web | a folga real depende do dia da aula dentro da semana 8, ainda não lido (P3) | confirmar o dia e, se necessário, negociar a data de entrega |
 | P7 | O case de créditos OpenRouter (02/09/2026) ainda cita Streamlit e a Instrução 6 antiga | o documento aprovado descreve um produto que o módulo não vai mais construir | atualizar o case com FastAPI e a Instrução 6 nova antes da Sprint 5 |
-| P8 | As premissas do parceiro não foram lidas (P4) | a cesta de 15 ativos da B3 documentada em `dados/README.md` é a referência das aulas até lá | trocar a cesta pelos ativos do parceiro, se as premissas pedirem |

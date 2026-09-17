@@ -101,9 +101,9 @@ autoestudo 6.2 é a Ponderada 2, movida da semana 8, com a referência inalterad
 
 **Coluna F (descrição):**
 
-Contexto e propósito: O coração matemático da ferramenta chega a quem decide. A Sprint 3 mostrou o
-espaço de possibilidades e a Sprint 4 entrega a carteira ótima dentro de uma aplicação que um
-gestor do parceiro opera sem abrir código. É a entrega que materializa a Teoria de Markowitz nos
+Contexto e propósito: O coração matemático da ferramenta chega a quem decide. Sobre a nuvem de
+possibilidades mapeada na Sprint 3, esta sprint entrega a carteira ótima dentro de uma aplicação que
+um gestor do parceiro opera sem abrir código. É a entrega que materializa a Teoria de Markowitz nos
 limites de tolerância a risco definidos pelos gestores, em um produto que se pode demonstrar numa
 reunião.
 
@@ -177,8 +177,8 @@ commits.
 
 **Coluna F (descrição):**
 
-Contexto e propósito: A ferramenta já calcula e já mostra. O que falta é explicar o resultado em
-português, para um gestor, sem inventar número. Esta entrega fecha o ciclo do módulo, do dado bruto
+Contexto e propósito: A ferramenta calcula e mostra, e falta explicar o resultado em português,
+para um gestor, sem inventar número. Esta entrega fecha o ciclo do módulo, do dado bruto
 à decisão assistida, e acrescenta ao produto a camada que o parceiro vai ler antes de decidir.
 
 O que é: Um endpoint da API da Sprint 4 que envia à OpenRouter os resultados reais da otimização e
@@ -246,12 +246,13 @@ tolerância do verificador). Avaliado aluno a aluno pela autoria dos commits.
 
 ## 8. Pendências para a coordenação
 
-Numeração do `PLANO_DE_ENSINO.md`, seção 8. As pendências P1 a P4 são fontes oficiais ainda não
-lidas e se resolvem com acesso; as quatro abaixo dependem de decisão.
+Numeração do `PLANO_DE_ENSINO.md`, seção 8, onde a lista vai de P1 a P7. As pendências P1 a P3 são
+fontes oficiais que se resolvem com acesso. As quatro abaixo dependem de decisão ou de leitura da
+coordenação, com o texto da coluna Pendência igual ao do plano de ensino.
 
 | # | Pendência | O que pedimos |
 |---|---|---|
-| P5 | O A2 (Sprint 2, semana 4) cobra matriz de correlação e de covariância, que a Instrução 3 só ensina na semana 5. | Decidir entre mover esse item do A2 para o A3 ou aceitar que a semana 4 chegue com o conteúdo antecipado pelo material de apoio. |
-| P6 | O A4 vence na mesma semana da instrução que ensina a parte web. | Confirmar o dia da instrução da semana 8 na planilha de alocação e, se a folga ficar menor que dois dias, negociar a data de entrega. |
-| P7 | O case de créditos OpenRouter (02/09/2026) ainda cita Streamlit e o título antigo da Instrução 6. | Atualizar o case com FastAPI, com o título "Validação, Robustez e Interpretação com LLM" e com o A5 novo. O dimensionamento aprovado continua válido: cerca de 2.800 tokens por chamada, cerca de US$ 0,002 por chamada no cenário realista, 4.000 chamadas na turma, US$ 10 provisionados e teto de US$ 20. |
-| P8 | O parceiro tem nome e premissas descritos no LBL da Adalove, e o projeto não tem TAPI. | Confirmar as premissas do parceiro. Até lá, a cesta de 15 ativos da B3 documentada em `dados/README.md` é a referência das aulas. |
+| P4 | O parceiro tem nome e premissas descritos no LBL da Adalove, o projeto não tem TAPI, e o LBL não foi lido | Confirmar as premissas do parceiro. Até lá, a cesta de 15 ativos da B3 documentada em `dados/README.md` é a referência das aulas. |
+| P5 | O A2 (Sprint 2, semana 4) cobra matriz de correlação e de covariância, que a Instrução 3 só ensina na semana 5 | Decidir entre mover esse item do A2 para o A3 ou aceitar que a semana 4 chegue com o conteúdo antecipado pelo material de apoio. |
+| P6 | O A4 vence na mesma semana da instrução que ensina a parte web | Confirmar o dia da instrução da semana 8 na planilha de alocação e, se a folga ficar menor que dois dias, negociar a data de entrega. |
+| P7 | O case de créditos OpenRouter (02/09/2026) ainda cita Streamlit e a Instrução 6 antiga | Atualizar o case com FastAPI, com o título "Validação, Robustez e Interpretação com LLM" e com o A5 novo. O dimensionamento aprovado continua válido: cerca de 2.800 tokens por chamada, cerca de US$ 0,002 por chamada no cenário realista, 4.000 chamadas na turma, US$ 10 provisionados e teto de US$ 20. |
