@@ -1,0 +1,66 @@
+{
+ "titulo": "Pregões com cotação de 02/01/2019 a 31/08/2026",
+ "unidade": "pregões",
+ "itens": [
+  {
+   "rotulo": "PETR4",
+   "valor": 1908
+  },
+  {
+   "rotulo": "VALE3",
+   "valor": 1908
+  },
+  {
+   "rotulo": "ITUB4",
+   "valor": 1908
+  },
+  {
+   "rotulo": "BBDC4",
+   "valor": 1908
+  },
+  {
+   "rotulo": "BBAS3",
+   "valor": 1908
+  },
+  {
+   "rotulo": "ABEV3",
+   "valor": 1908
+  },
+  {
+   "rotulo": "WEGE3",
+   "valor": 1908
+  },
+  {
+   "rotulo": "EGIE3",
+   "valor": 1908
+  },
+  {
+   "rotulo": "SUZB3",
+   "valor": 1908
+  },
+  {
+   "rotulo": "RENT3",
+   "valor": 1908
+  },
+  {
+   "rotulo": "B3SA3",
+   "valor": 1908
+  },
+  {
+   "rotulo": "MGLU3",
+   "valor": 1908
+  },
+  {
+   "rotulo": "BOVA11",
+   "valor": 1907
+  },
+  {
+   "rotulo": "IVVB11",
+   "valor": 1907
+  },
+  {
+   "rotulo": "GOLD11",
+   "valor": 1423
+  }
+ ]
+}

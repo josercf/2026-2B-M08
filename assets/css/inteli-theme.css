@@ -645,3 +645,76 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   border-color: var(--seg-secundaria);
 }
 
+/* ==========================================================================
+   Widgets interativos (assets/js/inteli-widgets.js) e vídeo de animação.
+   ========================================================================== */
+
+/* O canvas tem width e height declarados no markup; a caixa só centraliza e
+   nunca passa da largura útil do slide. */
+.widget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.widget canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.widget-controles {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.widget-controles button {
+  font: inherit;
+  font-size: var(--escala-complementar);
+  padding: 6px 14px;
+  border: 1px solid var(--seg-borda);
+  border-radius: 999px;
+  background: var(--seg-base);
+  color: var(--seg-texto);
+  cursor: pointer;
+}
+
+/* Seletor composto de propósito: a regra base acima tem especificidade (0,1,1)
+   e a classe sozinha perderia o empate (inteli-deck-design, seção 8.1). */
+.widget-controles button.ativo {
+  background: var(--seg-primaria);
+  border-color: var(--seg-primaria);
+  color: var(--seg-base);
+}
+
+.widget-leitura {
+  margin: 0;
+  font-size: var(--escala-texto);
+  text-align: center;
+}
+
+.widget-tabela {
+  border-collapse: collapse;
+  font-size: var(--escala-texto);
+}
+
+.widget-tabela th,
+.widget-tabela td {
+  padding: 6px 18px;
+  border-bottom: 1px solid var(--seg-borda);
+  text-align: left;
+}
+
+/* max-height além de max-width: a altura depende da proporção, que o CSS não
+   conhece (inteli-deck-design, seção 8.8). */
+.video-slide {
+  display: block;
+  max-width: 100%;
+  max-height: 460px;
+  margin: 0 auto;
+  border-radius: 10px;
+  background: var(--seg-superficie);
+}
+
