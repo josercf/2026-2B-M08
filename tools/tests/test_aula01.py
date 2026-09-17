@@ -108,3 +108,7 @@ def test_preencher_cria_retorno_zero_e_acumula_no_pregao_seguinte():
     retorno = m.comparar_tratamentos()["retorno_bova11_preenchido"]
     assert retorno["2025-10-24"] == 0.0
     assert round(retorno["2025-10-27"], 6) == 0.009252
+
+
+def test_bova11_ivvb11_e_gold11_faltam_juntos_em_24_10_2025():
+    assert m.data_ausencia_compartilhada().strftime("%Y-%m-%d") == "2025-10-24"

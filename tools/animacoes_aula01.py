@@ -4,8 +4,9 @@
    no tempo, em escala logarítmica, com cada evento corporativo rotulado quando a
    linha chega nele. O pôster é o último quadro.
 2. aula01-mapa-ausencias (20 s): a matriz de pregões por ativo preenchida ativo a
-   ativo; no fim, o bloco vazio do GOLD11 e o pregão de 24/10/2025 destacados, e
-   o número de pregões que o dropna mantém. O pôster é o último quadro.
+   ativo; no fim, o bloco vazio do GOLD11 e o pregão em que BOVA11, IVVB11 e
+   GOLD11 ficam sem cotação juntos destacados, e o número de pregões que o
+   dropna mantém. O pôster é o último quadro.
 
 Uso: .venv/bin/python tools/animacoes_aula01.py
 """
@@ -100,7 +101,9 @@ def mapa_ausencias():
     mapa_de_cor.set_bad(cor("--seg-base"))
 
     fig = figura()
-    eixo = fig.add_axes([0.10, 0.24, 0.87, 0.68])
+    # Eixo mais baixo que largo (0.30 em vez de 0.24 no rodapé) para sobrar
+    # altura para a legenda final de três linhas, sem reduzir a fonte dela.
+    eixo = fig.add_axes([0.10, 0.30, 0.87, 0.62])
     visivel = np.full(presente.shape, np.nan)
     imagem = eixo.imshow(visivel, aspect="auto", cmap=mapa_de_cor, vmin=0, vmax=1,
                          interpolation="nearest")
@@ -111,11 +114,14 @@ def mapa_ausencias():
     eixo.set_xticklabels([str(ano) for ano in anos])
     for lado in ("top", "right", "left", "bottom"):
         eixo.spines[lado].set_visible(False)
-    legenda = fig.text(0.10, 0.06, "", fontsize=19, color=cor("--seg-texto"))
+    legenda = fig.text(0.10, 0.05, "", fontsize=19, color=cor("--seg-texto"))
 
     gold = list(fechamento.columns).index("GOLD11")
     primeiro_gold = int(np.argmax(presente[gold] == 1))
-    dia_falha = list(fechamento.index.strftime("%Y-%m-%d")).index("2025-10-24")
+    # Data em que BOVA11, IVVB11 e GOLD11 faltam juntas: medida uma única vez
+    # aqui, para a linha tracejada e a legenda nunca desalinharem entre si.
+    data_falha = m.data_ausencia_compartilhada()
+    dia_falha = fechamento.index.get_loc(data_falha)
     por_ativo = FPS
     quadros_ativos = n_ativos * por_ativo
     total = quadros_ativos + 5 * FPS
@@ -131,12 +137,20 @@ def mapa_ausencias():
                                      edgecolor=cor("--seg-primaria"), linewidth=2.5))
             eixo.axvline(dia_falha, color=cor("--seg-primaria"), linewidth=2, linestyle="--")
             legenda.set_text("GOLD11: %d pregões sem cotação antes de %s.\n"
-                             "BOVA11, IVVB11 e GOLD11: sem cotação em 24/10/2025."
-                             % (primeiro_gold, _data_br(fechamento.index[primeiro_gold])))
+                             "BOVA11, IVVB11 e GOLD11: sem cotação em %s."
+                             % (primeiro_gold, _data_br(fechamento.index[primeiro_gold]),
+                                _data_br(data_falha)))
         if i >= quadros_ativos + 3 * FPS:
-            legenda.set_text("Descartar as datas com ausência mantém %s dos %s pregões\n"
+            # A legenda final precisa explicar as duas marcas que continuam na
+            # tela (o retângulo do GOLD11 e a linha tracejada) e ainda somar o
+            # resultado do dropna: nenhuma marca pode ficar sem legenda no
+            # quadro congelado do pôster.
+            legenda.set_text("GOLD11: %d pregões sem cotação até %s; as três faltam em %s.\n"
+                             "Descartar as datas com ausência mantém %s dos %s pregões\n"
                              "e começa a série da cesta inteira em %s."
-                             % (_milhar(tratamentos["pregoes_descartar"]),
+                             % (primeiro_gold, _data_br(fechamento.index[primeiro_gold]),
+                                _data_br(data_falha),
+                                _milhar(tratamentos["pregoes_descartar"]),
                                 _milhar(tratamentos["pregoes_total"]),
                                 "/".join(reversed(tratamentos["inicio_descartar"].split("-")))))
 

@@ -89,3 +89,16 @@ def comparar_tratamentos():
             dia: float(retorno_preenchido.loc[dia]) for dia in ("2025-10-24", "2025-10-27")
         },
     }
+
+
+def data_ausencia_compartilhada():
+    """Data em que BOVA11, IVVB11 e GOLD11 ficam simultaneamente sem cotação no Close.
+
+    Ausência real do provedor (dados/README.md), não falha de leitura. Dentro da
+    janela coletada as três faltam juntas em um único pregão; a animação do mapa
+    de ausências usa esta função tanto para a linha tracejada quanto para a
+    legenda, para as duas nunca desalinharem entre si.
+    """
+    fechamento = carregar_precos("precos_fechamento.csv")
+    compartilhada = fechamento[["BOVA11", "IVVB11", "GOLD11"]].isna().all(axis=1)
+    return compartilhada[compartilhada].index[0]
