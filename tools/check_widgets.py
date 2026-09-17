@@ -43,7 +43,15 @@ def _medir(navegador, url):
     pagina.on("console", lambda msg: erros.append(msg.text) if msg.type == "error" else None)
     pagina.on("pageerror", lambda exc: erros.append(str(exc)))
     try:
-        resposta = pagina.goto(url, wait_until="load")
+        try:
+            resposta = pagina.goto(url, wait_until="load")
+        except Exception as erro:
+            # goto() lanca quando a navegacao falha antes de qualquer resposta
+            # HTTP existir (porta sem servidor, DNS, conexao recusada ou
+            # resetada). Sem este except a excecao sobe crua por checar() e
+            # main(), interrompe a lista inteira de decks no meio e nenhum
+            # deck seguinte chega a ser medido, em vez de reprovar so este.
+            return None, ["página não carregou: %s" % erro]
         if resposta is None or not resposta.ok:
             return None, ["página não carregou: %s" % (resposta.status if resposta else "sem resposta")]
         try:
