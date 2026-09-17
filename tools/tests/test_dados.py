@@ -81,6 +81,28 @@ def test_eventos_de_desdobramento_do_periodo():
     assert eventos[("MGLU3", "2024-05-27")] == pytest.approx(0.1)
 
 
+def test_classificacao_de_eventos_por_fator_bate_com_o_readme():
+    """Classifica cada evento de eventos_desdobramento.csv pela mesma regra de
+    fator usada em dados/README.md (seção 6: fator menor que 1 é grupamento,
+    fator inteiro maior que 1 é desdobramento, fator fracionário maior que 1 é
+    bonificação em ações) e trava a contagem por classificação e o exemplo de
+    bonificação citado no README.
+    """
+    linhas = _ler("eventos_desdobramento.csv")
+    contagem = {"grupamento": 0, "desdobramento": 0, "bonificação": 0}
+    for linha in linhas:
+        fator = float(linha["fator"])
+        if fator < 1:
+            contagem["grupamento"] += 1
+        elif fator.is_integer():
+            contagem["desdobramento"] += 1
+        else:
+            contagem["bonificação"] += 1
+    assert contagem == {"grupamento": 1, "desdobramento": 5, "bonificação": 9}
+    exemplo = next(l for l in linhas if (l["ticker"], l["data"]) == ("BBDC4", "2019-04-01"))
+    assert float(exemplo["fator"]) == pytest.approx(1.2)
+
+
 def test_proventos_tem_contrato_e_volume_medido():
     linhas = _ler("eventos_proventos.csv")
     assert list(linhas[0].keys()) == ["ticker", "data", "valor"]
