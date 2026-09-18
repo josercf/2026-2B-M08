@@ -51,3 +51,10 @@ def test_ausencias_repete_os_tratamentos_medidos():
         assert dados["descartar"]["vol"][ativo] == round(float(c["vol_descartar"][ativo]), 4)
         assert dados["preencher"]["vol"][ativo] == round(float(c["vol_preencher"][ativo]), 4)
     assert "1.423" in dados["descartar"]["leitura"]
+
+
+def test_leitura_do_preencher_cita_a_data_medida_e_os_tres_etfs():
+    leitura = _json("aula01-ausencias.json")["preencher"]["leitura"]
+    assert m.data_ausencia_compartilhada().strftime("%d/%m/%Y") in leitura
+    for ticker in ("BOVA11", "IVVB11", "GOLD11"):
+        assert ticker in leitura

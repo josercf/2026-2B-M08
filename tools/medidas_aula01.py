@@ -73,11 +73,26 @@ def volatilidade_anual(precos):
 
 
 def comparar_tratamentos():
-    """Descartar datas com ausência (dropna) contra preencher para a frente (ffill)."""
+    """Descartar datas com ausência (dropna) contra preencher para a frente (ffill).
+
+    O preenchimento para a frente copia o preço do pregão anterior para a data
+    ausente, o que dá retorno zero nela e faz o pregão seguinte acumular os dois
+    dias. BOVA11, IVVB11 e GOLD11 (data_ausencia_compartilhada) são os três
+    ativos em que isso acontece dentro da janela coletada, e o retorno de cada
+    um nas duas datas fica travado por ticker, nunca por uma data digitada.
+    """
     ajustado = carregar_precos("precos_ajustados.csv")
     descartar = ajustado.dropna()
     preencher = ajustado.ffill()
-    retorno_preenchido = preencher["BOVA11"].pct_change(fill_method=None)
+    data_falha = data_ausencia_compartilhada()
+    data_seguinte = ajustado.index[ajustado.index.get_loc(data_falha) + 1]
+    retorno_etfs_preenchido = {
+        ticker: {
+            data.strftime("%Y-%m-%d"): float(preencher[ticker].pct_change(fill_method=None).loc[data])
+            for data in (data_falha, data_seguinte)
+        }
+        for ticker in ("BOVA11", "IVVB11", "GOLD11")
+    }
     return {
         "pregoes_total": len(ajustado),
         "pregoes_descartar": len(descartar),
@@ -85,9 +100,7 @@ def comparar_tratamentos():
         "inicio_descartar": descartar.index[0].strftime("%Y-%m-%d"),
         "vol_descartar": volatilidade_anual(descartar),
         "vol_preencher": volatilidade_anual(preencher),
-        "retorno_bova11_preenchido": {
-            dia: float(retorno_preenchido.loc[dia]) for dia in ("2025-10-24", "2025-10-27")
-        },
+        "retorno_etfs_preenchido": retorno_etfs_preenchido,
     }
 
 

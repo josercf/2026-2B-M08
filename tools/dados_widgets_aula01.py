@@ -25,6 +25,13 @@ def _milhar(numero):
     return "{:,}".format(numero).replace(",", ".")
 
 
+def _lista(itens):
+    """Junta nomes em prosa: "A", "A e B" ou "A, B e C". Nenhuma lista digitada."""
+    if len(itens) == 1:
+        return itens[0]
+    return ", ".join(itens[:-1]) + " e " + itens[-1]
+
+
 def _serie(valores):
     return [None if math.isnan(x) else round(float(x), 2) for x in valores]
 
@@ -61,6 +68,8 @@ def ausencias():
     c = m.comparar_tratamentos()
     ausentes = m.ausencias()
     inicio = "/".join(reversed(c["inicio_descartar"].split("-")))
+    data_falha = m.data_ausencia_compartilhada().strftime("%d/%m/%Y")
+    etfs_falha = _lista(list(c["retorno_etfs_preenchido"]))
     return {
         "pregoes_total": c["pregoes_total"],
         "ativos": ATIVOS_AUSENCIAS,
@@ -75,9 +84,9 @@ def ausencias():
         "preencher": {
             "pregoes": c["pregoes_preencher"],
             "vol": {t: round(float(c["vol_preencher"][t]), 4) for t in ATIVOS_AUSENCIAS},
-            "leitura": ("Preencher mantém os %s pregões e dá retorno zero aos três ETFs em "
-                        "24/10/2025; o pregão seguinte acumula os dois dias."
-                        % _milhar(c["pregoes_preencher"])),
+            "leitura": ("Preencher mantém os %s pregões e dá retorno zero para %s em %s; "
+                        "o pregão seguinte acumula os dois dias."
+                        % (_milhar(c["pregoes_preencher"]), etfs_falha, data_falha)),
         },
     }
 

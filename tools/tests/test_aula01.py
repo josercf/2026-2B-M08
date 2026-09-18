@@ -104,10 +104,15 @@ def test_volatilidade_anual_sob_cada_tratamento(ticker, descartar, preencher):
     assert round(float(c["vol_preencher"][ticker]), 4) == preencher
 
 
-def test_preencher_cria_retorno_zero_e_acumula_no_pregao_seguinte():
-    retorno = m.comparar_tratamentos()["retorno_bova11_preenchido"]
-    assert retorno["2025-10-24"] == 0.0
-    assert round(retorno["2025-10-27"], 6) == 0.009252
+@pytest.mark.parametrize("ticker,no_dia_da_falha,no_pregao_seguinte", [
+    ("BOVA11", 0.0, 0.009252),
+    ("IVVB11", 0.0, 0.01719),
+    ("GOLD11", 0.0, -0.033708),
+])
+def test_preencher_cria_retorno_zero_e_acumula_no_pregao_seguinte(ticker, no_dia_da_falha, no_pregao_seguinte):
+    retorno = m.comparar_tratamentos()["retorno_etfs_preenchido"][ticker]
+    assert retorno["2025-10-24"] == no_dia_da_falha
+    assert round(retorno["2025-10-27"], 6) == no_pregao_seguinte
 
 
 def test_bova11_ivvb11_e_gold11_faltam_juntos_em_24_10_2025():
