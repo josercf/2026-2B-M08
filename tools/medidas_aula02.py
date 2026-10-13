@@ -9,7 +9,8 @@ tools/tests/test_aula02.py.
 
 Tratamento de ausência usado em toda a aula, salvo onde dito: Adj Close com
 preenchimento para a frente por ativo (ffill), sem preencher antes da primeira
-cotação. É a decisão do exemplo de ADR da Aula 01; a GOLD11 entra só a partir
+cotação. É a decisão do exemplo de ADR da Aula 01 e a regra do módulo
+(ADR-009, tools/retornos.py); a GOLD11 entra só a partir
 de 11/12/2020. O desafio do notebook inverte a decisão (descartar as datas com
 ausência na cesta inteira), e descartar_contra_preencher() mede o efeito.
 """
@@ -23,6 +24,7 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import medidas_aula01 as m1  # noqa: E402
+import retornos  # noqa: E402
 
 RAIZ = m1.RAIZ
 DADOS = m1.DADOS
@@ -36,8 +38,8 @@ HORIZONTES_RAIZ = (1, 5, 21, 63)
 
 
 def precos():
-    """Adj Close da cesta, preenchido para a frente por ativo (ver docstring do módulo)."""
-    return m1.carregar_precos("precos_ajustados.csv").ffill()
+    """Adj Close da cesta, preenchido para a frente por ativo (ADR-009)."""
+    return retornos.precos_tratados()
 
 
 def retornos_simples(p=None):
