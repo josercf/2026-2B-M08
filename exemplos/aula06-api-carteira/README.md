@@ -25,7 +25,7 @@ API e desenha. Os números vêm do snapshot em `dados/` do acervo.
 |---|---|---|---|
 | `GET /ativos` | nenhuma | 200, lista de tickers da base | nenhum |
 | `POST /carteiras/otimizar` | `tickers` (2 a 15, sem repetição), `inicio`, `fim`, `taxa_livre_risco` opcional | 200, início e fim da janela comum, número de retornos, métricas por ativo, as duas carteiras e a fronteira | 404 ticker fora da base; 422 entrada inválida ou janela comum com menos de 60 retornos |
-| `POST /carteiras/interpretar` | o mesmo pedido | 200, prompt, texto, modelo e a verificação de cada número | 404 e 422 como acima; 503 sem chave no servidor; 502 falha do provedor |
+| `POST /carteiras/interpretar` | o mesmo pedido | 200, prompt, texto, modelo e a checagem de presença de cada número | 404 e 422 como acima; 503 sem chave no servidor; 502 falha do provedor |
 | `POST /carteiras/exportar` | o mesmo pedido | 200, CSV com os pesos das duas carteiras | 404 e 422 como acima |
 
 A documentação automática fica em `http://127.0.0.1:8000/docs` com o backend rodando.

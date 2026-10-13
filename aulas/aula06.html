@@ -183,7 +183,7 @@
           <tbody>
             <tr><td><code>GET /ativos</code></td><td>nenhuma</td><td>200, tickers da base</td><td>nenhum</td></tr>
             <tr class="linha-destaque"><td><code>POST /carteiras/otimizar</code></td><td>2 a 15 tickers, início, fim, taxa opcional</td><td>200, ativos, duas carteiras e fronteira</td><td>404 ticker fora da base; 422 entrada inválida</td></tr>
-            <tr><td><code>POST /carteiras/interpretar</code></td><td>o mesmo pedido</td><td>200, texto e verificação de cada número</td><td>404, 422; 503 sem chave; 502 provedor</td></tr>
+            <tr><td><code>POST /carteiras/interpretar</code></td><td>o mesmo pedido</td><td>200, texto e checagem de presença de cada número</td><td>404, 422; 503 sem chave; 502 provedor</td></tr>
             <tr><td><code>POST /carteiras/exportar</code></td><td>o mesmo pedido</td><td>200, CSV com os pesos</td><td>404, 422</td></tr>
           </tbody>
         </table>
@@ -298,7 +298,7 @@ def otimizar(pedido: PedidoCarteira) -> Resultado:
         </div>
         <div class="faixa-nota" style="margin: 0 0 18px">
           <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
-          <p>Que erro a API deve devolver para um ticker que não existe? Se o ticker é entrada do usuário, por que 404 em vez de 422? Cada dupla responde antes de revelar.</p>
+          <p>Que erro a API deve devolver para um ticker que não existe: 404, recurso fora da base, ou 422, entrada inválida? Cada dupla escolhe e justifica pelo contrato antes de revelar.</p>
         </div>
         <table class="tabela-leitura tabela-compacta fragment">
           <thead><tr><th>Status</th><th>Quem detecta</th><th>Exemplo</th><th>O que o gestor lê</th></tr></thead>
@@ -309,7 +309,7 @@ def otimizar(pedido: PedidoCarteira) -> Resultado:
             <tr><td>502</td><td>a rota de interpretação</td><td>o provedor do LLM não respondeu</td><td>os números da carteira continuam válidos</td></tr>
           </tbody>
         </table>
-        <p>Um 500 fica fora do contrato: é exceção sem tratamento, defeito do grupo.</p>
+        <p>O exemplo adota 404 e registra a escolha no <code>SPEC.md</code>; 422 também é defensável, desde que o contrato diga qual e mantenha o mesmo corpo de erro. Um 500 fica fora do contrato: é exceção sem tratamento, defeito do grupo.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [8]</p>
           <p class="footer-page">12</p>
@@ -473,7 +473,7 @@ async function aoOtimizar(evento) {
             <tr><td>Contexto</td><td>o JSON de <code>/carteiras/otimizar</code>, em porcentagem; <code>pregoes</code> conta os retornos diários da janela comum dos 5 tickers, que começa em <code>inicio_janela</code></td></tr>
             <tr><td>Regras</td><td>usar só esses números, declarar limitações, não prometer retorno</td></tr>
             <tr><td>Modelo</td><td><code>LLM_MODELO</code> no ambiente: trocar de modelo muda custo por token e texto</td></tr>
-            <tr><td>Saída</td><td>o texto volta com a verificação de cada número citado</td></tr>
+            <tr><td>Saída</td><td>o texto volta com a checagem de presença de cada número citado</td></tr>
           </table>
         </div>
         <div class="slide-footer">
@@ -520,7 +520,7 @@ async function aoOtimizar(evento) {
         </table>
         <div class="faixa-nota">
           <span class="material-symbols-outlined" aria-hidden="true">fact_check</span>
-          <p>10 dos 12 números passam na verificação de presença, e 9 estão certos. A origem devolvida pelo verificador mostra o erro que a presença deixa passar.</p>
+          <p>10 dos 12 números passam na verificação de presença, e 9 estão certos. A presença, sem conferir ativo, unidade nem período, deixa passar o 0,16, e a origem devolvida mostra o erro.</p>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [4]</p>

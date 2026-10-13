@@ -138,3 +138,24 @@ def test_json_dos_widgets_existe_e_e_valido():
     for nome in ("aula06-requisicoes.json", "aula06-verificador.json"):
         with open(os.path.join(RAIZ, "assets", "data", nome), encoding="utf-8") as fh:
             assert json.load(fh)
+
+
+def test_404_e_422_aparecem_como_escolha_de_contrato():
+    # Auditoria de 13/10/2026, C-15: o ticker vem no corpo do POST, então 422
+    # também é defensável. O deck pede justificativa pelo contrato e não
+    # apresenta o 404 como resposta universal.
+    erros = _texto([s for s in _secoes() if 'id="erros"' in s][0])
+    assert "por que 404 em vez de 422" not in erros
+    assert "justifica pelo contrato" in erros
+    assert "422 também é defensável" in erros and "SPEC.md" in erros
+
+
+def test_checagem_de_numeros_nao_promete_verificacao_factual():
+    # Auditoria de 13/10/2026, C-13: o algoritmo confere presença no JSON e
+    # deixa passar número certo no ativo errado. Nenhum texto do deck pode
+    # prometer verificação de cada número.
+    html = _texto(_html())
+    assert "verificação de cada número" not in html
+    assert "checagem de presença de cada número" in html
+    trocado = _texto([s for s in _secoes() if 'id="ativo-trocado"' in s][0])
+    assert "sem conferir ativo, unidade nem período" in trocado

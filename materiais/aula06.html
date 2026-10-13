@@ -121,7 +121,7 @@
             <tbody>
               <tr><td><code>GET /ativos</code></td><td>nenhuma</td><td>200, os 15 tickers da base</td><td>nenhum</td></tr>
               <tr><td><code>POST /carteiras/otimizar</code></td><td>2 a 15 tickers sem repetição, início, fim e taxa livre de risco opcional</td><td>200, início e fim da janela comum, número de retornos, métricas por ativo, as duas carteiras e a fronteira</td><td>404 ticker fora da base; 422 entrada inválida ou janela comum com menos de 60 retornos</td></tr>
-              <tr><td><code>POST /carteiras/interpretar</code></td><td>o mesmo pedido</td><td>200, prompt, texto, modelo e verificação de cada número</td><td>404 e 422; 503 sem chave no servidor; 502 falha do provedor</td></tr>
+              <tr><td><code>POST /carteiras/interpretar</code></td><td>o mesmo pedido</td><td>200, prompt, texto, modelo e checagem de presença de cada número</td><td>404 e 422; 503 sem chave no servidor; 502 falha do provedor</td></tr>
               <tr><td><code>POST /carteiras/exportar</code></td><td>o mesmo pedido</td><td>200, CSV com os pesos das duas carteiras</td><td>404 e 422</td></tr>
             </tbody>
           </table>
@@ -139,7 +139,7 @@
              "msg": "List should have at least 2 items after validation, not 1"}]}</code></pre>
         <p>A mensagem diz três coisas. <code>loc</code> aponta onde está o problema: no corpo do pedido, no campo <code>tickers</code>. <code>type</code> diz qual regra falhou, o <code>min_length=2</code> declarado no modelo. <code>msg</code> diz o que chegou: uma lista com um item. Nenhuma linha do otimizador rodou. Esse erro é pedagógico porque mostra o contrato funcionando sozinho: a regra foi escrita uma vez, no modelo, e vale para toda rota que recebe <code>PedidoCarteira</code>, inclusive no <code>/docs</code>.</p>
         <h3>O 404 do ticker inexistente</h3>
-        <p>Com <code>["PETR4", "XPTO3"]</code>, o pedido é bem formado: dois tickers, datas em ordem. O Pydantic aprova, e é o coletor que descobre que <code>XPTO3</code> não está na base. A rota traduz a exceção <code>TickerDesconhecido</code> em 404 com o ticker na mensagem, e o frontend mostra ao gestor "Algum ativo pedido não está na base de dados. Confira o código do ticker. (XPTO3)". Devolver 422 aqui misturaria dois problemas diferentes; devolver 500 diria que o servidor quebrou, quando quem precisa corrigir é o gestor.</p>
+        <p>Com <code>["PETR4", "XPTO3"]</code>, o pedido é bem formado: dois tickers, datas em ordem. O Pydantic aprova, e é o coletor que descobre que <code>XPTO3</code> não está na base. A rota traduz a exceção <code>TickerDesconhecido</code> em 404 com o ticker na mensagem, e o frontend mostra ao gestor "Algum ativo pedido não está na base de dados. Confira o código do ticker. (XPTO3)". O 422 também é defensável, porque o ticker chega no corpo do pedido, e há APIs que tratam todo erro de domínio como entrada inválida. O exemplo escolheu 404 para separar o pedido mal formado do recurso que falta, e essa escolha vai escrita no contrato do <code>SPEC.md</code>, com o corpo de erro de cada caso. Devolver 500 diria que o servidor quebrou, quando quem precisa corrigir é o gestor.</p>
         <h3>O 503 sem chave</h3>
         <p>Na rota de interpretação, um servidor sem <code>OPENROUTER_API_KEY</code> responde 503. O número da carteira continua válido, e a tela diz isso: a falha é só da camada de texto.</p>
         <div class="doc-nota">
@@ -191,8 +191,8 @@ header is present on the requested resource.</code></pre>
       </section>
 
       <section class="doc-secao" id="verificacao">
-        <h2>8. Conferir cada número</h2>
-        <p>O texto do slide de exercício foi escrito pelo acervo a partir dos números reais, no estilo de um LLM, com três erros plantados e declarados. Nenhum modelo o gerou. Ele tem 12 números, e o verificador da API confere cada um contra o JSON do prompt.</p>
+        <h2>8. Checagem de presença de cada número</h2>
+        <p>O texto do slide de exercício foi escrito pelo acervo a partir dos números reais, no estilo de um LLM, com três erros plantados e declarados. Nenhum modelo o gerou. Ele tem 12 números, e o verificador da API procura cada um no JSON do prompt.</p>
         <div class="doc-tabela-rolagem">
           <table class="doc-tabela">
             <thead><tr><th>Trecho</th><th>Erro plantado</th><th>Verificação de presença</th><th>Valor certo</th></tr></thead>

@@ -82,9 +82,10 @@ Abrir o `/docs` da API rodando e mostrar que os campos do formulário vêm do mo
 animação do cache, a turma prevê quantos problemas o servidor com cache resolve nos cinco pedidos;
 resposta: 104. Quem responde 52 esqueceu que a consulta B, com janela desde 2021, é outra consulta.
 
-**Pergunta disparada:** que erro a API deve devolver para um ticker que não existe? Resposta: 404,
-com o ticker na mensagem. Erro comum: 422, porque "a entrada está errada". Contra-argumento: a
-entrada está bem formada; o que falta é o recurso, e quem corrige é o gestor.
+**Pergunta disparada:** que erro a API deve devolver para um ticker que não existe? Não há resposta
+universal: 404 (recurso fora da base) e 422 (entrada inválida, porque o ticker vem no corpo) são
+escolhas defensáveis. Vale a dupla que justifica pelo contrato. O exemplo adota 404, com o ticker na
+mensagem, para separar pedido mal formado de recurso que falta, e registra a escolha no `SPEC.md`.
 Segundo erro comum: 500, que diz ao gestor que o servidor quebrou.
 
 ## Bloco 4: dupla no notebook (slide 13, 12 min)
