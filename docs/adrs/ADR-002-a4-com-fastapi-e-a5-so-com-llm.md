@@ -1,7 +1,7 @@
 # ADR-002: A4 com FastAPI e A5 só com LLM
 
 **Data:** 17/09/2026
-**Status:** Aceita
+**Status:** Substituída pela ADR-007 em 13/10/2026
 **Decisores:** Prof. José Romualdo
 
 ## Contexto

@@ -8,8 +8,8 @@ TITULOS = {
     "02": "Dados Financeiros: Do Preço ao Retorno",
     "03": "Correlação, Covariância e o Argumento Matemático da Diversificação",
     "04": "Da Nuvem à Fronteira: Monte Carlo e Otimização de Markowitz",
-    "05": "Do Script ao Produto: API em FastAPI e Página Web",
-    "06": "Validação, Robustez e Interpretação com LLM",
+    "05": "Validação e Robustez do Modelo",
+    "06": "Do Script ao Produto: React, FastAPI e Interpretação com LLM",
 }
 # As sete interações que a abertura do roteiro licencia, cada uma com as formas
 # que a nomeiam no texto de um bloco. A abertura e este dicionário são conferidos
@@ -108,7 +108,7 @@ def test_cada_bloco_fecha_em_interacao_nomeada():
 
 def test_autoestudo_citado_no_planejamento_e_o_da_semana_da_aula():
     por_semana = _autoestudos_por_semana()
-    assert sorted(por_semana) == ["01", "03", "05", "06", "08", "09"]
+    assert sorted(por_semana) == ["02", "04", "05", "06", "08", "10"]
     for numero, secao in _secoes_de_aula(_ler("PLANEJAMENTO_AULA_A_AULA.md")).items():
         semana = re.match(r"Semana (\d+) - ", secao.splitlines()[0]).group(1).zfill(2)
         antes = secao.split("Antes do encontro", 1)[1].split("Daily da equipe", 1)[0]

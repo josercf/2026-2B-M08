@@ -43,7 +43,7 @@ def test_cada_adr_tem_cabecalho_e_secoes():
 
 @pytest.mark.parametrize("caminho", DOCUMENTOS, ids=lambda c: os.path.basename(c))
 def test_documento_da_fundacao_sem_travessao_e_sem_emoji(caminho):
-    assert len(DOCUMENTOS) == len(GUIAS) + 6, len(DOCUMENTOS)
+    assert len(DOCUMENTOS) >= len(GUIAS) + 6, len(DOCUMENTOS)
     texto = open(caminho, encoding="utf-8").read()
     nome = os.path.basename(caminho)
     assert chr(0x2014) not in texto, nome

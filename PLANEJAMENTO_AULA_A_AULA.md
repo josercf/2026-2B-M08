@@ -22,10 +22,10 @@ aparece no acervo.
 
 ---
 
-### Aula 01 - Semana 1 - Aquisição de Dados de Mercado: Coleta Confiável e Reproduzível  (Sprint 1)
+### Aula 01 - Semana 2 - Aquisição de Dados de Mercado: Coleta Confiável e Reproduzível  (Sprint 1)
 
-Data: a confirmar na Adalove (pendência P1). Aula 5 do módulo na planilha.
-Entrega que alimenta: A1 Coletor e Processador de Dados de Mercado (3, a confirmar na Adalove).
+Data: 20/10/2026 (terça), conforme a Adalove da turma 2026-2B-T19. Horário a confirmar. Aula 5 do módulo na planilha.
+Entrega que alimenta: A1 Coletor e Processador de Dados de Mercado (peso 3), com review em 23/10/2026.
 O que a aula anterior deixou pronto: primeira aula do módulo; a abertura apresenta o parceiro e a ferramenta.
 O que esta aula deixa pronto: coletor parametrizado por tickers e datas, com preço ajustado e ausências tratadas e documentadas.
 
@@ -43,7 +43,7 @@ Metodologia ativa (105 min)
   Bloco 1 (0 a 15 min)  Abertura do módulo: o parceiro, a ferramenta de simulação de carteira
     eficiente e as cinco entregas por sprint, de A1 a A5. Fecha em Peer Instruction: "No primeiro
     pregão de 2019, quanto o Adj Close da PETR4 vale em relação ao Close?", com as opções 100%,
-    86%, 52% e 26%. Cada distrator é a razão real de outro ativo da cesta (BOVA11, SUZB3 e VALE3),
+    86%, 53% e 26%. Cada distrator é a razão real de outro ativo da cesta (BOVA11, SUZB3 e VALE3),
     e a certa é 26,13%. Votar, discutir em dupla, votar de novo.
   Bloco 2 (15 a 30 min)  As três visões de preço (negociado, ajustado por desdobramento, ajustado
     por proventos) e o que cada uma responde. Antes de tocar a animação, a turma prevê e registra
@@ -66,8 +66,8 @@ Metodologia ativa (105 min)
     do tratamento e primeiro ADR com o impacto numérico da decisão, que leva a volatilidade anual
     da PETR4 de 39,25% para 33,41%. Cronômetro de 12 minutos.
   Bloco 7 (90 a 105 min)  Quiz de verificação de três perguntas e amarração com a Sprint 1: o A1
-    (3, a confirmar na Adalove), o SPEC.md escrito antes de codar, o ADR individual valendo 20% da
-    nota do artefato, a review da Sprint 1 com data a confirmar, e o que a Aula 02 vai pedir
+    (peso 3), o SPEC.md escrito antes de codar, o ADR individual valendo 20% da
+    nota do artefato, a review da Sprint 1 em 23/10/2026, e o que a Aula 02 vai pedir
     (retornos calculados a partir do Adj Close já tratado).
 
 Depois do encontro
@@ -78,10 +78,10 @@ Depois do encontro
   Leitura complementar: seções 4 e 5 de `dados/README.md`, com as três visões de preço e as falhas
     do provedor medidas no snapshot.
 
-### Aula 02 - Semana 3 - Dados Financeiros: Do Preço ao Retorno  (Sprint 2)
+### Aula 02 - Semana 4 - Dados Financeiros: Do Preço ao Retorno  (Sprint 2)
 
-Data: a confirmar na Adalove (pendência P1). Aula 13 do módulo na planilha.
-Entrega que alimenta: A2 Módulo de Análise de Risco e Retorno Individual (sem peso na planilha, a confirmar na Adalove).
+Data: 05/11/2026 (quinta), conforme a Adalove da turma 2026-2B-T19. Horário a confirmar. Aula 13 do módulo na planilha.
+Entrega que alimenta: A2 Módulo de Análise de Risco e Retorno Individual (peso 3), com review em 06/11/2026.
 O que a aula anterior deixou pronto: a Aula 01 deixou pronto o coletor parametrizado, com o Adj Close escolhido e a decisão de ausências registrada em ADR.
 O que esta aula deixa pronto: retornos diários, métricas anualizadas por 252 e a comparação de risco entre os ativos da cesta.
 
@@ -115,7 +115,7 @@ Metodologia ativa (105 min)
     com o CDI acumulado do período como referência. Fecha em escolha coletiva, com a sala julgando
     afirmações sobre risco como sustentadas ou não pelos números da tabela.
   Bloco 7 (90 a 105 min)  Quiz de verificação de três perguntas e amarração com a Sprint 2: o A2
-    (sem peso na planilha, a confirmar na Adalove), as funções reutilizáveis que o A3 vai importar
+    (peso 3), as funções reutilizáveis que o A3 vai importar
     e a pendência P5, dita em voz alta: o A2 cobra matriz de correlação e de covariância, que a
     Aula 03 só ensina na semana 5, e o material de apoio antecipa o mínimo necessário.
 
@@ -129,8 +129,8 @@ Depois do encontro
 
 ### Aula 03 - Semana 5 - Correlação, Covariância e o Argumento Matemático da Diversificação  (Sprint 3)
 
-Data: a confirmar na Adalove (pendência P1). Aula 22 do módulo na planilha.
-Entrega que alimenta: A3 Motor de Simulação de Monte Carlo (2, a confirmar na Adalove) e Ponderada 1 (3, a confirmar na Adalove).
+Data: 10/11/2026 (terça), conforme a Adalove da turma 2026-2B-T19. Horário a confirmar. Aula 22 do módulo na planilha.
+Entrega que alimenta: A3 Motor de Simulação de Monte Carlo (peso 3) e Ponderada 1 (peso 3), com review da Sprint 3 em 19/11/2026.
 O que a aula anterior deixou pronto: a Aula 02 deixou pronta a tabela de retorno e volatilidade anualizados da cesta, com o CDI como referência.
 O que esta aula deixa pronto: matriz de covariância anualizada e a curva de risco de dois ativos em função da correlação.
 
@@ -168,8 +168,8 @@ Metodologia ativa (105 min)
     risco e os que diversificam, com o número da matriz na tela. Fecha em pensar e compartilhar
     sobre uma carteira formada só de bancos. Nenhuma carteira da Ponderada 1 aparece nesta aula.
   Bloco 7 (90 a 105 min)  Quiz de verificação de três perguntas e amarração com a Sprint 3: o A3
-    (2, a confirmar na Adalove), que consome a matriz de covariância montada hoje, e a Ponderada 1
-    (3, a confirmar na Adalove), com carteira individualizada pelo último dígito do RA e parecer
+    (peso 3, entrega em 20/11/2026, 23h59), que consome a matriz de covariância montada hoje, e a Ponderada 1
+    (peso 3), com carteira individualizada pelo último dígito do RA e parecer
     situado no período analisado.
 
 Depois do encontro
@@ -182,8 +182,8 @@ Depois do encontro
 
 ### Aula 04 - Semana 6 - Da Nuvem à Fronteira: Monte Carlo e Otimização de Markowitz  (Sprint 3)
 
-Data: a confirmar na Adalove (pendência P1). Aula 28 do módulo na planilha.
-Entrega que alimenta: A3 Motor de Simulação de Monte Carlo (2, a confirmar na Adalove) e a base matemática do A4.
+Data: 18/11/2026 (quarta), conforme a Adalove da turma 2026-2B-T19. Horário a confirmar. Aula 28 do módulo na planilha.
+Entrega que alimenta: A3 Motor de Simulação de Monte Carlo (peso 3) e A4 Otimizador de Carteira com Fronteira Eficiente (peso 3), que a Adalove lista nas Sprints 3 e 4; review da Sprint 3 em 19/11/2026.
 O que a aula anterior deixou pronto: a Aula 03 deixou pronta a matriz de covariância anualizada da cesta e a curva de risco de dois ativos em função da correlação.
 O que esta aula deixa pronto: nuvem de 10.000 carteiras, carteiras de variância mínima e de máximo Sharpe e a fronteira de 50 pontos.
 
@@ -220,9 +220,9 @@ Metodologia ativa (105 min)
   Bloco 6 (75 a 90 min)  Dupla no notebook: otimizador das duas carteiras e fronteira de 50 pontos
     de retorno alvo desenhada sobre a nuvem do bloco 3. Cronômetro de 12 minutos.
   Bloco 7 (90 a 105 min)  Quiz de verificação de três perguntas e amarração com a Sprint 3: o A3
-    (2, a confirmar na Adalove), fechado com a nuvem e a leitura escrita de por que a simulação não
-    substitui a otimização, e a prévia do A4 na Sprint 4, que leva este otimizador para dentro de
-    uma aplicação web.
+    (peso 3, entrega em 20/11/2026, 23h59), fechado com a nuvem e a leitura escrita de por que a simulação não
+    substitui a otimização, e a prévia do A4 na Sprint 4, que entrega este otimizador como módulo
+    Python validado; a aplicação web fica para o A5 (ADR-007).
 
 Depois do encontro
   Desafio do notebook: repetir a otimização com uma restrição de peso máximo por ativo e comparar
@@ -232,109 +232,109 @@ Depois do encontro
   Leitura complementar: seção do autoestudo sobre a fronteira como borda da nuvem, relida com o
     gráfico do próprio grupo.
 
-### Aula 05 - Semana 8 - Do Script ao Produto: API em FastAPI e Página Web  (Sprint 4)
+### Aula 05 - Semana 8 - Validação e Robustez do Modelo  (Sprint 4)
 
-Data: a confirmar na Adalove (pendência P1). Aula 38 do módulo na planilha.
-Entrega que alimenta: A4 Otimizador de Carteira com Fronteira Eficiente em Aplicação Web (2, a confirmar na Adalove).
+Data: 01/12/2026 (terça), conforme a Adalove da turma 2026-2B-T19. Horário a confirmar. Aula 38 do módulo na planilha.
+Entrega que alimenta: A4 Otimizador de Carteira com Fronteira Eficiente (peso 3) e Ponderada 2 (peso 3), com review da Sprint 4 em 04/12/2026.
 O que a aula anterior deixou pronto: a Aula 04 deixou prontas as carteiras de variância mínima e de máximo Sharpe e a fronteira de 50 pontos, calculadas num notebook.
-O que esta aula deixa pronto: API FastAPI que devolve métricas de carteira em JSON e página que desenha o resultado.
+O que esta aula deixa pronto: teste fora da amostra das duas carteiras ótimas, medida de estabilidade dos pesos entre janelas e drawdown no período de teste.
 
 Antes do encontro
-  Autoestudo: HTTP e JSON na prática: o que acontece entre a página e o servidor (50 min)
-  Autoestudo: Primeira API com FastAPI: rotas, parâmetros e validação (70 min)
-  Preparação no material de apoio: animação da requisição saindo do navegador, passando pela API e
-    pelo cálculo e voltando como JSON até o gráfico; animação do tempo de resposta com e sem cache;
-    autoverificação de cinco perguntas sem nota.
-
-Daily da equipe (15 min)
-  O que fiz, o que vou fazer, impedimentos. A equipe traz o estado do otimizador da Sprint 3 e diz
-  em que módulo ele está, porque a API de hoje vai importar esse módulo sem copiar código.
-
-Metodologia ativa (105 min)
-  Bloco 1 (0 a 15 min)  Resgate da fronteira da Aula 04 e Peer Instruction: um gestor do parceiro
-    digita tickers numa página, e o otimizador roda no navegador ou no servidor. Votar, discutir em
-    dupla, votar de novo.
-  Bloco 2 (15 a 30 min)  Cliente e servidor, método GET, parâmetros de consulta, códigos de status
-    e JSON. Widget montador de URL que dispara `fetch` de verdade contra o JSON gravado da API de
-    exemplo do acervo e mostra requisição e resposta. A turma prevê o código de status de cada URL
-    montada antes de disparar.
-  Bloco 3 (30 a 45 min)  FastAPI ao vivo: rota com tipos anotados, validação de entrada e
-    documentação automática em `/docs`, importando o módulo do otimizador da Sprint 3 sem copiar
-    código. Pergunta disparada: que erro a API deve devolver para um ticker que não existe.
-  Bloco 4 (45 a 60 min)  Dupla no notebook: a mesma API testada com `TestClient`, sem subir
-    servidor, com um caso de sucesso (status 200) e um caso de entrada inválida (status 422).
-    Cronômetro de 12 minutos, condutor e navegador trocando na metade.
-  Bloco 5 (60 a 75 min)  Página HTML que consome a API com `fetch` e desenha a fronteira com
-    Plotly.js, servida como arquivo estático pela própria API. Pergunta disparada: onde fica o
-    cálculo quando a página só desenha.
-  Bloco 6 (75 a 90 min)  Dupla: subir `exemplos/api-carteira/` e estender a página com um campo
-    novo. Fecha em escolha coletiva, com a sala decidindo se a chave de API, o cálculo, o gráfico e
-    a validação ficam no navegador, no servidor ou em nenhum dos dois.
-  Bloco 7 (90 a 105 min)  Quiz de verificação de três perguntas e amarração com a Sprint 4: o A4
-    (2, a confirmar na Adalove), com o otimizador dentro da API, a fronteira desenhada na página e
-    o SPEC.md trazendo os contratos dos endpoints e o plano de testes com `TestClient`. A folga
-    entre esta aula e a entrega do A4 depende do dia da aula na semana 8 (pendência P6).
-
-Depois do encontro
-  Desafio do notebook: acrescentar um endpoint de métricas para pesos informados pelo usuário e
-    testar o caso de pesos que não somam 1.
-  Avanço do A4: aplicação no repositório do grupo com `uvicorn` documentado no README, contratos
-    dos endpoints no SPEC.md e o ADR da fronteira entre navegador e servidor.
-  Leitura complementar: capítulos de parâmetros de consulta e de validação do tutorial oficial do
-    FastAPI, citados no autoestudo da semana.
-
-### Aula 06 - Semana 9 - Validação, Robustez e Interpretação com LLM  (Sprint 5)
-
-Data: a confirmar na Adalove (pendência P1). Aula 43 do módulo na planilha.
-Entrega que alimenta: A5 Interpretação da Carteira por LLM (1, a confirmar na Adalove) e Ponderada 2 (3, a confirmar na Adalove).
-O que a aula anterior deixou pronto: a Aula 05 deixou pronta a API FastAPI que devolve métricas de carteira em JSON e a página que desenha o resultado.
-O que esta aula deixa pronto: fecho do módulo, com teste fora da amostra e interpretação verificada por LLM.
-
-Antes do encontro
-  Autoestudo: Os limites do otimizador e do LLM: premissas, sensibilidade e alucinação (90 min)
+  Autoestudo: Os limites do otimizador: premissas, sensibilidade e risco de modelo (70 min)
   Autoestudo: Atividade Ponderada 2: A carteira ótima sobrevive fora da amostra? (120 min)
   Preparação no material de apoio: animação da janela de treino deslizando e dos pesos ótimos
     mudando; animação da curva de drawdown se formando no período de teste; autoverificação de
     cinco perguntas sem nota.
 
 Daily da equipe (15 min)
-  O que fiz, o que vou fazer, impedimentos. A equipe traz o estado da aplicação da Sprint 4 e
-  confirma que a chave da OpenRouter recebida pela coordenação está fora do repositório.
+  O que fiz, o que vou fazer, impedimentos. A equipe traz o estado do otimizador da Sprint 4 e a
+  janela de dados que usou para calcular a fronteira, porque o teste de hoje separa essa janela em
+  treino e teste.
 
 Metodologia ativa (105 min)
-  Bloco 1 (0 a 15 min)  Resgate da API da Aula 05 e Peer Instruction: a carteira de máximo Sharpe
-    otimizada num período entrega o Sharpe prometido no período seguinte. Votar, discutir em dupla,
-    votar de novo.
-  Bloco 2 (15 a 30 min)  Divisão temporal entre treino e teste, backtest fora da amostra e a
-    comparação entre esperado e realizado. Pergunta disparada: que parte do resultado da Aula 04 o
-    grupo ainda não tinha testado.
+  Bloco 1 (0 a 15 min)  Resgate da fronteira da Aula 04 e Peer Instruction: a carteira de máximo
+    Sharpe otimizada num período entrega o Sharpe prometido no período seguinte. Votar, discutir em
+    dupla, votar de novo.
+  Bloco 2 (15 a 30 min)  O otimizador converge para o passado: divisão temporal entre treino e
+    teste, backtest fora da amostra e a comparação entre esperado e realizado. Pergunta disparada:
+    que parte do resultado da Aula 04 o grupo ainda não tinha testado.
   Bloco 3 (30 a 45 min)  Widget da janela de treino com pesos ótimos pré-calculados. A turma prevê
     quanto os pesos mudam ao deslizar a janela antes de mover o controle, e lê a curva de drawdown
     que acompanha.
-  Bloco 4 (45 a 60 min)  Dupla no notebook: backtest fora da amostra e medida de estabilidade dos
-    pesos entre duas janelas de treino. Cronômetro de 12 minutos, condutor e navegador trocando na
-    metade.
-  Bloco 5 (60 a 75 min)  O LLM como componente do produto: chamada à OpenRouter pelo backend, chave
-    em variável de ambiente, prompt montado com os números reais da carteira e resposta
-    estruturada. O custo por chamada é citado do case de créditos aprovado, que estima cerca de
-    US$ 0,002 por chamada no cenário realista. Pergunta disparada: que número desse texto o grupo
-    consegue conferir por código.
-  Bloco 6 (75 a 90 min)  Widget verificador sobre um texto de interpretação com erros plantados,
-    declarados como exercício, e a sala apontando cada número errado. Dupla no notebook: montagem
-    do prompt, chamada opcional à OpenRouter (pulada sem chave) e o verificador automático rodando
-    sobre a resposta.
-  Bloco 7 (90 a 105 min)  Quiz de verificação de três perguntas e amarração com a Sprint 5: o A5
-    (1, a confirmar na Adalove), a Ponderada 2 (3, a confirmar na Adalove), com cesta e perfil de
-    cliente individualizados pelo último dígito do RA, e o fechamento do módulo na review da Sprint
-    5, com data a confirmar na Adalove.
+  Bloco 4 (45 a 60 min)  Dupla no notebook: backtest fora da amostra das carteiras de variância
+    mínima e de máximo Sharpe, com retorno, volatilidade e drawdown realizados. Cronômetro de 12
+    minutos, condutor e navegador trocando na metade.
+  Bloco 5 (60 a 75 min)  Sensibilidade da fronteira: o mesmo otimizador com o retorno esperado
+    perturbado e com a covariância amostral trocada por Ledoit-Wolf. A turma prevê qual das duas
+    mudanças mexe mais nos pesos antes de ver o resultado.
+  Bloco 6 (75 a 90 min)  Dupla no notebook: medida de estabilidade dos pesos entre duas janelas de
+    treino e o ADR que declara quanto confiar no modelo. Fecha em escolha coletiva, com a sala
+    julgando recomendações ao comitê como sustentadas ou não pelo teste fora da amostra.
+  Bloco 7 (90 a 105 min)  Quiz de verificação de três perguntas e amarração com a Sprint 4: o A4
+    (peso 3), com a observação de que os pesos ótimos mudam com a janela, e a
+    Ponderada 2 (peso 3), com cesta e perfil de cliente individualizados pelo
+    último dígito do RA.
 
 Depois do encontro
   Desafio do notebook: reotimizar em três janelas e registrar quanto cada peso varia, com a leitura
     escrita do que isso significa para a recomendação ao comitê.
-  Avanço do A5: endpoint de interpretação e painel na aplicação, prompt versionado no SPEC.md,
-    plano de testes do verificador e o ADR da escolha de modelo com o custo medido.
-  Leitura complementar: capítulo de limitações de LLM do autoestudo da semana, relido contra o
-    texto que a própria ferramenta do grupo gerou.
+  Avanço do A4: tabela comparativa das duas carteiras ótimas com o resultado fora da amostra e o
+    ADR da janela de dados e do estimador de covariância, com o impacto numérico.
+  Leitura complementar: capítulo 6 de Bodie, Kane e Marcus sobre risco de estimação, citado na
+    Ponderada 2.
+
+### Aula 06 - Semana 10 - Do Script ao Produto: React, FastAPI e Interpretação com LLM  (Sprint 5)
+
+Data: 16/12/2026 (quarta), conforme a Adalove da turma 2026-2B-T19. Horário a confirmar. Aula 43 do módulo na planilha.
+Entrega que alimenta: A5 Simulador Interativo integrado à interface e Interpretação por LLM (peso 2), com review final em 18/12/2026.
+O que a aula anterior deixou pronto: a Aula 05 deixou pronto o teste fora da amostra das duas carteiras ótimas e a medida de estabilidade dos pesos entre janelas.
+O que esta aula deixa pronto: API FastAPI que importa os módulos das sprints anteriores, interface React que consome a API e interpretação por LLM chamada pelo backend e conferida contra os números.
+
+Antes do encontro
+  Autoestudo: React e FastAPI: a interface conversando com o código Python (60 min)
+  Autoestudo: LLMs com senso crítico: codificação, limitações e bom uso (50 min)
+  Preparação no material de apoio: animação da requisição saindo do componente React, passando
+    pela API e pelo otimizador e voltando como JSON até o gráfico; animação do tempo de resposta
+    com e sem cache; autoverificação de cinco perguntas sem nota.
+
+Daily da equipe (15 min)
+  O que fiz, o que vou fazer, impedimentos. A equipe diz em que módulo estão o coletor, as
+  métricas, o motor de Monte Carlo e o otimizador, porque a API de hoje importa esses módulos sem
+  copiar código, e confirma que a chave do LLM recebida pela coordenação está fora do repositório.
+
+Metodologia ativa (105 min)
+  Bloco 1 (0 a 15 min)  Resgate do teste fora da amostra da Aula 05 e Peer Instruction: um gestor
+    do parceiro digita tickers numa tela, e o otimizador roda no navegador ou no servidor. Votar,
+    discutir em dupla, votar de novo.
+  Bloco 2 (15 a 30 min)  Cliente e servidor, método HTTP, JSON e o contrato da API. Widget
+    montador de requisição que mostra a resposta gravada da API de exemplo do acervo. A turma prevê
+    o código de status de cada requisição montada antes de disparar.
+  Bloco 3 (30 a 45 min)  FastAPI ao vivo: rota por operação de negócio, modelo Pydantic na entrada
+    e na saída, documentação automática em `/docs` e o otimizador importado sem copiar código.
+    Pergunta disparada: que erro a API deve devolver para um ticker que não existe.
+  Bloco 4 (45 a 60 min)  Dupla no notebook: a mesma API testada com `TestClient`, sem subir
+    servidor, com um caso de sucesso (status 200) e um caso de entrada inválida (status 422).
+    Cronômetro de 12 minutos, condutor e navegador trocando na metade.
+  Bloco 5 (60 a 75 min)  O componente React: formulário de tickers com `useState`, chamada à API
+    com `fetch`, estado de carregamento, mensagem de erro traduzida para o gestor e o gráfico da
+    fronteira, com CORS liberado no backend. Fecha em escolha coletiva, com a sala decidindo se a
+    chave do LLM, o cálculo, o gráfico e a validação ficam no navegador, no servidor ou nos dois.
+  Bloco 6 (75 a 90 min)  O LLM como componente do produto: chamada pelo backend, chave em variável
+    de ambiente, prompt montado com os números reais da carteira e um texto de interpretação com
+    erros plantados, declarados como exercício, que a sala confere número a número.
+    Pergunta disparada: que número desse texto o grupo consegue conferir por código.
+  Bloco 7 (90 a 105 min)  Quiz de verificação de três perguntas e amarração com a Sprint 5: o A5
+    (peso 2), com `/backend` e `/frontend` separados, o contrato da API no
+    SPEC.md antes de dividir o trabalho, cache e exportação em CSV, e o fechamento do módulo na
+    review da Sprint 5, em 18/12/2026.
+
+Depois do encontro
+  Desafio do notebook: acrescentar uma rota de métricas para pesos informados pelo usuário e
+    testar o caso de pesos que não somam 1.
+  Avanço do A5: contrato da API no SPEC.md, `.env.example` sem chave real, README com `fastapi dev`
+    no backend e `npm run dev` no frontend, e o ADR da divisão entre frontend e backend.
+  Leitura complementar: páginas de primeiros passos e de CORS da documentação do FastAPI, citadas
+    no autoestudo da semana.
 
 ---
 
