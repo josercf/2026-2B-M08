@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material de apoio &middot; Aula 03 &middot; Correlação, Covariância e Diversificação</title>
+  <meta name="description" content="Material de apoio da Aula 03 do Módulo 08 AdmTech: preparação pré-aula, covariância, correlação, risco de dois ativos, matriz anualizada, correlação em crise e Ledoit-Wolf, com os números da cesta de referência.">
+
+  <!-- Este material não é o roteiro do deck em prosa: abre pela Preparação do pré-aula e
+       aprofunda o que o slide só aponta. Todo número vem de tools/medidas_aula03.py e está
+       travado em tools/tests/test_aula03.py. Retornos simples diários do Adj Close preenchido
+       para a frente por ativo, o mesmo tratamento da Aula 02. Nenhuma carteira da Ponderada 1
+       aparece aqui. -->
+
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-material.css">
+</head>
+<body>
+  <div class="doc">
+
+    <header class="doc-header">
+      <p class="doc-eyebrow">Módulo 08 AdmTech &middot; Aula 03 &middot; 10/11/2026 &middot; Semana 5 &middot; Sprint 3</p>
+      <h1>Material de apoio: Correlação, Covariância e o Argumento Matemático da Diversificação</h1>
+      <p class="doc-subtitulo">A Aula 02 deixou pronta a tabela de retorno e volatilidade anualizados
+      da cesta, com o CDI como referência. Esta aula mede como os ativos se movem juntos e entrega a
+      matriz de covariância anualizada que o motor de Monte Carlo do A3 consome.</p>
+    </header>
+
+    <nav class="doc-toc" aria-label="Sumário">
+      <h2>Nesta página</h2>
+      <ol>
+        <li><a href="#preparacao">Preparação</a></li>
+        <li><a href="#dois-ativos">Do risco de cada ativo ao risco da carteira</a></li>
+        <li><a href="#definicoes">Covariância e correlação</a></li>
+        <li><a href="#matriz">A matriz de correlação da cesta</a></li>
+        <li><a href="#peso-minimo">O peso de menor risco</a></li>
+        <li><a href="#anualizada">A covariância anualizada</a></li>
+        <li><a href="#crise">Correlação em crise</a></li>
+        <li><a href="#ledoit-wolf">Encolhimento de Ledoit-Wolf</a></li>
+        <li><a href="#bancos">Uma carteira só de bancos</a></li>
+        <li><a href="#depois">Depois do encontro</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc-conteudo">
+
+      <section class="doc-secao" id="preparacao">
+        <h2>1. Preparação</h2>
+        <p>O encontro abre medindo o preparo, com uma pergunta de Peer Instruction sobre o conteúdo
+        desta seção. Faça as três partes antes da aula.</p>
+
+        <h3>Autoestudos da semana</h3>
+        <ol>
+          <li>Diversificação eficiente: a matemática de não colocar todos os ovos na mesma cesta (80 min)</li>
+          <li>Atividade Ponderada 1: Diagnóstico de uma carteira herdada (120 min)</li>
+        </ol>
+        <p>Os dois estão na Adalove. A Ponderada 1 vale 3 pontos e tem a carteira individualizada
+        pelo último dígito do RA; o enunciado fica só na Adalove.</p>
+
+        <h3>Animação 1: a curva de dois ativos conforme a correlação cai</h3>
+        <video controls muted playsinline preload="metadata" style="width: 100%; height: auto; border-radius: 10px;"
+               poster="../assets/img/aula03-curva-correlacao-poster.png">
+          <source src="../assets/video/aula03-curva-correlacao.mp4" type="video/mp4">
+        </video>
+        <p><strong>O que observar:</strong> as carteiras de PETR4 com IVVB11, com volatilidades e
+        retornos medidos na cesta. Só a correlação muda, de +1 a −1. Repare para onde vai o ponto
+        de menor risco e em que correlação a curva passa à esquerda do IVVB11, o ativo menos
+        arriscado.</p>
+
+        <h3>Animação 2: a correlação móvel de dois pares</h3>
+        <video controls muted playsinline preload="metadata" style="width: 100%; height: auto; border-radius: 10px;"
+               poster="../assets/img/aula03-correlacao-movel-poster.png">
+          <source src="../assets/video/aula03-correlacao-movel.mp4" type="video/mp4">
+        </video>
+        <p><strong>O que observar:</strong> a correlação de 63 pregões de ITUB4 com BBDC4 e de PETR4
+        com IVVB11. Compare o nível das duas linhas na maior parte do período e o que acontece com
+        a segunda em março de 2020.</p>
+
+        <h3>Autoverificação, sem nota</h3>
+        <ol>
+          <li>Dois ativos, um com 30% e outro com 20% de volatilidade, correlação zero e metade do
+            dinheiro em cada. A volatilidade da carteira fica abaixo de 20%, entre 20% e 25% ou em
+            25%, a média das duas?
+            <details><summary>Resposta comentada</summary>
+            <p>Abaixo de 20%: 18,03%. Com correlação zero o termo cruzado some, e a variância é
+            0,25 &times; 0,09 + 0,25 &times; 0,04 = 0,0325, cuja raiz é 18,03%. A carteira fica abaixo
+            até do ativo menos arriscado. Os 25% só aparecem com correlação 1.</p></details></li>
+          <li>Na animação 1, com correlação −1, qual é o menor risco possível da carteira de PETR4
+            com IVVB11?
+            <details><summary>Resposta comentada</summary>
+            <p>Zero, com 33,92% em PETR4. Com correlação −1 os dois retornos se movem sempre em
+            sentidos opostos, e existe um peso em que as oscilações se anulam. Nenhum par real da
+            cesta chega a −1.</p></details></li>
+          <li>Na mesma animação, com correlação +1, qual peso em PETR4 dá o menor risco?
+            <details><summary>Resposta comentada</summary>
+            <p>Zero: tudo em IVVB11, com 20,15% de risco. Com correlação 1 a carteira é uma média
+            ponderada das volatilidades, e misturar só aproxima do ativo mais arriscado.</p></details></li>
+          <li>Na animação 2, o que acontece com a correlação de PETR4 com IVVB11 entre o fim de 2019
+            e o fim de março de 2020?
+            <details><summary>Resposta comentada</summary>
+            <p>Sobe de 0,01 para 0,77. O par que quase não tinha relação passou a cair junto no pior
+            mês da janela, justamente quando a diversificação mais seria útil.</p></details></li>
+          <li>Por que um relatório ao comitê mostra a correlação no lugar da covariância?
+            <details><summary>Resposta comentada</summary>
+            <p>A correlação não tem unidade e fica entre −1 e 1, então dá para comparar pares e
+            períodos. A covariância está em retorno ao quadrado e depende das duas volatilidades: a
+            covariância anual de 0,0570 entre PETR4 e VALE3 não diz, sozinha, se o vínculo é forte.
+            A correlação do mesmo par é 0,41.</p></details></li>
+        </ol>
+      </section>
+
+      <section class="doc-secao" id="dois-ativos">
+        <h2>2. Do risco de cada ativo ao risco da carteira</h2>
+        <p>A tabela da Aula 02 mede cada ativo sozinho: a PETR4 tem 39,25% de volatilidade anual, o
+        ITUB4 29,36%, o BBDC4 34,09% e o IVVB11 20,15%. O parceiro vai alocar o caixa numa carteira,
+        e o risco da carteira depende também de como os ativos se movem juntos. Com peso
+        <code>w</code> no ativo A e <code>1 − w</code> no ativo B, a variância da carteira é:</p>
+        <pre class="doc-codigo"><code>variância = w² σa² + (1 − w)² σb² + 2 w (1 − w) ρ σa σb</code></pre>
+        <p>Os dois primeiros termos são o risco de cada ativo, ponderado. O terceiro é o único que
+        depende da correlação <code>ρ</code>. Com <code>ρ = 1</code> a expressão vira um quadrado
+        perfeito e o risco da carteira é a média ponderada das duas volatilidades. Qualquer
+        correlação menor que 1 encolhe o terceiro termo e leva a carteira para baixo dessa média.
+        Esse é o argumento matemático da diversificação apresentado por Markowitz em 1952.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Correlação</th><th>Risco de dois ativos de 30%, metade em cada</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>30,00%</td></tr>
+              <tr><td>0,5</td><td>25,98%</td></tr>
+              <tr><td>0</td><td>21,21%</td></tr>
+              <tr><td>−1</td><td>0,00%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="definicoes">
+        <h2>3. Covariância e correlação</h2>
+        <p>A <strong>covariância</strong> de dois ativos é a média do produto dos desvios de cada
+        retorno diário em relação à própria média. Ela é positiva quando os dois costumam ficar acima
+        (ou abaixo) da média no mesmo dia, e negativa quando um fica acima enquanto o outro fica
+        abaixo. A unidade é retorno ao quadrado, e o tamanho depende das duas volatilidades.</p>
+        <p>A <strong>correlação</strong> é a covariância dividida pelo produto dos dois desvios
+        padrão. A divisão tira a unidade e prende o número entre −1 e 1. Por isso a correlação
+        compara pares e períodos, e é ela que circula num relatório; a covariância é o que entra na
+        conta do risco e na matriz que o motor do A3 consome.</p>
+        <div class="doc-nota">
+          <p><strong>Correlação não é inclinação.</strong> A correlação de 0,80 entre ITUB4 e BBDC4
+          não diz que o BBDC4 sobe 0,80% quando o ITUB4 sobe 1%. Isso seria o coeficiente de uma
+          regressão, o beta. A correlação diz quão consistente é o movimento conjunto, sem dizer o
+          tamanho dele.</p>
+        </div>
+        <p>No pandas, <code>retornos.cov()</code> e <code>retornos.corr()</code> calculam as duas
+        matrizes de uma vez. Em cada par, os dois métodos usam os pregões em que os dois ativos têm
+        retorno: os pares com a GOLD11 usam 1.423 pregões, a partir da estreia do fundo em
+        11/12/2020, e os demais usam 1.907.</p>
+      </section>
+
+      <section class="doc-secao" id="matriz">
+        <h2>4. A matriz de correlação da cesta</h2>
+        <p>Com 15 ativos há 105 pares, e a correlação média deles é 0,30: a cesta inteira se move
+        junto em algum grau, porque todos respondem ao mesmo ciclo de juros e ao humor do mercado
+        brasileiro.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Par</th><th>Correlação</th><th>Leitura</th></tr></thead>
+            <tbody>
+              <tr><td>ITUB4 e BBDC4</td><td>0,80</td><td>a maior da cesta: dois bancos privados expostos a juros, crédito e regulação</td></tr>
+              <tr><td>BBAS3 e BOVA11</td><td>0,76</td><td>o BOVA11 replica o Ibovespa, em que os bancos pesam</td></tr>
+              <tr><td>ITUB4 e BBAS3</td><td>0,71</td><td>banco privado e banco público seguem o mesmo setor</td></tr>
+              <tr><td>PETR4 e VALE3</td><td>0,41</td><td>duas exportadoras de commodity, com ciclos diferentes</td></tr>
+              <tr><td>VALE3 e SUZB3</td><td>0,27</td><td>minério e celulose, ambos dolarizados</td></tr>
+              <tr><td>PETR4 e IVVB11</td><td>0,14</td><td>petroleira brasileira e bolsa americana em reais</td></tr>
+              <tr><td>ITUB4 e IVVB11</td><td>0,08</td><td>banco brasileiro e bolsa americana</td></tr>
+              <tr><td>BOVA11 e GOLD11</td><td>−0,21</td><td>bolsa brasileira e ouro</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Os dez pares mais negativos da matriz têm todos a GOLD11, e o menor é RENT3 com GOLD11,
+        −0,22. O ouro costuma ser procurado quando a bolsa cai, e a matriz registra isso. Na aula, a
+        sala classifica estes oito pares por uma régua didática declarada no slide: correlação a
+        partir de 0,60 concentra risco, de 0,30 a 0,60 é intermediária e abaixo de 0,30 diversifica.
+        A régua é uma convenção didática desta aula, sem respaldo em padrão de mercado.</p>
+      </section>
+
+      <section class="doc-secao" id="peso-minimo">
+        <h2>5. O peso de menor risco</h2>
+        <p>Derivando a variância de dois ativos em relação ao peso e igualando a zero, o peso em A
+        que minimiza o risco é:</p>
+        <pre class="doc-codigo"><code>w* = (σb² − ρ σa σb) / (σa² + σb² − 2 ρ σa σb)</code></pre>
+        <p>Sem venda a descoberto, o peso fica limitado entre 0 e 1. Aplicada aos três pares do
+        widget da aula, com volatilidades e correlações medidas na cesta:</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Par</th><th>Correlação</th><th>Volatilidades</th><th>Peso de menor risco</th><th>Menor risco</th></tr></thead>
+            <tbody>
+              <tr><td>ITUB4 e BBDC4</td><td>0,80</td><td>29,36% e 34,09%</td><td>86,14% em ITUB4</td><td>29,22%</td></tr>
+              <tr><td>PETR4 e IVVB11</td><td>0,14</td><td>39,25% e 20,15%</td><td>17,12% em PETR4</td><td>18,85%</td></tr>
+              <tr><td>BOVA11 e GOLD11</td><td>−0,21</td><td>23,41% e 19,80%</td><td>43,11% em BOVA11</td><td>13,47%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>O resultado do segundo par é o que mais surpreende: colocar 17,12% num ativo de 39,25% de
+        volatilidade <strong>reduz</strong> o risco para 18,85%, abaixo dos 20,15% do IVVB11 sozinho.
+        A correlação baixa faz os movimentos da PETR4 compensarem parte dos movimentos do IVVB11.
+        No par de bancos acontece o contrário: com 0,80 de correlação, o melhor que a mistura
+        consegue fica a 0,14 ponto percentual do ITUB4 sozinho.</p>
+      </section>
+
+      <section class="doc-secao" id="anualizada">
+        <h2>6. A covariância anualizada</h2>
+        <p>Com retornos diários independentes, a variância de 252 pregões é 252 vezes a variância
+        diária, e o mesmo vale para a covariância. Por isso a matriz anual é a diária vezes 252, e a
+        volatilidade anual é a raiz da diagonal. Na cesta, a diagonal anual da PETR4 é 0,1541, e a
+        raiz de 0,1541 devolve os 39,25% da Aula 02.</p>
+        <pre class="doc-codigo"><code>precos = ler_csv("precos_ajustados.csv", index_col="data", parse_dates=["data"]).ffill()
+retornos = precos.pct_change(fill_method=None).iloc[1:]
+cov_anual = retornos.cov() * 252
+np.sqrt(np.diag(cov_anual))   # repete a volatilidade anual da Aula 02</code></pre>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th></th><th>PETR4</th><th>VALE3</th><th>ITUB4</th><th>IVVB11</th></tr></thead>
+            <tbody>
+              <tr><td>PETR4</td><td>0,1541</td><td>0,0570</td><td>0,0525</td><td>0,0110</td></tr>
+              <tr><td>VALE3</td><td>0,0570</td><td>0,1259</td><td>0,0346</td><td>0,0200</td></tr>
+              <tr><td>ITUB4</td><td>0,0525</td><td>0,0346</td><td>0,0862</td><td>0,0049</td></tr>
+              <tr><td>IVVB11</td><td>0,0110</td><td>0,0200</td><td>0,0049</td><td>0,0406</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="doc-nota">
+          <p><strong>O erro de anualizar a correlação.</strong> É comum multiplicar as duas matrizes
+          por 252 no mesmo passo. A correlação não tem período: ela é a covariância dividida pelos
+          desvios padrão, e o fator 252 aparece em cima e embaixo e se cancela. Multiplicada por 252,
+          a correlação de 0,80 do par de bancos vira um número acima de 1, o que não existe. Quando
+          aparecer uma correlação maior que 1, procure esse passo.</p>
+          <p><strong>O erro de usar raiz de 252.</strong> Raiz de 252 anualiza o desvio padrão.
+          Aplicada à matriz de covariância, que está em variância, subestima o risco anual.</p>
+        </div>
+        <p>Antes de entregar a matriz ao motor do A3, duas verificações: ela precisa ser simétrica e
+        positiva definida (todo autovalor maior que zero). Uma matriz que não é positiva definida
+        admite carteira com variância negativa, e o motor sorteia carteiras impossíveis. A matriz da
+        cesta passa nas duas, e o notebook as executa.</p>
+      </section>
+
+      <section class="doc-secao" id="crise">
+        <h2>7. Correlação em crise</h2>
+        <p>A correlação da janela inteira é uma média de períodos calmos e de crises. Calculada em
+        janelas móveis de 63 pregões, cerca de um trimestre, ela mostra quando os pares passam a
+        andar juntos. Em março de 2020, a correlação média dos pares sobe de 0,36, na janela
+        inteira, para 0,74 nos 22 pregões do mês. As duas médias usam os 14 ativos com cotação em
+        2020, sem a GOLD11.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Par, correlação em 63 pregões</th><th>Fim de 2019</th><th>Fim de março de 2020</th><th>Máximo</th><th>Mínimo</th></tr></thead>
+            <tbody>
+              <tr><td>ITUB4 e BBDC4</td><td>0,82</td><td>0,96</td><td>0,97 em 25/03/2020</td><td>0,34 em 04/06/2025</td></tr>
+              <tr><td>PETR4 e IVVB11</td><td>0,01</td><td>0,77</td><td>0,86 em 16/03/2020</td><td>−0,61 em 03/06/2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Para o parceiro, a consequência é direta: a diversificação calculada com a correlação
+        média promete uma redução de risco que encolhe justamente no mês em que ele mais precisaria
+        dela. Um parecer honesto sobre uma carteira cita a correlação em crise ao lado da correlação
+        média.</p>
+      </section>
+
+      <section class="doc-secao" id="ledoit-wolf">
+        <h2>8. Encolhimento de Ledoit-Wolf</h2>
+        <p>Uma matriz de covariância de 15 ativos estima 120 números (15 variâncias e 105
+        covariâncias). Com poucos pregões, parte desses números é ruído de amostra, e um otimizador
+        aposta exatamente nesse ruído: ele concentra peso nos pares que, por acaso, pareceram pouco
+        correlacionados.</p>
+        <p>O estimador de Ledoit e Wolf (2004) mistura a matriz amostral com um alvo simples, a
+        identidade multiplicada pela variância média dos ativos, e calcula dos próprios dados a
+        intensidade dessa mistura. Na amostra com os 15 ativos cotados, a partir de 14/12/2020:</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Últimos pregões</th><th>Desde</th><th>Encolhimento</th></tr></thead>
+            <tbody>
+              <tr><td>63</td><td>03/06/2026</td><td>10,72%</td></tr>
+              <tr><td>126</td><td>03/03/2026</td><td>5,46%</td></tr>
+              <tr><td>252</td><td>28/08/2025</td><td>3,45%</td></tr>
+              <tr><td>1.423</td><td>14/12/2020</td><td>0,89%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Quanto menos pregões, maior o encolhimento. O notebook traz a fórmula em NumPy, conferida
+        contra o <code>sklearn.covariance.LedoitWolf</code> em <code>tools/tests/test_aula03.py</code>.
+        A escolha entre a matriz amostral e a encolhida é o ADR do estimador de covariância pedido no
+        A3, e a Aula 05 mede quanto essa troca mexe nos pesos ótimos.</p>
+      </section>
+
+      <section class="doc-secao" id="bancos">
+        <h2>9. Uma carteira só de bancos</h2>
+        <p>Três ativos em partes iguais, medidos com a covariância anualizada da cesta:</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Carteira</th><th>Média das volatilidades</th><th>Volatilidade da carteira</th><th>Redução</th></tr></thead>
+            <tbody>
+              <tr><td>ITUB4, BBDC4 e BBAS3</td><td>32,61%</td><td>29,64%</td><td>9,11%</td></tr>
+              <tr><td>ITUB4, PETR4 e IVVB11</td><td>29,58%</td><td>21,54%</td><td>27,18%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Com três ativos em cada carteira, a redução de risco vai de 9,11% na de bancos para
+        27,18% na mista. A diferença vem da correlação entre os ativos escolhidos, medida na
+        matriz.</p>
+      </section>
+
+      <section class="doc-secao" id="depois">
+        <h2>10. Depois do encontro</h2>
+        <h3>Desafio do notebook</h3>
+        <p>Recalcular a matriz de correlação em duas janelas distintas e medir quanto cada par se
+        move entre elas. A seção 8 do notebook traz a função a completar.</p>
+        <h3>Avanço do A3</h3>
+        <ul>
+          <li>SPEC.md do motor de simulação, com a matriz de covariância anualizada como entrada.</li>
+          <li>Matriz de covariância anualizada exportada para o motor, simétrica e positiva definida.</li>
+          <li>ADR do estimador de covariância (amostral ou Ledoit-Wolf, e com qual janela), com o
+            impacto numérico da escolha.</li>
+        </ul>
+        <p>O A3 vale 3 pontos. A review da Sprint 3 é em 19/11/2026, e a entrega vai até sexta,
+        20/11/2026, 23h59. A Ponderada 1 vale 3 pontos, com o parecer situado no período analisado.</p>
+        <h3>Leitura complementar</h3>
+        <p>O capítulo de diversificação eficiente do autoestudo da semana, relido com a matriz da
+        própria cesta do grupo. As demais fontes estão na <a href="../referencias/aula03.html">página
+        de referências</a>.</p>
+      </section>
+
+    </main>
+
+    <p class="doc-rodape">Prof. José Romualdo &middot; Módulo 08 AdmTech &middot; Computação &middot;
+    2026-2B-T19</p>
+
+  </div>
+
+  <nav class="doc-nav" aria-label="Navegação da aula">
+    <a href="../index.html"><span class="material-symbols-outlined" aria-hidden="true">home</span>Portal</a>
+    <a href="../aulas/aula03.html"><span class="material-symbols-outlined" aria-hidden="true">slideshow</span>Slides</a>
+    <a href="../referencias/aula03.html"><span class="material-symbols-outlined" aria-hidden="true">link</span>Referências</a>
+  </nav>
+</body>
+</html>

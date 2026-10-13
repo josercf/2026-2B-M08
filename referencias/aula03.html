@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referências &middot; Aula 03 &middot; Correlação, Covariância e Diversificação</title>
+  <meta name="description" content="Autoestudos da Semana 5 na Adalove e leitura complementar da Aula 03 do Módulo 08 AdmTech.">
+
+  <!-- Duas seções fixas, nesta ordem:
+       1. Autoestudos da semana, copiados de docs/autoestudos-por-semana.md, título por título,
+          com o tempo da mesma fonte.
+       2. Leitura complementar do professor, que nunca é omitida. -->
+
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-material.css">
+</head>
+<body>
+  <div class="doc">
+
+    <header class="doc-header">
+      <p class="doc-eyebrow">Módulo 08 AdmTech &middot; Aula 03 &middot; 10/11/2026 &middot; Semana 5</p>
+      <h1>Referências: Correlação, Covariância e o Argumento Matemático da Diversificação</h1>
+      <p class="doc-subtitulo">Os dois autoestudos da Semana 5 e as fontes citadas no deck e no
+      material de apoio da Aula 03, na mesma numeração do slide de referências.</p>
+    </header>
+
+    <nav class="doc-toc" aria-label="Sumário">
+      <h2>Nesta página</h2>
+      <ol>
+        <li><a href="#autoestudos">Autoestudos da semana</a></li>
+        <li><a href="#complementar">Leitura complementar do professor</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc-conteudo">
+
+      <section class="doc-secao" id="autoestudos">
+        <h2>1. Autoestudos da semana</h2>
+        <p>Semana 5, que cobre o encontro de 10/11/2026. Os dois autoestudos que o roteiro desta
+        aula pressupõe:</p>
+        <ol class="doc-referencias">
+          <li>Diversificação eficiente: a matemática de não colocar todos os ovos na mesma cesta (80 min)
+            <span class="doc-porque">Base do Peer Instruction de abertura e do Bloco 3: o risco de
+            dois ativos em função do peso e da correlação.</span></li>
+          <li>Atividade Ponderada 1: Diagnóstico de uma carteira herdada (120 min)
+            <span class="doc-porque">Vale 3 pontos. A leitura da matriz de correlação e da
+            correlação em crise feita hoje é a ferramenta do diagnóstico; o enunciado e a carteira
+            de cada aluno ficam só na Adalove.</span></li>
+        </ol>
+        <div class="doc-nota">
+          <p>Títulos e tempos copiados de <code>docs/autoestudos-por-semana.md</code>, conferido em
+          13/10/2026 contra a Adalove da turma 2026-2B-T19. O acesso ao conteúdo é pela Adalove.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="complementar">
+        <h2>2. Leitura complementar do professor</h2>
+        <p>A curadoria desta seção ainda será fechada pelo professor. Até lá, ficam aqui as fontes
+        citadas no deck e no material de apoio, na mesma numeração do slide de referências.</p>
+        <ol class="doc-referencias">
+          <li><a href="https://github.com/josercf/2026-2B-M08/blob/main/dados/README.md">dados/README.md</a>:
+            snapshot do case, cesta de 15 ativos da B3 e falhas do provedor.
+            <span class="doc-porque">Origem de todo número da aula, coletado em 17/09/2026 na janela
+            de 02/01/2019 a 31/08/2026.</span></li>
+          <li>Autoestudo da semana 5: Diversificação eficiente: a matemática de não colocar todos os
+            ovos na mesma cesta. Adalove.
+            <span class="doc-porque">Seção 1 desta página.</span></li>
+          <li>Autoestudo da semana 5: Atividade Ponderada 1: Diagnóstico de uma carteira herdada.
+            Adalove.
+            <span class="doc-porque">Seção 1 desta página.</span></li>
+          <li>MARKOWITZ, H. Portfolio Selection. <em>The Journal of Finance</em>, v. 7, n. 1,
+            p. 77-91, 1952.
+            <span class="doc-porque">A origem da fórmula da variância da carteira e do argumento da
+            diversificação.</span></li>
+          <li>LEDOIT, O.; WOLF, M. A well-conditioned estimator for large-dimensional covariance
+            matrices. <em>Journal of Multivariate Analysis</em>, v. 88, n. 2, p. 365-411, 2004.
+            <span class="doc-porque">O estimador de encolhimento apresentado no Bloco 5.</span></li>
+          <li>pandas development team. <em>pandas API reference</em>:
+            <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.cov.html">DataFrame.cov</a> e
+            <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.corr.html">DataFrame.corr</a>.
+            <span class="doc-porque">Como os dois métodos tratam pregões sem retorno, par a
+            par.</span></li>
+          <li>scikit-learn developers. <a href="https://scikit-learn.org/stable/modules/generated/sklearn.covariance.LedoitWolf.html">sklearn.covariance.LedoitWolf</a>.
+            <span class="doc-porque">A implementação contra a qual a versão em NumPy do notebook é
+            conferida.</span></li>
+          <li><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441">Modelo de ADR
+            do curso</a>.
+            <span class="doc-porque">Formato do ADR do estimador de covariância pedido no
+            A3.</span></li>
+        </ol>
+      </section>
+
+    </main>
+
+    <p class="doc-rodape">Prof. José Romualdo &middot; Módulo 08 AdmTech &middot; Computação &middot;
+    2026-2B-T19</p>
+
+  </div>
+
+  <nav class="doc-nav" aria-label="Navegação da aula">
+    <a href="../index.html"><span class="material-symbols-outlined" aria-hidden="true">home</span>Portal</a>
+    <a href="../aulas/aula03.html"><span class="material-symbols-outlined" aria-hidden="true">slideshow</span>Slides</a>
+    <a href="../materiais/aula03.html"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span>Material</a>
+  </nav>
+</body>
+</html>
