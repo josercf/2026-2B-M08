@@ -442,12 +442,16 @@ np.sqrt(np.diag(cov_anual))</code></pre>
           <div class="cronometro" id="cronometro-matriz" data-minutos="12"></div>
         </div>
         <ol class="exercise-steps">
-          <li>Abram o notebook da aula no Colab. Quem está no teclado é o <strong>condutor</strong>; o outro é o <strong>navegador</strong>.</li>
-          <li>Seção 1: carreguem os retornos com o tratamento da ADR-009 e montem a janela comum dos 15 ativos.</li>
-          <li>Seção 3: gerem a matriz de correlação e o heatmap; localizem o par de maior correlação.</li>
-          <li>Aos 6 minutos, troquem de papel. Seção 4: anualizem a covariância e comparem a raiz da diagonal com a volatilidade da Aula 02.</li>
-          <li>Anotem em uma linha onde a matriz vai entrar no motor do A3.</li>
+          <li>O <strong>condutor</strong> abre o notebook no Colab e roda as seções 1 a 4, que já vêm prontas; o <strong>navegador</strong> confere cada saída.</li>
+          <li>Seção 3: localizem o par de maior correlação e respondam à pergunta para a dupla.</li>
+          <li>Aos 6 minutos, troquem de papel. Seção 4: comparem a raiz da diagonal da PETR4 com a volatilidade da Aula 02 e digam de onde vem a diferença.</li>
+          <li>Anotem em uma linha onde a matriz entra no motor do A3.</li>
+          <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Seção 8: completem <code>matriz_na_janela</code> e listem os cinco pares que mais mudam entre as duas janelas.</li>
         </ol>
+        <div class="faixa-nota checagem-pratica">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
+          <p><strong>Checagem aos 6 min:</strong> a matriz de correlação está na tela e o par de maior correlação está anotado. <strong>Debrief:</strong> ao fim do cronômetro, duas duplas explicam a diferença da PETR4 e dizem onde a matriz entra no motor.</p>
+        </div>
         <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula03.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 03 no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
@@ -648,8 +652,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         <ol class="exercise-steps">
           <li><strong>Pensar</strong> sozinho, um minuto: um gestor propõe ITUB4, BBDC4 e BBAS3 em partes iguais, "três empresas, três riscos". Quanto do risco médio dos três ele elimina?</li>
           <li><strong>Discutir em dupla</strong>, dois minutos: troquem um banco por um ativo da cesta com baixa correlação com os bancos. Qual, e por quê?</li>
-          <li><strong>Compartilhar</strong>: três duplas dizem a troca e o par da matriz que a sustenta.</li>
         </ol>
+        <div class="faixa-nota checagem-pratica">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
+          <p><strong>Checagem aos 2 min:</strong> cada aluno tem uma estimativa anotada, e a dupla começa a discutir a troca. <strong>Debrief:</strong> <strong>compartilhar</strong>: três duplas dizem a troca e o par da matriz que a sustenta.</p>
+        </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
           <p class="footer-page">23</p>

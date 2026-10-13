@@ -216,3 +216,93 @@ def test_notebook_implementa_a_adr_009_sem_importar_tools():
     assert "ADR-009" in texto
     assert "def janela_comum" in codigo and "comum.cov()" in codigo
     assert "import retornos" not in codigo and "tools" not in codigo
+
+
+RAIZ_C07 = RAIZ
+DECK_C07, MATERIAL_C07, NOTAS_C07 = DECK, MATERIAL, NOTAS
+PRATICAS_C07 = [("pratica-matriz", 12), ("so-bancos", 4)]
+MARCADORES_NOTAS_C07 = ["**Dupla no notebook.**", "**Pensar e compartilhar (slide 23"]
+TITULO_PLANEJAMENTO_C07 = "### Aula 03 "
+_ler_c07 = _ler
+
+# --- práticas em camadas (C-07) e trilha mínima (C-08), auditoria de 13/10/2026 ---
+
+PLANEJAMENTO = os.path.join(RAIZ_C07, "PLANEJAMENTO_AULA_A_AULA.md")
+
+
+def _praticas_com_cronometro(html):
+    """(id, minutos, html) de cada exercise-slide com cronômetro, na ordem do deck."""
+    praticas = []
+    for ident, corpo in re.findall(r'<section class="exercise-slide" id="([\w-]+)">(.*?)</section>',
+                                   html, flags=re.S):
+        minutos = re.search(r'class="cronometro"[^>]*data-minutos="(\d+)"', corpo)
+        if minutos:
+            praticas.append((ident, int(minutos.group(1)), corpo))
+    return praticas
+
+
+def _texto_c07(html):
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html)).strip()
+
+
+def test_praticas_separam_missao_obrigatoria_extensao_e_checagem():
+    praticas = _praticas_com_cronometro(_ler_c07(DECK_C07))
+    assert [(p[0], p[1]) for p in praticas] == PRATICAS_C07
+    for ident, minutos, corpo in praticas:
+        lista = re.search(r'<ol class="exercise-steps">(.*?)</ol>\s*'
+                          r'<div class="faixa-nota checagem-pratica">(.*?)</div>', corpo, flags=re.S)
+        assert lista, ident
+        itens = re.findall(r"<li( class=\"passo-extensao\")?>(.*?)</li>", lista.group(1), flags=re.S)
+        obrigatorios = [t for ext, t in itens if not ext]
+        extensoes = [t for ext, t in itens if ext]
+        assert 2 <= len(obrigatorios) <= 4, ident
+        # A extensão fica no fim da lista, com o rótulo do tema.
+        assert [bool(ext) for ext, _ in itens] == sorted(bool(ext) for ext, _ in itens), ident
+        assert all(t.startswith('<span class="rotulo-extensao">Extensão</span>') for t in extensoes)
+        if minutos > 8:
+            assert 1 <= len(extensoes) <= 2, ident
+        checagem = _texto_c07(lista.group(2))
+        n = int(re.search(r"Checagem aos (\d+) min:", checagem).group(1))
+        assert minutos / 3 <= n <= 2 * minutos / 3, (ident, n)
+        assert "Debrief:" in checagem, ident
+        assert 'icones.svg#schedule' in lista.group(2)
+        # A troca de papel acontece na checagem, nunca depois do fim do cronômetro.
+        troca = re.search(r"Aos (\d+) minutos, troquem de papel", _texto_c07(lista.group(1)))
+        if troca:
+            assert int(troca.group(1)) == n, ident
+
+
+def test_notas_do_professor_detalham_cada_pratica():
+    notas = _ler_c07(NOTAS_C07)
+    for marcador in MARCADORES_NOTAS_C07:
+        bloco = notas.split(marcador, 1)[1].split("\n## ", 1)[0]
+        for termo in ("Obrigatório", "Checagem aos", "Contingência"):
+            assert termo in bloco, (marcador, termo)
+
+
+def _autoestudos_do_planejamento():
+    roteiro = _ler_c07(PLANEJAMENTO).split(TITULO_PLANEJAMENTO_C07, 1)[1].split("\n### ", 1)[0]
+    return [(t, int(m)) for t, m in re.findall(r"Autoestudo: (.+) \((\d+) min\)", roteiro)]
+
+
+def test_material_tem_trilha_minima_com_os_tempos_da_fonte():
+    html = _ler_c07(MATERIAL_C07)
+    preparacao = html.split('id="preparacao"', 1)[1].split("</section>", 1)[0]
+    assert 'id="trilha-minima"' in preparacao
+    trilha = preparacao.split('id="trilha-minima"', 1)[1].split('<h3>', 2)[1]
+    linhas = re.findall(r"<tr><td>([^<]+)</td><td>([^<]+)</td><td>([^<]+)</td>", trilha)
+    prioridades = {p for p, _, _ in linhas}
+    assert {"Indispensável", "Recomendado", "Aprofundamento"} <= prioridades
+    autoestudos = _autoestudos_do_planejamento()
+    assert len(autoestudos) == 2
+    for titulo, minutos in autoestudos:
+        linha = [l for l in linhas if titulo in l[1]]
+        assert len(linha) == 1, titulo
+        assert linha[0][2] == "%d min" % minutos, titulo
+        if "Ponderada" in titulo:
+            assert linha[0][0].startswith("Avaliação"), titulo
+    # Item sem tempo na fonte fica sem tempo; nenhum minuto inventado.
+    declarados = {"%d min" % m for _, m in autoestudos}
+    for _, item, tempo in linhas:
+        assert tempo in declarados or tempo == "sem duração declarada", (item, tempo)
+    assert "60 segundos" in _texto_c07(trilha)

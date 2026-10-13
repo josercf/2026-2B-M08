@@ -61,7 +61,22 @@ Interação: previsão antes de arrastar o vértice. Cada dupla anota onde o pon
 
 ## Bloco 3: o motor (dupla, 12 min)
 
-Interação: programação em dupla no notebook, seções 1 a 3, troca de papel aos 6 minutos.
+Interação: programação em dupla no notebook, seções 1 a 3, troca de papel aos 6 minutos. As
+células já vêm prontas: a dupla roda, mede e lê o código, sem escrever o motor do zero.
+
+- **Obrigatório:** rodar as seções 1 a 3; anotar o tempo das 10.000 carteiras e quantas ficam
+  abaixo do CDI; depois da troca, o navegador aponta em `sortear` a linha que faz os pesos somarem
+  1 (`pesos /= pesos.sum(axis=1, keepdims=True)`) e a que calcula a variância sem laço (`einsum`);
+  comparar o tempo com o requisito do A3, menos de 10 segundos.
+- **Extensão:** escrever o laço `for w in pesos: w @ cov @ w` e conferir com `np.allclose` que ele
+  bate com o `einsum`.
+- **Checagem aos 6 minutos**, junto com a troca de papel: tempo e contagem abaixo do CDI anotados.
+  Dupla que não chegou à seção 3 usa "Executar anteriores" na célula do motor.
+- **Debrief**, ao fim do cronômetro: a turma compara os tempos medidos e a contagem abaixo do CDI
+  entre as duplas; contagem diferente de 8.851 aponta semente ou janela alterada (ver abaixo).
+- **Contingência:** se o Colab ou a rede falharem, o professor projeta o notebook executado na
+  própria máquina, que roda sem rede a partir de `dados/`, e a dupla faz a leitura de `sortear`
+  pelo código do slide 9.
 
 - Quando a sala trava em `einsum`: pedir que escrevam o laço `for w in pesos: w @ cov @ w` e
   comparem o resultado com `np.allclose`. Resposta esperada: os dois batem, e a forma `einsum` faz
@@ -109,7 +124,22 @@ num único ativo. Anotar a contagem de votos no quadro.
 
 ## Bloco 6: a fronteira (dupla, 12 min)
 
-Interação: programação em dupla no notebook, seções 4 e 5, e a frase sobre o perfil de investidor.
+Interação: dupla no notebook, seções 4 e 5, já prontas, e a frase sobre o perfil de investidor. O
+solucionador é fornecido; o trabalho da dupla é interpretar restrições ativas e pontos dominados.
+
+- **Obrigatório:** rodar as seções 1 a 5 e conferir `success` nas duas otimizações; na tabela de
+  pesos, apontar os ativos com peso zero no máximo Sharpe, onde o limite inferior está ativo (o
+  máximo Sharpe zera 12 dos 15 ativos); depois da troca, escolher no gráfico da seção 5 uma sorteada e o ponto da
+  fronteira que tem mais retorno com a mesma volatilidade; escrever a frase do perfil.
+- **Extensão:** seção 6, completar `maximo_sharpe_com_teto` e comparar os pesos com os da seção 4.
+  É o desafio do notebook que o planejamento põe depois do encontro.
+- **Checagem aos 6 minutos**, junto com a troca de papel: a tabela das duas ótimas está na tela, com
+  os ativos de peso zero apontados.
+- **Debrief**, ao fim do cronômetro: duas duplas leem a frase do perfil, e a sala responde se
+  alguma sorteada passa da fronteira.
+- **Contingência:** se o ambiente falhar, a dupla trabalha sobre a tabela do slide 18 e o vídeo da
+  fronteira do slide 19, e o professor projeta o notebook executado na própria máquina, que roda
+  sem rede a partir de `dados/`.
 
 - Resposta esperada para a frase: a variância mínima (9,67% de volatilidade, 14,10% de retorno)
   serve a quem prioriza preservar o excedente de caixa; o máximo Sharpe (15,91% e 25,96%) serve a

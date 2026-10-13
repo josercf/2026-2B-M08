@@ -286,12 +286,16 @@ pesos, ret, vol, sharpe = sortear(
           <div class="cronometro" id="cronometro-motor" data-minutos="12"></div>
         </div>
         <ol class="exercise-steps">
-          <li>Abram o notebook da aula no Colab. Quem está no teclado é o <strong>condutor</strong>; o outro é o <strong>navegador</strong>, que lê, pergunta e confere.</li>
-          <li>Seções 1 e 2: carreguem os retornos, calculem <code>mu</code>, <code>cov</code> e o CDI, e confiram as métricas da carteira de pesos iguais.</li>
-          <li>Seção 3: leiam <code>sortear</code> linha a linha, rodem e meçam o tempo de 10.000 carteiras com <code>time.perf_counter</code>.</li>
-          <li>Aos 6 minutos, troquem de papel. O novo condutor confere que todas as linhas somam 1 e desenha a nuvem colorida por Sharpe.</li>
-          <li>Anotem o tempo medido e quantas carteiras ficaram abaixo do CDI.</li>
+          <li>O <strong>condutor</strong> abre o notebook no Colab e roda as seções 1 a 3, que já vêm prontas; o <strong>navegador</strong> confere cada saída.</li>
+          <li>Seção 3: anotem o tempo das 10.000 carteiras e quantas ficaram abaixo do CDI.</li>
+          <li>Aos 6 minutos, troquem de papel. O navegador aponta em <code>sortear</code> a linha que faz os pesos somarem 1 e a que calcula a variância sem laço.</li>
+          <li>Comparem o tempo medido com o requisito do A3, menos de 10 segundos.</li>
+          <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Escrevam o laço <code>for w in pesos: w @ cov @ w</code> e confiram com <code>np.allclose</code> que ele bate com o <code>einsum</code>.</li>
         </ol>
+        <div class="faixa-nota checagem-pratica">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
+          <p><strong>Checagem aos 6 min:</strong> o tempo das 10.000 carteiras e a contagem abaixo do CDI estão anotados. <strong>Debrief:</strong> ao fim do cronômetro, a turma compara os tempos medidos e a contagem abaixo do CDI entre as duplas.</p>
+        </div>
         <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula04.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 04 no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
@@ -547,12 +551,16 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
           <div class="cronometro" id="cronometro-fronteira" data-minutos="12"></div>
         </div>
         <ol class="exercise-steps">
-          <li>Seção 4: rodem o SLSQP para a variância mínima e o máximo Sharpe e confiram <code>success</code> nos dois.</li>
-          <li>Montem a tabela comparativa das duas carteiras, com os pesos acima de 0,01%.</li>
-          <li>Aos 6 minutos, troquem de papel. Seção 5: rodem a fronteira com 50 retornos alvo e localizem a restrição <code>w @ mu == alvo</code>.</li>
-          <li>Desenhem nuvem, fronteira e as duas ótimas no mesmo gráfico.</li>
+          <li>Rodem as seções 1 a 5, que já vêm prontas, e confiram que as duas otimizações terminam com <code>success</code>.</li>
+          <li>Na tabela de pesos, apontem os ativos com peso zero no máximo Sharpe: neles o limite inferior está ativo.</li>
+          <li>Aos 6 minutos, troquem de papel. No gráfico da seção 5, escolham uma sorteada e o ponto da fronteira que tem mais retorno com a mesma volatilidade.</li>
           <li>Escrevam uma frase: para qual perfil de investidor do parceiro cada carteira faz sentido.</li>
+          <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Seção 6: completem <code>maximo_sharpe_com_teto</code> e comparem os pesos com os da seção 4.</li>
         </ol>
+        <div class="faixa-nota checagem-pratica">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
+          <p><strong>Checagem aos 6 min:</strong> a tabela das duas ótimas está na tela, com os ativos de peso zero apontados. <strong>Debrief:</strong> ao fim do cronômetro, duas duplas leem a frase do perfil, e a sala confere se alguma sorteada passa da fronteira.</p>
+        </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
           <p class="footer-page">20</p>

@@ -96,7 +96,24 @@ dos 14 volta a 1.907 retornos, com março de 2020. Pergunta para a sala: "o parc
 ouro na cesta ou com o choque de 2020 na matriz?" Não há resposta certa; o que se cobra é o ADR do
 estimador de covariância registrar a escolha com estes números.
 
-**Dupla no notebook.** Seções 1, 3 e 4. Cronômetro de 12 minutos, troca de papel aos 6.
+**Dupla no notebook.** Seções 1 a 4, com as células já prontas: a dupla roda e lê, sem montar a
+matriz do zero. Cronômetro de 12 minutos, troca de papel aos 6.
+
+- **Obrigatório:** rodar as seções 1 a 4; na seção 3, localizar o par de maior correlação e
+  responder à pergunta para a dupla; na seção 4, comparar a raiz da diagonal da PETR4 (33,40%) com a
+  volatilidade da Aula 02 (39,25%) e explicar a diferença pela janela comum; anotar em uma linha
+  onde a matriz entra no motor do A3.
+- **Extensão:** seção 8, completar `matriz_na_janela` e listar os cinco pares que mais mudam entre
+  as duas janelas. É o desafio do notebook que o planejamento põe depois do encontro; quem não
+  terminar leva para casa.
+- **Checagem aos 6 minutos**, junto com a troca de papel: cada dupla tem a matriz de correlação na
+  tela e o par de maior correlação anotado (ITUB4 com BBDC4, 0,72). Dupla que ainda está na seção 1
+  pula direto para a seção 3 com "Executar anteriores".
+- **Debrief**, ao fim do cronômetro: duas duplas explicam a diferença da PETR4 e dizem onde a matriz
+  entra no motor; a resposta esperada está no fechamento abaixo.
+- **Contingência:** se o Colab ou a rede falharem, a dupla segue pelo heatmap do slide 8 e pela
+  matriz do slide 14, que trazem os mesmos números, e o professor projeta o notebook executado na
+  própria máquina, que roda sem rede a partir de `dados/`.
 
 | Pergunta quando a dupla trava | Resposta esperada | Erro comum |
 |---|---|---|
@@ -172,7 +189,13 @@ medida escolhida, porque a volatilidade da PETR4 eleva a média ponderada; (3) a
 37,01%, vem do único par com correlação negativa nas duas janelas. Erro comum: tratar o limiar de
 0,30 como critério de aprovação de um par no parecer do A3.
 
-**Pensar e compartilhar.** Uma carteira só de bancos (ITUB4, BBDC4 e BBAS3 em partes iguais) tem
+**Pensar e compartilhar (slide 23, cronômetro de 4 minutos).** Obrigatório: um minuto de pensar
+sozinho e dois de dupla; sem extensão, por ser prática curta. Checagem aos 2 minutos: cada aluno
+tem uma estimativa anotada e a dupla começa a discutir a troca. O compartilhar é o debrief: três
+duplas dizem a troca e o par da matriz que a sustenta, antes do slide 24. Contingência: a prática
+não depende de ambiente, e a matriz do slide 8 basta para justificar a troca.
+
+Uma carteira só de bancos (ITUB4, BBDC4 e BBAS3 em partes iguais) tem
 29,64% de volatilidade contra 32,61% de média das volatilidades: redução de 9,11%. Trocando dois
 bancos por PETR4 e IVVB11, a redução vai a 27,18% (21,54% contra 29,58%). As duas carteiras são
 medidas na janela comum dos três ativos, 1.907 retornos desde 03/01/2019. Resposta esperada às
