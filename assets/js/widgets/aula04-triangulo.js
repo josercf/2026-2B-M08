@@ -142,7 +142,7 @@
       ctx.lineTo(plano.direita, plano.base);
       ctx.stroke();
       ctx.fillStyle = api.cor('--seg-texto');
-      ctx.font = api.fonte(17, 400);
+      ctx.font = api.fonte(17, 300);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'top';
       for (var v = eixoX[0]; v <= eixoX[1] + 1e-9; v += 0.05) {

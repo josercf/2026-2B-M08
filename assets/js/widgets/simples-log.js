@@ -97,7 +97,7 @@
           ctx.textBaseline = s.valor < 0 ? 'top' : 'bottom';
           ctx.fillText(porcentagem(s.valor), s.x + barra / 2, s.valor < 0 ? y + 3 : y - 3);
         });
-        ctx.font = api.fonte(14, 400);
+        ctx.font = api.fonte(14, 300);
         ctx.textBaseline = 'top';
         ctx.fillText(dataCurta(m.data), centro, altura - margem.base + 8);
         ctx.font = api.fonte(12, 600);

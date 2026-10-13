@@ -116,7 +116,7 @@
       ctx.stroke();
 
       ctx.fillStyle = api.cor('--seg-texto');
-      ctx.font = api.fonte(14, 400);
+      ctx.font = api.fonte(14, 300);
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
       ctx.fillText('risco', margem.esquerda - 8, margem.topo);

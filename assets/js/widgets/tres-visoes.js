@@ -88,7 +88,7 @@
       ctx.stroke();
 
       ctx.fillStyle = api.cor('--seg-texto');
-      ctx.font = api.fonte(14, 400);
+      ctx.font = api.fonte(14, 300);
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
       var extremos = [Math.min.apply(null, valores), Math.max.apply(null, valores)];

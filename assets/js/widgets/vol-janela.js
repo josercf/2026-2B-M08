@@ -78,7 +78,7 @@
       ctx.stroke();
 
       ctx.fillStyle = api.cor('--seg-texto');
-      ctx.font = api.fonte(14, 400);
+      ctx.font = api.fonte(14, 300);
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
       for (var v = 0; v <= maximo + 1e-9; v += 0.5) {

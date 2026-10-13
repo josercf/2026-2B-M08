@@ -115,7 +115,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 .concept-card {
   background: var(--seg-superficie);
   border-top: 4px solid var(--seg-secundaria);
-  border-radius: 10px;
   padding: 16px 18px;
 }
 
@@ -173,7 +172,23 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
    longe da faixa de 6px do top-bar e do logo, que termina em 28px + ~57px
    de altura). */
 .slide-title-area { margin-bottom: 24px; }
-.slide-title-area h2 { margin: 0; }
+/* A linha do titulo para antes do logo (x=1156) com o resguardo do
+   check_slides.py: sem esta reserva, o titulo em Platypi 700 (TIP-04) corria
+   ate a margem de 1224px e passava por baixo do logo. */
+.slide-title-area h2 { margin: 0; padding-right: 96px; }
+/* Com cronometro, o proprio flex ja reserva a coluna do logo (ver
+   .slide-title-area-cronometro): somar os 96px quebrava o titulo a toa. */
+.slide-title-area-cronometro h2 { padding-right: 0; }
+
+/* Link e elemento acionavel: texto em roxo, sublinhado em coral (COR-04).
+   Sem esta regra o link saia no azul padrao do navegador, fora da paleta. */
+.reveal a {
+  color: var(--seg-texto);
+  text-decoration: underline;
+  text-decoration-color: var(--seg-destaque);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
 
 /* Slide de abertura (capa): o grafismo NAO e um elemento ao lado de um
    fundo, ele E o fundo. A p.77 do brandbook mostra o painel das tres faces
@@ -260,7 +275,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 }
 
 .cover-content h1 { color: var(--inteli-branco); margin: 0 0 16px; }
-.cover-content h3 { color: var(--inteli-branco); font-weight: 400; margin: 0; }
+.cover-content h3 { color: var(--inteli-branco); font-weight: 600; margin: 0; }
 
 .reveal .slides section.section-slide {
   background: var(--seg-secundaria);
@@ -279,7 +294,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 }
 
 .section-slide h2 { margin: 0 0 8px; }
-.section-slide h3 { font-weight: 400; margin: 0; }
+.section-slide h3 { font-weight: 600; margin: 0; }
 
 .reveal .slides section.end-slide {
   background: var(--seg-primaria);
@@ -291,7 +306,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 
 .end-slide h1,
 .end-slide h3 { color: var(--inteli-branco); margin: 0 0 12px; }
-.end-slide h3 { font-weight: 400; margin: 0; }
+.end-slide h3 { font-weight: 600; margin: 0; }
 
 /* Quiz: apenas o markup e o visual estatico aqui. Os estados de acerto e
    erro (que leem data-correct, data-correct-msg, data-incorrect-msg) chegam
@@ -317,7 +332,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 .quiz-options li {
   background: var(--seg-superficie);
   border: 1px solid var(--seg-borda);
-  border-radius: 10px;
   padding: 14px 18px;
   cursor: pointer;
 }
@@ -400,7 +414,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--seg-borda);
-  border-radius: 8px;
   background: var(--seg-base);
   color: var(--seg-texto);
   cursor: pointer;
@@ -415,7 +428,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   z-index: 1000;
   padding: 10px 18px;
   border: 1px solid var(--seg-borda);
-  border-radius: 8px;
   background: var(--seg-base);
   color: var(--seg-texto);
   cursor: pointer;
@@ -465,7 +477,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 .trio-diagrams figure {
   margin: 0;
   background: var(--seg-superficie);
-  border-radius: 10px;
   padding: 10px 12px 12px;
   text-align: center;
 }
@@ -578,7 +589,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   gap: 14px;
   background: var(--seg-superficie);
   border: 1px solid var(--seg-borda);
-  border-radius: 999px;
   padding: 6px 20px 6px 6px;
   flex: none;
 }
@@ -591,18 +601,20 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   height: 44px;
   padding: 0;
   border: none;
-  border-radius: 50%;
   background: var(--seg-primaria);
   cursor: pointer;
 }
 
-.cronometro-play .material-symbols-outlined {
+.cronometro-play .icone {
   font-size: 26px;
   color: var(--seg-base);
 }
 
 .cronometro-tempo {
   margin: 0;
+  /* Algarismos de largura fixa em Manrope: o Space Mono fica so no codigo (TIP-06). */
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
   font-size: var(--escala-subtitulo);
   line-height: 1;
 }
@@ -630,7 +642,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 
 .escolha {
   background: var(--seg-superficie);
-  border-radius: 10px;
   padding: 12px 16px;
 }
 
@@ -648,7 +659,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 .escolha-opcoes li {
   background: var(--seg-base);
   border: 1px solid var(--seg-borda);
-  border-radius: 999px;
   padding: 6px 4px;
   text-align: center;
   cursor: pointer;
@@ -706,7 +716,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   font-size: var(--escala-texto);
   padding: 6px 14px;
   border: 1px solid var(--seg-borda);
-  border-radius: 999px;
   background: var(--seg-base);
   color: var(--seg-texto);
   cursor: pointer;
@@ -745,7 +754,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   max-width: 100%;
   max-height: 460px;
   margin: 0 auto;
-  border-radius: 10px;
   background: var(--seg-superficie);
 }
 
@@ -769,7 +777,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 .perfil-painel {
   background: var(--seg-primaria);
   color: var(--inteli-branco);
-  border-radius: 14px;
   padding: 28px 26px;
   display: flex;
   flex-direction: column;
@@ -823,7 +830,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   border-left: 4px solid var(--seg-secundaria);
 }
 
-.tabela-leitura .material-symbols-outlined {
+.tabela-leitura .icone {
   font-size: 22px;
   vertical-align: -5px;
   margin-right: 8px;
@@ -839,7 +846,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   align-items: center;
   background: var(--seg-superficie);
   border-left: 8px solid var(--seg-secundaria);
-  border-radius: 14px;
   padding: 26px 34px;
 }
 
@@ -880,7 +886,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   justify-content: center;
   width: 56px;
   height: 56px;
-  border-radius: 50%;
   background: var(--seg-base);
   border: 3px solid var(--seg-primaria);
   color: var(--seg-primaria);
@@ -891,7 +896,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   background: var(--seg-primaria);
   color: var(--inteli-branco);
   border-color: var(--seg-primaria);
-  box-shadow: 0 0 0 6px var(--seg-secundaria);
+  outline: 6px solid var(--seg-secundaria);  /* filete reto no lugar do anel (GRA-01) */
 }
 
 .reveal .trilha-titulo { font-size: var(--escala-texto); font-weight: 700; margin: 0; }
@@ -901,7 +906,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 .faixa-nota {
   margin-top: auto;
   background: var(--seg-superficie);
-  border-radius: 10px;
   padding: 12px 18px;
   display: flex;
   gap: 12px;
@@ -909,7 +913,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 }
 
 .reveal .faixa-nota p { margin: 0; }
-.faixa-nota .material-symbols-outlined { font-size: 26px; color: var(--seg-primaria); }
+.faixa-nota .icone { font-size: 26px; color: var(--seg-primaria); }
 
 /* Três perguntas curtas de quiz lado a lado, cada uma com o próprio
    .quiz-container (o inteli-quiz.js trata cada container de forma isolada). */
@@ -994,7 +998,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   padding: 12px 14px;
   background: var(--seg-superficie);
   border-left: 6px solid var(--seg-borda);
-  border-radius: 8px;
   font-size: var(--escala-densa);
   line-height: 1.4;
   white-space: pre;
@@ -1015,7 +1018,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   margin: 0;
   align-self: stretch;
   background: var(--seg-superficie);
-  border-radius: 10px;
   padding: 14px 18px;
   font-size: var(--escala-texto);
   line-height: 1.7;
@@ -1023,7 +1025,6 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 
 .verificador-numero {
   padding: 1px 6px;
-  border-radius: 6px;
   border: 1px solid var(--seg-borda);
   background: var(--seg-base);
   font-weight: 700;

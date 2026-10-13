@@ -68,7 +68,7 @@
       ctx.textAlign = 'left';
       ctx.textBaseline = 'alphabetic';
       ctx.fillText('Pesos ótimos na janela de treino', esquerda, 16);
-      ctx.font = api.fonte(13, 400);
+      ctx.font = api.fonte(13, 300);
       dados.ativos.forEach(function (ativo, i) {
         var y = topo + i * faixa;
         var w = atual.pesos[i];
@@ -113,7 +113,7 @@
 
       ctx.strokeStyle = api.cor('--seg-borda');
       ctx.lineWidth = 1;
-      ctx.font = api.fonte(13, 400);
+      ctx.font = api.fonte(13, 300);
       ctx.textAlign = 'right';
       ctx.textBaseline = 'middle';
       [0, -0.1, -0.2].forEach(function (v) {

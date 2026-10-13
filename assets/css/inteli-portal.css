@@ -34,7 +34,6 @@ body {
   gap: 24px;
   background: var(--seg-base);
   border: 1px solid var(--seg-borda);
-  border-radius: 16px;
   padding: 28px 32px;
   margin-bottom: 32px;
   overflow: hidden;
@@ -168,7 +167,6 @@ body {
 
 .card-aula,
 .card-contexto {
-  border-radius: 14px;
   padding: 20px;
   min-width: 0;
 }
@@ -198,7 +196,6 @@ body {
   font-weight: 700;
   letter-spacing: 0.04em;
   padding: 4px 10px;
-  border-radius: 999px;
 }
 
 .card-data {
@@ -238,7 +235,6 @@ body {
   font-size: var(--escala-complementar);
   font-weight: 600;
   padding: 8px 12px;
-  border-radius: 8px;
   border: 1px solid var(--seg-borda);
   background: var(--seg-superficie);
   color: var(--seg-texto);
@@ -256,8 +252,8 @@ body {
   opacity: 0.7;
 }
 
-.botao .material-symbols-outlined {
-  font-size: 18px;
+.botao .icone {
+  font-size: 20px;
 }
 
 /* Card de contexto: Sprint Planning, Sprint Review, Prova e entregas ART.

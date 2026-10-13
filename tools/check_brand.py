@@ -2,13 +2,18 @@
 """
 Valida a fidelidade ao Brandbook Inteli 2025.
 
-Cinco regras, cada uma amarrada a uma pagina do brandbook:
+Oito regras. As cinco primeiras citam a pagina do Brandbook Inteli 2025; as
+tres ultimas citam o codigo do inteli-brand-kit (norma de 12/08/2026), que
+a auditoria de 13/10/2026 mostrou que este validador ainda nao conferia:
 
 1. cor-fora-da-paleta   p.66  hex declarado no brand que nao esta na paleta oficial
 2. cor-literal          p.66  cor literal declarada fora do arquivo de tokens
 3. fonte-fora-do-brand  p.69  font-family declarado fora do arquivo de tokens
 4. cor-de-outro-segmento p.68 lilas e verde escuro sao de Escolas e Exec/Pos
 5. emoji                p.88  a iconografia da marca e o Material Symbols
+6. canto-arredondado    GRA-01  todo container tem canto reto; circulo so para dado
+7. icone-fora-do-kit    ICO-01  Material Symbols Sharp do kit, nunca Outlined por CDN
+8. peso-tipografico     TIP-04  titulo 700, subtitulo e label 600, corpo 300, destaque 700
 
 Uso:
     python3 tools/check_brand.py
@@ -44,6 +49,15 @@ FONT_FAMILY = re.compile(r"font-family\s*:")
 # Blocos de emoji e simbolos pictograficos. As setas (U+2190 a U+21FF) ficam
 # de fora de proposito: sao tipografia, nao emoji, e aparecem em textos como
 # "Sprint 1 -> Sprint 2".
+# GRA-01: qualquer raio diferente de zero. "0", "0px" e "0%" passam.
+RAIO = re.compile(r"border-radius\s*:(?!\s*0(?:px|%)?\s*(?:[;\"'}]|$))\s*([^;\"'}]+)")
+# ICO-01: a fonte de icone Outlined (ou Rounded) por CDN e a classe que a ativa.
+ICONE_FORA = re.compile(r"material-symbols-(?:outlined|rounded)|Material\+Symbols|Material Symbols (?:Outlined|Rounded)")
+# TIP-04: cada peso tem uma funcao. 300 corpo, 600 subtitulo e label, 700
+# titulo e destaque. Vale para CSS e para a fonte de canvas dos widgets.
+PESOS = {"300", "600", "700", "bold"}
+PESO_CSS = re.compile(r"font-weight\s*:\s*([a-z0-9]+)")
+PESO_CANVAS = re.compile(r"fonte\(\s*\d+\s*,\s*(\d+)\s*\)")
 EMOJI = re.compile("[\U0001F000-\U0001FAFF☀-➿⬀-⯿️]")
 
 
@@ -101,6 +115,26 @@ def varrer(raiz):
                     "regra": "fonte-fora-do-brand",
                     "detalhe": "font-family so pode ser declarado em %s" % BRAND,
                 })
+
+            raio = RAIO.search(linha)
+            if raio:
+                achados.append({
+                    "arquivo": rel, "linha": n, "regra": "canto-arredondado",
+                    "detalhe": "border-radius %s: cantos retos em tudo (GRA-01)" % raio.group(1).strip(),
+                })
+
+            if ICONE_FORA.search(linha):
+                achados.append({
+                    "arquivo": rel, "linha": n, "regra": "icone-fora-do-kit",
+                    "detalhe": "icone sai do sprite Sharp de assets/icons (ICO-01, tools/icones.py)",
+                })
+
+            for peso in PESO_CSS.findall(linha) + PESO_CANVAS.findall(linha):
+                if peso not in PESOS:
+                    achados.append({
+                        "arquivo": rel, "linha": n, "regra": "peso-tipografico",
+                        "detalhe": "peso %s fora de 300/600/700 (TIP-04)" % peso,
+                    })
 
             achado_emoji = EMOJI.search(linha)
             if achado_emoji:

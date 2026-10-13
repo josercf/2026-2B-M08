@@ -1,0 +1,11 @@
+Material Symbols (Google Icons)
+Copyright Google LLC
+https://github.com/google/material-design-icons
+https://fonts.google.com/icons
+
+This directory vendors the Sharp style of Material Symbols, weight 400,
+fill 0 and fill 1, from @material-symbols/svg-400.
+
+Licensed under the Apache License, Version 2.0.
+See LICENSE in this directory.
+A copy of the license is also at http://www.apache.org/licenses/LICENSE-2.0

@@ -10,6 +10,26 @@
 (function () {
   'use strict';
 
+  // Icone Sharp do sprite do brand kit (ICO-01), no mesmo endereco deste
+  // script trocando js/ por icons/. currentScript so existe durante a carga.
+  var SPRITE = ((document.currentScript && document.currentScript.src) || '')
+    .replace(/js\/[^\/]*$/, 'icons/icones.svg');
+  var SVG = 'http://www.w3.org/2000/svg';
+
+  function criarIcone(nome) {
+    var svg = document.createElementNS(SVG, 'svg');
+    svg.setAttribute('class', 'icone');
+    svg.setAttribute('aria-hidden', 'true');
+    var uso = document.createElementNS(SVG, 'use');
+    uso.setAttribute('href', SPRITE + '#' + nome);
+    svg.appendChild(uso);
+    return svg;
+  }
+
+  function trocarIcone(svg, nome) {
+    svg.firstChild.setAttribute('href', SPRITE + '#' + nome);
+  }
+
   function formatar(segundos) {
     var m = Math.floor(segundos / 60);
     var s = segundos % 60;
@@ -24,14 +44,11 @@
     var botao = document.createElement('button');
     botao.type = 'button';
     botao.className = 'cronometro-play';
-    var icone = document.createElement('span');
-    icone.className = 'material-symbols-outlined';
-    icone.setAttribute('aria-hidden', 'true');
-    icone.textContent = 'play_arrow';
+    var icone = criarIcone('play_arrow');
     botao.appendChild(icone);
 
     var display = document.createElement('p');
-    display.className = 'cronometro-tempo mono';
+    display.className = 'cronometro-tempo';
     display.textContent = formatar(restante);
 
     // aria-live no display, e nao no container: o container so muda de classe,
@@ -62,7 +79,7 @@
         restante = 0;
         parar();
         caixa.classList.add('esgotado');
-        icone.textContent = 'replay';
+        trocarIcone(icone, 'replay');
       }
       pintar();
     }
@@ -73,16 +90,16 @@
       if (restante === 0) {
         restante = total;
         caixa.classList.remove('esgotado');
-        icone.textContent = 'play_arrow';
+        trocarIcone(icone, 'play_arrow');
         pintar();
         return;
       }
       if (timer) {
         parar();
-        icone.textContent = 'play_arrow';
+        trocarIcone(icone, 'play_arrow');
       } else {
         timer = setInterval(tique, 1000);
-        icone.textContent = 'pause';
+        trocarIcone(icone, 'pause');
       }
       pintar();
     }

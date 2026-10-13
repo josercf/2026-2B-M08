@@ -83,7 +83,7 @@
         ctx.fillRect(barraX, barraTopo + k, 18, 1);
       }
       ctx.fillStyle = api.cor('--seg-texto');
-      ctx.font = api.fonte(16, 400);
+      ctx.font = api.fonte(16, 300);
       ctx.textAlign = 'left';
       [[1, '1'], [0, '0'], [-1, '\u22121']].forEach(function (marca) {
         ctx.fillText(marca[1], barraX + 24, barraTopo + barraAltura * (1 - marca[0]) / 2);

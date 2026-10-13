@@ -95,3 +95,53 @@ def test_copia_do_brand_dentro_de_worktree_nao_e_acusada(tmp_path):
     _escrever(tmp_path, ".claude/worktrees/algum-agente/assets/css/inteli-brand.css", copia)
     _escrever(tmp_path, ".claude/worktrees/algum-agente/index.html", '<p style="color: #ff4545">x</p>')
     assert varrer(str(tmp_path)) == []
+
+
+# Regras do inteli-brand-kit (12/08/2026), acrescentadas depois da auditoria
+# de 13/10/2026: o validador aprovava um acervo arredondado, com ícone
+# Outlined por CDN e título em peso 500.
+
+def test_raio_de_borda_e_acusado(tmp_path):
+    _brand_valido(tmp_path)
+    _escrever(tmp_path, "assets/css/inteli-theme.css", ".card { border-radius: 10px; }")
+    assert [a["regra"] for a in varrer(str(tmp_path))] == ["canto-arredondado"]
+
+
+def test_circulo_em_style_inline_e_acusado(tmp_path):
+    _brand_valido(tmp_path)
+    _escrever(tmp_path, "materiais/aula01.html", '<video style="width: 100%; border-radius: 50%;"></video>')
+    assert [a["regra"] for a in varrer(str(tmp_path))] == ["canto-arredondado"]
+
+
+def test_raio_zero_nao_e_acusado(tmp_path):
+    _brand_valido(tmp_path)
+    _escrever(tmp_path, "assets/css/inteli-theme.css", ".a { border-radius: 0; }\n.b { border-radius: 0px }")
+    assert varrer(str(tmp_path)) == []
+
+
+def test_icone_outlined_e_acusado(tmp_path):
+    _brand_valido(tmp_path)
+    _escrever(tmp_path, "aulas/aula01.html", '<span class="material-symbols-outlined">quiz</span>')
+    assert [a["regra"] for a in varrer(str(tmp_path))] == ["icone-fora-do-kit"]
+
+
+def test_sprite_do_kit_nao_e_acusado(tmp_path):
+    _brand_valido(tmp_path)
+    _escrever(tmp_path, "aulas/aula01.html",
+              '<svg class="icone"><use href="../assets/icons/icones.svg#quiz"></use></svg>')
+    assert varrer(str(tmp_path)) == []
+
+
+def test_peso_fora_da_tabela_e_acusado_em_css_e_em_canvas(tmp_path):
+    _brand_valido(tmp_path)
+    _escrever(tmp_path, "assets/css/inteli-theme.css", "h2 { font-weight: 500; }")
+    _escrever(tmp_path, "assets/js/widgets/x.js", "ctx.font = api.fonte(14, 400);")
+    assert sorted(a["regra"] for a in varrer(str(tmp_path))) == ["peso-tipografico"] * 2
+
+
+def test_pesos_da_tabela_passam(tmp_path):
+    _brand_valido(tmp_path)
+    _escrever(tmp_path, "assets/css/inteli-theme.css",
+              "h2 { font-weight: 700; }\nh3 { font-weight: 600; }\nbody { font-weight: 300; }")
+    _escrever(tmp_path, "assets/js/widgets/x.js", "ctx.font = api.fonte(14, 600);")
+    assert varrer(str(tmp_path)) == []

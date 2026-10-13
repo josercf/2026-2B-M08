@@ -33,7 +33,7 @@
 
   function fonte(tamanho, peso) {
     var familia = getComputedStyle(document.documentElement).getPropertyValue('--fonte-texto').trim();
-    return (peso || 400) + ' ' + tamanho + 'px ' + familia;
+    return (peso || 300) + ' ' + tamanho + 'px ' + familia;
   }
 
   function ponto(evento, canvas) {

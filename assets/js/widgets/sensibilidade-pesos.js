@@ -70,7 +70,7 @@
       var esquerda = 90;
       var direita = largura - 90;
       var faixa = (altura - 8) / o.ativos.length;
-      ctx.font = api.fonte(15, 400);
+      ctx.font = api.fonte(15, 300);
       o.ativos.forEach(function (ativo, i) {
         var y = 4 + i * faixa;
         var alto = Math.min(faixa - 6, 26);

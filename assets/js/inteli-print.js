@@ -13,6 +13,22 @@
 (function () {
   'use strict';
 
+  // Icone Sharp do sprite do brand kit (ICO-01), no mesmo endereco deste
+  // script trocando js/ por icons/. currentScript so existe durante a carga.
+  var SPRITE = ((document.currentScript && document.currentScript.src) || '')
+    .replace(/js\/[^\/]*$/, 'icons/icones.svg');
+  var SVG = 'http://www.w3.org/2000/svg';
+
+  function criarIcone(nome) {
+    var svg = document.createElementNS(SVG, 'svg');
+    svg.setAttribute('class', 'icone');
+    svg.setAttribute('aria-hidden', 'true');
+    var uso = document.createElementNS(SVG, 'use');
+    uso.setAttribute('href', SPRITE + '#' + nome);
+    svg.appendChild(uso);
+    return svg;
+  }
+
   function urlDeImpressao() {
     var semQuery = window.location.href.split('?')[0].split('#')[0];
     return semQuery + '?print-pdf' + (window.location.hash || '');
@@ -24,11 +40,7 @@
     botao.className = 'print-button';
     botao.title = 'Exportar PDF';
     botao.setAttribute('aria-label', 'Exportar PDF');
-    var icone = document.createElement('span');
-    icone.className = 'material-symbols-outlined';
-    icone.setAttribute('aria-hidden', 'true');
-    icone.textContent = 'picture_as_pdf';
-    botao.appendChild(icone);
+    botao.appendChild(criarIcone('picture_as_pdf'));
     botao.addEventListener('click', function () {
       window.open(urlDeImpressao(), '_blank');
     });

@@ -32,7 +32,7 @@ python3 -m http.server 8000                 # a partir da raiz do repositório
 # Suíte de testes (validadores, dados, mídia, widgets e planejamento)
 .venv/bin/python -m pytest tools/tests -v
 
-# Fidelidade ao brandbook: cor literal, cor fora da paleta, segmento, font-family, emoji
+# Fidelidade à marca: cor, segmento, font-family, emoji, canto reto (GRA-01), ícone Sharp (ICO-01), pesos (TIP-04)
 .venv/bin/python tools/check_brand.py
 
 # Todo href e src local do acervo resolve para um arquivo existente
@@ -279,7 +279,14 @@ planejamento. Detalhadas na `inteli-course-design`, seção 7.
   mensagem de commit. Arquivo copiado do acervo de origem mantém os comentários originais.
 - **O travessão U+2014 é proibido.** Usar dois-pontos, vírgula, parênteses ou hífen. Em código,
   referir-se a ele como `chr(0x2014)`.
-- **Emoji é proibido.** A iconografia é o Google Material Symbols.
+- **Emoji é proibido.** A iconografia é o Material Symbols Sharp do `inteli-brand-kit`, servido pelo
+  sprite `assets/icons/icones.svg`: `<svg class="icone" aria-hidden="true"><use
+  href="../assets/icons/icones.svg#nome"></use></svg>`. Ícone novo entra na página e o sprite é
+  regenerado por `.venv/bin/python tools/icones.py` (ADR-011).
+- **Marca pelo `inteli-brand-kit` vigente** (ADR-011), que vence a `inteli-deck-design` onde as duas
+  divergem: canto reto em todo container (`GRA-01`), título em peso 700, subtítulo e label 600,
+  corpo 300 e destaque 700 (`TIP-04`). O `check_brand.py` reprova raio, ícone Outlined e peso fora
+  dessa tabela.
 - **Cor só por token**: `var(--inteli-*)` e `var(--seg-*)` em HTML, CSS e JS, `paleta.cor("--token")`
   em Python.
 - **Número vem de `dados/` por código e fica travado em teste.** Nada digitado de memória.

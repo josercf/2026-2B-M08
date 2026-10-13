@@ -38,7 +38,6 @@ body {
   position: relative;
   background: var(--seg-base);
   border: 1px solid var(--seg-borda);
-  border-radius: 16px;
   padding: 28px 32px;
   overflow: hidden;
 }
@@ -79,7 +78,6 @@ body {
   background: var(--seg-base);
   border: 1px solid var(--seg-borda);
   border-left: 5px solid var(--seg-secundaria);
-  border-radius: 12px;
   padding: 18px 20px;
 }
 
@@ -119,7 +117,6 @@ body {
 .doc-secao {
   background: var(--seg-base);
   border: 1px solid var(--seg-borda);
-  border-radius: 14px;
   padding: 24px 28px;
   margin-bottom: 20px;
   /* Compensa a barra flutuante para a ancora nao parar embaixo dela. */
@@ -168,7 +165,6 @@ body {
   background: var(--seg-superficie);
   border: 1px solid var(--seg-borda);
   border-left: 4px solid var(--seg-primaria);
-  border-radius: 10px;
   padding: 14px 16px;
   margin: 0 0 14px;
   overflow-x: auto;
@@ -184,7 +180,6 @@ blockquote {
   padding: 10px 18px;
   border-left: 4px solid var(--seg-primaria);
   background: var(--seg-superficie);
-  border-radius: 10px;
   font-size: var(--escala-texto);
   line-height: 1.6;
   max-width: 78ch;
@@ -195,7 +190,6 @@ blockquote {
 .doc-nota {
   background: var(--seg-superficie);
   border-left: 4px solid var(--seg-destaque);
-  border-radius: 10px;
   padding: 14px 18px;
   margin: 0 0 14px;
 }
@@ -272,15 +266,14 @@ blockquote {
   font-size: var(--escala-complementar);
   font-weight: 600;
   padding: 10px 14px;
-  border-radius: 8px;
   border: 1px solid var(--seg-borda);
   background: var(--seg-base);
   color: var(--seg-texto);
   text-decoration: none;
 }
 
-.doc-nav .material-symbols-outlined {
-  font-size: 18px;
+.doc-nav .icone {
+  font-size: 20px;
 }
 
 .doc-rodape {
