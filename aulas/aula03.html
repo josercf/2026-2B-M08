@@ -19,8 +19,8 @@
          Bloco 3 (30 a 45)            slides 10 a 12 animação da curva, widget com previsão, três pares
          Bloco 4 (45 a 60)            slides 13 a 16 covariância anualizada, custo da janela comum e dupla no notebook (12 min)
          Bloco 5 (60 a 75)            slides 17 a 20 correlação móvel, março de 2020, Ledoit-Wolf
-         Bloco 6 (75 a 90)            slides 21 a 23 escolha coletiva dos pares, pensar e compartilhar
-         Bloco 7 (90 a 105)           slides 24 a 28 quiz, notebook, A3 e Ponderada 1, referências
+         Bloco 6 (75 a 90)            slides 21 a 24 escolha coletiva dos pares, redução 50/50 por par, pensar e compartilhar
+         Bloco 7 (90 a 105)           slides 25 a 29 quiz, notebook, A3 e Ponderada 1, referências
 
        Nenhuma carteira da Ponderada 1 aparece neste deck: os exemplos usam a cesta de referência
        de dados/README.md. Se o tempo apertar, cortar primeiro o slide 20 (Ledoit-Wolf) para
@@ -36,6 +36,13 @@
     #escolha-pares .escolha-grid { gap: 8px 20px; }
     #escolha-pares .escolha { padding: 8px 16px; }
     #escolha-pares .escolha-item { margin-bottom: 6px; }
+    #escolha-pares .nota-regua { font-size: var(--escala-densa); }
+    /* Slide 22: nove colunas com oito pares; corpo em 16px para a tabela caber
+       na largura sem quebrar a célula das volatilidades. */
+    #reducao-pares .tabela-leitura td,
+    #reducao-pares .tabela-leitura th { font-size: var(--escala-densa); padding: 6px 8px; }
+    /* O th do tema usa caixa alta, que troca ρ por Ρ, idêntico a P. */
+    #reducao-pares .rho { text-transform: none; }
   </style>
 </head>
 <body>
@@ -72,7 +79,7 @@
             <tr><td>3</td><td>30 a 45</td><td>Peso e correlação sobre dois ativos reais</td><td>previsão antes de mover o widget</td></tr>
             <tr><td>4</td><td>45 a 60</td><td>A matriz de covariância anualizada</td><td>dupla no notebook</td></tr>
             <tr><td>5</td><td>60 a 75</td><td>Correlação móvel, crise e Ledoit-Wolf</td><td>o que a crise faz com a diversificação</td></tr>
-            <tr><td>6</td><td>75 a 90</td><td>Pares que concentram e pares que diversificam</td><td>escolha coletiva, pensar e compartilhar</td></tr>
+            <tr><td>6</td><td>75 a 90</td><td>Classificação de pares e redução de risco</td><td>escolha coletiva, pensar e compartilhar</td></tr>
             <tr><td>7</td><td>90 a 105</td><td>Quiz e amarração com a Sprint 3</td><td>quiz de três perguntas</td></tr>
           </tbody>
         </table>
@@ -551,7 +558,7 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         <div class="slide-title-area slide-title-area-cronometro">
           <div>
             <div class="accent-bar"></div>
-            <h2>Classificação pela régua de correlação</h2>
+            <h2>Classificação exploratória de pares</h2>
           </div>
           <div class="cronometro" id="cronometro-escolha" data-minutos="5"></div>
         </div>
@@ -589,7 +596,7 @@ np.sqrt(np.diag(cov_anual))</code></pre>
             <ul class="escolha-opcoes"><li>Concentra</li><li>Intermediário</li><li data-correct="true">Diversifica</li></ul>
           </div>
         </div>
-        <p>Régua desta aula: ρ a partir de 0,60 concentra; de 0,30 a 0,60 é intermediário; abaixo de 0,30 diversifica.</p>
+        <p class="nota-regua">Heurística exploratória desta aula, sem valor de regra de decisão: ρ a partir de 0,60 concentra; de 0,30 a 0,60 é intermediário; abaixo de 0,30 diversifica. ρ da matriz da cesta (1.423 retornos desde 14/12/2020). O slide seguinte confere cada par com peso, volatilidade, janela e redução de risco.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1]</p>
           <p class="footer-page">21</p>
@@ -597,6 +604,37 @@ np.sqrt(np.diag(cov_anual))</code></pre>
       </section>
 
       <!-- 22 -->
+      <section class="content-slide" id="reducao-pares">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A carteira 50/50 corta de 5,01% a 37,01% do risco</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead><tr><th>Par 50/50</th><th><span class="rho">ρ</span> cesta</th><th><span class="rho">ρ</span> par</th><th>Janela do par</th><th>Volatilidades</th><th>Média</th><th>Carteira</th><th>Redução p.p.</th><th>Redução</th></tr></thead>
+          <tbody>
+            <tr><td>ITUB4 e BBDC4</td><td>0,72</td><td>0,80</td><td>03/01/2019, 1.907</td><td>29,36% e 34,09%</td><td>31,72%</td><td>30,13%</td><td>1,59</td><td>5,01%</td></tr>
+            <tr><td>BBAS3 e BOVA11</td><td>0,65</td><td>0,76</td><td>03/01/2019, 1.907</td><td>34,39% e 23,41%</td><td>28,90%</td><td>27,19%</td><td>1,71</td><td>5,92%</td></tr>
+            <tr><td>ITUB4 e BBAS3</td><td>0,61</td><td>0,71</td><td>03/01/2019, 1.907</td><td>29,36% e 34,39%</td><td>31,87%</td><td>29,51%</td><td>2,37</td><td>7,43%</td></tr>
+            <tr><td>PETR4 e BOVA11</td><td>0,53</td><td>0,69</td><td>03/01/2019, 1.907</td><td>39,25% e 23,41%</td><td>31,33%</td><td>28,94%</td><td>2,39</td><td>7,63%</td></tr>
+            <tr><td>PETR4 e VALE3</td><td>0,21</td><td>0,41</td><td>03/01/2019, 1.907</td><td>39,25% e 35,49%</td><td>37,37%</td><td>31,39%</td><td>5,98</td><td>16,01%</td></tr>
+            <tr><td>ITUB4 e IVVB11</td><td>−0,08</td><td>0,08</td><td>03/01/2019, 1.907</td><td>29,36% e 20,15%</td><td>24,75%</td><td>18,48%</td><td>6,27</td><td>25,33%</td></tr>
+            <tr><td>PETR4 e IVVB11</td><td>−0,09</td><td>0,14</td><td>03/01/2019, 1.907</td><td>39,25% e 20,15%</td><td>29,70%</td><td>23,28%</td><td>6,42</td><td>21,62%</td></tr>
+            <tr><td>BOVA11 e GOLD11</td><td>−0,21</td><td>−0,21</td><td>14/12/2020, 1.423</td><td>18,50% e 19,80%</td><td>19,15%</td><td>12,06%</td><td>7,09</td><td>37,01%</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">balance</span>
+          <p>Pesos de 50% em cada ativo. Média é a média ponderada das duas volatilidades anuais; a redução compara a carteira com ela. Na janela do par, PETR4 e BOVA11 sobe a 0,69 e PETR4 e VALE3 a 0,41, e os dois mudam de classe pela heurística.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1]</p>
+          <p class="footer-page">22</p>
+        </div>
+      </section>
+
+      <!-- 23 -->
       <section class="exercise-slide" id="so-bancos">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -614,11 +652,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">22</p>
+          <p class="footer-page">23</p>
         </div>
       </section>
 
-      <!-- 23 -->
+      <!-- 24 -->
       <section class="content-slide" id="bancos">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -639,11 +677,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1]</p>
-          <p class="footer-page">23</p>
+          <p class="footer-page">24</p>
         </div>
       </section>
 
-      <!-- 24 -->
+      <!-- 25 -->
       <section class="quiz-slide" id="quiz-final">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -697,11 +735,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">24</p>
+          <p class="footer-page">25</p>
         </div>
       </section>
 
-      <!-- 25 -->
+      <!-- 26 -->
       <section class="exercise-slide" id="notebook">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -722,11 +760,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula03.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula03.ipynb" target="_blank" rel="noopener">Abrir no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">25</p>
+          <p class="footer-page">26</p>
         </div>
       </section>
 
-      <!-- 26 -->
+      <!-- 27 -->
       <section class="content-slide" id="a3">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -755,11 +793,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [3] [8]</p>
-          <p class="footer-page">26</p>
+          <p class="footer-page">27</p>
         </div>
       </section>
 
-      <!-- 27 -->
+      <!-- 28 -->
       <section class="content-slide" id="referencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -780,7 +818,7 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">27</p>
+          <p class="footer-page">28</p>
         </div>
       </section>
 

@@ -289,6 +289,38 @@ def test_escolha_coletiva_classifica_os_oito_pares_pela_regua():
     ]
 
 
+def test_reducao_50_50_dos_pares_da_escolha_na_janela_comum_do_par():
+    tab = [(d["a"], d["b"], d["peso"], d["inicio"], d["retornos"], _r(d["rho_par"], 2),
+            _r(d["vol_a"]), _r(d["vol_b"]), _r(d["media_vols"]), _r(d["vol_carteira"]),
+            _r(d["reducao_pp"]), _r(d["reducao"]))
+           for d in m.reducao_pares_escolha()]
+    assert tab == [
+        ("ITUB4", "BBDC4", 0.5, "2019-01-03", 1907, 0.80, 0.2936, 0.3409, 0.3172, 0.3013, 0.0159, 0.0501),
+        ("BBAS3", "BOVA11", 0.5, "2019-01-03", 1907, 0.76, 0.3439, 0.2341, 0.2890, 0.2719, 0.0171, 0.0592),
+        ("ITUB4", "BBAS3", 0.5, "2019-01-03", 1907, 0.71, 0.2936, 0.3439, 0.3187, 0.2951, 0.0237, 0.0743),
+        ("PETR4", "BOVA11", 0.5, "2019-01-03", 1907, 0.69, 0.3925, 0.2341, 0.3133, 0.2894, 0.0239, 0.0763),
+        ("PETR4", "VALE3", 0.5, "2019-01-03", 1907, 0.41, 0.3925, 0.3549, 0.3737, 0.3139, 0.0598, 0.1601),
+        ("ITUB4", "IVVB11", 0.5, "2019-01-03", 1907, 0.08, 0.2936, 0.2015, 0.2475, 0.1848, 0.0627, 0.2533),
+        ("PETR4", "IVVB11", 0.5, "2019-01-03", 1907, 0.14, 0.3925, 0.2015, 0.2970, 0.2328, 0.0642, 0.2162),
+        ("BOVA11", "GOLD11", 0.5, "2020-12-14", 1423, -0.21, 0.1850, 0.1980, 0.1915, 0.1206, 0.0709, 0.3701),
+    ]
+
+
+def test_reducao_50_50_confere_com_a_formula_de_dois_ativos():
+    # Regressão: a carteira 50/50 medida pela covariância é a da fórmula com ρ do par.
+    for d in m.reducao_pares_escolha():
+        formula = m.risco_dois_ativos(0.5, d["vol_a"], d["vol_b"], d["rho_par"])
+        assert abs(formula - d["vol_carteira"]) < 1e-12
+        assert d["vol_carteira"] < d["media_vols"]
+
+
+def test_classe_pela_regua_muda_com_a_janela_em_dois_pares():
+    mudam = [(d["a"], d["b"], d["classe_cesta"], d["classe_par"])
+             for d in m.reducao_pares_escolha() if d["classe_cesta"] != d["classe_par"]]
+    assert mudam == [("PETR4", "BOVA11", "intermediário", "concentra"),
+                     ("PETR4", "VALE3", "diversifica", "intermediário")]
+
+
 def test_regua_nas_bordas():
     assert m.classificar(0.60) == "concentra"
     assert m.classificar(0.5999) == "intermediário"

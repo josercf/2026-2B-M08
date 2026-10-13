@@ -309,8 +309,11 @@ def amostra_completa():
 
 RESGATE = ["PETR4", "ITUB4", "BBDC4", "IVVB11"]
 
-# Régua da classificação coletiva do Bloco 6: convenção didática desta aula,
-# declarada no slide.
+# Régua da classificação coletiva do Bloco 6: heurística exploratória desta
+# aula, declarada no slide, sem valor de regra decisória. Correlação sozinha
+# não decide a redução de risco: pesos e volatilidades entram na conta, e a
+# correlação muda com a janela. Por isso cada par da escolha é conferido em
+# reducao_pares_escolha(), com carteira 50/50 na janela comum do par.
 REGUA_CONCENTRA = 0.60
 REGUA_DIVERSIFICA = 0.30
 # Pares lidos da matriz da cesta (janela comum dos 15 ativos), em ordem
@@ -341,3 +344,34 @@ def escolha_coletiva():
     """Os oito pares do Bloco 6 com a correlação medida e a classe pela régua."""
     c = matriz_correlacao()
     return [(a, b, float(c.loc[a, b]), classificar(float(c.loc[a, b]))) for a, b in PARES_ESCOLHA]
+
+
+PESO_ESCOLHA = 0.5
+
+
+def reducao_pares_escolha():
+    """Redução de risco da carteira 50/50 de cada par da escolha coletiva.
+
+    Medida na janela comum dos dois ativos (ADR-009): sem a GOLD11, 1.907
+    retornos desde 03/01/2019; com ela, 1.423 desde 14/12/2020. Compara a
+    volatilidade anual da carteira meio a meio com a média ponderada das duas
+    volatilidades, em pontos percentuais e em proporção da média. Traz também
+    a correlação na janela do par, ao lado da correlação da matriz da cesta,
+    para mostrar que a classe pela régua depende da janela.
+    """
+    cesta = matriz_correlacao()
+    saida = []
+    for a, b in PARES_ESCOLHA:
+        par = estatisticas_par(a, b)
+        cart = carteira_igual([a, b])
+        media = PESO_ESCOLHA * par["vol_a"] + (1 - PESO_ESCOLHA) * par["vol_b"]
+        saida.append({
+            "a": a, "b": b, "peso": PESO_ESCOLHA,
+            "rho_cesta": float(cesta.loc[a, b]), "rho_par": par["rho"],
+            "classe_cesta": classificar(float(cesta.loc[a, b])), "classe_par": classificar(par["rho"]),
+            "inicio": par["inicio"], "retornos": par["pregoes"],
+            "vol_a": par["vol_a"], "vol_b": par["vol_b"],
+            "media_vols": media, "vol_carteira": cart["vol"],
+            "reducao_pp": media - cart["vol"], "reducao": 1 - cart["vol"] / media,
+        })
+    return saida

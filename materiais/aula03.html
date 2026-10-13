@@ -184,9 +184,33 @@
         <p>Os 21 pares negativos da matriz têm todos a GOLD11 ou o IVVB11, e o menor é RENT3 com
         GOLD11, −0,22. O ouro costuma ser procurado quando a bolsa cai, o IVVB11 sobe em reais
         quando o dólar sobe, e a matriz registra os dois movimentos. Na aula, a
-        sala classifica estes oito pares por uma régua didática declarada no slide: correlação a
-        partir de 0,60 concentra risco, de 0,30 a 0,60 é intermediária e abaixo de 0,30 diversifica.
-        A régua é uma convenção didática desta aula, sem respaldo em padrão de mercado.</p>
+        sala classifica estes oito pares por uma heurística exploratória declarada no slide:
+        correlação a partir de 0,60 concentra risco, de 0,30 a 0,60 é intermediária e abaixo de 0,30
+        diversifica. Os limiares servem para organizar a discussão e não têm respaldo em padrão de
+        mercado. Correlação sozinha não decide quanto risco a carteira elimina: o peso de cada
+        ativo e a volatilidade de cada um entram na mesma conta, e a correlação muda com a janela.</p>
+        <p>A tabela abaixo confere os oito pares com uma carteira de 50% em cada ativo, medida na
+        janela comum dos dois (ADR-009). A redução compara a volatilidade anual da carteira com a
+        média ponderada das duas volatilidades, em pontos percentuais e em proporção da média.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Par 50/50</th><th>ρ na cesta</th><th>ρ no par</th><th>Janela do par (início, retornos)</th><th>Volatilidades</th><th>Média ponderada</th><th>Carteira</th><th>Redução</th></tr></thead>
+            <tbody>
+              <tr><td>ITUB4 e BBDC4</td><td>0,72</td><td>0,80</td><td>03/01/2019, 1.907</td><td>29,36% e 34,09%</td><td>31,72%</td><td>30,13%</td><td>1,59 p.p. (5,01%)</td></tr>
+              <tr><td>BBAS3 e BOVA11</td><td>0,65</td><td>0,76</td><td>03/01/2019, 1.907</td><td>34,39% e 23,41%</td><td>28,90%</td><td>27,19%</td><td>1,71 p.p. (5,92%)</td></tr>
+              <tr><td>ITUB4 e BBAS3</td><td>0,61</td><td>0,71</td><td>03/01/2019, 1.907</td><td>29,36% e 34,39%</td><td>31,87%</td><td>29,51%</td><td>2,37 p.p. (7,43%)</td></tr>
+              <tr><td>PETR4 e BOVA11</td><td>0,53</td><td>0,69</td><td>03/01/2019, 1.907</td><td>39,25% e 23,41%</td><td>31,33%</td><td>28,94%</td><td>2,39 p.p. (7,63%)</td></tr>
+              <tr><td>PETR4 e VALE3</td><td>0,21</td><td>0,41</td><td>03/01/2019, 1.907</td><td>39,25% e 35,49%</td><td>37,37%</td><td>31,39%</td><td>5,98 p.p. (16,01%)</td></tr>
+              <tr><td>ITUB4 e IVVB11</td><td>−0,08</td><td>0,08</td><td>03/01/2019, 1.907</td><td>29,36% e 20,15%</td><td>24,75%</td><td>18,48%</td><td>6,27 p.p. (25,33%)</td></tr>
+              <tr><td>PETR4 e IVVB11</td><td>−0,09</td><td>0,14</td><td>03/01/2019, 1.907</td><td>39,25% e 20,15%</td><td>29,70%</td><td>23,28%</td><td>6,42 p.p. (21,62%)</td></tr>
+              <tr><td>BOVA11 e GOLD11</td><td>−0,21</td><td>−0,21</td><td>14/12/2020, 1.423</td><td>18,50% e 19,80%</td><td>19,15%</td><td>12,06%</td><td>7,09 p.p. (37,01%)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Na janela do par, que inclui março de 2020, PETR4 e BOVA11 sobe de 0,53 para 0,69 e PETR4 e
+        VALE3 de 0,21 para 0,41, e os dois pares trocariam de classe pela heurística. ITUB4 com IVVB11
+        corta 25,33% do risco médio, e PETR4 com IVVB11, de correlação maior, corta 21,62%. O parecer do
+        A3 cita peso, volatilidade, janela e redução medida ao lado de cada correlação.</p>
       </section>
 
       <section class="doc-secao" id="peso-minimo">

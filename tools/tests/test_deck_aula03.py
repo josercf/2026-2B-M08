@@ -139,7 +139,8 @@ def test_matriz_do_deck_e_a_da_janela_comum_dos_15_ativos():
 
 def test_escolha_coletiva_do_deck_repete_a_matriz_e_a_regua():
     secao = _secao(_ler(DECK), "escolha-pares")
-    assert "<h2>Classificação pela régua de correlação</h2>" in secao
+    assert "<h2>Classificação exploratória de pares</h2>" in secao
+    assert "Heurística exploratória desta aula, sem valor de regra de decisão" in secao
     itens = re.findall(r'<p class="escolha-item">(\d+)\. (\w+) e (\w+), ρ = ([^<]+)</p>\s*'
                        r'<ul class="escolha-opcoes">(.*?)</ul>', secao, flags=re.S)
     rotulo = {"concentra": "Concentra", "intermediário": "Intermediário", "diversifica": "Diversifica"}
@@ -149,6 +150,55 @@ def test_escolha_coletiva_do_deck_repete_a_matriz_e_a_regua():
                  for i, (a, b, rho, classe) in enumerate(m.escolha_coletiva())]
     assert lidos == esperados
     assert {e[4] for e in esperados} == set(rotulo.values())
+
+
+def _milhar(n):
+    return "{:,}".format(n).replace(",", ".")
+
+
+def test_reducao_50_50_dos_pares_vem_logo_depois_da_escolha_e_repete_a_medicao():
+    html = _ler(DECK)
+    ordem = re.findall(r'<section[^>]*id="([\w-]+)"', html)
+    assert ordem[ordem.index("escolha-pares") + 1] == "reducao-pares"
+    secao = _secao(html, "reducao-pares")
+    dados = m.reducao_pares_escolha()
+    reducoes = [d["reducao"] for d in dados]
+    assert "<h2>A carteira 50/50 corta de %s a %s do risco</h2>" % (
+        m.pct(min(reducoes)), m.pct(max(reducoes))) in secao
+    linhas = re.findall(r"<tr><td>(\w+) e (\w+)</td>((?:<td>[^<]*</td>)+)</tr>", secao)
+    lidas = [(a, b, re.findall(r"<td>([^<]*)</td>", resto)) for a, b, resto in linhas]
+    esperadas = [(d["a"], d["b"], [m.dec(d["rho_cesta"]), m.dec(d["rho_par"]),
+                                   "%s, %s" % (_data_br(d["inicio"]), _milhar(d["retornos"])),
+                                   "%s e %s" % (m.pct(d["vol_a"]), m.pct(d["vol_b"])),
+                                   m.pct(d["media_vols"]), m.pct(d["vol_carteira"]),
+                                   m.dec(100 * d["reducao_pp"]), m.pct(d["reducao"])])
+                 for d in dados]
+    assert lidas == esperadas
+    texto = _texto(secao)
+    assert "Pesos de 50% em cada ativo" in texto
+    mudam = [d for d in dados if d["classe_cesta"] != d["classe_par"]]
+    assert [(d["a"], d["b"]) for d in mudam] == [("PETR4", "BOVA11"), ("PETR4", "VALE3")]
+    for d in mudam:
+        assert "%s e %s sobe a %s" % (d["a"], d["b"], m.dec(d["rho_par"])) in texto or \
+            "%s e %s a %s" % (d["a"], d["b"], m.dec(d["rho_par"])) in texto
+
+
+def test_regua_aparece_como_heuristica_no_material_e_nas_notas():
+    material = _texto(_ler(MATERIAL))
+    notas = _ler(NOTAS)
+    assert "heurística exploratória" in material and "heurística exploratória" in notas
+    assert "convenção didática" not in notas
+    for d in m.reducao_pares_escolha():
+        assert m.pct(d["reducao"]) in material, (d["a"], d["b"])
+        assert m.pct(d["reducao"]) in notas, (d["a"], d["b"])
+
+
+def test_notebook_mede_a_reducao_50_50_dos_pares_da_escolha():
+    nb = json.loads(_ler(NOTEBOOK))
+    codigo = "\n".join("".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code")
+    assert all(not c.get("outputs") for c in nb["cells"] if c["cell_type"] == "code")
+    for a, b in m.PARES_ESCOLHA:
+        assert '("%s", "%s")' % (a, b) in codigo
 
 
 def test_material_traz_o_custo_da_janela_comum():

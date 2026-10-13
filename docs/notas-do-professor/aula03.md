@@ -130,14 +130,17 @@ este slide vira fala.
 
 ## Bloco 6 (75 a 90): escolha coletiva e carteira só de bancos
 
-Régua declarada no slide (convenção didática da aula): ρ a partir de 0,60 concentra, de 0,30 a
-0,60 é intermediário, abaixo de 0,30 diversifica.
+Régua declarada no slide 21 como heurística exploratória da aula, sem valor de regra de decisão:
+ρ a partir de 0,60 concentra, de 0,30 a 0,60 é intermediário, abaixo de 0,30 diversifica. Os
+limiares organizam a discussão; quem decide a redução de risco é a conta com peso, volatilidade e
+correlação, e a correlação muda com a janela. O gabarito abaixo é o da heurística sobre a matriz
+da cesta, e o slide 22 confere cada par com a carteira 50/50.
 
-| Item | Par | ρ | Gabarito | Comentário falado |
+| Item | Par | ρ | Gabarito pela heurística | Comentário falado |
 |---|---|---|---|---|
 | 1 | ITUB4 e BBDC4 | 0,72 | concentra | mesmo setor, mesmo risco de juros e crédito |
 | 2 | BBAS3 e BOVA11 | 0,65 | concentra | o ETF carrega os bancos no índice |
-| 3 | ITUB4 e BBAS3 | 0,61 | concentra | perto da borda de 0,60; discutir que a régua é convenção |
+| 3 | ITUB4 e BBAS3 | 0,61 | concentra | perto da borda de 0,60; discutir que o limiar é arbitrário |
 | 4 | PETR4 e BOVA11 | 0,53 | intermediário | a Petrobras pesa no índice, ao lado de dezenas de outras ações |
 | 5 | PETR4 e VALE3 | 0,21 | diversifica | duas commodities, ciclos distintos; a sala costuma dizer "concentra" |
 | 6 | ITUB4 e IVVB11 | −0,08 | diversifica | bolsa americana em reais |
@@ -146,6 +149,28 @@ Régua declarada no slide (convenção didática da aula): ρ a partir de 0,60 c
 
 As correlações são as da matriz da cesta, na janela comum dos 15 ativos (1.423 retornos desde
 14/12/2020).
+
+**Revelação com a carteira 50/50 (slide 22).** Pesos de 50% em cada ativo, medidos na janela
+comum do par (ADR-009). A redução compara a volatilidade anual da carteira com a média ponderada
+das duas volatilidades.
+
+| Par | ρ na cesta | ρ no par | Janela do par (início, retornos) | Volatilidades | Média ponderada | Carteira | Redução |
+|---|---|---|---|---|---|---|---|
+| ITUB4 e BBDC4 | 0,72 | 0,80 | 03/01/2019, 1.907 | 29,36% e 34,09% | 31,72% | 30,13% | 1,59 p.p. (5,01%) |
+| BBAS3 e BOVA11 | 0,65 | 0,76 | 03/01/2019, 1.907 | 34,39% e 23,41% | 28,90% | 27,19% | 1,71 p.p. (5,92%) |
+| ITUB4 e BBAS3 | 0,61 | 0,71 | 03/01/2019, 1.907 | 29,36% e 34,39% | 31,87% | 29,51% | 2,37 p.p. (7,43%) |
+| PETR4 e BOVA11 | 0,53 | 0,69 | 03/01/2019, 1.907 | 39,25% e 23,41% | 31,33% | 28,94% | 2,39 p.p. (7,63%) |
+| PETR4 e VALE3 | 0,21 | 0,41 | 03/01/2019, 1.907 | 39,25% e 35,49% | 37,37% | 31,39% | 5,98 p.p. (16,01%) |
+| ITUB4 e IVVB11 | −0,08 | 0,08 | 03/01/2019, 1.907 | 29,36% e 20,15% | 24,75% | 18,48% | 6,27 p.p. (25,33%) |
+| PETR4 e IVVB11 | −0,09 | 0,14 | 03/01/2019, 1.907 | 39,25% e 20,15% | 29,70% | 23,28% | 6,42 p.p. (21,62%) |
+| BOVA11 e GOLD11 | −0,21 | −0,21 | 14/12/2020, 1.423 | 18,50% e 19,80% | 19,15% | 12,06% | 7,09 p.p. (37,01%) |
+
+Pontos para a fala: (1) na janela do par, PETR4 e BOVA11 sobe de 0,53 para 0,69 e PETR4 e VALE3 de
+0,21 para 0,41, e os dois trocariam de classe pela heurística; (2) PETR4 com IVVB11 corta 6,42 p.p.
+e 21,62% da média, e ITUB4 com IVVB11 corta 6,27 p.p. e 25,33%; a ordem dos dois pares depende da
+medida escolhida, porque a volatilidade da PETR4 eleva a média ponderada; (3) a maior redução,
+37,01%, vem do único par com correlação negativa nas duas janelas. Erro comum: tratar o limiar de
+0,30 como critério de aprovação de um par no parecer do A3.
 
 **Pensar e compartilhar.** Uma carteira só de bancos (ITUB4, BBDC4 e BBAS3 em partes iguais) tem
 29,64% de volatilidade contra 32,61% de média das volatilidades: redução de 9,11%. Trocando dois
