@@ -5,9 +5,10 @@ Estado atual do repositório, para quem estiver retomando o trabalho. Fonte: o p
 acervo e a Aula 01 como padrão-ouro das cinco aulas restantes. O design que originou o plano está
 em `docs/superpowers/specs/2026-09-17-modulo-08-admtech-computacao-design.md`.
 
-Suíte de testes em 13/10/2026: **453 testes passando**, nenhum ignorado. Nessa data também passaram
-`check_brand.py`, `check_links.py`, `check_slides.py` e `check_widgets.py` nos sete decks (o fixture
-do tema e as seis aulas) e os seis notebooks com `M08_OFFLINE=1`. Para conferir a contagem em
+Suíte de testes em 13/10/2026: **todos passando** (a contagem exata sai do comando abaixo). Nessa
+data também passaram `check_brand.py`, `check_links.py`, `check_slides.py` e `check_widgets.py` nos
+sete decks (o fixture do tema e as seis aulas), os seis notebooks com `M08_OFFLINE=1` e o PDF real
+de cada aula, com uma página por slide e o pôster no lugar de cada vídeo. Para conferir a contagem em
 qualquer momento:
 
 ```bash
@@ -50,9 +51,8 @@ por nome.
 | ETFs sem cotação em 24/10/2025, pregão normal da B3 | BOVA11, IVVB11 e GOLD11 |
 
 Descartar as datas com ausência mantém 1.423 dos 1.908 pregões, tira março de 2020 da cesta
-inteira e derruba a volatilidade anual da PETR4 de 39,25% para 33,41%. Esses três números vêm do
-design, seção 8, e do `PLANO_DE_ENSINO.md`, seção 3, e nenhum teste os trava ainda: quem vai
-travá-los é a task de medição da Aula 01.
+inteira e derruba a volatilidade anual da PETR4 de 39,25% para 33,41%, travados em
+`tools/tests/test_aula01.py`. A regra que as aulas usam está na ADR-009.
 
 **Contrato de vídeo das animações** (`tools/midia.py`, `tools/tests/test_midia.py`). MP4 H.264,
 `yuv420p`, 1280x720, 30 quadros por segundo, sem áudio, até 60 segundos e 3 MB, com pôster PNG.
@@ -117,21 +117,23 @@ uma aula para outra.
 
 | Aula | Data | Slides | Material e referências | Observação |
 |---|---|---|---|---|
-| 01 Aquisição de Dados | 20/10 (ter), S2 | 27 | faltam | revisada em 13/10/2026; notas do professor também faltam |
-| 02 Do Preço ao Retorno | 05/11 (qui), S4 | 28 | prontos | Adj Close com `ffill` por ativo |
-| 03 Correlação e Covariância | 10/11 (ter), S5 | 27 | prontos | mesmo tratamento da Aula 02 |
-| 04 Monte Carlo e Markowitz | 18/11 (qua), S6 | 24 | prontos | amostra comum com `dropna`, 1.422 retornos |
-| 05 Validação e Robustez | 01/12 (ter), S8 | 27 | prontos | amostra desde 04/01/2021, treino 2023-2024, teste 2025 |
-| 06 React, FastAPI e LLM | 16/12 (qua), S10 | 25 | prontos | exemplo em `exemplos/aula06-api-carteira/` (ADR-008) |
+| 01 Aquisição de Dados | 20/10 (ter), S2 | 28 | prontos | revisão de 13/10/2026 aplicada: Peer Instruction sobre o `end` exclusivo do yfinance, PETR4 no Bloco 3, pôster antes do grupamento, desafio com máquina limpa e cesta do grupo; notas do professor prontas |
+| 02 Do Preço ao Retorno | 05/11 (qui), S4 | 28 | prontos | métricas de cada ativo na série inteira (ADR-009) |
+| 03 Correlação e Covariância | 10/11 (ter), S5 | 28 | prontos | matriz na janela comum dos 15 ativos (1.423 retornos) e slide do custo da janela (ADR-009) |
+| 04 Monte Carlo e Markowitz | 18/11 (qua), S6 | 24 | prontos | mesma janela comum da Aula 03 (ADR-009) |
+| 05 Validação e Robustez | 01/12 (ter), S8 | 27 | prontos | janela comum desde 04/01/2021 (1.412 retornos), treino 2023-2024, teste 2025 |
+| 06 React, FastAPI e LLM | 16/12 (qua), S10 | 25 | prontos | exemplo em `exemplos/aula06-api-carteira/` (ADR-008), janela comum dos ativos pedidos |
 
 ## Em andamento
 
-| Etapa | Estado |
+Nada em andamento. Fechado em 13/10/2026:
+
+| Etapa | Onde |
 |---|---|
-| Material de apoio, referências e notas do professor da Aula 01 | a fazer |
-| Decidir se o tratamento de ausência fica diferente por aula (02 e 03 com `ffill`, 04 com `dropna`, 05 com amostra própria) e registrar em ADR | aguarda o professor |
-| Ajustes do tema em todos os decks: textos em 14px (feedback de quiz, opções de escolha, botões de widget, código), botão "Exportar PDF" sobre o número do rodapé, `<video>` sem regra de impressão | a fazer |
-| Validar o layout no Ubuntu do CI e gerar o PDF de verdade de cada deck | a fazer |
+| Tratamento de ausência único nas seis aulas | ADR-009, `tools/retornos.py`, `tools/tests/test_retornos.py` |
+| Tema: feedback de quiz, opções de escolha e botões de widget em 18px; código, cabeçalho de tabela e rótulo de widget em 16px (token `--escala-densa`); botão de exportar só com ícone no canto inferior esquerdo; vídeo trocado pelo pôster no PDF; divisor e encerramento centralizados no PDF; uma página por slide com fragments | `assets/css/`, `assets/js/inteli-print.js`, `tools/tests/test_tema_legibilidade.py` |
+| Fila de 128 conexões no servidor dos validadores, que derrubava conexões com a máquina carregada | `tools/check_slides.py`, `tools/tests/test_servidor.py` |
+| API da Aula 06 sem erro 500 em carteira de dois ativos | `exemplos/aula06-api-carteira/backend/carteira/otimizador.py` |
 
 ## Pendências abertas
 

@@ -143,12 +143,19 @@ Fatos do snapshot que o material usa e que `tools/tests/test_dados.py` trava:
   normal da B3. A GOLD11 acumula 485 pregões sem cotação, dos quais 484 são anteriores à primeira
   cotação do fundo, em 11/12/2020.
 
-Fato medido no design, seção 8, e repetido no `PLANO_DE_ENSINO.md`, seção 3, que nenhum teste
-trava ainda:
+Tratamento de ausência do módulo (ADR-009, `tools/retornos.py`, travado em
+`tools/tests/test_retornos.py`):
 
-- **Efeito de descartar as datas com ausência.** Sobram 1.423 dos 1.908 pregões, março de 2020 sai
-  da cesta inteira e a volatilidade anual da PETR4 cai de 39,25% para 33,41%. A task de medição da
-  Aula 01 é que vai travar esses três números em teste; até lá, citar a fonte junto do número.
+- **Uma regra para as seis aulas.** Lacuna isolada é preenchida com o último preço (são três, todas
+  em 24/10/2025), nada é preenchido antes da primeira cotação, métrica de um ativo usa a série
+  inteira dele e análise conjunta usa a janela comum dos ativos envolvidos. Toda medição das Aulas
+  02 a 06 importa `tools/retornos.py`; notebook repete a regra em poucas linhas, sem importar
+  `tools/`.
+- **Custo da janela comum.** Com a GOLD11, a janela comum dos 15 ativos tem 1.423 retornos, de
+  14/12/2020 a 31/08/2026, e perde março de 2020: a volatilidade anual da PETR4 vai de 39,25% para
+  33,40%. A Aula 01 mede o efeito de descartar as datas sobre o preço (1.423 dos 1.908 pregões e
+  33,41%, travados em `tools/tests/test_aula01.py`); a diferença de 0,01 ponto vem de a janela
+  comum preencher 24/10/2025 em vez de descartar.
 
 O contrato de coluna, os links conferidos das séries do Banco Central, a classificação dos 15
 eventos corporativos e o procedimento de regeneração estão em `dados/README.md`. A decisão está na
@@ -230,11 +237,10 @@ Deste módulo:
 - **Widget precisa estar registrado antes do evento `load`.** O runtime monta depois de `load` e de
   `document.fonts.ready`; quem se registra depois disso encontra a montagem já feita, e o elemento
   fica com `data-pronto="erro"` e "widget sem registro" no console.
-- **`dropna` na cesta tira março de 2020 de todos os ativos.** Descartar as datas com ausência
-  mantém 1.423 dos 1.908 pregões e derruba a volatilidade anual da PETR4 de 39,25% para 33,41%,
-  números medidos no design, seção 8. Nenhum teste os trava ainda, e a task de medição da Aula
-  01 é que vai travá-los. Qualquer número de deck que dependa do tratamento de ausência declara
-  qual tratamento usou.
+- **A janela comum com a GOLD11 tira março de 2020 de todos os ativos.** Medição conjunta que
+  inclui a GOLD11 começa em 14/12/2020. Qualquer número de deck que dependa da janela declara
+  início e número de retornos (ADR-009), e medição nova sai de `tools/retornos.py`, nunca de um
+  `ffill` ou `dropna` escrito à mão.
 - **Servidor de teste de uma única thread trava com o Chromium.** A preconexão especulativa do
   navegador fica aberta e muda, e um `TCPServer` de uma thread para de atender. Os validadores
   usam `ThreadingTCPServer`, com a regressão em `tools/tests/test_servidor.py`.
