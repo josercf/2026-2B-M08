@@ -5,9 +5,10 @@ Estado atual do repositório, para quem estiver retomando o trabalho. Fonte: o p
 acervo e a Aula 01 como padrão-ouro das cinco aulas restantes. O design que originou o plano está
 em `docs/superpowers/specs/2026-09-17-modulo-08-admtech-computacao-design.md`.
 
-Suíte de testes em 17/09/2026: **99 testes passando e 3 ignorados**, de 102 coletados. Os três
-ignorados são as parametrizações de vídeo de `tools/tests/test_midia.py`, que ficam vazias até as
-animações da Aula 01 existirem. Para conferir a contagem em qualquer momento:
+Suíte de testes em 13/10/2026: **453 testes passando**, nenhum ignorado. Nessa data também passaram
+`check_brand.py`, `check_links.py`, `check_slides.py` e `check_widgets.py` nos sete decks (o fixture
+do tema e as seis aulas) e os seis notebooks com `M08_OFFLINE=1`. Para conferir a contagem em
+qualquer momento:
 
 ```bash
 .venv/bin/python -m pytest tools/tests -q
@@ -103,14 +104,34 @@ CI. O workflow `static.yml` publica o acervo no GitHub Pages a cada push em `mai
 em <https://josercf.github.io/2026-2B-M08/>. Os dois workflows completaram com êxito. Testes: **99
 passando e 3 ignorados**.
 
+**Datas e pesos oficiais da Adalove** (lidos em 13/10/2026). O `PLANO_DE_ENSINO.md`, o
+`PLANEJAMENTO_AULA_A_AULA.md`, os autoestudos, o portal e os decks usam as datas da tabela abaixo.
+A1 a A4 valem 3 pontos cada, o A5 vale 2 e as duas ponderadas valem 3. A review da Sprint 3 cai na
+quinta 19/11/2026, por causa do feriado de 20/11, e a entrega do A3 fica na sexta 20/11/2026, 23h59,
+por decisão do professor em 13/10/2026.
+
+**As seis aulas** (construídas em 13/10/2026, sem plano próprio em `docs/superpowers/plans/`, pelo
+roteiro do `PLANEJAMENTO_AULA_A_AULA.md`). Cada uma tem deck, notebook, scripts de medição, de
+widgets e de animação, testes, dois widgets e duas ou três animações. A tabela mostra o que muda de
+uma aula para outra.
+
+| Aula | Data | Slides | Material e referências | Observação |
+|---|---|---|---|---|
+| 01 Aquisição de Dados | 20/10 (ter), S2 | 27 | faltam | revisada em 13/10/2026; notas do professor também faltam |
+| 02 Do Preço ao Retorno | 05/11 (qui), S4 | 28 | prontos | Adj Close com `ffill` por ativo |
+| 03 Correlação e Covariância | 10/11 (ter), S5 | 27 | prontos | mesmo tratamento da Aula 02 |
+| 04 Monte Carlo e Markowitz | 18/11 (qua), S6 | 24 | prontos | amostra comum com `dropna`, 1.422 retornos |
+| 05 Validação e Robustez | 01/12 (ter), S8 | 27 | prontos | amostra desde 04/01/2021, treino 2023-2024, teste 2025 |
+| 06 React, FastAPI e LLM | 16/12 (qua), S10 | 25 | prontos | exemplo em `exemplos/aula06-api-carteira/` (ADR-008) |
+
 ## Em andamento
 
-| Etapa | Escopo | Estado |
-|---|---|---|
-| Aula 01, padrão-ouro | medições travadas em teste, duas animações, os widgets, o notebook, o deck, o material, as referências, as notas do professor e a ADR de escopo da aula | a fazer |
-
-As Aulas 02 a 06 só começam depois da Aula 01 revisada, porque ela é o padrão que elas copiam
-(design, seção 15).
+| Etapa | Estado |
+|---|---|
+| Material de apoio, referências e notas do professor da Aula 01 | a fazer |
+| Decidir se o tratamento de ausência fica diferente por aula (02 e 03 com `ffill`, 04 com `dropna`, 05 com amostra própria) e registrar em ADR | aguarda o professor |
+| Ajustes do tema em todos os decks: textos em 14px (feedback de quiz, opções de escolha, botões de widget, código), botão "Exportar PDF" sobre o número do rodapé, `<video>` sem regra de impressão | a fazer |
+| Validar o layout no Ubuntu do CI e gerar o PDF de verdade de cada deck | a fazer |
 
 ## Pendências abertas
 

@@ -15,9 +15,8 @@ repositório começa pelo `CLAUDE.md`.
 | Duração | 10 semanas, 5 sprints, 6 Encontros de Instrução de Computação |
 | Entregas de Computação | 5 artefatos COM, um por sprint, e 2 atividades ponderadas de 3 pontos |
 
-As datas e os horários das aulas dependem da Adalove da turma, que ainda não foi lida. Toda data
-aparece como "a confirmar na Adalove" no acervo, e o mesmo vale para os pesos das entregas, que
-estão citados da revisão de junho de 2026. O `PLANO_DE_ENSINO.md` lista essas pendências de P1 a
+Datas, semanas e pesos foram conferidos em 13/10/2026 contra a Adalove da turma 2026-2B-T19. O
+horário de relógio das aulas segue a confirmar. O `PLANO_DE_ENSINO.md` lista as pendências de P1 a
 P7.
 
 ## O parceiro do case
@@ -26,8 +25,8 @@ O projeto do módulo é uma ferramenta de simulação de carteira eficiente para
 precisa decidir onde alocar excedentes de caixa. A ferramenta calcula a Fronteira Eficiente de
 Markowitz e apresenta o resultado a quem decide.
 
-O nome e as premissas do parceiro estão descritos no LBL da Adalove, que ainda não foi lido, e por
-isso aparecem como "a confirmar". Até lá, as aulas trabalham sobre uma cesta de referência de 15
+O parceiro é o BTG Pactual, segundo as anotações dos checkpoints de planejamento do módulo. As
+premissas detalhadas estão no LBL da Adalove, ainda não lido. Até lá, as aulas trabalham sobre uma cesta de referência de 15
 ativos negociados na B3, com séries do Banco Central como taxas de referência. O snapshot está
 versionado em `dados/`, com o detalhamento em `dados/README.md`.
 
@@ -38,12 +37,12 @@ título entre esta tabela e a Adalove é erro deste README.
 
 | Acervo | Data | Semana | Sprint | Instrução | Entrega que a aula alimenta |
 |---|---|---|---|---|---|
-| aula01 | a confirmar na Adalove | 1 | 1 | Aquisição de Dados de Mercado: Coleta Confiável e Reproduzível | A1 Coletor e Processador de Dados de Mercado |
-| aula02 | a confirmar na Adalove | 3 | 2 | Dados Financeiros: Do Preço ao Retorno | A2 Módulo de Análise de Risco e Retorno Individual |
-| aula03 | a confirmar na Adalove | 5 | 3 | Correlação, Covariância e o Argumento Matemático da Diversificação | A3 Motor de Simulação de Monte Carlo e Ponderada 1 |
-| aula04 | a confirmar na Adalove | 6 | 3 | Da Nuvem à Fronteira: Monte Carlo e Otimização de Markowitz | A3 e a base matemática do A4 |
-| aula05 | a confirmar na Adalove | 8 | 4 | Do Script ao Produto: API em FastAPI e Página Web | A4 Otimizador de Carteira com Fronteira Eficiente em Aplicação Web |
-| aula06 | a confirmar na Adalove | 9 | 5 | Validação, Robustez e Interpretação com LLM | A5 Interpretação da Carteira por LLM e Ponderada 2 |
+| aula01 | 20/10/2026 | 2 | 1 | Aquisição de Dados de Mercado: Coleta Confiável e Reproduzível | A1 Coletor e Processador de Dados de Mercado |
+| aula02 | 05/11/2026 | 4 | 2 | Dados Financeiros: Do Preço ao Retorno | A2 Módulo de Análise de Risco e Retorno Individual |
+| aula03 | 10/11/2026 | 5 | 3 | Correlação, Covariância e o Argumento Matemático da Diversificação | A3 Motor de Simulação de Monte Carlo e Ponderada 1 |
+| aula04 | 18/11/2026 | 6 | 3 | Da Nuvem à Fronteira: Monte Carlo e Otimização de Markowitz | A3 e a base matemática do A4 |
+| aula05 | 01/12/2026 | 8 | 4 | Validação e Robustez do Modelo | A4 Otimizador de Carteira com Fronteira Eficiente e Ponderada 2 |
+| aula06 | 16/12/2026 | 10 | 5 | Do Script ao Produto: React, FastAPI e Interpretação com LLM | A5 Simulador Interativo integrado à interface e Interpretação por LLM |
 
 Os pesos de cada entrega, com a marca de confirmação, estão no `PLANO_DE_ENSINO.md`, seção 5. A
 numeração `aula01` a `aula06` é a do acervo; a planilha do módulo numera as mesmas aulas como 5,
@@ -68,13 +67,13 @@ avança no artefato da sprint, o desafio do notebook e a leitura complementar.
 ├── CLAUDE.md                      guia de quem edita o acervo
 ├── PLANO_DE_ENSINO.md             case, dados, cronograma, entregas e pendências (fonte da verdade)
 ├── PLANEJAMENTO_AULA_A_AULA.md    roteiro em sete blocos de cada encontro (fonte da verdade)
-├── aulas/                         um deck Reveal.js por aula (aulaNN.html); hoje só o fixture do tema
-├── materiais/                     material de apoio, com preparação pré-aula (a construir)
-├── referencias/                   autoestudos da semana e leitura complementar (a construir)
-├── notebooks/                     laboratório executável de cada aula, com badge do Colab (a construir)
-├── exemplos/api-carteira/         API mínima e página da Aula 05 (a construir)
+├── aulas/                         um deck Reveal.js por aula (aula01 a aula06)
+├── materiais/                     material de apoio, com preparação pré-aula
+├── referencias/                   autoestudos da semana e leitura complementar
+├── notebooks/                     laboratório executável de cada aula, com badge do Colab
+├── exemplos/aula06-api-carteira/  API FastAPI e interface React da Aula 06
 ├── dados/                         snapshot da B3 e séries do Banco Central, com README próprio
-├── assets/                        CSS, JS, imagens e JSON dos decks; os vídeos entram com a 1a animação
+├── assets/                        CSS, JS, imagens e JSON dos decks, com os vídeos em assets/video
 └── docs/
     ├── autoestudos-por-semana.md  autoestudos e instruções por semana, com título exato
     ├── adrs/                      decisões de arquitetura do acervo

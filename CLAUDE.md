@@ -52,7 +52,7 @@ python3 -m http.server 8000                 # a partir da raiz do repositório
 .venv/bin/python tools/baixar_dados.py
 ```
 
-Todo comando acima roda como está escrito, com a pasta `aulas/` contendo só o fixture do tema.
+Todo comando acima roda como está escrito.
 O `baixar_dados.py` depende de provedor externo: em 17/09/2026, numa primeira tentativa, a API do
 SGS respondeu HTTP 200 com página HTML em duas das quatro séries, o script parou em erro de JSON,
 e a tentativa seguinte completou a coleta. Ele é chamado só quando a janela do case muda, e o
@@ -97,14 +97,15 @@ dependência.
    - `index.html`: portal com um card por instrução, agrupado por sprint. Existe, com as seis
      instruções; os quatro botões de cada card ficam desabilitados até o artefato correspondente
      existir, e a task que constrói cada artefato habilita o botão dele (ver `docs/ANDAMENTO.md`).
-   - `aulas/aulaNN.html`: um deck Reveal.js autocontido por aula. Hoje a pasta tem apenas o
-     `aulas/_fixture-tema.html`, que é o deck de referência de cada classe do tema.
-   - `materiais/`, `referencias/`, `notebooks/`, `exemplos/api-carteira/`: os demais artefatos por
-     aula e o exemplo parcial da Aula 05. Essas pastas nascem conforme cada aula é construída, e
-     `docs/ANDAMENTO.md` diz o que já existe.
+   - `aulas/aulaNN.html`: um deck Reveal.js autocontido por aula, de `aula01` a `aula06`, ao lado
+     do `aulas/_fixture-tema.html`, que é o deck de referência de cada classe do tema.
+   - `materiais/`, `referencias/`, `notebooks/`, `docs/notas-do-professor/`: os demais artefatos
+     por aula. `docs/ANDAMENTO.md` diz o que já existe.
+   - `exemplos/aula06-api-carteira/`: o exemplo da Aula 06, com backend FastAPI e frontend React
+     (ADR-008). Os testes dele rodam por `tools/tests/test_exemplo_aula06.py`.
    - `dados/`: o snapshot do case (ver seção 4 e `dados/README.md`).
-   - `assets/{css,js,js/widgets,img,data}/`: tema, scripts, marca e JSON dos widgets. O
-     `assets/video/` nasce com a primeira animação.
+   - `assets/{css,js,js/widgets,img,data}/`: tema, scripts, marca, JSON dos widgets
+     e, em `assets/video/`, as animações.
    - `docs/adrs/`: as decisões não triviais, começando pelas seis da fundação.
 
 O deck é inicializado com `width: 1280, height: 720, center: false, margin: 0`, e o tema fixa cada
@@ -277,7 +278,8 @@ planejamento. Detalhadas na `inteli-course-design`, seção 7.
   em Python.
 - **Número vem de `dados/` por código e fica travado em teste.** Nada digitado de memória.
 - **Data, horário, título, autoestudo e peso são citados da fonte.** O que falta vira pendência
-  registrada, nunca estimativa. As datas das aulas seguem "a confirmar na Adalove".
+  registrada, nunca estimativa. As datas das aulas vêm da Adalove, lida em 13/10/2026; o horário
+  de relógio segue pendente (P1).
 - **Título de slide analítico é frase completa com o achado e o número dentro.** Slide de
   referência tem título descritivo curto.
 - **Proibido** paralelismo negativo ("não é X, é Y"), antítese simétrica, escalada com dois-pontos
