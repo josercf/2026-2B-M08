@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referências &middot; Aula 04 &middot; Da Nuvem à Fronteira</title>
+  <meta name="description" content="Autoestudos da Semana 06 na Adalove e leitura complementar da Aula 04 do Módulo 08 AdmTech: Monte Carlo e Otimização de Markowitz.">
+
+  <!-- Duas seções fixas, nesta ordem:
+       1. Autoestudos da semana, copiados de docs/autoestudos-por-semana.md
+          (Semana 06), título por título, com o tempo da tabela final.
+       2. Leitura complementar do professor, que existe mesmo sem curadoria
+          fechada. -->
+
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-material.css">
+</head>
+<body>
+  <div class="doc">
+
+    <header class="doc-header">
+      <p class="doc-eyebrow">Módulo 08 AdmTech &middot; Aula 04 &middot; 18/11/2026 &middot; Semana 06</p>
+      <h1>Referências: Da Nuvem à Fronteira</h1>
+      <p class="doc-subtitulo">A Semana 06 tem um Encontro de Instrução de Computação e dois
+      autoestudos sem pontos, que o encontro pressupõe feitos.</p>
+    </header>
+
+    <nav class="doc-toc" aria-label="Sumário">
+      <h2>Nesta página</h2>
+      <ol>
+        <li><a href="#autoestudos">Autoestudos da semana (Adalove)</a></li>
+        <li><a href="#complementar">Leitura complementar do professor</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc-conteudo">
+
+      <section class="doc-secao" id="autoestudos">
+        <h2>1. Autoestudos da semana (Adalove)</h2>
+        <ol class="doc-referencias">
+          <li>Carteiras e simulação de Monte Carlo com Python (65 min)
+            <span class="doc-porque">CAETANO, M. A. L. <em>Python e mercado financeiro: programação
+            para estudantes, investidores e analistas</em>. São Paulo: Blucher, 2021. cap. 9, seções
+            9.2 e 9.5. Base dos Blocos 2 e 3: retorno e variância em forma vetorial, Índice de Sharpe
+            e o motor que sorteia as carteiras.</span></li>
+          <li>Da nuvem à fronteira eficiente de Markowitz (70 min)
+            <span class="doc-porque">CAETANO, M. A. L. <em>Python e mercado financeiro</em>. São
+            Paulo: Blucher, 2021. cap. 9, seção 9.3. Base dos Blocos 5 e 6: função objetivo,
+            restrições e a fronteira como borda da nuvem.</span></li>
+        </ol>
+        <div class="doc-nota">
+          <p>Títulos e tempos copiados de <code>docs/autoestudos-por-semana.md</code>, Semana 06,
+          conferido contra a Adalove da turma 2026-2B-T19. O acesso ao conteúdo é pela Adalove, com o
+          login institucional.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="complementar">
+        <h2>2. Leitura complementar do professor</h2>
+        <p>A curadoria definitiva desta seção ainda será preenchida pelo professor. Até lá, ficam aqui
+        as fontes citadas no deck, na mesma numeração do slide de referências.</p>
+        <ol class="doc-referencias">
+          <li><a href="https://github.com/josercf/2026-2B-M08/blob/main/dados/README.md" target="_blank" rel="noopener">dados/README.md</a>
+            <span class="doc-porque">Snapshot do case, cesta de 15 ativos e falhas do provedor que
+            definem a amostra da aula.</span></li>
+          <li>CAETANO, M. A. L. <em>Python e mercado financeiro</em>. Blucher, 2021. cap. 9, seções 9.2 e 9.5.
+            <span class="doc-porque">Autoestudo: Carteiras e simulação de Monte Carlo com Python.</span></li>
+          <li>CAETANO, M. A. L. <em>Python e mercado financeiro</em>. Blucher, 2021. cap. 9, seção 9.3.
+            <span class="doc-porque">Autoestudo: Da nuvem à fronteira eficiente de Markowitz. A seção
+            sobre a fronteira como borda da nuvem é a leitura complementar indicada no roteiro, relida
+            com o gráfico do próprio grupo.</span></li>
+          <li>MARKOWITZ, H. Portfolio Selection. <em>The Journal of Finance</em>, v. 7, n. 1, p. 77-91, 1952.
+            <span class="doc-porque">O artigo que define a carteira eficiente em média e variância.</span></li>
+          <li>SHARPE, W. F. Mutual Fund Performance. <em>The Journal of Business</em>, v. 39, n. 1, p. 119-138, 1966.
+            <span class="doc-porque">A razão entre prêmio sobre a taxa livre de risco e volatilidade usada
+            na aula, com o CDI no lugar da taxa livre de risco.</span></li>
+          <li><a href="https://docs.scipy.org/doc/scipy/reference/optimize.minimize-slsqp.html" target="_blank" rel="noopener">SciPy: minimize com method='SLSQP'</a>
+            <span class="doc-porque">Parâmetros <code>bounds</code>, <code>constraints</code> e o
+            significado de <code>success</code> e <code>message</code>.</span></li>
+          <li><a href="https://numpy.org/doc/stable/reference/random/generator.html" target="_blank" rel="noopener">NumPy: Random Generator</a>
+            <span class="doc-porque">O gerador com semente usado pelo motor de Monte Carlo.</span></li>
+          <li><a href="https://dadosabertos.bcb.gov.br/" target="_blank" rel="noopener">Banco Central, dados abertos do SGS</a>
+            <span class="doc-porque">Série 12, CDI diário, a taxa livre de risco do Sharpe.</span></li>
+        </ol>
+      </section>
+
+    </main>
+
+    <p class="doc-rodape">Prof. José Romualdo &middot; Módulo 08 AdmTech &middot; 2026-2B-T19</p>
+
+  </div>
+
+  <nav class="doc-nav" aria-label="Navegação da aula">
+    <a href="../index.html"><span class="material-symbols-outlined" aria-hidden="true">home</span>Portal</a>
+    <a href="../aulas/aula04.html"><span class="material-symbols-outlined" aria-hidden="true">slideshow</span>Slides</a>
+    <a href="../materiais/aula04.html"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span>Material</a>
+  </nav>
+</body>
+</html>

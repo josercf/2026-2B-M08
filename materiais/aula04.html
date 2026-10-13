@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material de apoio &middot; Aula 04 &middot; Da Nuvem à Fronteira</title>
+  <meta name="description" content="Material de apoio da Aula 04 do Módulo 08 AdmTech: preparação pré-aula, forma vetorial da carteira, Índice de Sharpe com o CDI, motor de Monte Carlo, SLSQP, carteiras de variância mínima e de máximo Sharpe e a fronteira eficiente de 50 pontos.">
+
+  <!-- Este material aprofunda o que o deck só aponta. Todo número citado vem de
+       tools/medidas_aula04.py e está travado em tools/tests/test_aula04.py.
+       Amostra: Adj Close com as datas de ausência descartadas (1.422 retornos
+       diários, de 14/12/2020 a 31/08/2026), anualização por 252, CDI acumulado na
+       janela como taxa livre de risco, semente 42 no sorteio. -->
+
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-material.css">
+</head>
+<body>
+  <div class="doc">
+
+    <header class="doc-header">
+      <p class="doc-eyebrow">Módulo 08 AdmTech &middot; Aula 04 &middot; 18/11/2026 &middot; Semana 6 &middot; Sprint 3</p>
+      <h1>Material de apoio: Da Nuvem à Fronteira</h1>
+      <p class="doc-subtitulo">A Aula 03 deixou pronta a matriz de covariância anualizada da cesta. Esta
+      aula usa a matriz para duas coisas: sortear 10.000 carteiras e enxergar o espaço risco-retorno
+      (o motor do A3), e resolver as carteiras de variância mínima e de máximo Sharpe com a fronteira
+      eficiente de 50 pontos (a base do A4). A seção 1 é o preparo antes do encontro.</p>
+    </header>
+
+    <nav class="doc-toc" aria-label="Sumário">
+      <h2>Nesta página</h2>
+      <ol>
+        <li><a href="#preparacao">Preparação</a></li>
+        <li><a href="#amostra">A amostra desta aula</a></li>
+        <li><a href="#vetorial">Forma vetorial e o Sharpe com o CDI</a></li>
+        <li><a href="#sorteio">Por que o sorteio não alcança a ótima</a></li>
+        <li><a href="#slsqp">Otimização com restrições no SLSQP</a></li>
+        <li><a href="#fronteira">As duas ótimas e a fronteira</a></li>
+        <li><a href="#depois">Depois do encontro</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc-conteudo">
+
+      <section class="doc-secao" id="preparacao">
+        <h2>1. Preparação</h2>
+        <p>O encontro abre com uma votação sobre o conteúdo desta seção. Faça as três partes antes da
+        aula, nesta ordem.</p>
+
+        <h3>1.1 Autoestudos da semana, na Adalove</h3>
+        <ol>
+          <li><strong>Carteiras e simulação de Monte Carlo com Python</strong> (65 min): a álgebra da
+          carteira em forma vetorial, o Índice de Sharpe e o código da simulação.</li>
+          <li><strong>Da nuvem à fronteira eficiente de Markowitz</strong> (70 min): a fronteira como
+          a borda da nuvem, encontrada resolvendo um problema de mínimo com restrições.</li>
+        </ol>
+
+        <h3>1.2 Três animações do conceito central</h3>
+        <p><strong>A nuvem de Monte Carlo.</strong> Observe onde a melhor sorteada (o ponto coral)
+        fica conforme o número de carteiras cresce de 10 para 10.000, e quantas ficam abaixo da linha
+        do CDI.</p>
+        <video controls muted playsinline preload="metadata"
+               poster="../assets/img/aula04-nuvem-monte-carlo-poster.png" style="width: 100%; max-width: 760px; display: block; margin: 0 0 16px;">
+          <source src="../assets/video/aula04-nuvem-monte-carlo.mp4" type="video/mp4">
+        </video>
+        <p><strong>A fronteira sobre a nuvem.</strong> Observe que a curva passa acima e à esquerda
+        de todas as carteiras sorteadas, e onde ficam as duas carteiras ótimas em relação à melhor
+        sorteada.</p>
+        <video controls muted playsinline preload="metadata"
+               poster="../assets/img/aula04-fronteira-poster.png" style="width: 100%; max-width: 760px; display: block; margin: 0 0 16px;">
+          <source src="../assets/video/aula04-fronteira.mp4" type="video/mp4">
+        </video>
+        <p><strong>O SLSQP no triângulo de pesos.</strong> Com três ativos, cada carteira é um ponto
+        do triângulo. Observe o primeiro passo do otimizador e quantas iterações ele leva até parar.</p>
+        <video controls muted playsinline preload="metadata"
+               poster="../assets/img/aula04-slsqp-triangulo-poster.png" style="width: 100%; max-width: 760px; display: block; margin: 0 0 16px;">
+          <source src="../assets/video/aula04-slsqp-triangulo.mp4" type="video/mp4">
+        </video>
+
+        <h3>1.3 Autoverificação, sem nota</h3>
+        <p>Responda antes de abrir a resposta comentada.</p>
+        <ol>
+          <li>O motor sorteia números entre 0 e 1 para cada ativo e divide cada linha pela soma da
+          própria linha. O que essa divisão garante?
+            <details><summary>Resposta comentada</summary>
+            <p>Que os pesos somam 1, ou seja, que o dinheiro todo está alocado, e que nenhum peso é
+            negativo, porque o sorteio só produz números positivos. As duas condições são as mesmas
+            que o SLSQP impõe como restrição e como limite na seção 5.</p></details></li>
+          <li>A carteira de pesos iguais rende 8,34% ao ano, e o CDI da janela é 11,30%. O Índice de
+          Sharpe dela é positivo ou negativo?
+            <details><summary>Resposta comentada</summary>
+            <p>Negativo: -0,18. O numerador do Sharpe é o retorno menos o CDI, e uma carteira que
+            rende menos do que o CDI tem prêmio negativo, qualquer que seja a volatilidade.</p></details></li>
+          <li>Na animação da nuvem, quantas das 10.000 carteiras sorteadas ficaram abaixo do CDI?
+            <details><summary>Resposta comentada</summary>
+            <p>8.843. Oito dos 15 ativos da cesta rendem abaixo do CDI na janela, e a MGLU3 tem
+            retorno esperado de -42,84% ao ano. Como o sorteio dá peso positivo a todos os ativos, quase
+            toda carteira sorteada carrega um pedaço desses ativos.</p></details></li>
+          <li>Na animação da fronteira, alguma carteira sorteada passa acima ou à esquerda da curva?
+            <details><summary>Resposta comentada</summary>
+            <p>Nenhuma. Cada ponto da fronteira é a carteira de menor volatilidade possível para um
+            retorno alvo, então nenhuma outra carteira com o mesmo retorno pode ter volatilidade
+            menor. O teste da aula confere isso para as 10.000.</p></details></li>
+          <li>Na animação do SLSQP, para onde vai o primeiro passo, e onde o otimizador para?
+            <details><summary>Resposta comentada</summary>
+            <p>O primeiro passo vai para o vértice da PETR4, 100% em um ativo, com Sharpe 0,79. Depois
+            o otimizador recua e para em 10 iterações em 44,29% PETR4, 24,07% IVVB11 e 31,64% GOLD11,
+            com Sharpe 0,92. O primeiro passo segue a direção que mais melhora o Sharpe no ponto de
+            partida, e os seguintes corrigem o excesso.</p></details></li>
+        </ol>
+      </section>
+
+      <section class="doc-secao" id="amostra">
+        <h2>2. A amostra desta aula</h2>
+        <p>Toda a aula usa o <code>Adj Close</code> da cesta com as datas de ausência descartadas na
+        cesta inteira (<code>dropna</code>), o tratamento "descartar" da Aula 01. Com ele a série
+        começa em 11/12/2020, primeira cotação do GOLD11, e os retornos diários vão de 14/12/2020 a
+        31/08/2026: são 1.422 retornos para cada um dos 15 ativos.</p>
+        <p>A Aula 03 calculou a covariância de cada par sobre os pregões em que os dois ativos têm
+        retorno, o padrão do pandas. Para o otimizador, a matriz inteira precisa vir de uma amostra
+        só: uma matriz montada par a par, com amostras diferentes em cada par, pode deixar de ser
+        semidefinida positiva, e aí existe combinação de pesos com "variância" negativa, que o
+        otimizador persegue. Descartar as datas resolve isso ao custo de perder março de 2020, como a
+        Aula 01 mediu.</p>
+        <div class="doc-nota">
+          <p><strong>Para o ADR do grupo.</strong> A escolha da amostra muda todos os números desta
+          página. O ADR do motor ou do otimizador declara qual tratamento de ausência alimenta a
+          matriz e cita um número que muda com ele, por exemplo a volatilidade da carteira de
+          variância mínima.</p>
+        </div>
+        <p>Com essa amostra, a matriz tem 15 retornos esperados e 120 variâncias e covariâncias
+        distintas: 135 números estimados do histórico. Cada um carrega erro de estimação, e a Aula 05
+        mede quanto esse erro move os pesos ótimos.</p>
+      </section>
+
+      <section class="doc-secao" id="vetorial">
+        <h2>3. Forma vetorial e o Sharpe com o CDI</h2>
+        <p>Com <code>w</code> o vetor de pesos, <code>mu</code> o vetor de retornos esperados anuais e
+        <code>cov</code> a matriz de covariância anual, as três métricas de uma carteira são:</p>
+<pre class="doc-codigo"><code>retorno = w @ mu
+volatilidade = np.sqrt(w @ cov @ w)
+sharpe = (retorno - rf) / volatilidade</code></pre>
+        <p>A variância <code>w @ cov @ w</code> soma, para cada par de ativos, a covariância do par
+        multiplicada pelos dois pesos. É por isso que dois ativos de correlação negativa, como PETR4 e
+        GOLD11 (-0,13), reduzem a volatilidade da carteira abaixo da média ponderada das
+        volatilidades: o termo cruzado entra com sinal negativo.</p>
+        <p>O teste que garante que a fórmula está certa é calcular a mesma carteira de dois jeitos.
+        Para os pesos iguais, a série diária <code>retornos @ w</code> anualizada dá exatamente o
+        mesmo retorno (8,34%) e a mesma volatilidade (16,32%) da forma vetorial. Esse teste entra no
+        <code>SPEC.md</code> do A3 como caso com os dados do grupo.</p>
+        <h3>Por que o CDI no lugar da taxa livre de risco</h3>
+        <p>O parceiro decide onde alocar excedente de caixa, e a alternativa sem risco desse caixa é
+        o CDI. O Sharpe mede quanto retorno acima dessa alternativa a carteira entrega por unidade
+        de volatilidade. A taxa usada é o CDI diário da série 12 do SGS, acumulado na mesma janela
+        dos retornos e anualizado por 252 dias úteis: 11,30% ao ano. Usar um CDI de outra janela
+        mudaria o Sharpe de todas as carteiras e, com ele, a carteira de máximo Sharpe.</p>
+      </section>
+
+      <section class="doc-secao" id="sorteio">
+        <h2>4. Por que o sorteio não alcança a ótima</h2>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Sorteios</th><th>Melhor Sharpe entre os sorteados</th></tr></thead>
+            <tbody>
+              <tr><td>10</td><td>-0,09</td></tr>
+              <tr><td>100</td><td>0,15</td></tr>
+              <tr><td>1.000</td><td>0,28</td></tr>
+              <tr><td>10.000</td><td>0,41</td></tr>
+              <tr><td>100.000</td><td>0,41</td></tr>
+              <tr><td>1.000.000</td><td>0,60</td></tr>
+              <tr><td>SLSQP, máximo Sharpe</td><td>0,92</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Dividir números uniformes pela soma da linha produz pesos que se concentram perto de 1/15
+        para cada ativo. Com 15 ativos, a chance de uma linha sorteada pôr quase metade do dinheiro em
+        um ativo e quase nada em outros doze é muito pequena: entre as 10.000 sorteadas, o maior peso
+        dado a um único ativo é 24,61%. A carteira de máximo Sharpe põe 44,29% na PETR4 e zera 12
+        ativos, uma região do espaço de pesos que o sorteio uniforme quase nunca visita. Por isso
+        multiplicar o número de sorteios por 100 leva a melhor sorteada só de 0,41 para 0,60.</p>
+        <p>A melhor sorteada é a melhor <em>entre as sorteadas</em>. É essa frase que o barema do A3
+        pede na leitura analítica, e é a pergunta que o parceiro fará: se 10.000 tentativas não bastam
+        para achar a melhor carteira, o que basta? A resposta é a seção seguinte.</p>
+        <div class="doc-nota">
+          <p><strong>Tempo do motor.</strong> O requisito do A3 é 10.000 carteiras em menos de 10
+          segundos. A versão vetorizada, com <code>einsum</code>, roda em menos de 1 segundo, e o teste
+          da aula trava esse limite. Um laço em Python sobre as carteiras também cumpre o requisito com
+          15 ativos, mas o ADR de vetorização registra o tempo medido das duas versões.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="slsqp">
+        <h2>5. Otimização com restrições no SLSQP</h2>
+        <p>Um problema de otimização tem três partes, e cada uma vira um argumento de
+        <code>scipy.optimize.minimize</code>:</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Parte</th><th>No problema da carteira</th><th>Argumento</th></tr></thead>
+            <tbody>
+              <tr><td>Função objetivo</td><td>variância <code>w @ cov @ w</code>, ou o Sharpe com sinal trocado</td><td>primeiro argumento</td></tr>
+              <tr><td>Restrição de igualdade</td><td>os pesos somam 1</td><td><code>constraints=[{"type": "eq", ...}]</code></td></tr>
+              <tr><td>Limites</td><td>cada peso entre 0 e 1, sem venda a descoberto</td><td><code>bounds=[(0, 1)] * n</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A soma 1 sozinha não impede peso negativo: uma carteira com -50% num ativo e 150% em outro
+        também soma 1. São os limites que proíbem a venda a descoberto, e o A4 exige os dois. O
+        <code>minimize</code> só maximiza trocando o sinal: maximizar o Sharpe é minimizar o Sharpe
+        negativo.</p>
+        <h3>O que conferir no resultado</h3>
+        <p>O objeto devolvido traz <code>x</code> (os pesos), <code>success</code> e
+        <code>message</code>. Usar <code>x</code> sem olhar <code>success</code> é o erro mais comum
+        da sprint: quando o SLSQP para por limite de iterações ou por não achar direção de descida,
+        <code>x</code> continua preenchido, com pesos que parecem plausíveis e não são ótimos. O
+        notebook da aula falha de propósito com <code>assert resultado.success</code>, para o erro
+        aparecer na hora em vez de virar um número errado no relatório ao parceiro.</p>
+        <p>No trio PETR4, IVVB11 e GOLD11, partindo de 10%, 80% e 10%, o primeiro passo vai até o
+        vértice da PETR4 (Sharpe 0,79), e o otimizador para em 10 iterações no mesmo Sharpe de 0,92
+        da cesta inteira. Os outros 12 ativos não entram na carteira de máximo Sharpe, então o trio
+        reproduz o ótimo da cesta.</p>
+      </section>
+
+      <section class="doc-secao" id="fronteira">
+        <h2>6. As duas ótimas e a fronteira</h2>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Medida</th><th>Variância mínima</th><th>Máximo Sharpe</th><th>Melhor sorteada</th></tr></thead>
+            <tbody>
+              <tr><td>Retorno</td><td>14,11%</td><td>25,98%</td><td>16,63%</td></tr>
+              <tr><td>Volatilidade</td><td>9,67%</td><td>15,91%</td><td>13,06%</td></tr>
+              <tr><td>Sharpe</td><td>0,29</td><td>0,92</td><td>0,41</td></tr>
+              <tr><td>Ativos com peso</td><td>10</td><td>3</td><td>15</td></tr>
+              <tr><td>Maior peso</td><td>26,79% IVVB11</td><td>44,29% PETR4</td><td>18,17%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A variância mínima procura só o menor risco e espalha o peso em 10 ativos, com IVVB11,
+        GOLD11 e EGIE3 somando 68,68%. Ela tem volatilidade de 9,67%, abaixo da menor sorteada
+        (11,88%). O máximo Sharpe aceita mais volatilidade em troca de retorno e concentra em três
+        ativos de correlação baixa ou negativa entre si. A tabela comparativa do A4 pede a leitura de
+        qual carteira serve a qual perfil de investidor do parceiro.</p>
+        <p>A fronteira liga essas carteiras. Cada um dos 50 pontos fixa um retorno alvo, de 14,11%
+        (variância mínima) a 37,56% (o retorno da PETR4, onde a carteira vira um ativo só), e resolve
+        a menor volatilidade com mais uma restrição de igualdade, <code>w @ mu == alvo</code>. O ponto
+        de partida de cada alvo é a solução do alvo anterior, o que deixa a sequência estável e
+        rápida.</p>
+        <div class="doc-nota">
+          <p><strong>O otimizador converge para o passado.</strong> Os pesos desta seção são ótimos
+          para a janela de 14/12/2020 a 31/08/2026. A PETR4 domina o máximo Sharpe porque rendeu 37,56%
+          ao ano nessa janela, e nada garante que repita. A Aula 05 testa as duas carteiras fora da
+          amostra.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="depois">
+        <h2>7. Depois do encontro</h2>
+        <p><strong>Desafio do notebook.</strong> Repetir o máximo Sharpe com um peso máximo por ativo
+        (seção 6 do notebook) e comparar os pesos e o Sharpe com os da aula.</p>
+        <p><strong>Avanço do A3 e prévia do A4.</strong> O gráfico integrando nuvem, fronteira e os
+        dois pontos ótimos, a tabela comparativa das duas carteiras e o ADR das restrições da
+        otimização, com o impacto numérico da decisão. O A3 vale 3 pontos: a review da Sprint 3 é em
+        19/11/2026 e a entrega, na sexta, 20/11/2026, às 23h59. O A4 vale 3 pontos e entrega o
+        otimizador num módulo Python; a Adalove o lista nas Sprints 3 e 4, ponto em aberto com a
+        coordenação.</p>
+        <p><strong>Leitura complementar.</strong> A seção do autoestudo sobre a fronteira como borda da
+        nuvem, relida com o gráfico do próprio grupo. A página de
+        <a href="../referencias/aula04.html">referências</a> lista as fontes.</p>
+        <p>O laboratório completo está no
+        <a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula04.ipynb" target="_blank" rel="noopener">notebook da Aula 04</a>.</p>
+      </section>
+
+    </main>
+
+    <p class="doc-rodape">Prof. José Romualdo &middot; Módulo 08 AdmTech &middot; 2026-2B-T19</p>
+
+  </div>
+
+  <nav class="doc-nav" aria-label="Navegação da aula">
+    <a href="../index.html"><span class="material-symbols-outlined" aria-hidden="true">home</span>Portal</a>
+    <a href="../aulas/aula04.html"><span class="material-symbols-outlined" aria-hidden="true">slideshow</span>Slides</a>
+    <a href="../referencias/aula04.html"><span class="material-symbols-outlined" aria-hidden="true">link</span>Referências</a>
+  </nav>
+</body>
+</html>

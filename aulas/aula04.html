@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 04 - Da Nuvem à Fronteira</title>
+
+  <!-- Aula 04, 18/11/2026, Semana 6, Sprint 3 (Adalove da turma 2026-2B-T19). Roteiro: PLANEJAMENTO_AULA_A_AULA.md, Aula 04.
+       Todo número deste deck está travado em tools/tests/test_aula04.py, medido por
+       tools/medidas_aula04.py sobre o Adj Close com as datas de ausência descartadas
+       (1.422 retornos diários, de 14/12/2020 a 31/08/2026), anualização por 252 e o CDI
+       acumulado na mesma janela como taxa livre de risco.
+
+       Divisão dos 105 minutos de metodologia ativa (depois da daily de 15 min):
+         Abertura (antes do Bloco 1)  slide 2        agenda
+         Bloco 1 (0 a 15)             slides 3 a 5   resgate da covariância, Peer Instruction, revelação
+         Bloco 2 (15 a 30)            slides 6 a 8   forma vetorial, Sharpe com CDI, widget do triângulo
+         Bloco 3 (30 a 45)            slides 9 e 10  o motor vetorizado e a dupla no notebook (12 min)
+         Bloco 4 (45 a 60)            slides 11 a 13 animação da nuvem, widget de sorteio, pergunta disparada
+         Bloco 5 (60 a 75)            slides 14 a 17 SLSQP, previsão de concentração, animação, resultado
+         Bloco 6 (75 a 90)            slides 18 e 19 fronteira sobre a nuvem e a dupla no notebook (12 min)
+         Bloco 7 (90 a 105)           slides 20 a 23 quiz, notebook, A3 e A4, referências
+
+       Se o tempo apertar, cortar primeiro o slide 13 (tabela de um milhão de sorteios):
+       a pergunta disparada do Bloco 4 também está no slide 12, junto do widget. -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-theme.css">
+  <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 1 -->
+      <section class="cover-slide">
+        <div class="cover-panel">
+          <div class="cover-content">
+            <p class="cover-eyebrow">Módulo 08 AdmTech &middot; Computação &middot; Semana 6 &middot; 18/11/2026</p>
+            <h1>Da Nuvem à Fronteira</h1>
+            <h3>Monte Carlo e Otimização de Markowitz para o A3 e o A4, Sprint 3</h3>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="content-slide" id="agenda">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Agenda do encontro</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead>
+            <tr><th>Bloco</th><th>Minutos</th><th>Tema</th><th>Interação que fecha o bloco</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Daily</td><td>15</td><td>O que fiz, o que vou fazer, impedimentos</td><td>tempo do motor do grupo para 10.000 carteiras</td></tr>
+            <tr><td>1</td><td>0 a 15</td><td>Da covariância às carteiras sorteadas</td><td>Peer Instruction sobre a melhor sorteada</td></tr>
+            <tr><td>2</td><td>15 a 30</td><td>Pesos, retorno e risco em forma vetorial</td><td>previsão antes do triângulo de pesos</td></tr>
+            <tr><td>3</td><td>30 a 45</td><td>O motor vetorizado de Monte Carlo</td><td>dupla no notebook, seções 1 a 3</td></tr>
+            <tr><td>4</td><td>45 a 60</td><td>A melhor sorteada contra a ótima</td><td>quantos sorteios faltariam</td></tr>
+            <tr><td>5</td><td>60 a 75</td><td>Otimização com restrições e SLSQP</td><td>previsão da carteira mais concentrada</td></tr>
+            <tr><td>6</td><td>75 a 90</td><td>As duas ótimas e a fronteira de 50 pontos</td><td>dupla no notebook, seções 4 e 5</td></tr>
+            <tr><td>7</td><td>90 a 105</td><td>Quiz e amarração com a Sprint 3</td><td>quiz de três perguntas</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+          <p>Horários de relógio a confirmar na Adalove; os blocos contam do fim da daily.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">2</p>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="content-slide" id="resgate">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O modelo da cesta estima 135 parâmetros</h2>
+        </div>
+        <div class="side-by-side">
+          <div>
+            <p>A Aula 03 deixou pronta a <strong>matriz de covariância anualizada</strong> da cesta e a curva de risco de dois ativos em função da correlação.</p>
+            <p>Hoje a matriz entra inteira: 15 retornos esperados mais 120 variâncias e covariâncias distintas, 135 números que o modelo estima do histórico.</p>
+          </div>
+          <table class="tabela-leitura">
+            <thead><tr><th>Trio de hoje</th><th>Volatilidade</th><th>Correlação com PETR4</th></tr></thead>
+            <tbody>
+              <tr><td>PETR4</td><td>33,41%</td><td>1</td></tr>
+              <tr><td>IVVB11</td><td>17,67%</td><td>-0,09</td></tr>
+              <tr><td>GOLD11</td><td>19,80%</td><td>-0,13</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
+          <p>Com a matriz pronta, como o grupo escolhe os pesos dos 15 ativos? Amostra de hoje: Adj Close com as datas de ausência descartadas, 1.422 retornos de 14/12/2020 a 31/08/2026.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [1]</p>
+          <p class="footer-page">3</p>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="quiz-slide" id="preparo">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Verificação do preparo</h2>
+        </div>
+        <div class="side-by-side">
+          <div class="quiz-container">
+            <p class="quiz-question">Entre 10.000 carteiras sorteadas com os 15 ativos, a de maior Índice de Sharpe é a carteira ótima?</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="10.000 pontos parecem muitos, mas pesos sorteados quase nunca concentram: nenhuma das 10.000 põe mais de 24,61% num ativo.">Sim: 10.000 sorteios cobrem todas as alocações</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="A diferença é grande: Sharpe 0,41 na melhor sorteada contra 0,92 na ótima.">Sim, a menos de arredondamento</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="Nenhuma sorteada pode passar da ótima, em semente alguma: a ótima é o máximo sobre todas as carteiras possíveis.">Depende da semente: outra semente passa da ótima</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: a melhor sorteada é só a melhor entre as sorteadas. Nem um milhão de sorteios chega ao ótimo."
+                  data-incorrect-msg="Não.">Não: é só a melhor entre as sorteadas e fica abaixo da ótima</li>
+            </ul>
+          </div>
+          <ol class="exercise-steps">
+            <li><strong>Votar</strong> sozinho, sem conversar.</li>
+            <li><strong>Discutir em dupla</strong> por dois minutos, defendendo o voto com o que viram na animação da nuvem.</li>
+            <li><strong>Votar de novo</strong> e só então revelar.</li>
+          </ol>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">4</p>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="content-slide" id="sorteada-contra-otima">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A melhor sorteada tem Sharpe 0,41 contra 0,92</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Carteira</th><th>Sharpe</th><th>Retorno</th><th>Volatilidade</th><th>Ativos com peso</th><th>Maior peso</th></tr></thead>
+          <tbody>
+            <tr><td>Melhor de 10.000 sorteadas</td><td>0,41</td><td>16,63%</td><td>13,06%</td><td>15</td><td>18,17%</td></tr>
+            <tr class="linha-destaque"><td>Máximo Sharpe, SLSQP</td><td>0,92</td><td>25,98%</td><td>15,91%</td><td>3</td><td>44,29% em PETR4</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">info</span>
+          <p>Sorteio com semente 42 e pesos uniformes normalizados. A carteira ótima concentra o peso em 3 dos 15 ativos e zera os outros 12.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [1] [6]</p>
+          <p class="footer-page">5</p>
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>Pesos, retorno e risco em forma vetorial</h2>
+        <h3>Uma carteira é um vetor de pesos que soma 1</h3>
+      </section>
+
+      <!-- 7 -->
+      <section class="content-slide" id="forma-vetorial">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Pesos iguais rendem 8,34%, abaixo do CDI</h2>
+        </div>
+        <div class="side-by-side">
+          <pre style="max-height: 420px; font-size: var(--escala-texto); line-height: 1.45"><code># mu: retorno esperado anual (15)
+# cov: covariância anual (15 x 15)
+# rf: CDI anualizado na janela
+def metricas(w, mu, cov, rf):
+    retorno = w @ mu
+    volatilidade = np.sqrt(w @ cov @ w)
+    sharpe = (retorno - rf) / volatilidade
+    return retorno, volatilidade, sharpe
+
+w = np.full(15, 1 / 15)
+metricas(w, mu, cov, rf)</code></pre>
+          <table class="tabela-leitura">
+            <tr><td>Retorno</td><td>w &middot; &mu;, a média dos retornos ponderada pelos pesos</td></tr>
+            <tr><td>Variância</td><td>w<sup>T</sup> &Sigma; w, que soma cada covariância ponderada pelo par de pesos</td></tr>
+            <tr><td>Sharpe</td><td>(retorno - CDI) / volatilidade: prêmio sobre o CDI por unidade de risco</td></tr>
+            <tr class="linha-destaque"><td>Pesos iguais</td><td>retorno 8,34% contra CDI de 11,30%, volatilidade 16,32%, Sharpe -0,18</td></tr>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">trending_down</span>
+          <p>Oito dos 15 ativos rendem abaixo do CDI na janela, e a MGLU3 tem retorno esperado de -42,84% ao ano.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [2] [5] [8]</p>
+          <p class="footer-page">7</p>
+        </div>
+      </section>
+
+      <!-- 8 -->
+      <section class="content-slide" id="widget-triangulo">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Cada ponto do triângulo é uma carteira</h2>
+        </div>
+        <div class="widget" data-widget="aula04-triangulo" data-fonte="../assets/data/aula04-triangulo.json"
+             data-largura="1000" data-altura="340"></div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p><strong>Antes de arrastar:</strong> anotem onde o ponto cai no plano com 100% em PETR4 e onde fica o maior Sharpe.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">8</p>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="content-slide" id="motor">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O motor sorteia 10.000 carteiras em menos de 1 s</h2>
+        </div>
+        <div class="side-by-side">
+          <pre style="max-height: 440px; font-size: var(--escala-texto); line-height: 1.45"><code>def sortear(n, mu, cov, rf, semente=42):
+    gerador = np.random.default_rng(semente)
+    pesos = gerador.random((n, len(mu)))
+    pesos /= pesos.sum(axis=1, keepdims=True)
+    retorno = pesos @ mu
+    volatilidade = np.sqrt(np.einsum(
+        "ij,jk,ik->i", pesos, cov, pesos))
+    sharpe = (retorno - rf) / volatilidade
+    return pesos, retorno, volatilidade, sharpe
+
+pesos, ret, vol, sharpe = sortear(
+    10_000, mu, cov, rf)</code></pre>
+          <table class="tabela-leitura">
+            <tr><td>Semente</td><td>o mesmo sorteio em qualquer máquina, para o teste do SPEC.md</td></tr>
+            <tr><td>Normalizar</td><td>cada linha dividida pela própria soma: pesos somam 1, nenhum negativo</td></tr>
+            <tr><td>einsum</td><td>w<sup>T</sup> &Sigma; w das 10.000 linhas de uma vez, sem laço em Python</td></tr>
+            <tr class="linha-destaque"><td>Requisito</td><td>o A3 pede 10.000 carteiras em menos de 10 segundos</td></tr>
+          </table>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [2] [7]</p>
+          <p class="footer-page">9</p>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="exercise-slide" id="pratica-motor">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Prática em dupla: o motor de Monte Carlo</h2>
+          </div>
+          <div class="cronometro" id="cronometro-motor" data-minutos="12"></div>
+        </div>
+        <ol class="exercise-steps">
+          <li>Abram o notebook da aula no Colab. Quem está no teclado é o <strong>condutor</strong>; o outro é o <strong>navegador</strong>, que lê, pergunta e confere.</li>
+          <li>Seções 1 e 2: carreguem os retornos, calculem <code>mu</code>, <code>cov</code> e o CDI, e confiram as métricas da carteira de pesos iguais.</li>
+          <li>Seção 3: leiam <code>sortear</code> linha a linha, rodem e meçam o tempo de 10.000 carteiras com <code>time.perf_counter</code>.</li>
+          <li>Aos 6 minutos, troquem de papel. O novo condutor confere que todas as linhas somam 1 e desenha a nuvem colorida por Sharpe.</li>
+          <li>Anotem o tempo medido e quantas carteiras ficaram abaixo do CDI.</li>
+        </ol>
+        <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula04.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 04 no Colab</a></p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">10</p>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="content-slide" id="video-nuvem">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>8.843 das 10.000 sorteadas rendem abaixo do CDI</h2>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p><strong>Antes de tocar:</strong> anotem onde a melhor sorteada vai parar, no meio da nuvem ou na borda de cima.</p>
+        </div>
+        <video class="video-slide" style="max-height: 420px" controls muted playsinline preload="metadata"
+               poster="../assets/img/aula04-nuvem-monte-carlo-poster.png">
+          <source src="../assets/video/aula04-nuvem-monte-carlo.mp4" type="video/mp4">
+        </video>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">11</p>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="content-slide" id="widget-nuvem">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A melhor sorteada sobe de -0,09 para 0,41</h2>
+        </div>
+        <div class="widget" data-widget="aula04-nuvem" data-fonte="../assets/data/aula04-nuvem.json"
+             data-inicial="10" data-largura="1000" data-altura="340"></div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
+          <p>Quantos sorteios faltariam para a melhor sorteada encostar na ótima?</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">12</p>
+        </div>
+      </section>
+
+      <!-- 13 -->
+      <section class="content-slide" id="milhao">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Um milhão de sorteios chega a Sharpe 0,60</h2>
+        </div>
+        <div class="side-by-side">
+          <table class="tabela-leitura tabela-compacta">
+            <thead><tr><th>Sorteios</th><th>Melhor Sharpe</th></tr></thead>
+            <tbody>
+              <tr><td>10</td><td>-0,09</td></tr>
+              <tr><td>100</td><td>0,15</td></tr>
+              <tr><td>1.000</td><td>0,28</td></tr>
+              <tr><td>10.000</td><td>0,41</td></tr>
+              <tr><td>100.000</td><td>0,41</td></tr>
+              <tr><td>1.000.000</td><td>0,60</td></tr>
+              <tr class="linha-destaque"><td>SLSQP</td><td>0,92</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <p>Pesos uniformes normalizados espalham o dinheiro: o maior peso entre as 10.000 sorteadas é <strong>24,61%</strong>.</p>
+            <p>A ótima põe 44,29% na PETR4 e zera 12 ativos, uma região do espaço de pesos que o sorteio quase nunca visita.</p>
+          </div>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
+          <p>Quantos sorteios faltariam para a melhor sorteada encostar na ótima?</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">13</p>
+        </div>
+      </section>
+
+      <!-- 14 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>Otimização com restrições</h2>
+        <h3>Função objetivo, soma 1 e nenhum peso negativo</h3>
+      </section>
+
+      <!-- 15 -->
+      <section class="content-slide" id="slsqp">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Otimização com SLSQP no SciPy</h2>
+        </div>
+        <div class="side-by-side">
+          <pre class="code-compact" style="max-height: 400px"><code>from scipy.optimize import minimize
+
+n = len(mu)
+soma_1 = {"type": "eq",
+          "fun": lambda w: w.sum() - 1}
+limites = [(0, 1)] * n  # sem venda a descoberto
+inicio = np.full(n, 1 / n)
+
+def menos_sharpe(w):
+    return -(w @ mu - rf) / np.sqrt(w @ cov @ w)
+
+ms = minimize(menos_sharpe, inicio, method="SLSQP",
+              bounds=limites, constraints=[soma_1])
+mv = minimize(lambda w: w @ cov @ w, inicio,
+              method="SLSQP", bounds=limites,
+              constraints=[soma_1])</code></pre>
+          <table class="tabela-leitura">
+            <tr><td>Objetivo</td><td>o que se minimiza: a variância, ou o Sharpe com sinal trocado</td></tr>
+            <tr><td>Restrição</td><td>igualdade: os pesos somam 1</td></tr>
+            <tr><td>Limites</td><td>cada peso entre 0 e 1, sem venda a descoberto</td></tr>
+            <tr class="linha-destaque"><td>Conferir</td><td><code>ms.success</code> antes de usar <code>ms.x</code></td></tr>
+          </table>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3] [6]</p>
+          <p class="footer-page">15</p>
+        </div>
+      </section>
+
+      <!-- 16 -->
+      <section class="content-slide" id="video-slsqp">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O SLSQP chega ao ótimo do trio em 10 iterações</h2>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p><strong>Antes de rodar:</strong> qual das duas, variância mínima ou máximo Sharpe, vai concentrar mais peso num único ativo? A previsão fica no quadro.</p>
+        </div>
+        <video class="video-slide" style="max-height: 400px" controls muted playsinline preload="metadata"
+               poster="../assets/img/aula04-slsqp-triangulo-poster.png">
+          <source src="../assets/video/aula04-slsqp-triangulo.mp4" type="video/mp4">
+        </video>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [6]</p>
+          <p class="footer-page">16</p>
+        </div>
+      </section>
+
+      <!-- 17 -->
+      <section class="content-slide" id="duas-otimas">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O máximo Sharpe põe 44,29% na PETR4</h2>
+        </div>
+        <div class="side-by-side">
+          <table class="tabela-leitura tabela-compacta">
+            <thead><tr><th>Medida</th><th>Variância mínima</th><th>Máximo Sharpe</th></tr></thead>
+            <tbody>
+              <tr><td>Retorno</td><td>14,11%</td><td>25,98%</td></tr>
+              <tr><td>Volatilidade</td><td>9,67%</td><td>15,91%</td></tr>
+              <tr><td>Sharpe</td><td>0,29</td><td>0,92</td></tr>
+              <tr><td>Ativos com peso</td><td>10</td><td>3</td></tr>
+              <tr class="linha-destaque"><td>Maior peso</td><td>26,79% IVVB11</td><td>44,29% PETR4</td></tr>
+            </tbody>
+          </table>
+          <table class="tabela-leitura tabela-compacta">
+            <thead><tr><th>Ativo</th><th>Variância mínima</th><th>Máximo Sharpe</th></tr></thead>
+            <tbody>
+              <tr><td>PETR4</td><td>5,06%</td><td>44,29%</td></tr>
+              <tr><td>IVVB11</td><td>26,79%</td><td>24,07%</td></tr>
+              <tr><td>GOLD11</td><td>24,68%</td><td>31,64%</td></tr>
+              <tr><td>EGIE3</td><td>17,20%</td><td>0%</td></tr>
+              <tr><td>outros 6</td><td>26,26%</td><td>0%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">compare_arrows</span>
+          <p>Confiram a previsão do quadro. A variância mínima espalha o peso em 10 ativos e fica com a menor volatilidade possível da cesta.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">17</p>
+        </div>
+      </section>
+
+      <!-- 18 -->
+      <section class="content-slide" id="video-fronteira">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Nenhuma das 10.000 sorteadas passa da fronteira</h2>
+        </div>
+        <video class="video-slide" style="max-height: 420px" controls muted playsinline preload="metadata"
+               poster="../assets/img/aula04-fronteira-poster.png">
+          <source src="../assets/video/aula04-fronteira.mp4" type="video/mp4">
+        </video>
+        <p>Cada um dos 50 pontos é a carteira de menor volatilidade para um retorno alvo, de 14,11% (variância mínima) a 37,56% (só PETR4).</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3] [4]</p>
+          <p class="footer-page">18</p>
+        </div>
+      </section>
+
+      <!-- 19 -->
+      <section class="exercise-slide" id="pratica-fronteira">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Prática em dupla: as duas ótimas e a fronteira</h2>
+          </div>
+          <div class="cronometro" id="cronometro-fronteira" data-minutos="12"></div>
+        </div>
+        <ol class="exercise-steps">
+          <li>Seção 4: rodem o SLSQP para a variância mínima e o máximo Sharpe e confiram <code>success</code> nos dois.</li>
+          <li>Montem a tabela comparativa das duas carteiras, com os pesos acima de 0,01%.</li>
+          <li>Aos 6 minutos, troquem de papel. Seção 5: rodem a fronteira com 50 retornos alvo e localizem a restrição <code>w @ mu == alvo</code>.</li>
+          <li>Desenhem nuvem, fronteira e as duas ótimas no mesmo gráfico.</li>
+          <li>Escrevam uma frase: para qual perfil de investidor do parceiro cada carteira faz sentido.</li>
+        </ol>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">19</p>
+        </div>
+      </section>
+
+      <!-- 20 -->
+      <section class="quiz-slide" id="quiz-final">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Quiz de verificação</h2>
+        </div>
+        <div class="quiz-trio">
+          <div class="quiz-container">
+            <p class="quiz-question">1. Por que o sorteio não encontra a carteira de máximo Sharpe?</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="100.000 sorteios dão 0,41, o mesmo que 10.000.">10.000 são poucos; 100.000 resolvem</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: a ótima concentra em 3 ativos e o sorteio uniforme quase nunca passa de 25% num ativo."
+                  data-incorrect-msg="Não.">Pesos sorteados quase nunca concentram</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="A semente só fixa o sorteio; nenhuma semente passa da ótima.">A semente está errada</li>
+            </ul>
+          </div>
+          <div class="quiz-container">
+            <p class="quiz-question">2. O que impede venda a descoberto no SLSQP?</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="A soma 1 aceita peso negativo compensado por outro acima de 1.">A restrição de soma 1</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: bounds de 0 a 1 em cada peso."
+                  data-incorrect-msg="Não.">Os limites de 0 a 1</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="O ponto inicial só diz de onde o otimizador parte.">O ponto inicial</li>
+            </ul>
+          </div>
+          <div class="quiz-container">
+            <p class="quiz-question">3. Qual ótima tem a menor volatilidade?</p>
+            <ul class="quiz-options">
+              <li data-correct="true"
+                  data-correct-msg="Certo: 9,67% ao ano, abaixo de qualquer sorteada (11,88%)."
+                  data-incorrect-msg="Não.">Variância mínima</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="O máximo Sharpe aceita 15,91% de volatilidade em troca de retorno.">Máximo Sharpe</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="A melhor sorteada tem 13,06%, acima dos 9,67% da variância mínima.">A melhor sorteada</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">20</p>
+        </div>
+      </section>
+
+      <!-- 21 -->
+      <section class="exercise-slide" id="notebook">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Notebook da aula</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Seção</th><th>O que entrega</th></tr></thead>
+          <tbody>
+            <tr><td>1 e 2</td><td>Retornos, <code>mu</code>, <code>cov</code>, o CDI e as métricas em forma vetorial</td></tr>
+            <tr><td>3</td><td>O motor vetorizado, o tempo medido e a nuvem colorida por Sharpe</td></tr>
+            <tr><td>4</td><td>Variância mínima e máximo Sharpe com SLSQP, e a tabela comparativa</td></tr>
+            <tr><td>5</td><td>A fronteira de 50 pontos sobre a nuvem</td></tr>
+            <tr class="linha-destaque"><td>6</td><td>Desafio: peso máximo por ativo e a comparação com os pesos da aula</td></tr>
+          </tbody>
+        </table>
+        <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula04.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula04.ipynb" target="_blank" rel="noopener">Abrir no Colab</a></p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">21</p>
+        </div>
+      </section>
+
+      <!-- 22 -->
+      <section class="content-slide" id="a3-a4">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Artefatos A3 e A4 da Sprint 3</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead><tr><th>Critério do A3</th><th>Peso</th><th>O que hoje já adiantou</th></tr></thead>
+          <tbody>
+            <tr><td>Corretude da simulação</td><td>30%</td><td>pesos normalizados e as três métricas por carteira</td></tr>
+            <tr><td>Desempenho</td><td>10%</td><td>motor vetorizado, bem abaixo dos 10 segundos</td></tr>
+            <tr><td>Qualidade do gráfico</td><td>10%</td><td>nuvem colorida por Sharpe, com o CDI marcado</td></tr>
+            <tr><td>Leitura analítica</td><td>15%</td><td>por que a simulação não substitui a otimização: 0,41 contra 0,92</td></tr>
+            <tr><td>Especificação e documentação</td><td>15%</td><td>SPEC.md com teste de semente fixa e pesos somando 1</td></tr>
+            <tr class="linha-destaque"><td>ADRs, nota individual</td><td>20%</td><td>número de simulações e vetorização, com o tempo medido</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">event</span>
+          <p>A3 vale 3 pontos: review da Sprint 3 em 19/11/2026 e entrega na sexta, 20/11/2026, 23h59. O A4 (3 pontos) leva o otimizador de hoje para um módulo Python; a Adalove o lista nas Sprints 3 e 4.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">22</p>
+        </div>
+      </section>
+
+      <!-- 23 -->
+      <section class="content-slide" id="referencias">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Referências</h2>
+        </div>
+        <ol class="ref-columns">
+          <li id="ref-1"><a href="https://github.com/josercf/2026-2B-M08/blob/main/dados/README.md" target="_blank" rel="noopener">dados/README.md</a>: snapshot do case, cesta de 15 ativos e falhas do provedor.</li>
+          <li id="ref-2">CAETANO, M. A. L. <em>Python e mercado financeiro</em>. Blucher, 2021. cap. 9, seções 9.2 e 9.5. Autoestudo: Carteiras e simulação de Monte Carlo com Python.</li>
+          <li id="ref-3">CAETANO, M. A. L. <em>Python e mercado financeiro</em>. Blucher, 2021. cap. 9, seção 9.3. Autoestudo: Da nuvem à fronteira eficiente de Markowitz.</li>
+          <li id="ref-4">MARKOWITZ, H. Portfolio Selection. <em>The Journal of Finance</em>, v. 7, n. 1, p. 77-91, 1952.</li>
+          <li id="ref-5">SHARPE, W. F. Mutual Fund Performance. <em>The Journal of Business</em>, v. 39, n. 1, p. 119-138, 1966.</li>
+          <li id="ref-6"><a href="https://docs.scipy.org/doc/scipy/reference/optimize.minimize-slsqp.html" target="_blank" rel="noopener">SciPy: minimize com method='SLSQP'</a>.</li>
+          <li id="ref-7"><a href="https://numpy.org/doc/stable/reference/random/generator.html" target="_blank" rel="noopener">NumPy: Random Generator</a>.</li>
+          <li id="ref-8"><a href="https://dadosabertos.bcb.gov.br/" target="_blank" rel="noopener">Banco Central, dados abertos do SGS</a>: série 12, CDI.</li>
+        </ol>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-page">23</p>
+        </div>
+      </section>
+
+      <!-- 24 -->
+      <section class="end-slide">
+        <h1>Até 01/12/2026</h1>
+        <h3>Aula 05: Validação e Robustez do Modelo</h3>
+        <h3>Prof. José Romualdo</h3>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280, height: 720, center: false, margin: 0,
+      hash: true, slideNumber: false, transition: 'fade'
+    });
+  </script>
+  <script src="../assets/js/inteli-quiz.js"></script>
+  <script src="../assets/js/inteli-zoom.js"></script>
+  <script src="../assets/js/inteli-print.js"></script>
+  <script src="../assets/js/inteli-cronometro.js"></script>
+  <script src="../assets/js/inteli-widgets.js"></script>
+  <script src="../assets/js/widgets/aula04-triangulo.js"></script>
+  <script src="../assets/js/widgets/aula04-nuvem.js"></script>
+</body>
+</html>
