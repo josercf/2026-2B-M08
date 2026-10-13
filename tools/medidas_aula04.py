@@ -8,16 +8,21 @@ SLSQP no triângulo de pesos de três ativos. Todo número que o deck, o noteboo
 os widgets e as animações da Aula 04 citam sai daqui e está travado em
 tools/tests/test_aula04.py.
 
-Tratamento de ausências declarado: Adj Close com as datas de ausência
-descartadas na cesta inteira (dropna), o tratamento "descartar" da Aula 01. A
-amostra começa em 11/12/2020, primeira cotação do GOLD11, e os retornos diários
-vão de 14/12/2020 a 31/08/2026. Anualização por 252 pregões, como na Aula 02.
+Tratamento de ausência: o único do módulo (ADR-009), de tools/retornos.py. A
+lacuna isolada de 24/10/2025 (BOVA11, IVVB11 e GOLD11) é preenchida com o último
+preço, nada é preenchido antes da primeira cotação, e a cesta usa a janela
+comum dos 15 ativos: 1.423 retornos de 14/12/2020 a 31/08/2026, a mesma janela
+da matriz da Aula 03. Com a GOLD11 na cesta, a janela perde março de 2020, e
+custo_da_janela() mede o efeito na PETR4. Anualização por 252 pregões, como na
+Aula 02.
 """
 import os
 
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
+
+import retornos as tratamento
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DADOS = os.path.join(RAIZ, "dados")
@@ -31,16 +36,23 @@ TOLERANCIA = 1e-12
 MINIMO_PESO = 1e-4  # peso abaixo disso conta como fora da carteira
 
 
-def precos():
-    """Adj Close da cesta com as datas de ausência descartadas."""
-    ajustado = pd.read_csv(os.path.join(DADOS, "precos_ajustados.csv"),
-                           index_col="data", parse_dates=["data"])
-    return ajustado.dropna()
-
-
 def retornos():
-    """Retornos diários simples da cesta, sobre os preços com ausências descartadas."""
-    return precos().pct_change().dropna()
+    """Retornos diários simples da cesta na janela comum dos 15 ativos (ADR-009)."""
+    return tratamento.retornos_janela_comum()
+
+
+def custo_da_janela(ticker="PETR4"):
+    """Volatilidade anual do ativo na série inteira e na janela comum da cesta.
+
+    A série inteira é a medida da Aula 02; a janela comum é a da matriz que o
+    otimizador consome. A diferença é o custo de pôr a GOLD11 na cesta.
+    """
+    inteira = tratamento.retornos_por_ativo()[ticker]
+    comum = retornos()[ticker]
+    return {"serie_inteira": float(tratamento.volatilidade_anual(inteira)),
+            "janela_comum": float(tratamento.volatilidade_anual(comum)),
+            "retornos_serie_inteira": int(inteira.notna().sum()),
+            "retornos_janela_comum": len(comum)}
 
 
 def retorno_esperado():

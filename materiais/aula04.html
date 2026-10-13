@@ -8,9 +8,10 @@
 
   <!-- Este material aprofunda o que o deck só aponta. Todo número citado vem de
        tools/medidas_aula04.py e está travado em tools/tests/test_aula04.py.
-       Amostra: Adj Close com as datas de ausência descartadas (1.422 retornos
-       diários, de 14/12/2020 a 31/08/2026), anualização por 252, CDI acumulado na
-       janela como taxa livre de risco, semente 42 no sorteio. -->
+       Amostra: Adj Close com o tratamento de ausência da ADR-009 (tools/retornos.py),
+       janela comum dos 15 ativos (1.423 retornos diários, de 14/12/2020 a
+       31/08/2026), anualização por 252, CDI acumulado na janela como taxa livre de
+       risco, semente 42 no sorteio. -->
 
   <link rel="stylesheet" href="../assets/css/inteli-brand.css">
   <link rel="stylesheet" href="../assets/css/inteli-material.css">
@@ -93,8 +94,8 @@
             rende menos do que o CDI tem prêmio negativo, qualquer que seja a volatilidade.</p></details></li>
           <li>Na animação da nuvem, quantas das 10.000 carteiras sorteadas ficaram abaixo do CDI?
             <details><summary>Resposta comentada</summary>
-            <p>8.843. Oito dos 15 ativos da cesta rendem abaixo do CDI na janela, e a MGLU3 tem
-            retorno esperado de -42,84% ao ano. Como o sorteio dá peso positivo a todos os ativos, quase
+            <p>8.851. Oito dos 15 ativos da cesta rendem abaixo do CDI na janela, e a MGLU3 tem
+            retorno esperado de -42,83% ao ano. Como o sorteio dá peso positivo a todos os ativos, quase
             toda carteira sorteada carrega um pedaço desses ativos.</p></details></li>
           <li>Na animação da fronteira, alguma carteira sorteada passa acima ou à esquerda da curva?
             <details><summary>Resposta comentada</summary>
@@ -104,7 +105,7 @@
           <li>Na animação do SLSQP, para onde vai o primeiro passo, e onde o otimizador para?
             <details><summary>Resposta comentada</summary>
             <p>O primeiro passo vai para o vértice da PETR4, 100% em um ativo, com Sharpe 0,79. Depois
-            o otimizador recua e para em 10 iterações em 44,29% PETR4, 24,07% IVVB11 e 31,64% GOLD11,
+            o otimizador recua e para em 10 iterações em 44,31% PETR4, 23,97% IVVB11 e 31,72% GOLD11,
             com Sharpe 0,92. O primeiro passo segue a direção que mais melhora o Sharpe no ponto de
             partida, e os seguintes corrigem o excesso.</p></details></li>
         </ol>
@@ -112,21 +113,40 @@
 
       <section class="doc-secao" id="amostra">
         <h2>2. A amostra desta aula</h2>
-        <p>Toda a aula usa o <code>Adj Close</code> da cesta com as datas de ausência descartadas na
-        cesta inteira (<code>dropna</code>), o tratamento "descartar" da Aula 01. Com ele a série
-        começa em 11/12/2020, primeira cotação do GOLD11, e os retornos diários vão de 14/12/2020 a
-        31/08/2026: são 1.422 retornos para cada um dos 15 ativos.</p>
-        <p>A Aula 03 calculou a covariância de cada par sobre os pregões em que os dois ativos têm
-        retorno, o padrão do pandas. Para o otimizador, a matriz inteira precisa vir de uma amostra
-        só: uma matriz montada par a par, com amostras diferentes em cada par, pode deixar de ser
-        semidefinida positiva, e aí existe combinação de pesos com "variância" negativa, que o
-        otimizador persegue. Descartar as datas resolve isso ao custo de perder março de 2020, como a
-        Aula 01 mediu.</p>
+        <p>Toda a aula usa o <code>Adj Close</code> da cesta com o tratamento de ausência único do
+        módulo, registrado na ADR-009 e implementado em <code>tools/retornos.py</code>. A regra tem
+        quatro partes: a lacuna isolada é preenchida com o último preço, nada é preenchido antes da
+        primeira cotação de um ativo, a métrica de um ativo usa a série inteira dele e a análise
+        conjunta usa a janela comum dos ativos envolvidos.</p>
+        <p>O preenchimento é o tratamento que o exemplo de ADR da Aula 01 escolheu, e no snapshot ele
+        afeta um pregão só: 24/10/2025, em que BOVA11, IVVB11 e GOLD11 ficaram sem cotação. Esse
+        pregão entra na amostra com retorno zero nos três ETFs, e o pregão seguinte leva a variação dos
+        dois dias. A cesta desta aula é uma análise conjunta, então usa a janela comum dos 15 ativos:
+        como a GOLD11 só é cotada a partir de 11/12/2020, são 1.423 retornos diários para cada ativo,
+        de 14/12/2020 a 31/08/2026.</p>
+        <p>É a mesma janela da matriz de covariância montada na Aula 03, e o otimizador consome essa
+        matriz sem recalcular nada. A janela comum garante também que a matriz seja semidefinida
+        positiva: uma matriz montada par a par, com uma amostra diferente em cada par, pode deixar de
+        ser, e aí existe combinação de pesos com "variância" negativa, que o otimizador persegue.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>PETR4</th><th>Retornos</th><th>Início</th><th>Volatilidade anual</th></tr></thead>
+            <tbody>
+              <tr><td>Série inteira (Aula 02)</td><td>1.907</td><td>03/01/2019</td><td>39,25%</td></tr>
+              <tr><td>Janela comum dos 15 ativos (esta aula)</td><td>1.423</td><td>14/12/2020</td><td>33,40%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A tabela mede o custo da janela comum. Com a GOLD11 na cesta, a janela perde março de 2020, o
+        mesmo efeito que a Aula 01 mostrou ao descartar datas, e a volatilidade anual da PETR4 cai de
+        39,25% na série inteira, a medida da Aula 02, para 33,40%. O otimizador desta aula é estimado
+        sem o choque de 2020.</p>
         <div class="doc-nota">
-          <p><strong>Para o ADR do grupo.</strong> A escolha da amostra muda todos os números desta
-          página. O ADR do motor ou do otimizador declara qual tratamento de ausência alimenta a
-          matriz e cita um número que muda com ele, por exemplo a volatilidade da carteira de
-          variância mínima.</p>
+          <p><strong>Para o ADR do grupo.</strong> A escolha da janela muda todos os números desta
+          página. O ADR do motor ou do otimizador declara a janela que alimenta a matriz, com início e
+          número de retornos, e decide se um ativo de histórico curto como a GOLD11 vale a perda de
+          março de 2020, citando um número que muda com a escolha, por exemplo a volatilidade da
+          carteira de variância mínima.</p>
         </div>
         <p>Com essa amostra, a matriz tem 15 retornos esperados e 120 variâncias e covariâncias
         distintas: 135 números estimados do histórico. Cada um carrega erro de estimação, e a Aula 05
@@ -146,7 +166,7 @@ sharpe = (retorno - rf) / volatilidade</code></pre>
         volatilidades: o termo cruzado entra com sinal negativo.</p>
         <p>O teste que garante que a fórmula está certa é calcular a mesma carteira de dois jeitos.
         Para os pesos iguais, a série diária <code>retornos @ w</code> anualizada dá exatamente o
-        mesmo retorno (8,34%) e a mesma volatilidade (16,32%) da forma vetorial. Esse teste entra no
+        mesmo retorno (8,34%) e a mesma volatilidade (16,31%) da forma vetorial. Esse teste entra no
         <code>SPEC.md</code> do A3 como caso com os dados do grupo.</p>
         <h3>Por que o CDI no lugar da taxa livre de risco</h3>
         <p>O parceiro decide onde alocar excedente de caixa, e a alternativa sem risco desse caixa é
@@ -162,7 +182,7 @@ sharpe = (retorno - rf) / volatilidade</code></pre>
           <table class="doc-tabela">
             <thead><tr><th>Sorteios</th><th>Melhor Sharpe entre os sorteados</th></tr></thead>
             <tbody>
-              <tr><td>10</td><td>-0,09</td></tr>
+              <tr><td>10</td><td>-0,10</td></tr>
               <tr><td>100</td><td>0,15</td></tr>
               <tr><td>1.000</td><td>0,28</td></tr>
               <tr><td>10.000</td><td>0,41</td></tr>
@@ -175,7 +195,7 @@ sharpe = (retorno - rf) / volatilidade</code></pre>
         <p>Dividir números uniformes pela soma da linha produz pesos que se concentram perto de 1/15
         para cada ativo. Com 15 ativos, a chance de uma linha sorteada pôr quase metade do dinheiro em
         um ativo e quase nada em outros doze é muito pequena: entre as 10.000 sorteadas, o maior peso
-        dado a um único ativo é 24,61%. A carteira de máximo Sharpe põe 44,29% na PETR4 e zera 12
+        dado a um único ativo é 24,61%. A carteira de máximo Sharpe põe 44,31% na PETR4 e zera 12
         ativos, uma região do espaço de pesos que o sorteio uniforme quase nunca visita. Por isso
         multiplicar o número de sorteios por 100 leva a melhor sorteada só de 0,41 para 0,60.</p>
         <p>A melhor sorteada é a melhor <em>entre as sorteadas</em>. É essa frase que o barema do A3
@@ -226,27 +246,27 @@ sharpe = (retorno - rf) / volatilidade</code></pre>
           <table class="doc-tabela">
             <thead><tr><th>Medida</th><th>Variância mínima</th><th>Máximo Sharpe</th><th>Melhor sorteada</th></tr></thead>
             <tbody>
-              <tr><td>Retorno</td><td>14,11%</td><td>25,98%</td><td>16,63%</td></tr>
-              <tr><td>Volatilidade</td><td>9,67%</td><td>15,91%</td><td>13,06%</td></tr>
+              <tr><td>Retorno</td><td>14,10%</td><td>25,96%</td><td>16,62%</td></tr>
+              <tr><td>Volatilidade</td><td>9,67%</td><td>15,91%</td><td>13,05%</td></tr>
               <tr><td>Sharpe</td><td>0,29</td><td>0,92</td><td>0,41</td></tr>
               <tr><td>Ativos com peso</td><td>10</td><td>3</td><td>15</td></tr>
-              <tr><td>Maior peso</td><td>26,79% IVVB11</td><td>44,29% PETR4</td><td>18,17%</td></tr>
+              <tr><td>Maior peso</td><td>26,78% IVVB11</td><td>44,31% PETR4</td><td>18,17%</td></tr>
             </tbody>
           </table>
         </div>
         <p>A variância mínima procura só o menor risco e espalha o peso em 10 ativos, com IVVB11,
         GOLD11 e EGIE3 somando 68,68%. Ela tem volatilidade de 9,67%, abaixo da menor sorteada
-        (11,88%). O máximo Sharpe aceita mais volatilidade em troca de retorno e concentra em três
+        (11,87%). O máximo Sharpe aceita mais volatilidade em troca de retorno e concentra em três
         ativos de correlação baixa ou negativa entre si. A tabela comparativa do A4 pede a leitura de
         qual carteira serve a qual perfil de investidor do parceiro.</p>
-        <p>A fronteira liga essas carteiras. Cada um dos 50 pontos fixa um retorno alvo, de 14,11%
-        (variância mínima) a 37,56% (o retorno da PETR4, onde a carteira vira um ativo só), e resolve
+        <p>A fronteira liga essas carteiras. Cada um dos 50 pontos fixa um retorno alvo, de 14,10%
+        (variância mínima) a 37,53% (o retorno da PETR4, onde a carteira vira um ativo só), e resolve
         a menor volatilidade com mais uma restrição de igualdade, <code>w @ mu == alvo</code>. O ponto
         de partida de cada alvo é a solução do alvo anterior, o que deixa a sequência estável e
         rápida.</p>
         <div class="doc-nota">
           <p><strong>O otimizador converge para o passado.</strong> Os pesos desta seção são ótimos
-          para a janela de 14/12/2020 a 31/08/2026. A PETR4 domina o máximo Sharpe porque rendeu 37,56%
+          para a janela de 14/12/2020 a 31/08/2026. A PETR4 domina o máximo Sharpe porque rendeu 37,53%
           ao ano nessa janela, e nada garante que repita. A Aula 05 testa as duas carteiras fora da
           amostra.</p>
         </div>

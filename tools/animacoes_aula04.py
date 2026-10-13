@@ -1,7 +1,9 @@
 """Animações da Aula 04 (legendas no topo do quadro, porque a barra de
 controles do <video> cobre a faixa de baixo).
 
-Animações da Aula 04, a partir de dados/ via tools/medidas_aula04.py.
+Animações da Aula 04, a partir de dados/ via tools/medidas_aula04.py, com o
+tratamento de ausência da ADR-009 (tools/retornos.py): janela comum dos 15
+ativos, 1.423 retornos de 14/12/2020 a 31/08/2026.
 
 1. aula04-nuvem-monte-carlo (22 s): as 10.000 carteiras sorteadas entrando no
    plano risco-retorno em lotes crescentes (10, 100, 1.000 e 10.000), verdes
@@ -26,6 +28,7 @@ from matplotlib.patches import Polygon
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import medidas_aula04 as m  # noqa: E402
+import retornos  # noqa: E402
 from midia import FPS, figura, gravar, metadados, violacoes  # noqa: E402
 from paleta import cor  # noqa: E402
 
@@ -224,6 +227,9 @@ def slsqp_triangulo():
 
 
 def main():
+    # Nenhum quadro sai de outra amostra que não a janela comum da ADR-009.
+    if not retornos.retornos_janela_comum().equals(m.retornos()):
+        raise SystemExit("medidas_aula04 saiu da janela comum da ADR-009")
     for gerar in (nuvem_monte_carlo, fronteira, slsqp_triangulo):
         mp4, poster = gerar()
         erros = violacoes(metadados(mp4))

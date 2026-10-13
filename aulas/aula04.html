@@ -7,8 +7,9 @@
 
   <!-- Aula 04, 18/11/2026, Semana 6, Sprint 3 (Adalove da turma 2026-2B-T19). Roteiro: PLANEJAMENTO_AULA_A_AULA.md, Aula 04.
        Todo número deste deck está travado em tools/tests/test_aula04.py, medido por
-       tools/medidas_aula04.py sobre o Adj Close com as datas de ausência descartadas
-       (1.422 retornos diários, de 14/12/2020 a 31/08/2026), anualização por 252 e o CDI
+       tools/medidas_aula04.py sobre o Adj Close com o tratamento de ausência da ADR-009
+       (tools/retornos.py: lacuna de 24/10/2025 preenchida, janela comum dos 15 ativos,
+       1.423 retornos diários de 14/12/2020 a 31/08/2026), anualização por 252 e o CDI
        acumulado na mesma janela como taxa livre de risco.
 
        Divisão dos 105 minutos de metodologia ativa (depois da daily de 15 min):
@@ -83,25 +84,26 @@
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>O modelo da cesta estima 135 parâmetros</h2>
+          <h2>O otimizador estima 135 parâmetros em 1.423 retornos</h2>
         </div>
         <div class="side-by-side">
           <div>
-            <p>A Aula 03 deixou pronta a <strong>matriz de covariância anualizada</strong> da cesta e a curva de risco de dois ativos em função da correlação.</p>
-            <p>Hoje a matriz entra inteira: 15 retornos esperados mais 120 variâncias e covariâncias distintas, 135 números que o modelo estima do histórico.</p>
+            <p>A <strong>matriz de covariância</strong> da Aula 03 entra inteira, na mesma janela: 15 retornos esperados mais 120 variâncias e covariâncias distintas.</p>
+            <p>Regra da ADR-009: a lacuna de 24/10/2025 é preenchida com o último preço, como no ADR da Aula 01, e a cesta usa a janela comum dos 15 ativos, 1.423 retornos de 14/12/2020 a 31/08/2026.</p>
+            <p><strong>Com a matriz pronta, como o grupo escolhe os pesos dos 15 ativos?</strong></p>
           </div>
           <table class="tabela-leitura">
-            <thead><tr><th>Trio de hoje</th><th>Volatilidade</th><th>Correlação com PETR4</th></tr></thead>
+            <thead><tr><th>Trio de hoje</th><th>Volatilidade, série inteira</th><th>Volatilidade, janela comum</th><th>Correlação com PETR4</th></tr></thead>
             <tbody>
-              <tr><td>PETR4</td><td>33,41%</td><td>1</td></tr>
-              <tr><td>IVVB11</td><td>17,67%</td><td>-0,09</td></tr>
-              <tr><td>GOLD11</td><td>19,80%</td><td>-0,13</td></tr>
+              <tr><td>PETR4</td><td>39,25%</td><td>33,40%</td><td>1</td></tr>
+              <tr><td>IVVB11</td><td>20,15%</td><td>17,66%</td><td>-0,09</td></tr>
+              <tr><td>GOLD11</td><td>19,80%</td><td>19,80%</td><td>-0,13</td></tr>
             </tbody>
           </table>
         </div>
         <div class="faixa-nota">
-          <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
-          <p>Com a matriz pronta, como o grupo escolhe os pesos dos 15 ativos? Amostra de hoje: Adj Close com as datas de ausência descartadas, 1.422 retornos de 14/12/2020 a 31/08/2026.</p>
+          <span class="material-symbols-outlined" aria-hidden="true">warning</span>
+          <p>Custo da janela comum: com a GOLD11, cotada desde 11/12/2020, a cesta perde março de 2020, e a volatilidade da PETR4 cai de 39,25% (série inteira, Aula 02) para 33,40%.</p>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [1]</p>
@@ -158,8 +160,8 @@
         <table class="tabela-leitura">
           <thead><tr><th>Carteira</th><th>Sharpe</th><th>Retorno</th><th>Volatilidade</th><th>Ativos com peso</th><th>Maior peso</th></tr></thead>
           <tbody>
-            <tr><td>Melhor de 10.000 sorteadas</td><td>0,41</td><td>16,63%</td><td>13,06%</td><td>15</td><td>18,17%</td></tr>
-            <tr class="linha-destaque"><td>Máximo Sharpe, SLSQP</td><td>0,92</td><td>25,98%</td><td>15,91%</td><td>3</td><td>44,29% em PETR4</td></tr>
+            <tr><td>Melhor de 10.000 sorteadas</td><td>0,41</td><td>16,62%</td><td>13,05%</td><td>15</td><td>18,17%</td></tr>
+            <tr class="linha-destaque"><td>Máximo Sharpe, SLSQP</td><td>0,92</td><td>25,96%</td><td>15,91%</td><td>3</td><td>44,31% em PETR4</td></tr>
           </tbody>
         </table>
         <div class="faixa-nota">
@@ -203,12 +205,12 @@ metricas(w, mu, cov, rf)</code></pre>
             <tr><td>Retorno</td><td>w &middot; &mu;, a média dos retornos ponderada pelos pesos</td></tr>
             <tr><td>Variância</td><td>w<sup>T</sup> &Sigma; w, que soma cada covariância ponderada pelo par de pesos</td></tr>
             <tr><td>Sharpe</td><td>(retorno - CDI) / volatilidade: prêmio sobre o CDI por unidade de risco</td></tr>
-            <tr class="linha-destaque"><td>Pesos iguais</td><td>retorno 8,34% contra CDI de 11,30%, volatilidade 16,32%, Sharpe -0,18</td></tr>
+            <tr class="linha-destaque"><td>Pesos iguais</td><td>retorno 8,34% contra CDI de 11,30%, volatilidade 16,31%, Sharpe -0,18</td></tr>
           </table>
         </div>
         <div class="faixa-nota">
           <span class="material-symbols-outlined" aria-hidden="true">trending_down</span>
-          <p>Oito dos 15 ativos rendem abaixo do CDI na janela, e a MGLU3 tem retorno esperado de -42,84% ao ano.</p>
+          <p>Oito dos 15 ativos rendem abaixo do CDI na janela, e a MGLU3 tem retorno esperado de -42,83% ao ano.</p>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [2] [5] [8]</p>
@@ -301,7 +303,7 @@ pesos, ret, vol, sharpe = sortear(
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>8.843 das 10.000 sorteadas rendem abaixo do CDI</h2>
+          <h2>8.851 das 10.000 sorteadas rendem abaixo do CDI</h2>
         </div>
         <div class="faixa-nota">
           <span class="material-symbols-outlined" aria-hidden="true">edit</span>
@@ -323,7 +325,7 @@ pesos, ret, vol, sharpe = sortear(
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>A melhor sorteada sobe de -0,09 para 0,41</h2>
+          <h2>A melhor sorteada sobe de -0,10 para 0,41</h2>
         </div>
         <div class="widget" data-widget="aula04-nuvem" data-fonte="../assets/data/aula04-nuvem.json"
              data-inicial="10" data-largura="1000" data-altura="340"></div>
@@ -349,7 +351,7 @@ pesos, ret, vol, sharpe = sortear(
           <table class="tabela-leitura tabela-compacta">
             <thead><tr><th>Sorteios</th><th>Melhor Sharpe</th></tr></thead>
             <tbody>
-              <tr><td>10</td><td>-0,09</td></tr>
+              <tr><td>10</td><td>-0,10</td></tr>
               <tr><td>100</td><td>0,15</td></tr>
               <tr><td>1.000</td><td>0,28</td></tr>
               <tr><td>10.000</td><td>0,41</td></tr>
@@ -360,7 +362,7 @@ pesos, ret, vol, sharpe = sortear(
           </table>
           <div>
             <p>Pesos uniformes normalizados espalham o dinheiro: o maior peso entre as 10.000 sorteadas é <strong>24,61%</strong>.</p>
-            <p>A ótima põe 44,29% na PETR4 e zera 12 ativos, uma região do espaço de pesos que o sorteio quase nunca visita.</p>
+            <p>A ótima põe 44,31% na PETR4 e zera 12 ativos, uma região do espaço de pesos que o sorteio quase nunca visita.</p>
           </div>
         </div>
         <div class="faixa-nota">
@@ -446,27 +448,27 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>O máximo Sharpe põe 44,29% na PETR4</h2>
+          <h2>O máximo Sharpe põe 44,31% na PETR4</h2>
         </div>
         <div class="side-by-side">
           <table class="tabela-leitura tabela-compacta">
             <thead><tr><th>Medida</th><th>Variância mínima</th><th>Máximo Sharpe</th></tr></thead>
             <tbody>
-              <tr><td>Retorno</td><td>14,11%</td><td>25,98%</td></tr>
+              <tr><td>Retorno</td><td>14,10%</td><td>25,96%</td></tr>
               <tr><td>Volatilidade</td><td>9,67%</td><td>15,91%</td></tr>
               <tr><td>Sharpe</td><td>0,29</td><td>0,92</td></tr>
               <tr><td>Ativos com peso</td><td>10</td><td>3</td></tr>
-              <tr class="linha-destaque"><td>Maior peso</td><td>26,79% IVVB11</td><td>44,29% PETR4</td></tr>
+              <tr class="linha-destaque"><td>Maior peso</td><td>26,78% IVVB11</td><td>44,31% PETR4</td></tr>
             </tbody>
           </table>
           <table class="tabela-leitura tabela-compacta">
             <thead><tr><th>Ativo</th><th>Variância mínima</th><th>Máximo Sharpe</th></tr></thead>
             <tbody>
-              <tr><td>PETR4</td><td>5,06%</td><td>44,29%</td></tr>
-              <tr><td>IVVB11</td><td>26,79%</td><td>24,07%</td></tr>
-              <tr><td>GOLD11</td><td>24,68%</td><td>31,64%</td></tr>
+              <tr><td>PETR4</td><td>5,06%</td><td>44,31%</td></tr>
+              <tr><td>IVVB11</td><td>26,78%</td><td>23,97%</td></tr>
+              <tr><td>GOLD11</td><td>24,71%</td><td>31,72%</td></tr>
               <tr><td>EGIE3</td><td>17,20%</td><td>0%</td></tr>
-              <tr><td>outros 6</td><td>26,26%</td><td>0%</td></tr>
+              <tr><td>outros 6</td><td>26,27%</td><td>0%</td></tr>
             </tbody>
           </table>
         </div>
@@ -492,7 +494,7 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
                poster="../assets/img/aula04-fronteira-poster.png">
           <source src="../assets/video/aula04-fronteira.mp4" type="video/mp4">
         </video>
-        <p>Cada um dos 50 pontos é a carteira de menor volatilidade para um retorno alvo, de 14,11% (variância mínima) a 37,56% (só PETR4).</p>
+        <p>Cada um dos 50 pontos é a carteira de menor volatilidade para um retorno alvo, de 14,10% (variância mínima) a 37,53% (só PETR4).</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3] [4]</p>
           <p class="footer-page">18</p>
@@ -564,14 +566,14 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
             <p class="quiz-question">3. Qual ótima tem a menor volatilidade?</p>
             <ul class="quiz-options">
               <li data-correct="true"
-                  data-correct-msg="Certo: 9,67% ao ano, abaixo de qualquer sorteada (11,88%)."
+                  data-correct-msg="Certo: 9,67% ao ano, abaixo de qualquer sorteada (11,87%)."
                   data-incorrect-msg="Não.">Variância mínima</li>
               <li data-correct="false"
                   data-correct-msg="Certo."
                   data-incorrect-msg="O máximo Sharpe aceita 15,91% de volatilidade em troca de retorno.">Máximo Sharpe</li>
               <li data-correct="false"
                   data-correct-msg="Certo."
-                  data-incorrect-msg="A melhor sorteada tem 13,06%, acima dos 9,67% da variância mínima.">A melhor sorteada</li>
+                  data-incorrect-msg="A melhor sorteada tem 13,05%, acima dos 9,67% da variância mínima.">A melhor sorteada</li>
             </ul>
           </div>
         </div>
@@ -673,7 +675,7 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
   <script>
     Reveal.initialize({
       width: 1280, height: 720, center: false, margin: 0,
-      hash: true, slideNumber: false, transition: 'fade'
+      hash: true, slideNumber: false, pdfSeparateFragments: false, transition: 'fade'
     });
   </script>
   <script src="../assets/js/inteli-quiz.js"></script>

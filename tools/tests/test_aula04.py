@@ -1,8 +1,9 @@
 """Trava os achados da Aula 04, medidos em 13/10/2026 sobre dados/.
 
-Amostra: Adj Close com as datas de ausência descartadas (1.423 pregões, 1.422
-retornos de 14/12/2020 a 31/08/2026), anualização por 252, CDI como taxa livre
-de risco, semente 42 no sorteio. Se um valor divergir depois de uma nova
+Amostra: o tratamento de ausência único do módulo (ADR-009, tools/retornos.py),
+com a lacuna de 24/10/2025 preenchida e a cesta na janela comum dos 15 ativos
+(1.423 retornos de 14/12/2020 a 31/08/2026), anualização por 252, CDI como taxa
+livre de risco, semente 42 no sorteio. Se um valor divergir depois de uma nova
 coleta, o provedor mudou o histórico: investigar e registrar em dados/README.md
 antes de atualizar o número aqui, no deck, no notebook, nos widgets e nas
 animações.
@@ -30,15 +31,30 @@ def _r(valor, casas=4):
 
 # --- amostra e taxa livre de risco ------------------------------------------
 
-def test_amostra_descarta_ausencias_e_comeca_com_o_gold11():
-    precos = m.precos()
+def test_amostra_e_a_janela_comum_da_adr_009():
     retornos = m.retornos()
-    assert len(precos) == 1423
-    assert len(retornos) == 1422
+    assert len(retornos) == 1423
     assert retornos.index[0].strftime("%Y-%m-%d") == "2020-12-14"
     assert retornos.index[-1].strftime("%Y-%m-%d") == "2026-08-31"
     assert retornos.shape[1] == 15
     assert not retornos.isna().any().any()
+    assert retornos.equals(m.tratamento.retornos_janela_comum())
+
+
+def test_pregao_de_24_10_2025_volta_com_retorno_zero_nos_tres_etfs():
+    dia = m.retornos().loc["2025-10-24"]
+    assert [float(dia[t]) for t in ("BOVA11", "IVVB11", "GOLD11")] == [0.0, 0.0, 0.0]
+    assert float(dia["PETR4"]) != 0.0
+
+
+def test_custo_da_janela_comum_perde_marco_de_2020_e_baixa_a_volatilidade_da_petr4():
+    assert m.retornos().loc["2020-03-01":"2020-03-31"].empty
+    custo = m.custo_da_janela("PETR4")
+    assert _r(custo["serie_inteira"]) == 0.3925
+    assert _r(custo["janela_comum"]) == 0.3340
+    assert custo["retornos_serie_inteira"] == 1907
+    assert custo["retornos_janela_comum"] == 1423
+    assert custo["janela_comum"] == pytest.approx(m.volatilidade()["PETR4"])
 
 
 def test_cdi_anualizado_na_janela_dos_retornos():
@@ -51,12 +67,12 @@ def test_parametros_do_modelo_de_3_e_de_15_ativos():
 
 
 @pytest.mark.parametrize("ticker,retorno,vol", [
-    ("PETR4", 0.3756, 0.3341),
-    ("GOLD11", 0.1747, 0.1980),
-    ("IVVB11", 0.1585, 0.1767),
-    ("ITUB4", 0.1565, 0.2553),
-    ("BOVA11", 0.0979, 0.1851),
-    ("MGLU3", -0.4284, 0.6775),
+    ("PETR4", 0.3753, 0.3340),
+    ("GOLD11", 0.1746, 0.1980),
+    ("IVVB11", 0.1584, 0.1766),
+    ("ITUB4", 0.1564, 0.2552),
+    ("BOVA11", 0.0979, 0.1850),
+    ("MGLU3", -0.4283, 0.6768),
 ])
 def test_retorno_e_volatilidade_anualizados(ticker, retorno, vol):
     assert _r(m.retorno_esperado()[ticker]) == retorno
@@ -71,7 +87,7 @@ def test_oito_dos_quinze_ativos_rendem_abaixo_do_cdi():
 
 
 @pytest.mark.parametrize("ticker,sharpe", [
-    ("PETR4", 0.7859), ("GOLD11", 0.3112), ("IVVB11", 0.2571), ("BOVA11", -0.0816),
+    ("PETR4", 0.7853), ("GOLD11", 0.3107), ("IVVB11", 0.2566), ("BOVA11", -0.0820),
 ])
 def test_sharpe_por_ativo(ticker, sharpe):
     assert _r(m.sharpe_por_ativo()[ticker]) == sharpe
@@ -85,8 +101,8 @@ def test_metricas_da_carteira_igual_batem_com_a_forma_vetorial():
     assert ret == pytest.approx(carteira_diaria.mean() * 252)
     assert vol == pytest.approx(carteira_diaria.std(ddof=1) * np.sqrt(252))
     assert _r(ret) == 0.0834
-    assert _r(vol) == 0.1632
-    assert _r(sharpe) == -0.1814
+    assert _r(vol) == 0.1631
+    assert _r(sharpe) == -0.1820
 
 
 # --- nuvem de Monte Carlo ----------------------------------------------------
@@ -101,17 +117,17 @@ def test_nuvem_de_10000_carteiras_com_pesos_validos():
 def test_melhor_carteira_sorteada():
     n = m.nuvem()
     assert n["melhor"] == 1927
-    assert _r(n["melhor_sharpe"]) == 0.4077
-    assert _r(n["melhor_retorno"]) == 0.1663
-    assert _r(n["melhor_volatilidade"]) == 0.1306
+    assert _r(n["melhor_sharpe"]) == 0.4069
+    assert _r(n["melhor_retorno"]) == 0.1662
+    assert _r(n["melhor_volatilidade"]) == 0.1305
     assert _r(n["melhor_maior_peso"]) == 0.1817
 
 
 def test_nuvem_nao_alcanca_as_bordas_da_fronteira():
     n = m.nuvem()
     assert _r(n["maior_peso_da_nuvem"]) == 0.2461
-    assert _r(n["menor_volatilidade"]) == 0.1188
-    assert _r(n["maior_retorno"]) == 0.1663
+    assert _r(n["menor_volatilidade"]) == 0.1187
+    assert _r(n["maior_retorno"]) == 0.1662
     assert n["menor_volatilidade"] > m.carteira(m.variancia_minima())["volatilidade"]
     assert n["maior_retorno"] < m.retorno_esperado().max()
 
@@ -126,8 +142,8 @@ def test_motor_e_reprodutivel_com_a_semente():
 
 def test_melhor_sharpe_por_numero_de_sorteios():
     melhor = {n: _r(s) for n, s in m.melhor_por_sorteios().items()}
-    assert melhor == {10: -0.0950, 100: 0.1475, 1_000: 0.2839, 10_000: 0.4077,
-                      100_000: 0.4077, 1_000_000: 0.6013}
+    assert melhor == {10: -0.0955, 100: 0.1469, 1_000: 0.2832, 10_000: 0.4069,
+                      100_000: 0.4069, 1_000_000: 0.6004}
 
 
 def test_dez_mil_sorteios_da_curva_coincidem_com_a_nuvem():
@@ -139,23 +155,23 @@ def test_dez_mil_sorteios_da_curva_coincidem_com_a_nuvem():
 def test_carteira_de_variancia_minima():
     c = m.carteira(m.variancia_minima())
     assert _r(c["volatilidade"]) == 0.0967
-    assert _r(c["retorno"]) == 0.1411
-    assert _r(c["sharpe"]) == 0.2902
+    assert _r(c["retorno"]) == 0.1410
+    assert _r(c["sharpe"]) == 0.2893
     assert c["ativos"] == 10
     assert c["maior_ativo"] == "IVVB11"
-    assert _r(c["maior_peso"]) == 0.2679
-    assert _r(c["pesos"]["GOLD11"]) == 0.2468
+    assert _r(c["maior_peso"]) == 0.2678
+    assert _r(c["pesos"]["GOLD11"]) == 0.2471
     assert _r(c["pesos"]["EGIE3"]) == 0.1720
 
 
 def test_carteira_de_maximo_sharpe():
     c = m.carteira(m.maximo_sharpe())
-    assert _r(c["sharpe"]) == 0.9219
-    assert _r(c["retorno"]) == 0.2598
+    assert _r(c["sharpe"]) == 0.9212
+    assert _r(c["retorno"]) == 0.2596
     assert _r(c["volatilidade"]) == 0.1591
     assert c["ativos"] == 3
     assert {t: _r(w) for t, w in c["pesos"].items()} == {
-        "PETR4": 0.4429, "IVVB11": 0.2407, "GOLD11": 0.3164}
+        "PETR4": 0.4431, "IVVB11": 0.2397, "GOLD11": 0.3172}
 
 
 def test_maximo_sharpe_concentra_mais_que_a_variancia_minima():
@@ -177,8 +193,8 @@ def test_fronteira_de_50_pontos():
     assert len(f) == 50
     mv = m.carteira(m.variancia_minima())
     assert f["volatilidade"].iloc[0] == pytest.approx(mv["volatilidade"], abs=1e-5)
-    assert _r(f["retorno"].iloc[-1]) == 0.3756
-    assert _r(f["volatilidade"].iloc[-1]) == 0.3341
+    assert _r(f["retorno"].iloc[-1]) == 0.3753
+    assert _r(f["volatilidade"].iloc[-1]) == 0.3340
     assert (f["volatilidade"].diff().dropna() > 0).all()
     assert (f["retorno"].diff().dropna() > 0).all()
 
@@ -194,8 +210,8 @@ def test_nenhuma_carteira_sorteada_passa_da_fronteira():
 def test_trio_reproduz_o_maximo_sharpe_da_cesta():
     passos, final = m.caminho_slsqp_trio()
     ret, vol, sharpe = m.metricas(final, *m.trio())
-    assert _r(sharpe) == 0.9219
-    assert [_r(w) for w in final] == [0.4429, 0.2407, 0.3164]
+    assert _r(sharpe) == 0.9212
+    assert [_r(w) for w in final] == [0.4431, 0.2397, 0.3172]
 
 
 def test_caminho_do_slsqp_no_triangulo():
@@ -211,33 +227,33 @@ def test_caminho_do_slsqp_no_triangulo():
 
 def test_a_maioria_da_nuvem_rende_abaixo_do_cdi():
     n = m.nuvem()
-    assert n["abaixo_do_cdi"] == 8843
-    assert int((n["retorno"] < m.taxa_livre_de_risco()).sum()) == 8843
-    assert _r(n["maior_volatilidade"]) == 0.2435
+    assert n["abaixo_do_cdi"] == 8851
+    assert int((n["retorno"] < m.taxa_livre_de_risco()).sum()) == 8851
+    assert _r(n["maior_volatilidade"]) == 0.2434
 
 
 def test_correlacao_e_volatilidade_do_trio():
     c = m.correlacao_trio()
-    assert _r(c.loc["PETR4", "IVVB11"]) == -0.0939
-    assert _r(c.loc["PETR4", "GOLD11"]) == -0.1326
+    assert _r(c.loc["PETR4", "IVVB11"]) == -0.0933
+    assert _r(c.loc["PETR4", "GOLD11"]) == -0.1336
     assert _r(c.loc["IVVB11", "GOLD11"]) == 0.2516
-    assert [_r(m.volatilidade()[t]) for t in m.TRIO] == [0.3341, 0.1767, 0.1980]
+    assert [_r(m.volatilidade()[t]) for t in m.TRIO] == [0.3340, 0.1766, 0.1980]
 
 
 def test_cinco_maiores_pesos_da_variancia_minima():
     pesos = m.carteira(m.variancia_minima())["pesos"]
     maiores = sorted(pesos.items(), key=lambda par: -par[1])[:5]
     assert [(t, _r(w)) for t, w in maiores] == [
-        ("IVVB11", 0.2679), ("GOLD11", 0.2468), ("EGIE3", 0.1720),
-        ("ABEV3", 0.0756), ("BOVA11", 0.0672)]
+        ("IVVB11", 0.2678), ("GOLD11", 0.2471), ("EGIE3", 0.1720),
+        ("ABEV3", 0.0757), ("BOVA11", 0.0673)]
     assert "MGLU3" not in pesos
 
 
-def test_caminho_do_slsqp_parte_de_sharpe_047():
+def test_caminho_do_slsqp_parte_de_sharpe_046():
     passos, _ = m.caminho_slsqp_trio()
     mu, cov = m.trio()
-    assert _r(m.metricas(passos[0], mu, cov)[2]) == 0.4654
-    assert _r(m.metricas(passos[1], mu, cov)[2]) == 0.7859
+    assert _r(m.metricas(passos[0], mu, cov)[2]) == 0.4646
+    assert _r(m.metricas(passos[1], mu, cov)[2]) == 0.7853
 
 
 def test_motor_roda_10000_carteiras_em_menos_de_1_segundo():
@@ -274,14 +290,27 @@ def _pct(valor):
     return _num(valor * 100) + "%"
 
 
+def _milhar(numero):
+    return "{:,}".format(numero).replace(",", ".")
+
+
 def test_json_da_nuvem_repete_a_nuvem_medida():
     dados = _json("aula04-nuvem.json")
     n = m.nuvem()
     assert len(dados["sharpe"]) == len(dados["vol"]) == len(dados["ret"]) == 10_000
     assert dados["sharpe"][n["melhor"]] == _r(n["melhor_sharpe"])
     assert len(dados["fronteira"]) == 50
-    assert dados["maximo_sharpe"]["sharpe"] == 0.9219
+    assert dados["maximo_sharpe"]["sharpe"] == 0.9212
     assert dados["variancia_minima"]["vol"] == 0.0967
+
+
+def test_json_dos_widgets_declara_a_janela_comum():
+    comum = m.tratamento.retornos_janela_comum()
+    esperado = {"inicio": comum.index[0].strftime("%d/%m/%Y"),
+                "fim": comum.index[-1].strftime("%d/%m/%Y"), "retornos": len(comum)}
+    assert esperado == {"inicio": "14/12/2020", "fim": "31/08/2026", "retornos": 1423}
+    for nome in ("aula04-nuvem.json", "aula04-triangulo.json"):
+        assert _json(nome)["janela"] == esperado, nome
 
 
 def test_json_da_nuvem_tem_a_leitura_de_cada_patamar():
@@ -299,7 +328,7 @@ def test_json_do_triangulo_reproduz_o_otimo():
     w = np.array(dados["otima"]["pesos"])
     ret, vol, sharpe = m.metricas(w, np.array(dados["mu"]), np.array(dados["cov"]), dados["rf"])
     assert _r(sharpe, 2) == 0.92
-    assert dados["otima"]["sharpe"] == 0.9219
+    assert dados["otima"]["sharpe"] == 0.9212
 
 
 # --- deck ------------------------------------------------------------------------
@@ -342,11 +371,11 @@ def test_deck_cita_os_numeros_medidos():
         _pct(n["melhor_volatilidade"]), _pct(n["melhor_maior_peso"]), _pct(ms["retorno"]),
         _pct(ms["volatilidade"]), _pct(ms["maior_peso"]), _pct(n["maior_peso_da_nuvem"]),
         _pct(m.taxa_livre_de_risco()), _pct(ret_igual), _pct(vol_igual), _num(sharpe_igual),
-        _pct(m.retorno_esperado()["MGLU3"]), "8.843", _pct(mv["retorno"]), _pct(mv["volatilidade"]),
+        _pct(m.retorno_esperado()["MGLU3"]), "8.851", _pct(mv["retorno"]), _pct(mv["volatilidade"]),
         _num(mv["sharpe"]), _pct(mv["maior_peso"]), _pct(pesos_mv["GOLD11"]), _pct(pesos_mv["EGIE3"]),
         _pct(pesos_mv["PETR4"]), _pct(outros), _pct(ms["pesos"]["IVVB11"]), _pct(ms["pesos"]["GOLD11"]),
         _pct(n["menor_volatilidade"]), _pct(m.fronteira()["retorno"].iloc[-1]),
-        "1.422", "14/12/2020", "135", "10 iterações",
+        "1.423", "14/12/2020", "135", "10 iterações",
     ] + [_num(v) for v in progressivo.values()]
     esperados += [_pct(m.volatilidade()[t]) for t in m.TRIO]
     c = m.correlacao_trio()
@@ -356,6 +385,23 @@ def test_deck_cita_os_numeros_medidos():
     assert len(m.caminho_slsqp_trio()[0]) - 1 == 10
     assert 15 - ms["ativos"] == 12 and "zera 12" in deck
     assert "Oito dos 15 ativos" in deck
+
+
+def test_slide_3_traz_a_volatilidade_do_trio_nas_duas_janelas():
+    slide = _secoes()[2]
+    assert [_r(m.custo_da_janela(t)["serie_inteira"]) for t in m.TRIO] == [0.3925, 0.2015, 0.1980]
+    for t in m.TRIO:
+        custo = m.custo_da_janela(t)
+        assert _pct(custo["serie_inteira"]) in slide and _pct(custo["janela_comum"]) in slide
+
+
+def test_slide_3_declara_a_regra_da_adr_009_e_o_custo_da_janela():
+    slide = _secoes()[2]
+    custo = m.custo_da_janela("PETR4")
+    assert custo["serie_inteira"] > custo["janela_comum"]
+    for valor in ("ADR-009", "1.423", "14/12/2020", "março de 2020", "Aula 01", "Aula 03",
+                  _pct(custo["serie_inteira"]), _pct(custo["janela_comum"])):
+        assert valor in slide, valor
 
 
 def test_deck_cita_os_pesos_e_prazos_da_fonte():
@@ -390,12 +436,19 @@ def test_material_cita_os_numeros_medidos():
     ms = m.carteira(m.maximo_sharpe())
     passos, _ = m.caminho_slsqp_trio()
     tres = mv["pesos"]["IVVB11"] + mv["pesos"]["GOLD11"] + mv["pesos"]["EGIE3"]
-    for valor in ("8.843", "1.422", "135", _pct(tres), _pct(n["menor_volatilidade"]),
+    for valor in ("8.851", "1.423", "135", _pct(tres), _pct(n["menor_volatilidade"]),
                   _pct(n["maior_peso_da_nuvem"]), _num(m.metricas(passos[1], *m.trio())[2]),
                   _pct(m.taxa_livre_de_risco()), _pct(mv["volatilidade"]), _pct(ms["retorno"]),
                   _num(m.correlacao_trio().loc["PETR4", "GOLD11"]), "20/11/2026, às 23h59"):
         assert valor in material, valor
     assert 'id="preparacao"' in material
+    amostra = material.split('id="amostra"')[1].split('<section')[0]
+    custo = m.custo_da_janela("PETR4")
+    inteira = m.tratamento.retornos_por_ativo()["PETR4"].dropna()
+    for valor in ("ADR-009", "24/10/2025", "março de 2020", "Aula 01", "Aula 03", "14/12/2020",
+                  "1.423", _pct(custo["serie_inteira"]), _pct(custo["janela_comum"]),
+                  _milhar(custo["retornos_serie_inteira"]), inteira.index[0].strftime("%d/%m/%Y")):
+        assert valor in amostra, valor
     assert material.index('id="preparacao"') < material.index('id="amostra"')
     assert material.count("<details>") == 5
     for titulo in ("Carteiras e simulação de Monte Carlo com Python",
@@ -415,3 +468,31 @@ def test_referencias_copiam_os_autoestudos_da_semana_6():
         assert titulo in pagina
     assert "65 min" in pagina and "70 min" in pagina
     assert 'id="autoestudos"' in pagina and 'id="complementar"' in pagina
+
+
+# --- notebook: a mesma regra da ADR-009 sem importar tools/ ------------------------
+
+def _notebook():
+    with open(NOTEBOOK, encoding="utf-8") as fh:
+        return json.load(fh)
+
+
+def test_notebook_aplica_a_regra_da_adr_009_e_chega_a_mesma_janela():
+    celulas = _notebook()["cells"]
+    codigo = "".join(celulas[2]["source"])
+    assert "import retornos" not in codigo and "tools" not in codigo
+    assert ".ffill()" in codigo and "pct_change(fill_method=None)" in codigo
+    # Reproduz as três linhas do notebook sobre o mesmo CSV e compara com tools/retornos.py.
+    import pandas as pd
+    precos = pd.read_csv(os.path.join(m.RAIZ, "dados", "precos_ajustados.csv"),
+                         index_col="data", parse_dates=["data"]).ffill()
+    retornos = precos.pct_change(fill_method=None).iloc[1:].dropna()
+    assert retornos.equals(m.retornos())
+
+
+def test_notebook_declara_a_janela_e_o_custo():
+    texto = "".join(_notebook()["cells"][1]["source"])
+    custo = m.custo_da_janela("PETR4")
+    for valor in ("ADR-009", "24/10/2025", "Aula 01", "Aula 03", "março de 2020", "1.423",
+                  "14/12/2020", _pct(custo["serie_inteira"]), _pct(custo["janela_comum"])):
+        assert valor in texto, valor

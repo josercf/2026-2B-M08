@@ -2,6 +2,9 @@
 
 Uso: .venv/bin/python tools/dados_widgets_aula04.py
 Saída: assets/data/aula04-nuvem.json e assets/data/aula04-triangulo.json
+
+Os dois JSON declaram a janela da amostra, lida de tools/retornos.py: o
+tratamento de ausência único do módulo (ADR-009), na janela comum dos 15 ativos.
 """
 import json
 import os
@@ -10,6 +13,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import medidas_aula04 as m  # noqa: E402
+import retornos  # noqa: E402
 
 SAIDA = os.path.join(m.RAIZ, "assets", "data")
 PASSOS_NUVEM = (10, 100, 1_000, 10_000)
@@ -32,6 +36,15 @@ def _ponto(carteira):
             "sharpe": round(carteira["sharpe"], 4)}
 
 
+def janela():
+    """Início, fim e número de retornos da janela comum (ADR-009)."""
+    comum = retornos.retornos_janela_comum()
+    if not comum.equals(m.retornos()):
+        raise RuntimeError("medidas_aula04 saiu da janela comum da ADR-009")
+    return {"inicio": comum.index[0].strftime("%d/%m/%Y"),
+            "fim": comum.index[-1].strftime("%d/%m/%Y"), "retornos": len(comum)}
+
+
 def nuvem():
     n = m.nuvem()
     f = m.fronteira()
@@ -43,6 +56,7 @@ def nuvem():
         leituras[str(passo)] = ("Melhor Sharpe entre %s sorteadas: %s. A carteira ótima chega a %s."
                                 % (_milhar(passo), _num(progressivo[passo]), _num(ms["sharpe"])))
     return {
+        "janela": janela(),
         "rf": round(m.taxa_livre_de_risco(), 4),
         "vol": [round(float(x), 4) for x in n["volatilidade"]],
         "ret": [round(float(x), 4) for x in n["retorno"]],
@@ -64,6 +78,7 @@ def triangulo():
     _, final = m.caminho_slsqp_trio()
     ret, vol, sharpe = m.metricas(final, mu, cov)
     return {
+        "janela": janela(),
         "tickers": list(m.TRIO),
         "mu": [round(float(x), 6) for x in mu],
         "cov": [[round(float(x), 6) for x in linha] for linha in cov],
