@@ -70,7 +70,21 @@ dois sentidos. Trocar para MGLU3 mostra altas de 25,14% (log 22,43%) em 16/11/20
 
 ## Bloco 3 (30 a 45): dupla no notebook, seções 2 e 3
 
-Cronômetro de 12 minutos, troca de condutor aos 6. Circular perguntando:
+Cronômetro de 12 minutos, troca de condutor aos 6 (slide 12). Antes de abrir o cronômetro,
+distribuir os 15 ativos da cesta entre as duplas, um ativo por dupla; com menos de 15 duplas, os
+ativos que sobram ficam sem dono, e com mais, um ativo se repete. A prática está em camadas:
+
+- **Obrigatório:** calcular os dois retornos da seção 2 e conferir a PETR4 em 09/03/2020; escrever
+  a aposta sobre qual soma acerta o acumulado da crise antes de rodar; depois da troca, rodar a
+  seção 3 e levar ao quadro a linha do ativo da dupla (média e desvio diários).
+- **Extensão:** as três perguntas da seção 3, respondidas antes de abrir a resposta.
+- **Checagem aos 6 min:** a aposta da soma da crise está escrita e conferida.
+- **Debrief, nos minutos finais do bloco:** o quadro reúne um ativo por dupla, e a turma aponta o
+  maior e o menor desvio, que é a primeira pergunta da seção 3.
+- **Contingência:** se o notebook não rodar para a sala, o professor projeta a saída da seção 3 e
+  cada dupla copia a linha do seu ativo para o quadro.
+
+Circular perguntando:
 
 - "Por que `fill_method=None`?" Resposta: a decisão de ausências é do ADR, não do padrão da
   biblioteca. Erro comum: tirar o argumento porque "dá na mesma" no pandas 3.0; no Colab com
@@ -112,8 +126,20 @@ longa é "mais certa"; ela só é mais lenta.
 
 ## Bloco 6 (75 a 90): a cesta contra o CDI
 
-Dupla no notebook, seções 5 e 6, cronômetro de 12 minutos. CDI acumulado na janela: 100,17%, ou
-9,51% ao ano; desde 11/12/2020, para a GOLD11, 84,04%.
+Dupla no notebook, cronômetro de 12 minutos, troca de condutor aos 6 (slide 21). CDI acumulado
+na janela: 100,17%, ou 9,51% ao ano; desde 11/12/2020, para a GOLD11, 84,04%. A prática está em
+camadas, e cada dupla segue com o ativo do Bloco 3:
+
+- **Obrigatório:** rodar a tabela da seção 6 e anotar a linha do ativo da dupla (volatilidade
+  anual e posição contra o CDI); depois da troca, o novo condutor escreve uma frase para o
+  parceiro sobre quanto o ativo oscila e o que isso custou na janela.
+- **Extensão:** ordenar a tabela por volatilidade e marcar quem ficou abaixo do CDI; refazer a
+  anualização da PETR4 e a janela deslizante do BOVA11 da seção 5, que o Bloco 5 já mostrou.
+- **Checagem aos 6 min:** a linha do ativo da dupla está anotada.
+- **Debrief:** a escolha coletiva do slide 22 julga as afirmações com a tabela inteira, que as
+  duplas montaram por partes.
+- **Contingência:** se o notebook não rodar, a dupla lê a linha do seu ativo na tabela da cesta
+  do slide 20.
 
 **Escolha coletiva (slide 22), gabarito.**
 

@@ -97,7 +97,22 @@ na janela?" Resposta: no preço, -14,65%; com proventos, +42,09%.
 
 ## Bloco 4 (45 a 60): dupla no notebook, seções 1 e 2
 
-Cronômetro de 12 minutos, troca de condutor aos 6. Circular perguntando:
+Cronômetro de 12 minutos, troca de condutor aos 6 (slide 17). A prática está em camadas:
+
+- **Obrigatório:** abrir o notebook, conferir a cesta e a janela da seção 1, rodar `coletar` e
+  anotar a origem impressa; depois da troca, o novo condutor roda de novo com `M08_OFFLINE=1` e
+  compara as duas rodadas.
+- **Extensão:** uma linha sobre o que mudaria no coletor para a cesta do grupo. Quem não chegar
+  nela leva para o SPEC.md do A1.
+- **Checagem aos 6 min:** cada dupla tem a origem da primeira rodada anotada. Dupla que ainda não
+  rodou a seção 2 nesse ponto recebe ajuda antes da troca de papel.
+- **Debrief, nos minutos finais do bloco:** duas duplas dizem a origem das duas rodadas e se o
+  resultado bateu.
+- **Contingência:** sem rede, o coletor cai para o snapshot e a aula segue igual. Se o Colab não
+  abrir para uma dupla, ela acompanha a dupla vizinha; se não abrir para a sala, o professor
+  projeta o notebook rodando localmente e as duplas anotam a origem impressa na projeção.
+
+Circular perguntando:
 
 - "Qual origem o coletor imprimiu?" Na sala com rede: `yfinance, ao vivo`. Com
   `M08_OFFLINE=1`: `snapshot de dados/`. Erro comum: não saber de onde veio o número.
@@ -134,8 +149,21 @@ tratamento das Aulas 02 a 06 (ADR-009 do acervo); o grupo decide o dele com os n
 coletor, e um ADR que decide descartar é válido quando cita o custo. Não induzir a turma a copiar
 o exemplo.
 
-**Dupla (slide 23).** Cronômetro de 12 minutos. Critério para a leitura em voz alta à dupla
-vizinha: o ADR cita um número medido nos dados do grupo? Se não cita, volta para o condutor.
+**Dupla (slide 23).** Cronômetro de 12 minutos, troca de condutor aos 6. A prática está em
+camadas, e o ADR completo sai da aula como tarefa do A1:
+
+- **Obrigatório:** rodar o relatório de ausências da seção 4, rodar a comparação dos tratamentos e
+  anotar a volatilidade anual da PETR4 sob cada um; depois da troca, o novo condutor escreve a
+  decisão da dupla em uma frase, com o número antes e depois.
+- **Extensão:** comparar as três visões de preço de um ativo com evento corporativo (seção 3) e
+  completar o ADR com contexto e alternativa rejeitada. A segunda extensão é a saída pós-aula para
+  o ADR individual do A1.
+- **Checagem aos 6 min:** os dois valores da PETR4 estão anotados. Dupla sem os números nesse
+  ponto ainda não rodou a célula da comparação.
+- **Debrief, nos minutos finais do bloco:** duas duplas com decisões opostas leem a frase em voz
+  alta. Critério: a frase cita um número medido? Se não cita, a dupla reescreve antes de sair.
+- **Contingência:** se o notebook não rodar, a dupla escreve a frase com os números da PETR4 do
+  slide 21, que são os mesmos da célula.
 
 ## Bloco 7 (90 a 105): quiz e amarração
 
