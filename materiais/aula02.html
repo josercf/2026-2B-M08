@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material de apoio &middot; Aula 02 &middot; Dados Financeiros: Do Preço ao Retorno</title>
+  <meta name="description" content="Material de apoio da Aula 02 do Módulo 08 AdmTech: preparação pré-aula, retorno simples e logarítmico, desvio padrão e caudas, anualização por 252 e raiz de 252, janela deslizante e a cesta contra o CDI.">
+
+  <!-- Este material não é o roteiro do deck em prosa: abre pela Preparação do pré-aula e
+       aprofunda o que o slide só aponta. Todo número vem de tools/medidas_aula02.py e está
+       travado em tools/tests/test_aula02.py. Tratamento de ausência: Adj Close preenchido para a
+       frente por ativo, a decisão do exemplo de ADR da Aula 01. -->
+
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-material.css">
+</head>
+<body>
+  <div class="doc">
+
+    <header class="doc-header">
+      <p class="doc-eyebrow">Módulo 08 AdmTech &middot; Aula 02 &middot; 05/11/2026 &middot; Semana 4 &middot; Sprint 2</p>
+      <h1>Material de apoio: Dados Financeiros, Do Preço ao Retorno</h1>
+      <p class="doc-subtitulo">A Aula 01 deixou pronto o coletor parametrizado, com o Adj Close
+      escolhido e a decisão de ausências registrada em ADR. Esta aula transforma esse preço em
+      retornos diários, mede o risco de cada ativo, anualiza as duas métricas por 252 e compara a
+      cesta com o CDI. É a base do A2, Módulo de Análise de Risco e Retorno Individual.</p>
+    </header>
+
+    <nav class="doc-toc" aria-label="Sumário">
+      <h2>Nesta página</h2>
+      <ol>
+        <li><a href="#preparacao">Preparação</a></li>
+        <li><a href="#retornos">Retorno simples e retorno logarítmico</a></li>
+        <li><a href="#soma">A soma que erra de propósito</a></li>
+        <li><a href="#pandas">Retornos em pandas sem preencher às escondidas</a></li>
+        <li><a href="#caudas">Desvio padrão, histograma e caudas</a></li>
+        <li><a href="#anualizacao">Anualização por 252 e raiz de 252</a></li>
+        <li><a href="#janela">Volatilidade em janela deslizante</a></li>
+        <li><a href="#cdi">A cesta contra o CDI</a></li>
+        <li><a href="#p5">O mínimo de covariância para o A2</a></li>
+        <li><a href="#depois">Depois do encontro</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc-conteudo">
+
+      <section class="doc-secao" id="preparacao">
+        <h2>1. Preparação</h2>
+        <p>O encontro abre medindo o preparo, com uma pergunta de Peer Instruction sobre o conteúdo
+        desta seção. Faça as três partes antes da aula.</p>
+
+        <h3>Autoestudos da semana</h3>
+        <ol>
+          <li>Risco e retorno: passado e prólogo (70 min)</li>
+          <li>Análise de uma ação em Python na prática (45 min)</li>
+        </ol>
+        <p>Os dois estão na Adalove. O primeiro é a base conceitual de retorno, prêmio de risco e
+        desvio padrão; o segundo replica em Python o fluxo de preço, retorno, estatística descritiva
+        e gráfico para um ativo.</p>
+
+        <h3>Animação 1: o histograma dos retornos da PETR4 se formando</h3>
+        <video controls muted playsinline preload="metadata" style="width: 100%; height: auto; border-radius: 10px;"
+               poster="../assets/img/aula02-histograma-retornos-poster.png">
+          <source src="../assets/video/aula02-histograma-retornos.mp4" type="video/mp4">
+        </video>
+        <p><strong>O que observar:</strong> os 1.907 retornos diários da PETR4 entram em ordem
+        cronológica. Repare em que momento as barras coral de março de 2020 aparecem, para onde elas
+        vão e como a curva normal do fim se compara com o que ficou além das linhas de 3 desvios.</p>
+
+        <h3>Animação 2: a dispersão crescendo com a raiz do tempo</h3>
+        <video controls muted playsinline preload="metadata" style="width: 100%; height: auto; border-radius: 10px;"
+               poster="../assets/img/aula02-raiz-do-tempo-poster.png">
+          <source src="../assets/video/aula02-raiz-do-tempo.mp4" type="video/mp4">
+        </video>
+        <p><strong>O que observar:</strong> cada ponto é o desvio do retorno acumulado do BOVA11 em
+        um horizonte de 1 a 63 pregões. Compare os pontos com a curva tracejada, que multiplica o
+        desvio de um pregão pela raiz do horizonte, e pense no que aconteceria se a multiplicação
+        fosse pelo horizonte inteiro.</p>
+
+        <h3>Autoverificação, sem nota</h3>
+        <ol>
+          <li>Dois pregões seguidos rendem r1 e r2. O retorno dos dois juntos é r1 + r2?
+            <details><summary>Resposta comentada</summary>
+            <p>Não. Os retornos simples compõem: (1 + r1) x (1 + r2) - 1. Quem soma no tempo é o
+            retorno logarítmico, porque ln(1 + r1) + ln(1 + r2) = ln((1 + r1)(1 + r2)). Na crise
+            de 2020, somar os 47 retornos simples da PETR4 dá -34,19%, e o acumulado de fato foi
+            -40,92%.</p></details></li>
+          <li>Na animação 1, onde caem os pregões de março de 2020?
+            <details><summary>Resposta comentada</summary>
+            <p>Nas duas caudas. Março de 2020 tem as maiores quedas e também as maiores altas do
+            período: 12 dos 26 pregões da PETR4 além de 3 desvios são desse mês.</p></details></li>
+          <li>Uma distribuição normal com a mesma média e o mesmo desvio da PETR4 preveria quantos
+            pregões além de 3 desvios? Quantos houve?
+            <details><summary>Resposta comentada</summary>
+            <p>A normal preveria 5,1 pregões, e a PETR4 teve 26. As caudas reais são muito mais
+            pesadas do que o desvio padrão sozinho sugere, e a pior queda, de -29,70%, fica a
+            12,06 desvios da média.</p></details></li>
+          <li>Na animação 2, o desvio de 63 pregões do BOVA11 ficou perto de 63 vezes o desvio
+            diário ou de raiz de 63 vezes?
+            <details><summary>Resposta comentada</summary>
+            <p>De raiz de 63 vezes: 11,80% medido contra 11,80% previsto pela raiz. Multiplicar o
+            desvio diário de 1,49% pelo horizonte inteiro daria um risco várias vezes maior do que
+            o observado. É por isso que a volatilidade anual usa raiz de 252.</p></details></li>
+          <li>O retorno que mede quanto rendeu quem reinvestiu todos os proventos sai de qual
+            coluna, e com qual função do pandas?
+            <details><summary>Resposta comentada</summary>
+            <p>Do Adj Close, a visão de preço escolhida na Aula 01, com <code>pct_change</code>.
+            Calcular sobre o Close ignora os proventos; calcular sobre o preço negociado cria saltos
+            falsos nos desdobramentos e grupamentos.</p></details></li>
+        </ol>
+      </section>
+
+      <section class="doc-secao" id="retornos">
+        <h2>2. Retorno simples e retorno logarítmico</h2>
+        <p>O retorno simples de um pregão é a variação percentual do preço. O retorno logarítmico é
+        o logaritmo natural da razão entre os dois preços:</p>
+        <pre class="doc-codigo"><code>retorno simples       r = P_t / P_(t-1) - 1
+retorno logarítmico   l = ln(P_t / P_(t-1)) = ln(1 + r)</code></pre>
+        <p>Para qualquer movimento diferente de zero, ln(1 + r) fica abaixo de r. Em pregões calmos a
+        diferença é desprezível; em movimentos grandes ela pesa. Na queda de 09/03/2020, a pior
+        da cesta inteira na janela, o retorno simples da PETR4 é -29,70% e o logarítmico é -35,24%,
+        5,54 pontos abaixo. Na alta de 13/03/2020, os dois valem 22,22% e 20,07%.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Critério</th><th>Retorno simples</th><th>Retorno logarítmico</th></tr></thead>
+            <tbody>
+              <tr><td>Vários pregões do mesmo ativo</td><td>compõe pelo produto de (1 + r)</td><td>soma direta</td></tr>
+              <tr><td>Vários ativos na mesma carteira</td><td>média ponderada pelos pesos</td><td>sem soma ponderada exata</td></tr>
+              <tr><td>Uso no módulo</td><td>risco e retorno da carteira de Markowitz (Aulas 03 e 04)</td><td>acumular no tempo e a raiz do tempo (animação 2)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>As duas medidas descrevem o mesmo pregão. A escolha depende da soma que a análise vai
+        fazer: no tempo, o log soma; entre ativos de uma carteira, o simples soma ponderado pelos
+        pesos. O A2 pode calcular as duas, desde que o ADR diga qual alimenta cada métrica.</p>
+      </section>
+
+      <section class="doc-secao" id="soma">
+        <h2>3. A soma que erra de propósito</h2>
+        <p>No Bloco 2 o deck soma os retornos simples da PETR4 entre 20/02/2020 e 30/04/2020 e
+        compara com o acumulado do período. O erro é provocado de propósito.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>47 pregões da PETR4, 20/02 a 30/04/2020</th><th>Valor</th></tr></thead>
+            <tbody>
+              <tr><td>Soma dos retornos simples</td><td>-34,19%</td></tr>
+              <tr><td>Acumulado de fato, produto de (1 + r) menos 1</td><td>-40,92%</td></tr>
+              <tr><td>Soma dos retornos logarítmicos</td><td>-52,62%</td></tr>
+              <tr><td>ln(1 - 0,4092)</td><td>-52,62%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A soma dos simples subestima a queda em 6,73 pontos. O motivo é a base de cálculo:
+        cada retorno simples incide sobre o preço do pregão anterior. Na crise, quedas e altas
+        fortes se alternaram, e uma alta que vem depois de uma queda incide sobre um preço já menor,
+        recuperando menos reais do que a queda tirou. A soma trata cada percentual como se
+        incidisse sobre o mesmo preço, e por isso enxerga uma recuperação que não aconteceu.</p>
+        <p>A soma dos logarítmicos acerta, mas acerta o <strong>log</strong> do acumulado: -52,62% é
+        ln(1 - 0,4092). Para voltar ao retorno acumulado, aplica-se a exponencial:
+        <code>np.exp(soma_log) - 1</code>. Confundir as duas escalas é o segundo erro mais comum
+        desta aula, e aparece quando alguém reporta -52,62% ao parceiro como perda do período.</p>
+        <div class="doc-nota">
+          <p>Por que provocar o erro em vez de só mostrar a conta certa: a soma de percentuais é o
+          que qualquer pessoa faz de cabeça, e o resultado errado parece plausível. Só a comparação
+          lado a lado, com o número do próprio dado, deixa claro que a diferença não é
+          arredondamento.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="pandas">
+        <h2>4. Retornos em pandas sem preencher às escondidas</h2>
+        <pre class="doc-codigo"><code>precos = ajustado.ffill()                                # decisão do ADR da Aula 01
+simples = precos.pct_change(fill_method=None).iloc[1:]
+log = np.log(precos / precos.shift(1)).iloc[1:]</code></pre>
+        <p>O <code>.iloc[1:]</code> descarta a primeira linha, que não tem pregão anterior e sai
+        vazia. O <code>fill_method=None</code> tem outro papel: em versões do pandas anteriores à
+        3.0, o padrão do <code>pct_change</code> era preencher ausências com o preço anterior antes
+        de calcular. Isso aplicava, sem aviso, uma decisão de ausências que o grupo já tomou e
+        registrou em ADR na Sprint 1. Declarar o argumento deixa o código com o mesmo resultado em
+        qualquer versão, inclusive a do Colab.</p>
+        <p>Com o preenchimento ativo por ativo, a GOLD11 fica com 1.423 retornos e os demais ativos
+        com 1.907: o fundo só tem cotação a partir de 11/12/2020, e o ADR da Aula 01 não inventa
+        preço antes da estreia. Médias e desvios usam os retornos presentes de cada ativo.</p>
+      </section>
+
+      <section class="doc-secao" id="caudas">
+        <h2>5. Desvio padrão, histograma e caudas</h2>
+        <p>O desvio padrão mede o quanto os retornos se afastam da média. É a medida de risco do
+        autoestudo de risco e retorno e a que o otimizador das próximas sprints vai usar. Ele
+        descreve bem o pregão típico e mal o pregão extremo.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>PETR4, 1.907 retornos diários</th><th>Valor</th></tr></thead>
+            <tbody>
+              <tr><td>Desvio padrão diário</td><td>2,47%</td></tr>
+              <tr><td>Pior queda, 09/03/2020</td><td>-29,70%</td></tr>
+              <tr><td>Distância da pior queda à média, em desvios</td><td>12,06</td></tr>
+              <tr><td>Pregões além de 3 desvios</td><td>26</td></tr>
+              <tr><td>O que a normal com a mesma média e desvio preveria</td><td>5,1</td></tr>
+              <tr><td>Desses 26, em março de 2020</td><td>12</td></tr>
+              <tr><td>Curtose em excesso</td><td>21,9</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A curtose em excesso compara o peso das caudas com o da normal, que tem curtose em
+        excesso zero. O valor de 21,9 confirma o que o histograma mostra: muitos pregões perto da
+        média, poucos no meio do caminho e alguns muito longe. Dez das 15 piores quedas diárias da
+        cesta, uma por ativo, caem em março de 2020.</p>
+        <p>Resposta à pergunta disparada do Bloco 4: o desvio padrão não diz qual foi a pior queda.
+        Ele é uma média dos afastamentos ao quadrado, e um único pregão extremo some dentro de 1.907.
+        Para falar de perda máxima, o A2 precisa mostrar o mínimo da série e o histograma, ao lado do
+        desvio. A Aula 05 volta a esse ponto com o drawdown.</p>
+      </section>
+
+      <section class="doc-secao" id="anualizacao">
+        <h2>6. Anualização por 252 e raiz de 252</h2>
+        <p>O ano da B3 tem cerca de 252 pregões, a convenção do mercado brasileiro. O retorno médio
+        anual multiplica a média diária por 252. A volatilidade anual multiplica o desvio diário pela
+        raiz de 252, que vale 15,87.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>PETR4</th><th>Diário</th><th>Fator</th><th>Anual</th></tr></thead>
+            <tbody>
+              <tr><td>Retorno médio</td><td>0,1347%</td><td>252</td><td>33,94%</td></tr>
+              <tr><td>Volatilidade</td><td>2,4727%</td><td>raiz de 252</td><td>39,25%</td></tr>
+              <tr><td>Erro comum: desvio vezes 252</td><td>2,4727%</td><td>252</td><td>623,12%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Por que a raiz</h3>
+        <p>Se os retornos de pregões diferentes são independentes, a variância da soma é a soma das
+        variâncias. Um ano de 252 pregões tem 252 vezes a variância de um pregão, e o desvio, que é
+        a raiz da variância, fica raiz de 252 vezes maior. A animação 2 mostra essa regra no BOVA11:
+        em 21 pregões, 6,98% medido contra 6,81% previsto; em 63 pregões, 11,80% contra 11,80%.</p>
+        <h3>Onde a regra perde precisão</h3>
+        <p>Em horizontes mais longos, o desvio medido no BOVA11 fica abaixo do previsto: 12,68%
+        contra 16,69% em 126 pregões, 15,70% contra 23,61% em 252. Dois motivos pesam. Sete anos e
+        meio de amostra têm só sete janelas anuais sem sobreposição, então o desvio de 252 pregões é
+        estimado com pouca informação. E a independência entre pregões é uma premissa: períodos de
+        queda seguidos de recuperação, como 2020, reduzem a dispersão de longo prazo. A convenção
+        da raiz de 252 continua sendo o padrão do mercado, e o ADR do grupo registra que é uma
+        premissa.</p>
+        <h3>Média anual e retorno composto</h3>
+        <p>A média diária vezes 252 é uma média aritmética. O retorno logarítmico médio vezes 252
+        mede o crescimento composto, e fica abaixo dela, tanto mais quanto maior a volatilidade. Na
+        PETR4, 33,94% contra 26,01%. Na MGLU3, a mais volátil da cesta, -9,45% contra -30,78%. O A2
+        deve dizer qual das duas está reportando.</p>
+      </section>
+
+      <section class="doc-secao" id="janela">
+        <h2>7. Volatilidade em janela deslizante</h2>
+        <p>A volatilidade da janela inteira resume sete anos e meio em um número. A janela deslizante
+        recalcula o desvio anualizado a cada pregão, olhando para trás um número fixo de pregões.</p>
+        <pre class="doc-codigo"><code>vol_21 = simples["BOVA11"].rolling(21).std() * np.sqrt(252)</code></pre>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Pico em 2020</th><th>BOVA11</th><th>PETR4</th></tr></thead>
+            <tbody>
+              <tr><td>21 pregões, um mês</td><td>124,44% em 06/04/2020</td><td>193,65% em 02/04/2020</td></tr>
+              <tr><td>63 pregões, um trimestre</td><td>78,96% em 27/05/2020</td><td>121,15% em 25/05/2020</td></tr>
+              <tr><td>252 pregões, um ano</td><td>43,81% em 23/12/2020</td><td>67,97% em 23/12/2020</td></tr>
+              <tr><td>Janela inteira</td><td>23,41%</td><td>39,25%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A janela curta reage primeiro e sobe mais, porque um único mês de crise ocupa a janela
+        inteira. A janela longa demora a subir e demora a descer: a crise de março de 2020 só sai da
+        janela de 252 pregões em 2021. A escolha da janela é uma decisão de projeto, e entra em ADR
+        quando o grupo usar volatilidade móvel no A2.</p>
+      </section>
+
+      <section class="doc-secao" id="cdi">
+        <h2>8. A cesta contra o CDI</h2>
+        <p>O CDI é a referência de retorno sem risco do case. O arquivo <code>cdi_diario.csv</code>
+        traz a taxa DI over em porcentagem ao dia, e o acumulado do período é o produto de (1 + taxa)
+        em cada dia útil, menos 1:</p>
+        <pre class="doc-codigo"><code>cdi = ler_csv("cdi_diario.csv", index_col="data", parse_dates=["data"])["valor"] / 100
+acumulado = (1 + cdi.loc[inicio:]).prod() - 1</code></pre>
+        <p>Na janela inteira, o CDI acumulou 100,17%, ou 9,51% ao ano. A comparação justa usa o
+        mesmo período de cada ativo: a GOLD11, que estreia em 11/12/2020, é comparada com os 84,04%
+        do CDI desde essa data.</p>
+        <p>Nove dos 15 ativos renderam menos que o CDI no mesmo período: ABEV3, BBAS3, BBDC4, BOVA11,
+        EGIE3, ITUB4, MGLU3, RENT3 e SUZB3. O BOVA11, que replica o Ibovespa, acumulou 98,84%. A
+        PETR4 teve o maior retorno total, 616,00%, e a MGLU3, com a maior volatilidade, 65,41% ao
+        ano, teve o menor, -90,26%. A volatilidade da MGLU3 é 3,3 vezes a da GOLD11, a menor da
+        cesta.</p>
+        <div class="doc-nota">
+          <p>A tabela não sustenta "quem oscila mais rende mais". Volatilidade mede a dispersão dos
+          retornos, sem prometer retorno. A relação entre risco e prêmio de risco, do autoestudo,
+          vale para carteiras diversificadas ao longo de muitos anos; sete anos e meio de uma ação
+          individual podem contrariá-la, como a MGLU3 mostra.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="p5">
+        <h2>9. O mínimo de covariância para o A2</h2>
+        <p>O A2 pede matriz de correlação com heatmap e matriz de covariância anualizada, e a Aula
+        03, em 10/11/2026, é quem ensina esse conteúdo. A pendência P5 do plano de ensino registra o
+        descompasso, em decisão com a coordenação. Até lá, este é o mínimo para a entrega de
+        06/11/2026:</p>
+        <pre class="doc-codigo"><code>covariancia_anual = simples.cov() * 252   # anualiza como a variância
+correlacao = simples.corr()               # adimensional, não anualiza</code></pre>
+        <ul>
+          <li>A diagonal da covariância anual é a variância anual de cada ativo, o quadrado da
+            volatilidade anual da seção 6.</li>
+          <li>A correlação vai de -1 a 1 e diz se dois ativos sobem e caem juntos, sem a escala de
+            cada um.</li>
+          <li>O heatmap da seção 7 do notebook basta como visualização. A leitura dos pares que
+            concentram e dos que diversificam é o assunto da Aula 03.</li>
+        </ul>
+      </section>
+
+      <section class="doc-secao" id="depois">
+        <h2>10. Depois do encontro</h2>
+        <h3>Desafio do notebook</h3>
+        <p>Repetir as métricas anualizadas com a decisão de ausências invertida, descartando as
+        datas com ausência na cesta inteira, e medir quanto a volatilidade de cada ativo muda. O
+        resultado entra no ADR da anualização do grupo, com o número antes e depois. A seção 8 do
+        notebook traz o ponto de partida.</p>
+        <h3>Avanço do A2</h3>
+        <ul>
+          <li>SPEC.md com as interfaces do módulo de métricas e o plano de testes, com um caso usando
+            os dados do grupo.</li>
+          <li>Histogramas por ativo com média e desvio destacados, e a leitura escrita comparando a
+            cesta.</li>
+          <li>ADR da anualização por 252 e raiz de 252, com o impacto numérico.</li>
+        </ul>
+        <p>O A2 vale 3 pontos. A review da Sprint 2 é em 06/11/2026, e a entrega vai até sexta,
+        06/11/2026, 23h59. As funções que o A2 entregar são importadas pelo motor de Monte Carlo do
+        A3.</p>
+        <h3>Leitura complementar</h3>
+        <p>A seção sobre prêmio de risco do autoestudo de risco e retorno, relida com os números da
+        cesta desta página. As demais fontes estão na <a href="../referencias/aula02.html">página
+        de referências</a>.</p>
+      </section>
+
+    </main>
+
+    <p class="doc-rodape">Prof. José Romualdo &middot; Módulo 08 AdmTech &middot; Computação &middot;
+    2026-2B-T19</p>
+
+  </div>
+
+  <nav class="doc-nav" aria-label="Navegação da aula">
+    <a href="../index.html"><span class="material-symbols-outlined" aria-hidden="true">home</span>Portal</a>
+    <a href="../aulas/aula02.html"><span class="material-symbols-outlined" aria-hidden="true">slideshow</span>Slides</a>
+    <a href="../referencias/aula02.html"><span class="material-symbols-outlined" aria-hidden="true">link</span>Referências</a>
+  </nav>
+</body>
+</html>

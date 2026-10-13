@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 02 - Dados Financeiros: Do Preço ao Retorno</title>
+
+  <!-- Aula 02, 05/11/2026, Semana 4, Sprint 2 (Adalove da turma 2026-2B-T19). Roteiro: PLANEJAMENTO_AULA_A_AULA.md, Aula 02.
+       Todo número deste deck está travado em tools/tests/test_aula02.py.
+       Tratamento de ausência usado em toda a aula: Adj Close preenchido para a frente por ativo,
+       a decisão do exemplo de ADR da Aula 01.
+
+       Divisão dos 105 minutos de metodologia ativa (depois da daily de 15 min):
+         Abertura (antes do Bloco 1)  slides 1 a 4   capa, agenda, resgate da espiral, pergunta do case
+         Bloco 1 (0 a 15)             slides 5 e 6   Peer Instruction sobre a queda da PETR4
+         Bloco 2 (15 a 30)            slides 7 a 10  simples e log, a soma que erra, widget com previsão
+         Bloco 3 (30 a 45)            slides 11 e 12 pct_change e np.log, dupla no notebook (12 min)
+         Bloco 4 (45 a 60)            slides 13 a 15 histograma, caudas, pergunta disparada
+         Bloco 5 (60 a 75)            slides 16 a 19 anualização, raiz do tempo, widget de janela com previsão
+         Bloco 6 (75 a 90)            slides 20 a 22 cesta contra o CDI, dupla (12 min), escolha coletiva
+         Bloco 7 (90 a 105)           slides 23 a 28 quiz, notebook, A2, P5, referências
+
+       Se o tempo apertar, cortar primeiro o slide 18 (a animação já está na Preparação) e reduzir
+       a segunda dupla para 8 minutos. -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-theme.css">
+  <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 1 -->
+      <section class="cover-slide">
+        <div class="cover-panel">
+          <div class="cover-content">
+            <p class="cover-eyebrow">Módulo 08 AdmTech &middot; Computação &middot; Semana 4 &middot; 05/11/2026</p>
+            <h1>Do Preço ao Retorno</h1>
+            <h3>Dados financeiros para o A2, Sprint 2</h3>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="content-slide" id="agenda">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Agenda do encontro</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead>
+            <tr><th>Bloco</th><th>Minutos</th><th>Tema</th><th>Interação que fecha o bloco</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Daily</td><td>15</td><td>O que fiz, o que vou fazer, impedimentos</td><td>estado do A1 e a decisão do ADR de ausências</td></tr>
+            <tr><td>1</td><td>0 a 15</td><td>Resgate do coletor e a queda da PETR4</td><td>Peer Instruction sobre o retorno log</td></tr>
+            <tr><td>2</td><td>15 a 30</td><td>Retorno simples e retorno logarítmico</td><td>previsão antes do widget</td></tr>
+            <tr><td>3</td><td>30 a 45</td><td>Média e desvio diários da cesta</td><td>dupla no notebook, seções 2 e 3</td></tr>
+            <tr><td>4</td><td>45 a 60</td><td>Histograma e o peso das caudas</td><td>o desvio diz qual foi a pior queda?</td></tr>
+            <tr><td>5</td><td>60 a 75</td><td>Anualização por 252 e raiz de 252</td><td>previsão antes do widget de janelas</td></tr>
+            <tr><td>6</td><td>75 a 90</td><td>A cesta contra o CDI</td><td>dupla no notebook e escolha coletiva</td></tr>
+            <tr><td>7</td><td>90 a 105</td><td>Quiz e amarração com a Sprint 2</td><td>quiz de três perguntas</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+          <p>Horários de relógio a confirmar na Adalove; os blocos contam do fim da daily.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">2</p>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="content-slide" id="resgate">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Decisões da Aula 01 usadas nos retornos</h2>
+        </div>
+        <p>A Aula 01 deixou pronto o coletor parametrizado, com o Adj Close escolhido e a decisão de ausências registrada em ADR. Todo retorno de hoje herda essas duas escolhas.</p>
+        <table class="tabela-leitura">
+          <thead><tr><th>Herança da Sprint 1</th><th>Decisão usada nesta aula</th><th>Efeito no retorno de hoje</th></tr></thead>
+          <tbody>
+            <tr><td>Visão de preço</td><td>Adj Close</td><td>retorno total, com proventos, sem saltos de desdobramento</td></tr>
+            <tr class="linha-destaque"><td>Ausências</td><td>preencher para a frente, ativo por ativo</td><td>retorno zero para BOVA11, IVVB11 e GOLD11 em 24/10/2025</td></tr>
+            <tr><td>Estreia da GOLD11</td><td>nenhum preço antes de 11/12/2020</td><td>1.423 retornos na GOLD11, contra 1.907 nos demais ativos</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">history</span>
+          <p>O ADR do seu grupo descartou ou preencheu? A resposta muda a volatilidade que o A2 vai entregar.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [1]</p>
+          <p class="footer-page">3</p>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="content-slide" id="case">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Pergunta do case nesta aula</h2>
+        </div>
+        <div class="numero-destaque">
+          <p class="numero-destaque-valor">A2</p>
+          <div class="numero-destaque-texto">
+            <p><strong>Qual ativo da cesta oscila mais, e quanto isso custa ao parceiro?</strong></p>
+            <p>Os gestores precisam conhecer cada ativo antes de combiná-los em carteira.</p>
+          </div>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>O A2 pede</th><th>Onde a aula entrega</th></tr></thead>
+          <tbody>
+            <tr><td>Retorno e volatilidade anualizados, com o fator 252 justificado</td><td>Blocos 5 e 6, notebook seções 5 e 6</td></tr>
+            <tr><td>Histograma de retornos com média e desvio destacados</td><td>Bloco 4, notebook seção 4</td></tr>
+            <tr><td>Correlação e covariância anualizada</td><td>Bloco 7 e material de apoio (pendência P5)</td></tr>
+          </tbody>
+        </table>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">4</p>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="quiz-slide" id="preparo">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Verificação do preparo</h2>
+        </div>
+        <div class="side-by-side">
+          <div class="quiz-container">
+            <p class="quiz-question">Em 09/03/2020 a PETR4 caiu 29,70% (retorno simples). Qual é o retorno logarítmico do mesmo pregão?</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="-29,70% é o próprio retorno simples. O log só coincide com o simples quando o movimento é pequeno.">-29,70%</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="-26,00% é ln(1 + 0,2970) com o sinal trocado: tratou a queda como se fosse uma alta.">-26,00%</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: ln(1 - 0,2970) = -35,24%. Na queda, o log fica abaixo do simples."
+                  data-incorrect-msg="Não.">-35,24%</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="-15,30% usa o logaritmo de base 10. Retorno log é sempre o logaritmo natural.">-15,30%</li>
+            </ul>
+          </div>
+          <ol class="exercise-steps">
+            <li><strong>Votar</strong> sozinho, sem conversar.</li>
+            <li><strong>Discutir em dupla</strong> por dois minutos, defendendo o voto.</li>
+            <li><strong>Votar de novo</strong> e só então revelar.</li>
+          </ol>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [2]</p>
+          <p class="footer-page">5</p>
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="content-slide" id="queda">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A queda de 29,70% da PETR4 vale -35,24% em log</h2>
+        </div>
+        <div class="numero-destaque">
+          <p class="numero-destaque-valor">-35,24%</p>
+          <div class="numero-destaque-texto">
+            <p>ln(1 - 0,2970) = -0,3524. O retorno log de 09/03/2020 fica 5,54 pontos abaixo do simples.</p>
+            <p>É a pior queda diária da cesta inteira na janela do snapshot.</p>
+          </div>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Alternativa errada</th><th>Conta que a produz</th></tr></thead>
+          <tbody>
+            <tr><td>-29,70%</td><td>repetir o retorno simples</td></tr>
+            <tr><td>-26,00%</td><td>calcular ln(1 + 0,2970) e trocar o sinal</td></tr>
+            <tr><td>-15,30%</td><td>usar o logaritmo de base 10</td></tr>
+          </tbody>
+        </table>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [1]</p>
+          <p class="footer-page">6</p>
+        </div>
+      </section>
+
+      <!-- 7 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>Retorno simples e retorno logarítmico</h2>
+        <h3>Duas medidas do mesmo pregão, com regras de soma diferentes</h3>
+      </section>
+
+      <!-- 8 -->
+      <section class="content-slide" id="definicoes">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Definição e regra de soma de cada retorno</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Critério</th><th>Retorno simples</th><th>Retorno logarítmico</th></tr></thead>
+          <tbody>
+            <tr><td>Fórmula</td><td>P<sub>t</sub> / P<sub>t-1</sub> - 1</td><td>ln(P<sub>t</sub> / P<sub>t-1</sub>) = ln(1 + r)</td></tr>
+            <tr><td>Em pandas</td><td><code>precos.pct_change(fill_method=None)</code></td><td><code>np.log(precos / precos.shift(1))</code></td></tr>
+            <tr class="linha-destaque"><td>Vários pregões do mesmo ativo</td><td>compõe pelo produto de (1 + r)</td><td>soma direta</td></tr>
+            <tr><td>Vários ativos no mesmo pregão</td><td>média ponderada pelos pesos da carteira</td><td>sem soma ponderada exata</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">info</span>
+          <p>A carteira de Markowitz das Aulas 03 e 04 combina ativos pelo retorno simples.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [2] [4]</p>
+          <p class="footer-page">8</p>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="content-slide" id="crise">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Somar os simples erra a crise em 6,73 pontos</h2>
+        </div>
+        <div class="side-by-side">
+          <pre class="code-compact"><code>crise = simples.loc["2020-02-20":"2020-04-30",
+                    "PETR4"]
+crise.sum()                 # -0.3419
+(1 + crise).prod() - 1      # -0.4092
+
+crise_log = log.loc["2020-02-20":"2020-04-30",
+                    "PETR4"]
+crise_log.sum()             # -0.5262
+np.log(1 - 0.4092)          # -0.5262</code></pre>
+          <table class="tabela-leitura">
+            <thead><tr><th>47 pregões, 20/02 a 30/04/2020</th><th>PETR4</th></tr></thead>
+            <tbody>
+              <tr><td>Soma dos retornos simples</td><td>-34,19%</td></tr>
+              <tr class="linha-destaque"><td>Acumulado de fato, pelo produto</td><td>-40,92%</td></tr>
+              <tr><td>Soma dos retornos log</td><td>-52,62%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">calculate</span>
+          <p>A soma dos log acerta o log do acumulado: ln(1 - 0,4092) = -52,62%. A soma dos simples só se aproxima.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [1]</p>
+          <p class="footer-page">9</p>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="content-slide" id="widget-simples-log">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Simples e log nos oito maiores movimentos</h2>
+        </div>
+        <div class="widget" data-widget="simples-log" data-fonte="../assets/data/aula02-simples-log.json"
+             data-inicial="PETR4" data-largura="1000" data-altura="300"></div>
+        <p><strong>Previsão da dupla:</strong> quantos pontos separam o log do simples na queda de 09/03/2020? E na alta de 13/03/2020?</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">10</p>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="content-slide" id="pandas">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A MGLU3 oscila 4,12% por pregão</h2>
+        </div>
+        <div class="side-by-side">
+          <pre class="code-compact"><code>precos = ajustado.ffill()   # ADR da Aula 01
+simples = precos.pct_change(
+    fill_method=None).iloc[1:]
+log = np.log(precos / precos.shift(1)).iloc[1:]
+
+diarias = pd.DataFrame({
+    "media": simples.mean(),
+    "desvio": simples.std(),
+    "n": simples.count(),
+})</code></pre>
+          <table class="tabela-leitura">
+            <thead><tr><th>Ativo</th><th>Média diária</th><th>Desvio diário</th><th>Retornos</th></tr></thead>
+            <tbody>
+              <tr class="linha-destaque"><td>MGLU3</td><td>-0,037%</td><td>4,120%</td><td>1.907</td></tr>
+              <tr><td>PETR4</td><td>0,135%</td><td>2,473%</td><td>1.907</td></tr>
+              <tr><td>BOVA11</td><td>0,047%</td><td>1,475%</td><td>1.907</td></tr>
+              <tr><td>IVVB11</td><td>0,087%</td><td>1,269%</td><td>1.907</td></tr>
+              <tr><td>GOLD11</td><td>0,069%</td><td>1,247%</td><td>1.423</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">warning</span>
+          <p><code>fill_method=None</code> impede o pandas de preencher ausências por conta própria: a decisão é do ADR do grupo.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [3] [4]</p>
+          <p class="footer-page">11</p>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="exercise-slide" id="pratica-retornos">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Prática em dupla: retornos da cesta</h2>
+          </div>
+          <div class="cronometro" id="cronometro-retornos" data-minutos="12"></div>
+        </div>
+        <ol class="exercise-steps">
+          <li>Abram o notebook da aula. Quem está no teclado é o <strong>condutor</strong>; o outro é o <strong>navegador</strong>, que lê, pergunta e confere.</li>
+          <li>Seção 2: calculem o retorno simples e o log e confiram a PETR4 em 09/03/2020.</li>
+          <li>Antes de rodar a soma da crise, escrevam qual das somas acerta o acumulado.</li>
+          <li>Aos 6 minutos, troquem de papel. Seção 3: média e desvio diários dos 15 ativos.</li>
+          <li>Respondam as três perguntas da seção 3 antes de abrir a resposta.</li>
+        </ol>
+        <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula02.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 02 no Colab</a></p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">12</p>
+        </div>
+      </section>
+
+      <!-- 13 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>Risco como dispersão</h2>
+        <h3>Desvio padrão, histograma e o peso das caudas</h3>
+      </section>
+
+      <!-- 14 -->
+      <section class="content-slide" id="histograma">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Histograma dos retornos diários da PETR4</h2>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p><strong>Antes de tocar:</strong> anote onde os pregões de março de 2020 vão cair no histograma da PETR4.</p>
+        </div>
+        <video class="video-slide" style="max-height: 420px" controls muted playsinline preload="metadata"
+               poster="../assets/img/aula02-histograma-retornos-poster.png">
+          <source src="../assets/video/aula02-histograma-retornos.mp4" type="video/mp4">
+        </video>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">14</p>
+        </div>
+      </section>
+
+      <!-- 15 -->
+      <section class="content-slide" id="caudas">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A pior queda da PETR4 vale 12,06 desvios</h2>
+        </div>
+        <div class="side-by-side">
+          <table class="tabela-leitura">
+            <thead><tr><th>PETR4, 1.907 retornos diários</th><th>Valor</th></tr></thead>
+            <tbody>
+              <tr><td>Desvio padrão diário</td><td>2,47%</td></tr>
+              <tr class="linha-destaque"><td>Pior queda, 09/03/2020</td><td>-29,70%</td></tr>
+              <tr><td>Pregões além de 3 desvios</td><td>26</td></tr>
+              <tr><td>O que a normal preveria</td><td>5,1</td></tr>
+              <tr><td>Extremos em março de 2020</td><td>12</td></tr>
+              <tr><td>Curtose em excesso</td><td>21,9</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <p>O desvio padrão descreve bem o pregão típico: a maior parte dos retornos fica perto da média.</p>
+            <p>Nas caudas, a normal com o mesmo desvio prevê 5,1 pregões além de 3 desvios, e a PETR4 teve 26. Dez das 15 piores quedas da cesta caem em março de 2020.</p>
+          </div>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
+          <p>O desvio padrão diz qual foi a pior queda do período?</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [1] [2]</p>
+          <p class="footer-page">15</p>
+        </div>
+      </section>
+
+      <!-- 16 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>Anualização</h2>
+        <h3>A anualização usa 252 pregões no retorno e a raiz de 252 na volatilidade</h3>
+      </section>
+
+      <!-- 17 -->
+      <section class="content-slide" id="conta">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>2,47% ao dia viram 39,25% ao ano</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>PETR4</th><th>Diário</th><th>Fator</th><th>Anual</th></tr></thead>
+          <tbody>
+            <tr><td>Retorno médio</td><td>0,1347%</td><td>x 252</td><td>33,94%</td></tr>
+            <tr class="linha-destaque"><td>Volatilidade</td><td>2,4727%</td><td>x raiz de 252 = 15,87</td><td>39,25%</td></tr>
+            <tr><td>Erro comum: desvio x 252</td><td>2,4727%</td><td>x 252</td><td>623,12%</td></tr>
+          </tbody>
+        </table>
+        <p>Em pregões independentes, o que se soma é a <strong>variância</strong>: 252 pregões têm 252 vezes a variância de um. O desvio é a raiz da variância, então cresce com a raiz de 252.</p>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">draw</span>
+          <p>Conta no quadro: refaçam a linha da volatilidade com a calculadora antes de seguir.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [2]</p>
+          <p class="footer-page">17</p>
+        </div>
+      </section>
+
+      <!-- 18 -->
+      <section class="content-slide" id="raiz-do-tempo">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Desvio do BOVA11 de 1 a 63 pregões</h2>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p><strong>Antes de tocar:</strong> o desvio diário do retorno log do BOVA11 é 1,49%. Quanto oscila o retorno log de um trimestre de 63 pregões?</p>
+        </div>
+        <video class="video-slide" style="max-height: 420px" controls muted playsinline preload="metadata"
+               poster="../assets/img/aula02-raiz-do-tempo-poster.png">
+          <source src="../assets/video/aula02-raiz-do-tempo.mp4" type="video/mp4">
+        </video>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">18</p>
+        </div>
+      </section>
+
+      <!-- 19 -->
+      <section class="content-slide" id="widget-janela">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Volatilidade do BOVA11 em janela deslizante</h2>
+        </div>
+        <div class="widget" data-widget="vol-janela" data-fonte="../assets/data/aula02-vol-janela.json"
+             data-inicial="BOVA11" data-inicial-janelas="252" data-largura="1000" data-altura="280"></div>
+        <p><strong>Antes de ligar 21 e 63:</strong> qual janela reage primeiro à crise de março de 2020, e qual sobe mais?</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [5]</p>
+          <p class="footer-page">19</p>
+        </div>
+      </section>
+
+      <!-- 20 -->
+      <section class="content-slide" id="cesta">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Nove dos 15 ativos acumularam menos que o CDI</h2>
+        </div>
+        <div class="side-by-side" style="align-items: start">
+          <table class="tabela-leitura tabela-compacta">
+            <thead><tr><th>Ativo</th><th>Média x 252</th><th>Vol. anual</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr class="linha-destaque"><td>MGLU3</td><td>-9,45%</td><td>65,41%</td><td>-90,26%</td></tr>
+              <tr><td>RENT3</td><td>14,47%</td><td>43,81%</td><td>44,66%</td></tr>
+              <tr><td>PETR4</td><td>33,94%</td><td>39,25%</td><td>616,00%</td></tr>
+              <tr><td>B3SA3</td><td>18,87%</td><td>39,24%</td><td>133,12%</td></tr>
+              <tr><td>VALE3</td><td>20,39%</td><td>35,49%</td><td>189,86%</td></tr>
+              <tr><td>WEGE3</td><td>30,83%</td><td>35,13%</td><td>544,47%</td></tr>
+              <tr><td>SUZB3</td><td>10,05%</td><td>34,67%</td><td>35,87%</td></tr>
+              <tr><td>BBAS3</td><td>10,59%</td><td>34,39%</td><td>42,09%</td></tr>
+            </tbody>
+          </table>
+          <table class="tabela-leitura tabela-compacta">
+            <thead><tr><th>Ativo</th><th>Média x 252</th><th>Vol. anual</th><th>Total</th></tr></thead>
+            <tbody>
+              <tr><td>BBDC4</td><td>7,02%</td><td>34,09%</td><td>9,36%</td></tr>
+              <tr><td>ITUB4</td><td>12,90%</td><td>29,36%</td><td>91,20%</td></tr>
+              <tr><td>ABEV3</td><td>7,37%</td><td>28,34%</td><td>28,93%</td></tr>
+              <tr><td>EGIE3</td><td>10,55%</td><td>23,65%</td><td>79,87%</td></tr>
+              <tr><td>BOVA11</td><td>11,85%</td><td>23,41%</td><td>98,84%</td></tr>
+              <tr><td>IVVB11</td><td>21,82%</td><td>20,15%</td><td>347,03%</td></tr>
+              <tr class="linha-destaque"><td>GOLD11*</td><td>17,46%</td><td>19,80%</td><td>139,80%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">account_balance</span>
+          <p>Total da primeira à última cotação contra o CDI acumulado de 100,17% (GOLD11, desde 11/12/2020: 84,04%). A média anual é aritmética e não se compara com os 9,51% compostos do CDI.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; *GOLD11 desde 11/12/2020 &middot; [1] [6]</p>
+          <p class="footer-page">20</p>
+        </div>
+      </section>
+
+      <!-- 21 -->
+      <section class="exercise-slide" id="pratica-cesta">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Prática em dupla: a tabela da cesta</h2>
+          </div>
+          <div class="cronometro" id="cronometro-cesta" data-minutos="12"></div>
+        </div>
+        <ol class="exercise-steps">
+          <li>Seção 5: refaçam a anualização da PETR4 e a janela deslizante do BOVA11.</li>
+          <li>Seção 6: montem a tabela de retorno e volatilidade anualizados com o CDI do mesmo período.</li>
+          <li>Aos 6 minutos, troquem de papel. O novo condutor ordena a tabela por volatilidade e marca quem ficou abaixo do CDI.</li>
+          <li>Escrevam uma frase para o parceiro: qual ativo oscila mais, e o que isso custou na janela.</li>
+        </ol>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">21</p>
+        </div>
+      </section>
+
+      <!-- 22 -->
+      <section class="content-slide" id="escolha-risco">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>O que a tabela sustenta sobre risco</h2>
+          </div>
+          <div class="cronometro" id="cronometro-escolha" data-minutos="4"></div>
+        </div>
+        <div class="escolha-grid">
+          <div class="escolha" id="escolha-1">
+            <p class="escolha-item">1. A MGLU3 é o ativo de maior risco da cesta</p>
+            <ul class="escolha-opcoes">
+              <li data-correct="true" style="font-size: var(--escala-texto)">Sustentada</li>
+              <li style="font-size: var(--escala-texto)">Não sustentada</li>
+            </ul>
+          </div>
+          <div class="escolha" id="escolha-2">
+            <p class="escolha-item">2. Na cesta, quem oscila mais rende mais</p>
+            <ul class="escolha-opcoes">
+              <li style="font-size: var(--escala-texto)">Sustentada</li>
+              <li data-correct="true" style="font-size: var(--escala-texto)">Não sustentada</li>
+            </ul>
+          </div>
+          <div class="escolha" id="escolha-3">
+            <p class="escolha-item">3. O BOVA11 rendeu mais que o CDI na janela</p>
+            <ul class="escolha-opcoes">
+              <li style="font-size: var(--escala-texto)">Sustentada</li>
+              <li data-correct="true" style="font-size: var(--escala-texto)">Não sustentada</li>
+            </ul>
+          </div>
+          <div class="escolha" id="escolha-4">
+            <p class="escolha-item">4. A PETR4 entregou o maior retorno total da cesta</p>
+            <ul class="escolha-opcoes">
+              <li data-correct="true" style="font-size: var(--escala-texto)">Sustentada</li>
+              <li style="font-size: var(--escala-texto)">Não sustentada</li>
+            </ul>
+          </div>
+        </div>
+        <p>Cada dupla decide antes do clique. A sala vota em cada afirmação e aponta o número que decide.</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">22</p>
+        </div>
+      </section>
+
+      <!-- 23 -->
+      <section class="quiz-slide" id="quiz-final">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Quiz de verificação</h2>
+        </div>
+        <div class="quiz-trio">
+          <div class="quiz-container">
+            <p class="quiz-question">1. Somar os simples da PETR4 na crise de 2020 dá -34,19%. O acumulado foi:</p>
+            <ul class="quiz-options">
+              <li data-correct="true"
+                  data-correct-msg="Certo: o produto de (1 + r) nos 47 pregões."
+                  data-incorrect-msg="Não.">-40,92%</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="A soma dos simples ignora a composição dos pregões.">-34,19%</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="-52,62% é a soma dos log, que acerta o log do acumulado.">-52,62%</li>
+            </ul>
+          </div>
+          <div class="quiz-container">
+            <p class="quiz-question">2. Desvio diário de 2,47%. A volatilidade anual é:</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="Multiplicou o desvio por 252: a variância é que soma.">623,12%</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: 2,4727% vezes raiz de 252."
+                  data-incorrect-msg="Não.">39,25%</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="2,47% é o desvio de um pregão, sem anualizar.">2,47%</li>
+            </ul>
+          </div>
+          <div class="quiz-container">
+            <p class="quiz-question">3. Qual janela atinge o pico primeiro em 2020?</p>
+            <ul class="quiz-options">
+              <li data-correct="true"
+                  data-correct-msg="Certo: 21 pregões, pico em 06/04/2020 no BOVA11."
+                  data-incorrect-msg="Não.">21 pregões</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="A de 63 pregões chega ao pico em 27/05/2020.">63 pregões</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="A de 252 pregões só chega ao pico em 23/12/2020.">252 pregões</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">23</p>
+        </div>
+      </section>
+
+      <!-- 24 -->
+      <section class="exercise-slide" id="notebook">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Notebook da aula</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Seção</th><th>O que entrega</th></tr></thead>
+          <tbody>
+            <tr><td>1 a 3</td><td>O preço herdado da Aula 01, os dois retornos, a soma da crise, média e desvio diários</td></tr>
+            <tr><td>4 e 5</td><td>Histograma com média e desvio, caudas, anualização e janela deslizante</td></tr>
+            <tr><td>6 e 7</td><td>A tabela da cesta contra o CDI e o mínimo de covariância e correlação</td></tr>
+            <tr class="linha-destaque"><td>8</td><td>Desafio do A2: inverter a decisão de ausências e medir quanto a volatilidade de cada ativo muda</td></tr>
+          </tbody>
+        </table>
+        <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula02.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula02.ipynb" target="_blank" rel="noopener">Abrir no Colab</a> &middot; <a href="../materiais/aula02.html">Material de apoio</a></p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">24</p>
+        </div>
+      </section>
+
+      <!-- 25 -->
+      <section class="content-slide" id="a2">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Artefato A2 da Sprint 2</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead><tr><th>Critério do barema</th><th>Peso</th><th>O que hoje já adiantou</th></tr></thead>
+          <tbody>
+            <tr><td>Corretude das métricas</td><td>30%</td><td>retorno e volatilidade anualizados por 252 e raiz de 252</td></tr>
+            <tr><td>Visualizações interpretáveis</td><td>15%</td><td>histograma com média e desvio destacados</td></tr>
+            <tr><td>Leitura analítica</td><td>15%</td><td>a frase para o parceiro; correlações na Aula 03</td></tr>
+            <tr><td>Reutilização</td><td>5%</td><td>funções que recebem o DataFrame do A1, no desafio</td></tr>
+            <tr><td>Especificação e documentação</td><td>15%</td><td>SPEC.md com as interfaces do módulo de métricas</td></tr>
+            <tr class="linha-destaque"><td>ADRs, nota individual</td><td>20%</td><td>o ADR da anualização por 252</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">event</span>
+          <p>A2 vale 3 pontos; ADR no modelo do curso [7]. Entrega até sexta, 06/11/2026, 23h59, com review no mesmo dia. O A3 vai importar as funções do A2.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">25</p>
+        </div>
+      </section>
+
+      <!-- 26 -->
+      <section class="content-slide" id="p5">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O A2 cobra covariância antes da Aula 03</h2>
+        </div>
+        <div class="side-by-side">
+          <pre class="code-compact"><code>covariancia_anual = simples.cov() * 252
+correlacao = simples.corr()   # não anualiza</code></pre>
+          <table class="tabela-leitura">
+            <thead><tr><th>Item do A2</th><th>Mínimo para 06/11</th></tr></thead>
+            <tbody>
+              <tr><td>Covariância anualizada</td><td>a matriz, multiplicada por 252 como a variância</td></tr>
+              <tr><td>Correlação com heatmap</td><td>a matriz e o heatmap da seção 7 do notebook</td></tr>
+              <tr><td>Leitura das correlações</td><td>uma frase por par que chamar atenção</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">flag</span>
+          <p>Pendência P5 do plano de ensino, em decisão com a coordenação. A Aula 03, em 10/11/2026, aprofunda a leitura de pares.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">26</p>
+        </div>
+      </section>
+
+      <!-- 27 -->
+      <section class="content-slide" id="referencias">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Referências</h2>
+        </div>
+        <ol class="ref-columns">
+          <li id="ref-1"><a href="https://github.com/josercf/2026-2B-M08/blob/main/dados/README.md" target="_blank" rel="noopener">dados/README.md</a>: snapshot do case, cesta de 15 ativos e falhas do provedor.</li>
+          <li id="ref-2">BODIE, Z.; KANE, A.; MARCUS, A. <em>Fundamentos de investimentos</em>. 9. ed. AMGH, 2014. cap. 5. Autoestudo: Risco e retorno: passado e prólogo.</li>
+          <li id="ref-3">REIS, T. et al. Análise de uma ação em Python. Turing Talks (Medium), 2020. Autoestudo: Análise de uma ação em Python na prática.</li>
+          <li id="ref-4"><a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.pct_change.html" target="_blank" rel="noopener">pandas: DataFrame.pct_change</a>.</li>
+          <li id="ref-5"><a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rolling.html" target="_blank" rel="noopener">pandas: DataFrame.rolling</a>.</li>
+          <li id="ref-6"><a href="https://dadosabertos.bcb.gov.br/" target="_blank" rel="noopener">Banco Central, dados abertos do SGS</a>: série 12, taxa DI over.</li>
+          <li id="ref-7"><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a>.</li>
+        </ol>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">27</p>
+        </div>
+      </section>
+
+      <!-- 28 -->
+      <section class="end-slide">
+        <h1>Até 10/11/2026</h1>
+        <h3>Aula 03: Correlação, Covariância e o Argumento Matemático da Diversificação</h3>
+        <h3>Prof. José Romualdo</h3>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280, height: 720, center: false, margin: 0,
+      hash: true, slideNumber: false, transition: 'fade'
+    });
+  </script>
+  <script src="../assets/js/inteli-quiz.js"></script>
+  <script src="../assets/js/inteli-zoom.js"></script>
+  <script src="../assets/js/inteli-print.js"></script>
+  <script src="../assets/js/inteli-cronometro.js"></script>
+  <script src="../assets/js/inteli-escolha.js"></script>
+  <script src="../assets/js/inteli-widgets.js"></script>
+  <script src="../assets/js/widgets/simples-log.js"></script>
+  <script src="../assets/js/widgets/vol-janela.js"></script>
+</body>
+</html>
