@@ -78,9 +78,17 @@ Interação: pergunta disparada "quantos sorteios faltariam para a melhor sortea
 ótima?".
 
 - Mover o widget de 10 a 10.000: -0,10, 0,15, 0,28 e 0,41.
-- Resposta esperada depois do slide 13: um milhão chega a 0,60, ainda longe de 0,92; com sorteio
-  uniforme o número que falta é impraticável. O motivo é geométrico: o maior peso entre as 10.000
-  sorteadas é 24,61%, e a ótima põe 44,31% na PETR4 e zera 12 ativos.
+- Resposta esperada depois do slide 13: um milhão chega a 0,60, ainda longe de 0,92. O motor da
+  aula soma 15 números Uniform(0,1) e divide pela soma, distribuição que acumula os pesos perto de
+  1/15: o maior peso entre as 10.000 sorteadas é 24,61%, e a ótima põe 44,31% na PETR4 e zera 12
+  ativos.
+- Slide 14: com a mesma semente e os mesmos 10.000 sorteios, a Dirichlet(1), uniforme no simplex,
+  chega a 0,64 (acima do milhão do motor da aula) e a Dirichlet(0,2), que favorece vértices, a 0,85.
+  No trio PETR4, IVVB11 e GOLD11 as três chegam a 0,92. Fechar com os três fatores: distribuição dos
+  pesos, dimensão e ausência de objetivo no sorteio. Nenhuma distribuição chega a 0,92 com 15
+  ativos, e o A4 resolve a carteira por otimização.
+- Erro comum: concluir que basta trocar para Dirichlet(0,2). A melhor dela tem 1,90 ativos
+  efetivos, mais concentrada que a ótima (2,82), e continua abaixo de 0,92.
 - Erro comum: propor "mais sorteios" ou "outra semente" como solução. Devolver a pergunta do
   barema do A3: por que a simulação não substitui a otimização?
 
@@ -116,7 +124,9 @@ Interação: programação em dupla no notebook, seções 4 e 5, e a frase sobre
 
 Gabarito do quiz de verificação:
 
-1. Por que o sorteio não encontra a ótima? **Pesos sorteados quase nunca concentram.**
+1. Por que o sorteio não encontra a ótima? **A distribuição dos pesos quase nunca concentra.**
+   Uniform(0,1) dividido pela soma nunca passa de 24,61% num ativo; a Dirichlet(0,2) chega a 0,85
+   com os mesmos 10.000 sorteios, e nenhuma distribuição chega a 0,92 com 15 ativos.
 2. O que impede venda a descoberto no SLSQP? **Os limites de 0 a 1.**
 3. Qual ótima tem a menor volatilidade? **Variância mínima**, 9,67%, abaixo da menor sorteada
    (11,87%).

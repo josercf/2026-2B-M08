@@ -4,7 +4,9 @@ Retorno esperado e covariância anualizados da cesta de 15 ativos, o CDI como
 taxa livre de risco, a nuvem de 10.000 carteiras sorteadas com semente fixa, a
 melhor carteira sorteada contra a ótima, as carteiras de variância mínima e de
 máximo Sharpe resolvidas por SLSQP, a fronteira de 50 pontos e o caminho do
-SLSQP no triângulo de pesos de três ativos. Todo número que o deck, o notebook,
+SLSQP no triângulo de pesos de três ativos, e a comparação de três distribuições
+de pesos no mesmo orçamento de sorteios (uniforme normalizado, Dirichlet(1) e
+Dirichlet(0,2)). Todo número que o deck, o notebook,
 os widgets e as animações da Aula 04 citam sai daqui e está travado em
 tools/tests/test_aula04.py.
 
@@ -34,6 +36,11 @@ SORTEIOS_PROGRESSIVOS = (10, 100, 1_000, 10_000, 100_000, 1_000_000)
 TRIO = ("PETR4", "IVVB11", "GOLD11")
 TOLERANCIA = 1e-12
 MINIMO_PESO = 1e-4  # peso abaixo disso conta como fora da carteira
+LIMITE_CONCENTRACAO = 0.25  # carteira com algum peso acima disso conta como concentrada
+# Distribuições de pesos comparadas: None é o motor da aula (Uniform(0,1) dividido
+# pela soma); um número é o alfa de uma Dirichlet simétrica. Dirichlet(1) é a
+# uniforme no simplex; alfa abaixo de 1 empurra os sorteios para vértices e arestas.
+ESQUEMAS = (("uniforme_normalizado", None), ("dirichlet_1", 1.0), ("dirichlet_02", 0.2))
 
 
 def retornos():
@@ -99,7 +106,7 @@ def metricas(pesos, mu=None, cov=None, rf=None):
 
 
 def sortear(n, semente=SEMENTE, mu=None, cov=None, rf=None):
-    """Motor vetorizado: n carteiras com pesos uniformes normalizados.
+    """Motor vetorizado: n carteiras com pesos Uniform(0,1) divididos pela soma.
 
     Devolve (pesos, retorno, volatilidade, sharpe) em arrays NumPy, sem laço
     por carteira.
@@ -107,12 +114,61 @@ def sortear(n, semente=SEMENTE, mu=None, cov=None, rf=None):
     mu = retorno_esperado().values if mu is None else mu
     cov = covariancia().values if cov is None else cov
     rf = taxa_livre_de_risco() if rf is None else rf
-    gerador = np.random.default_rng(semente)
-    pesos = gerador.random((n, len(mu)))
-    pesos /= pesos.sum(axis=1, keepdims=True)
+    pesos = pesos_sorteados(np.random.default_rng(semente), n, len(mu))
     ret = pesos @ mu
     vol = np.sqrt(np.einsum("ij,jk,ik->i", pesos, cov, pesos))
     return pesos, ret, vol, (ret - rf) / vol
+
+
+def pesos_sorteados(gerador, n, k, alfa=None):
+    """n linhas de k pesos não negativos que somam 1.
+
+    alfa=None reproduz o motor da aula: Uniform(0,1) dividido pela soma da
+    linha, que não é uniforme no simplex e acumula as carteiras perto de 1/k.
+    Com alfa, sorteia de uma Dirichlet simétrica: alfa=1 é a uniforme no
+    simplex, alfa<1 favorece carteiras concentradas.
+    """
+    if alfa is None:
+        pesos = gerador.random((n, k))
+        return pesos / pesos.sum(axis=1, keepdims=True)
+    return gerador.dirichlet(np.full(k, float(alfa)), n)
+
+
+def ativos_efetivos(pesos):
+    """Número efetivo de ativos, 1 / soma(w²), de cada linha."""
+    pesos = np.atleast_2d(np.asarray(pesos, dtype=float))
+    return 1 / (pesos ** 2).sum(axis=1)
+
+
+def comparar_esquemas(n=N_CARTEIRAS, semente=SEMENTE, mu=None, cov=None, rf=None):
+    """Mesma semente e mesmo orçamento de n sorteios para cada distribuição de pesos.
+
+    Para cada esquema de ESQUEMAS: melhor Sharpe, maior peso da melhor carteira,
+    maior peso entre as n, mediana do número efetivo de ativos, número efetivo
+    da melhor, fração de carteiras com algum peso acima de 25% e quantas rendem
+    abaixo do CDI.
+    """
+    mu = retorno_esperado().values if mu is None else mu
+    cov = covariancia().values if cov is None else cov
+    rf = taxa_livre_de_risco() if rf is None else rf
+    saida = {}
+    for nome, alfa in ESQUEMAS:
+        pesos = pesos_sorteados(np.random.default_rng(semente), n, len(mu), alfa)
+        vol = np.sqrt(np.einsum("ij,jk,ik->i", pesos, cov, pesos))
+        sharpe = (pesos @ mu - rf) / vol
+        melhor = int(np.argmax(sharpe))
+        efetivos = ativos_efetivos(pesos)
+        saida[nome] = {
+            "alfa": alfa,
+            "melhor_sharpe": float(sharpe[melhor]),
+            "melhor_maior_peso": float(pesos[melhor].max()),
+            "maior_peso": float(pesos.max()),
+            "ativos_efetivos_mediana": float(np.median(efetivos)),
+            "ativos_efetivos_melhor": float(efetivos[melhor]),
+            "fracao_concentrada": float((pesos.max(axis=1) > LIMITE_CONCENTRACAO).mean()),
+            "abaixo_do_cdi": int((sharpe < 0).sum()),
+        }
+    return saida
 
 
 def nuvem():
@@ -146,8 +202,7 @@ def melhor_por_sorteios(tamanhos=SORTEIOS_PROGRESSIVOS, semente=SEMENTE):
     for alvo in sorted(tamanhos):
         while feitos < alvo:
             lote = min(100_000, alvo - feitos)
-            pesos = gerador.random((lote, len(mu)))
-            pesos /= pesos.sum(axis=1, keepdims=True)
+            pesos = pesos_sorteados(gerador, lote, len(mu))
             vol = np.sqrt(np.einsum("ij,jk,ik->i", pesos, cov, pesos))
             melhor = max(melhor, float(((pesos @ mu - rf) / vol).max()))
             feitos += lote

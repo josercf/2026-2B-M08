@@ -496,3 +496,152 @@ def test_notebook_declara_a_janela_e_o_custo():
     for valor in ("ADR-009", "24/10/2025", "Aula 01", "Aula 03", "março de 2020", "1.423",
                   "14/12/2020", _pct(custo["serie_inteira"]), _pct(custo["janela_comum"])):
         assert valor in texto, valor
+
+
+# --- distribuição dos pesos (C-09): mesma semente, mesmo orçamento ------------------
+
+def _esquemas():
+    return m.comparar_esquemas()
+
+
+def test_uniforme_normalizado_da_comparacao_e_o_motor_da_aula():
+    e = _esquemas()["uniforme_normalizado"]
+    n = m.nuvem()
+    assert e["melhor_sharpe"] == pytest.approx(n["melhor_sharpe"])
+    assert e["maior_peso"] == pytest.approx(n["maior_peso_da_nuvem"])
+    assert e["abaixo_do_cdi"] == n["abaixo_do_cdi"] == 8851
+
+
+def test_tres_distribuicoes_com_10000_sorteios_e_semente_42():
+    e = _esquemas()
+    resumo = {nome: (_r(v["melhor_sharpe"]), _r(v["melhor_maior_peso"]), _r(v["maior_peso"]),
+                     _r(v["ativos_efetivos_mediana"]), _r(v["ativos_efetivos_melhor"]),
+                     _r(v["fracao_concentrada"]))
+              for nome, v in e.items()}
+    assert resumo == {
+        "uniforme_normalizado": (0.4069, 0.1817, 0.2461, 11.4126, 8.2326, 0.0),
+        "dirichlet_1": (0.6399, 0.5526, 0.5974, 8.3663, 3.0466, 0.2621),
+        "dirichlet_02": (0.8495, 0.6835, 0.9713, 3.6952, 1.8960, 0.9491),
+    }
+
+
+def test_distribuicao_rende_mais_que_multiplicar_sorteios_e_nenhuma_alcanca_a_otima():
+    e = _esquemas()
+    otima = m.carteira(m.maximo_sharpe())["sharpe"]
+    milhao = m.melhor_por_sorteios((1_000_000,))[1_000_000]
+    assert e["dirichlet_1"]["melhor_sharpe"] > milhao
+    sharpes = [e[nome]["melhor_sharpe"] for nome, _ in m.ESQUEMAS]
+    assert sharpes == sorted(sharpes)
+    assert max(sharpes) < otima
+    medianas = [e[nome]["ativos_efetivos_mediana"] for nome, _ in m.ESQUEMAS]
+    assert medianas == sorted(medianas, reverse=True)
+
+
+def test_ativos_efetivos_da_otima_e_dos_casos_extremos():
+    assert m.ativos_efetivos(np.full(15, 1 / 15))[0] == pytest.approx(15)
+    assert m.ativos_efetivos(np.eye(15)[0])[0] == pytest.approx(1)
+    assert _r(m.ativos_efetivos(m.maximo_sharpe())[0]) == 2.8216
+    # A melhor da Dirichlet(0,2) concentra mais que a ótima.
+    assert _esquemas()["dirichlet_02"]["ativos_efetivos_melhor"] < m.ativos_efetivos(m.maximo_sharpe())[0]
+
+
+def test_no_trio_as_tres_distribuicoes_chegam_a_otima():
+    mu, cov = m.trio()
+    e = m.comparar_esquemas(mu=mu, cov=cov)
+    otima_trio = m.metricas(m.caminho_slsqp_trio()[1], mu, cov)[2]
+    for nome, v in e.items():
+        assert _r(v["melhor_sharpe"], 2) == 0.92, nome
+        assert v["melhor_sharpe"] <= otima_trio + 1e-9
+
+
+def _numeros_da_comparacao():
+    e = _esquemas()
+    numeros = []
+    for nome, _ in m.ESQUEMAS:
+        v = e[nome]
+        numeros += [_num(v["melhor_sharpe"]), _pct(v["melhor_maior_peso"]),
+                    _num(v["ativos_efetivos_mediana"]), _pct(v["fracao_concentrada"])]
+    ms = m.carteira(m.maximo_sharpe())
+    numeros += [_num(ms["sharpe"]), _pct(ms["maior_peso"]),
+                _num(m.ativos_efetivos(m.maximo_sharpe())[0]),
+                _num(m.melhor_por_sorteios((1_000_000,))[1_000_000])]
+    return numeros
+
+
+def _secao(id_):
+    for s in _secoes():
+        if 'id="%s"' % id_ in s:
+            return s
+    raise AssertionError(id_)
+
+
+def test_slide_da_distribuicao_cita_a_comparacao_medida():
+    slide = _secao("distribuicao")
+    for valor in _numeros_da_comparacao() + ["Uniform(0,1)", "Dirichlet(1)", "Dirichlet(0,2)",
+                                              "10.000", "semente 42", "PETR4, IVVB11 e GOLD11"]:
+        assert valor in slide, valor
+    assert _num(_esquemas()["dirichlet_02"]["melhor_sharpe"]) in re.search(r"<h2>(.*?)</h2>", slide).group(1)
+    assert "[9]" in slide
+    assert 'id="ref-9"' in _deck() and "DEVROYE" in _deck()
+
+
+def test_slides_da_nuvem_nomeiam_a_distribuicao_dos_pesos():
+    for id_ in ("sorteada-contra-otima", "milhao"):
+        assert "Uniform(0,1)" in _secao(id_), id_
+    assert "1/15" in _secao("motor")
+    assert "uniformes normalizados" not in _deck()
+    assert "Pesos sorteados quase nunca concentram" not in _deck()
+
+
+def test_quiz_final_inclui_a_distribuicao_dos_pesos():
+    quiz = _secao("quiz-final")
+    certa = re.search(r'data-correct="true"\s+data-correct-msg="([^"]*)"\s+data-incorrect-msg="[^"]*">([^<]*)</li>',
+                      quiz)
+    assert "distribuição dos pesos" in certa.group(2)
+    e = _esquemas()
+    for valor in (_pct(m.nuvem()["maior_peso_da_nuvem"]), _num(e["dirichlet_02"]["melhor_sharpe"]),
+                  _num(m.carteira(m.maximo_sharpe())["sharpe"])):
+        assert valor in certa.group(1), valor
+
+
+def test_material_cita_a_comparacao_de_distribuicoes():
+    with open(os.path.join(m.RAIZ, "materiais", "aula04.html"), encoding="utf-8") as fh:
+        material = fh.read()
+    for valor in _numeros_da_comparacao() + [_num(_esquemas()["dirichlet_02"]["ativos_efetivos_melhor"]),
+                                             "Dirichlet(1)", "Dirichlet(0,2)", "Devroye"]:
+        assert valor in material, valor
+    assert "uniforme quase nunca" not in material
+
+
+def test_referencias_trazem_a_amostragem_no_simplex():
+    with open(os.path.join(m.RAIZ, "referencias", "aula04.html"), encoding="utf-8") as fh:
+        pagina = fh.read()
+    complementar = pagina.split('id="complementar"')[1]
+    itens = re.findall(r"<li>", complementar.split("</ol>")[0])
+    assert len(itens) == 9
+    assert "DEVROYE" in complementar and "Dirichlet" in complementar
+
+
+def test_notas_do_professor_citam_a_comparacao():
+    with open(os.path.join(m.RAIZ, "docs", "notas-do-professor", "aula04.md"), encoding="utf-8") as fh:
+        notas = fh.read()
+    e = _esquemas()
+    for valor in (_num(e["dirichlet_1"]["melhor_sharpe"]), _num(e["dirichlet_02"]["melhor_sharpe"]),
+                  _num(e["dirichlet_02"]["ativos_efetivos_melhor"]),
+                  _num(m.ativos_efetivos(m.maximo_sharpe())[0]), "Slide 14",
+                  "A distribuição dos pesos quase nunca concentra"):
+        assert valor in notas, valor
+
+
+def test_notebook_compara_as_tres_distribuicoes():
+    celulas = {c.get("id"): c for c in _notebook()["cells"]}
+    codigo = "".join(celulas["aula04-09b"]["source"])
+    assert "dirichlet" in codigo and "semente=42" in codigo and "10_000" in codigo
+    assert "import" not in codigo and "tools" not in codigo
+    resposta = "".join(celulas["aula04-09c"]["source"])
+    e = _esquemas()
+    for valor in (_num(e["dirichlet_1"]["melhor_sharpe"]), _num(e["dirichlet_02"]["melhor_sharpe"]),
+                  _num(m.melhor_por_sorteios((1_000_000,))[1_000_000]), "0,92"):
+        assert valor in resposta, valor
+    texto = json.dumps(_notebook(), ensure_ascii=False)
+    assert "quase nunca concentram" not in texto

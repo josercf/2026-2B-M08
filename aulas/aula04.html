@@ -17,13 +17,15 @@
          Bloco 1 (0 a 15)             slides 3 a 5   resgate da covariância, Peer Instruction, revelação
          Bloco 2 (15 a 30)            slides 6 a 8   forma vetorial, Sharpe com CDI, widget do triângulo
          Bloco 3 (30 a 45)            slides 9 e 10  o motor vetorizado e a dupla no notebook (12 min)
-         Bloco 4 (45 a 60)            slides 11 a 13 animação da nuvem, widget de sorteio, pergunta disparada
-         Bloco 5 (60 a 75)            slides 14 a 17 SLSQP, previsão de concentração, animação, resultado
-         Bloco 6 (75 a 90)            slides 18 e 19 fronteira sobre a nuvem e a dupla no notebook (12 min)
-         Bloco 7 (90 a 105)           slides 20 a 23 quiz, notebook, A3 e A4, referências
+         Bloco 4 (45 a 60)            slides 11 a 14 animação da nuvem, widget de sorteio, pergunta disparada,
+                                                     distribuição dos pesos
+         Bloco 5 (60 a 75)            slides 15 a 18 SLSQP, previsão de concentração, animação, resultado
+         Bloco 6 (75 a 90)            slides 19 e 20 fronteira sobre a nuvem e a dupla no notebook (12 min)
+         Bloco 7 (90 a 105)           slides 21 a 24 quiz, notebook, A3 e A4, referências
 
        Se o tempo apertar, cortar primeiro o slide 13 (tabela de um milhão de sorteios):
-       a pergunta disparada do Bloco 4 também está no slide 12, junto do widget. -->
+       a pergunta disparada do Bloco 4 também está no slide 12, junto do widget, e o slide 14
+       mostra o 0,60 do milhão ao lado das três distribuições. -->
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="../assets/css/inteli-brand.css">
@@ -125,7 +127,7 @@
             <ul class="quiz-options">
               <li data-correct="false"
                   data-correct-msg="Certo."
-                  data-incorrect-msg="10.000 pontos parecem muitos, mas pesos sorteados quase nunca concentram: nenhuma das 10.000 põe mais de 24,61% num ativo.">Sim: 10.000 sorteios cobrem todas as alocações</li>
+                  data-incorrect-msg="10.000 pontos parecem muitos, mas o sorteio Uniform(0,1) dividido pela soma nunca pôs mais de 24,61% num ativo.">Sim: 10.000 sorteios cobrem todas as alocações</li>
               <li data-correct="false"
                   data-correct-msg="Certo."
                   data-incorrect-msg="A diferença é grande: Sharpe 0,41 na melhor sorteada contra 0,92 na ótima.">Sim, a menos de arredondamento</li>
@@ -166,7 +168,7 @@
         </table>
         <div class="faixa-nota">
           <span class="material-symbols-outlined" aria-hidden="true">info</span>
-          <p>Sorteio com semente 42 e pesos uniformes normalizados. A carteira ótima concentra o peso em 3 dos 15 ativos e zera os outros 12.</p>
+          <p>Sorteio com semente 42 e pesos Uniform(0,1) divididos pela soma, uma distribuição que acumula as carteiras perto de 1/15 por ativo (slide 14). A carteira ótima concentra o peso em 3 dos 15 ativos e zera os outros 12.</p>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [1] [6]</p>
@@ -261,7 +263,7 @@ pesos, ret, vol, sharpe = sortear(
     10_000, mu, cov, rf)</code></pre>
           <table class="tabela-leitura">
             <tr><td>Semente</td><td>o mesmo sorteio em qualquer máquina, para o teste do SPEC.md</td></tr>
-            <tr><td>Normalizar</td><td>cada linha dividida pela própria soma: pesos somam 1, nenhum negativo</td></tr>
+            <tr><td>Normalizar</td><td>cada linha dividida pela própria soma: pesos somam 1, nenhum negativo, e a distribuição se acumula perto de 1/15</td></tr>
             <tr><td>einsum</td><td>w<sup>T</sup> &Sigma; w das 10.000 linhas de uma vez, sem laço em Python</td></tr>
             <tr class="linha-destaque"><td>Requisito</td><td>o A3 pede 10.000 carteiras em menos de 10 segundos</td></tr>
           </table>
@@ -361,8 +363,8 @@ pesos, ret, vol, sharpe = sortear(
             </tbody>
           </table>
           <div>
-            <p>Pesos uniformes normalizados espalham o dinheiro: o maior peso entre as 10.000 sorteadas é <strong>24,61%</strong>.</p>
-            <p>A ótima põe 44,31% na PETR4 e zera 12 ativos, uma região do espaço de pesos que o sorteio quase nunca visita.</p>
+            <p>O motor soma 15 números Uniform(0,1) e divide cada um pela soma. Essa distribuição acumula os pesos perto de 1/15: o maior peso entre as 10.000 sorteadas é <strong>24,61%</strong>.</p>
+            <p>A ótima põe 44,31% na PETR4 e zera 12 ativos, uma região que essa distribuição quase nunca visita. O slide seguinte troca a distribuição e mantém os 10.000 sorteios.</p>
           </div>
         </div>
         <div class="faixa-nota">
@@ -376,13 +378,45 @@ pesos, ret, vol, sharpe = sortear(
       </section>
 
       <!-- 14 -->
+      <section class="content-slide" id="distribuicao">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Trocar a distribuição leva o melhor Sharpe a 0,85</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead><tr><th>10.000 sorteios, semente 42</th><th>Melhor Sharpe</th><th>Maior peso da melhor</th><th>Ativos efetivos, mediana</th><th>Carteiras com peso acima de 25%</th></tr></thead>
+          <tbody>
+            <tr><td>Uniform(0,1) dividido pela soma, o motor da aula</td><td>0,41</td><td>18,17%</td><td>11,41</td><td>0,00%</td></tr>
+            <tr><td>Dirichlet(1), uniforme no simplex</td><td>0,64</td><td>55,26%</td><td>8,37</td><td>26,21%</td></tr>
+            <tr><td>Dirichlet(0,2), mais peso nos vértices</td><td>0,85</td><td>68,35%</td><td>3,70</td><td>94,91%</td></tr>
+            <tr class="linha-destaque"><td>Máximo Sharpe, SLSQP</td><td>0,92</td><td>44,31%</td><td>2,82 na ótima</td><td>não se aplica</td></tr>
+          </tbody>
+        </table>
+        <table class="tabela-leitura tabela-compacta" style="margin-top: 22px">
+          <tr><td>Distribuição</td><td>com o mesmo orçamento, a Dirichlet(1) chega a 0,64 e passa do milhão de sorteios do motor da aula (0,60)</td></tr>
+          <tr><td>Dimensão</td><td>no trio PETR4, IVVB11 e GOLD11, as três distribuições chegam a 0,92 com 10.000 sorteios; com 15 ativos, nenhuma chega</td></tr>
+          <tr><td>Objetivo</td><td>o sorteio não usa o Sharpe para decidir onde sortear; o SLSQP usa, e por isso o A4 resolve a carteira por otimização</td></tr>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">info</span>
+          <p>Ativos efetivos = 1 / soma dos pesos ao quadrado: 15 com pesos iguais, 1 com todo o peso num ativo.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [7] [9]</p>
+          <p class="footer-page">14</p>
+        </div>
+      </section>
+
+      <!-- 15 -->
       <section class="section-slide">
         <div class="accent-bar"></div>
         <h2>Otimização com restrições</h2>
         <h3>Função objetivo, soma 1 e nenhum peso negativo</h3>
       </section>
 
-      <!-- 15 -->
+      <!-- 16 -->
       <section class="content-slide" id="slsqp">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -416,11 +450,11 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3] [6]</p>
-          <p class="footer-page">15</p>
+          <p class="footer-page">16</p>
         </div>
       </section>
 
-      <!-- 16 -->
+      <!-- 17 -->
       <section class="content-slide" id="video-slsqp">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -438,11 +472,11 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
         </video>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [6]</p>
-          <p class="footer-page">16</p>
+          <p class="footer-page">17</p>
         </div>
       </section>
 
-      <!-- 17 -->
+      <!-- 18 -->
       <section class="content-slide" id="duas-otimas">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -478,11 +512,11 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
-          <p class="footer-page">17</p>
+          <p class="footer-page">18</p>
         </div>
       </section>
 
-      <!-- 18 -->
+      <!-- 19 -->
       <section class="content-slide" id="video-fronteira">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -497,11 +531,11 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
         <p>Cada um dos 50 pontos é a carteira de menor volatilidade para um retorno alvo, de 14,10% (variância mínima) a 37,53% (só PETR4).</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3] [4]</p>
-          <p class="footer-page">18</p>
+          <p class="footer-page">19</p>
         </div>
       </section>
 
-      <!-- 19 -->
+      <!-- 20 -->
       <section class="exercise-slide" id="pratica-fronteira">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -521,11 +555,11 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
-          <p class="footer-page">19</p>
+          <p class="footer-page">20</p>
         </div>
       </section>
 
-      <!-- 20 -->
+      <!-- 21 -->
       <section class="quiz-slide" id="quiz-final">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -539,10 +573,10 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
             <ul class="quiz-options">
               <li data-correct="false"
                   data-correct-msg="Certo."
-                  data-incorrect-msg="100.000 sorteios dão 0,41, o mesmo que 10.000.">10.000 são poucos; 100.000 resolvem</li>
+                  data-incorrect-msg="100.000 sorteios dão 0,41, o mesmo que 10.000; trocar a distribuição rende mais que multiplicar sorteios.">10.000 são poucos; 100.000 resolvem</li>
               <li data-correct="true"
-                  data-correct-msg="Certo: a ótima concentra em 3 ativos e o sorteio uniforme quase nunca passa de 25% num ativo."
-                  data-incorrect-msg="Não.">Pesos sorteados quase nunca concentram</li>
+                  data-correct-msg="Certo: Uniform(0,1) dividido pela soma nunca passou de 24,61% num ativo; com Dirichlet(0,2), 0,85. Nenhuma chega a 0,92 com 15 ativos."
+                  data-incorrect-msg="Não.">A distribuição dos pesos quase nunca concentra</li>
               <li data-correct="false"
                   data-correct-msg="Certo."
                   data-incorrect-msg="A semente só fixa o sorteio; nenhuma semente passa da ótima.">A semente está errada</li>
@@ -579,11 +613,11 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
-          <p class="footer-page">20</p>
+          <p class="footer-page">21</p>
         </div>
       </section>
 
-      <!-- 21 -->
+      <!-- 22 -->
       <section class="exercise-slide" id="notebook">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -604,11 +638,11 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
         <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula04.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula04.ipynb" target="_blank" rel="noopener">Abrir no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
-          <p class="footer-page">21</p>
+          <p class="footer-page">22</p>
         </div>
       </section>
 
-      <!-- 22 -->
+      <!-- 23 -->
       <section class="content-slide" id="a3-a4">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -633,11 +667,11 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
-          <p class="footer-page">22</p>
+          <p class="footer-page">23</p>
         </div>
       </section>
 
-      <!-- 23 -->
+      <!-- 24 -->
       <section class="content-slide" id="referencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -654,14 +688,15 @@ mv = minimize(lambda w: w @ cov @ w, inicio,
           <li id="ref-6"><a href="https://docs.scipy.org/doc/scipy/reference/optimize.minimize-slsqp.html" target="_blank" rel="noopener">SciPy: minimize com method='SLSQP'</a>.</li>
           <li id="ref-7"><a href="https://numpy.org/doc/stable/reference/random/generator.html" target="_blank" rel="noopener">NumPy: Random Generator</a>.</li>
           <li id="ref-8"><a href="https://dadosabertos.bcb.gov.br/" target="_blank" rel="noopener">Banco Central, dados abertos do SGS</a>: série 12, CDI.</li>
+          <li id="ref-9">DEVROYE, L. <em>Non-Uniform Random Variate Generation</em>. Springer, 1986. cap. V, seção 2, e cap. XI, seção 4: amostragem uniforme no simplex e distribuição de Dirichlet.</li>
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
-          <p class="footer-page">23</p>
+          <p class="footer-page">24</p>
         </div>
       </section>
 
-      <!-- 24 -->
+      <!-- 25 -->
       <section class="end-slide">
         <h1>Até 01/12/2026</h1>
         <h3>Aula 05: Validação e Robustez do Modelo</h3>

@@ -192,12 +192,34 @@ sharpe = (retorno - rf) / volatilidade</code></pre>
             </tbody>
           </table>
         </div>
-        <p>Dividir números uniformes pela soma da linha produz pesos que se concentram perto de 1/15
-        para cada ativo. Com 15 ativos, a chance de uma linha sorteada pôr quase metade do dinheiro em
-        um ativo e quase nada em outros doze é muito pequena: entre as 10.000 sorteadas, o maior peso
-        dado a um único ativo é 24,61%. A carteira de máximo Sharpe põe 44,31% na PETR4 e zera 12
-        ativos, uma região do espaço de pesos que o sorteio uniforme quase nunca visita. Por isso
-        multiplicar o número de sorteios por 100 leva a melhor sorteada só de 0,41 para 0,60.</p>
+        <p>O motor da aula sorteia 15 números Uniform(0,1) e divide cada um pela soma da linha. Essa
+        distribuição não é uniforme no conjunto de pesos possíveis (o simplex): ela acumula as carteiras
+        perto de 1/15 por ativo. Entre as 10.000 sorteadas, o maior peso dado a um único ativo é
+        24,61%, e a carteira de máximo Sharpe põe 44,31% na PETR4 e zera 12 ativos, uma região que
+        essa distribuição quase nunca visita. Multiplicar o número de sorteios por 100 leva a melhor
+        sorteada só de 0,41 para 0,60.</p>
+        <p>Trocar a distribuição, com a mesma semente e os mesmos 10.000 sorteios, muda mais o
+        resultado que multiplicar sorteios. A Dirichlet(1) é a uniforme no simplex; a Dirichlet(0,2)
+        favorece carteiras concentradas, perto dos vértices (Devroye, 1986, referência 9 da página de referências). O número efetivo de ativos, 1 dividido
+        pela soma dos pesos ao quadrado, vale 15 com pesos iguais e 1 com todo o peso num ativo.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>10.000 sorteios, semente 42</th><th>Melhor Sharpe</th><th>Maior peso da melhor</th><th>Ativos efetivos, mediana</th><th>Carteiras com peso acima de 25%</th></tr></thead>
+            <tbody>
+              <tr><td>Uniform(0,1) dividido pela soma, o motor da aula</td><td>0,41</td><td>18,17%</td><td>11,41</td><td>0,00%</td></tr>
+              <tr><td>Dirichlet(1), uniforme no simplex</td><td>0,64</td><td>55,26%</td><td>8,37</td><td>26,21%</td></tr>
+              <tr><td>Dirichlet(0,2), mais peso nos vértices</td><td>0,85</td><td>68,35%</td><td>3,70</td><td>94,91%</td></tr>
+              <tr><td>Máximo Sharpe, SLSQP</td><td>0,92</td><td>44,31%</td><td>2,82 na ótima</td><td>não se aplica</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Três fatores explicam a distância até a ótima. A distribuição dos pesos responde pela maior
+        parte do ganho: a Dirichlet(1) com 10.000 sorteios (0,64) passa do motor da aula com um milhão
+        (0,60). A dimensão pesa: no trio PETR4, IVVB11 e GOLD11, as três distribuições chegam a 0,92
+        com os mesmos 10.000 sorteios, e com 15 ativos nenhuma chega. E o sorteio não tem objetivo: ele
+        não usa o Sharpe para decidir onde sortear, e a Dirichlet(0,2) chega a concentrar demais (1,90
+        ativos efetivos na melhor, contra 2,82 na ótima). A otimização da seção seguinte usa o Sharpe
+        como objetivo e chega a 0,92.</p>
         <p>A melhor sorteada é a melhor <em>entre as sorteadas</em>. É essa frase que o barema do A3
         pede na leitura analítica, e é a pergunta que o parceiro fará: se 10.000 tentativas não bastam
         para achar a melhor carteira, o que basta? A resposta é a seção seguinte.</p>
