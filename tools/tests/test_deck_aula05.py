@@ -219,3 +219,67 @@ def test_quiz_final_pergunta_sobre_a_sobreposicao():
     assert ("sem sobreposição cabem %d anos de teste, e o máximo Sharpe ficou abaixo do prometido em %d."
             % (d["n"], d["max_sharpe"]["abaixo_do_prometido"])) in _secao("quiz-final")
     assert len(re.findall(r'class="quiz-question"', _secao("quiz-final"))) == 3
+
+
+def _praticas_com_cronometro(secoes):
+    """Cada exercise-slide com cronômetro: (id, minutos, passos obrigatórios, extensões, checagem)."""
+    praticas = []
+    for s in secoes:
+        if 'class="exercise-slide"' not in s or 'class="cronometro"' not in s:
+            continue
+        ident = re.search(r'id="([^"]+)"', s).group(1)
+        minutos = int(re.search(r'class="cronometro"[^>]*data-minutos="(\d+)"', s).group(1))
+        lista = re.search(r'<ol class="exercise-steps">(.*?)</ol>', s, re.S).group(1)
+        itens = re.findall(r"<li\b([^>]*)>(.*?)</li>", lista, re.S)
+        obrigatorios = [t for a, t in itens if "passo-extensao" not in a]
+        extensoes = [t for a, t in itens if "passo-extensao" in a]
+        ordem = ["passo-extensao" in a for a, _ in itens]
+        checagem = re.search(r'<div class="faixa-nota checagem-pratica">(.*?)</div>', s, re.S)
+        praticas.append((ident, minutos, obrigatorios, extensoes, ordem, checagem and checagem.group(1)))
+    return praticas
+
+
+def _conferir_pratica_em_camadas(praticas):
+    """C-07: missão obrigatória curta, extensão no fim e checagem antes do fim do cronômetro."""
+    for ident, minutos, obrigatorios, extensoes, ordem, checagem in praticas:
+        assert 1 <= len(obrigatorios) <= 4, ident
+        assert ordem == sorted(ordem), "%s: extensão no meio da lista" % ident
+        assert len(extensoes) <= 2, ident
+        if minutos > 8:
+            assert extensoes, "%s: prática de %d min sem extensão" % (ident, minutos)
+        assert checagem, "%s: sem faixa de checagem" % ident
+        assert "icones.svg#schedule" in checagem
+        n = int(re.search(r"<strong>Checagem aos (\d+) min:</strong>", checagem).group(1))
+        assert 0 < n < minutos, ident
+        assert "<strong>Debrief:</strong>" in checagem
+        texto = re.sub(r"<[^>]+>", " ", " ".join(obrigatorios))
+        assert "troquem de papel" in texto.lower(), "%s: troca de condutor sumiu" % ident
+
+
+def test_praticas_com_cronometro_seguem_o_formato_em_camadas():
+    praticas = _praticas_com_cronometro(_secoes())
+    assert [p[0] for p in praticas] == ["pratica-backtest", "pratica-estabilidade"]
+    assert [p[1] for p in praticas] == [12, 8]
+    _conferir_pratica_em_camadas(praticas)
+
+
+def test_pratica_do_backtest_pede_auditoria_do_desenho():
+    """Seção 5 da auditoria: resultado entregue, dupla caça look-ahead e benchmark inadequado."""
+    backtest = [s for s in _secoes() if 'id="pratica-backtest"' in s][0]
+    obrigatorio = backtest.split('class="passo-extensao"')[0]
+    assert "células prontas" in obrigatorio
+    assert "look-ahead" in obrigatorio and "CDI do teste" in obrigatorio
+    assert "Checagem aos 6 min" in backtest
+    extensao = backtest.split('class="passo-extensao"')[1]
+    assert "sobreposição das 33 janelas" in extensao
+
+
+def test_pratica_de_estabilidade_distribui_carteiras_e_pede_recomendacao_condicionada():
+    """Seção 5 da auditoria: cenários entre grupos e recomendação condicionada, sem ADR completo."""
+    estab = [s for s in _secoes() if 'id="pratica-estabilidade"' in s][0]
+    obrigatorio = estab.split('class="passo-extensao"')[0]
+    assert "Duplas ímpares" in obrigatorio and "duplas pares" in obrigatorio
+    assert "recomendação condicionada" in obrigatorio
+    assert "ADR" not in re.sub(r"<h2>.*?</h2>", "", obrigatorio)
+    assert "ADR completo" in estab.split('class="passo-extensao"')[1]
+    assert "Checagem aos 4 min" in estab

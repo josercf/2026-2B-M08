@@ -90,8 +90,22 @@ Segundo erro comum: 500, que diz ao gestor que o servidor quebrou.
 
 ## Bloco 4: dupla no notebook (slide 13, 12 min)
 
-Seções 3 e 4 do notebook. Aos 6 minutos, troca de condutor. O caso do ticker inexistente tem
+Seções 1 a 4 do notebook, com as células prontas: o 200 e o 422 já vêm escritos e servem de
+teste fornecido. Aos 6 minutos, troca de condutor. O caso do ticker inexistente tem
 `status_esperado = None` de propósito: a dupla escreve o status antes de rodar.
+
+- **Obrigatório.** Rodar as seções 1 a 4 e ver passar o 200 e o 422; ler o `loc` do 422. Cada dupla
+  recebe um caminho e escreve um caso dele: 200 com dois tickers da cesta, 422 com início depois
+  do fim (o `model_validator` recusa) ou erro de domínio com `XPTO3` (célula c). Distribuir os três
+  caminhos em rodízio pelo número da dupla, para que cada um tenha ao menos uma dupla.
+- **Extensão.** Escrever os outros dois caminhos e anotar os três no plano de testes do SPEC.md.
+- **Checagem aos 6 minutos.** A seção 4 passou e o caso do caminho da dupla está escrito, ainda sem
+  rodar. Dupla com erro de importação nesse ponto recebe ajuda antes da troca.
+- **Debrief (3 minutos finais do bloco).** Uma dupla por caminho mostra o status obtido. No `XPTO3`,
+  confrontar o status escolhido com o contrato do slide 12: o exemplo devolve 404, e 422 também é
+  defensável se o contrato disser.
+- **Contingência.** Se o Colab falhar ou o `fastapi` não importar, a dupla escreve o caso no papel,
+  com o status esperado, e o professor roda os três caminhos no notebook projetado.
 
 | Pergunta | Resposta esperada | Erro comum |
 |---|---|---|

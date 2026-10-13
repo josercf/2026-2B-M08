@@ -357,6 +357,24 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   gap: 6px;
 }
 
+/* Pratica em camadas (auditoria de 13/10/2026, C-07): os passos sem rotulo
+   sao a missao obrigatoria, que cabe no tempo; o passo de extensao leva o
+   rotulo em caixa alta (label em Manrope 600, TIP-04) e fica para quem
+   terminar antes. A checagem intermediaria e o debrief vao numa
+   .faixa-nota.checagem-pratica logo abaixo da lista. */
+.exercise-steps .rotulo-extensao {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 1px 8px;
+  border: 1px solid var(--seg-borda);
+  font-size: var(--escala-densa);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.reveal .faixa-nota.checagem-pratica { margin-top: 18px; }
+
 /* Estados do quiz, escritos pelo inteli-quiz.js via classList.add: o JS so
    troca classe, nunca escreve cor, entao esses estados moram aqui, so
    tokens. .certa e .errada marcam a opcao clicada; .revelada marca a opcao

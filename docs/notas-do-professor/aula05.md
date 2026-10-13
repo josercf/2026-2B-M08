@@ -106,6 +106,24 @@ máximo Sharpe troca de ativo quando a janela anda um mês.
 
 Interação: programação em dupla no notebook, seções 1 a 3, troca de papel aos 6 minutos.
 
+Prática em camadas (slide 14, cronômetro de 12 minutos):
+
+- **Obrigatório.** Rodar as seções 1 a 3, que já vêm escritas, e ler a tabela de esperado contra
+  realizado; conferir o drawdown de -8,49% do máximo Sharpe; depois da troca de papel, auditar o
+  desenho da seção 3: algum dado de 2025 entra na estimativa (look-ahead)? O CDI do teste é o
+  comparador adequado? A dupla executa e audita, sem escrever código novo.
+- **Extensão.** Seção 4: medir a sobreposição das 33 janelas e dizer quantos experimentos
+  independentes elas contêm (o slide 12 tem a resposta).
+- **Checagem aos 6 minutos.** Na volta pela sala: a tabela de esperado contra realizado está na
+  tela e a dupla conferiu o drawdown. Dupla sem a tabela nesse ponto recebe ajuda antes da troca.
+- **Debrief (3 minutos finais do bloco).** Cada dupla relata o problema de desenho que procurou e
+  um número do A4 do grupo ainda não testado fora da amostra. Look-ahead: os pesos usam só
+  `retornos.loc["2023":"2024"]`, e o teste começa depois do último dia do treino. Benchmark: o
+  CDI das datas do teste é a taxa livre do Sharpe realizado, e o comitê compara a carteira com ele.
+- **Contingência.** Se o Colab ou a rede falharem, a dupla segue a auditoria pelo código do slide
+  13 e pela tabela do slide 9, com o professor projetando a saída da seção 3 do notebook já
+  executado.
+
 - Ponto de travamento comum: `retornos_teste @ w` com `w` numa ordem de ativos diferente da ordem
   das colunas. O notebook usa a mesma ordem de `retornos.columns`; quem montou pesos à mão por
   dicionário precisa reindexar.
@@ -113,7 +131,6 @@ Interação: programação em dupla no notebook, seções 1 a 3, troca de papel 
   alinha as duas séries, e uma data da cesta ausente do CDI daria `NaN` no Sharpe. A lacuna de
   24/10/2025 fica na cesta com retorno zero nos três ETFs (ADR-009), e o CDI tem essa data.
 - Conferência rápida na sala: máximo Sharpe com drawdown de -8,49% em 08/04/2025.
-- Se a dupla terminar antes: rodar a seção 4 (janelas deslizantes), conferir as 33 janelas e a medida de sobreposição.
 
 ## Bloco 5: sensibilidade da fronteira
 
@@ -159,9 +176,22 @@ Slide 21, ADR de exemplo: é exercício com a cesta de referência, sem valor de
 prática. A decisão aparece como hipótese condicionada ao custo, com a carteira trocada por ano e o
 retorno líquido. O ADR do grupo que propuser frequência de reotimização segue o mesmo formato.
 
-Dupla de 8 minutos (seção 5 do notebook e o ADR; a seção 6 repete o widget do Bloco 5 e fica para casa), troca de papel aos 4 minutos. Critério para
-o ADR lido em voz alta: tem pelo menos um número fora da amostra e diz o que o comitê precisa saber
-antes de usar os pesos.
+Dupla de 8 minutos (slide 22), troca de papel aos 4 minutos. A seção 6 do notebook repete o
+widget do Bloco 5 e fica para casa.
+
+- **Obrigatório.** Seção 5: rodar a carteira trocada entre os treinos de 2021 e 2022 e de 2023 e
+  2024. Distribuir os cenários pelo número da dupla: ímpares leem o máximo Sharpe (82,60%), pares a
+  variância mínima (33,23%). Depois da troca, o novo condutor escreve uma recomendação condicionada
+  de duas linhas, no formato "recomendamos ... se ...", com a carteira trocada medida, e lê para a
+  dupla vizinha, que leu a outra carteira. O ADR completo fica para depois da aula.
+- **Extensão.** Depois da aula, para o A4: o ADR completo no modelo do curso, com o custo da
+  reotimização do slide 20.
+- **Checagem aos 4 minutos.** A carteira trocada da carteira da dupla está anotada. Critério para a
+  recomendação lida em voz alta: cita o número medido e diz a condição sob a qual o comitê pode usar
+  os pesos.
+- **Debrief.** A escolha coletiva do slide seguinte, com duplas das duas carteiras na mesma sala.
+- **Contingência.** Se o notebook não rodar, a dupla escreve a recomendação com o número do slide
+  19, projetado pelo professor.
 
 Escolha coletiva (slide 23, 4 minutos). Gabarito e o número que sustenta cada resposta:
 

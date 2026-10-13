@@ -159,3 +159,51 @@ def test_checagem_de_numeros_nao_promete_verificacao_factual():
     assert "checagem de presença de cada número" in html
     trocado = _texto([s for s in _secoes() if 'id="ativo-trocado"' in s][0])
     assert "sem conferir ativo, unidade nem período" in trocado
+
+
+def _praticas_com_cronometro(secoes):
+    """Cada exercise-slide com cronômetro: (id, minutos, passos obrigatórios, extensões, checagem)."""
+    praticas = []
+    for s in secoes:
+        if 'class="exercise-slide"' not in s or 'class="cronometro"' not in s:
+            continue
+        ident = re.search(r'id="([^"]+)"', s).group(1)
+        minutos = int(re.search(r'class="cronometro"[^>]*data-minutos="(\d+)"', s).group(1))
+        lista = re.search(r'<ol class="exercise-steps">(.*?)</ol>', s, re.S).group(1)
+        itens = re.findall(r"<li\b([^>]*)>(.*?)</li>", lista, re.S)
+        obrigatorios = [t for a, t in itens if "passo-extensao" not in a]
+        extensoes = [t for a, t in itens if "passo-extensao" in a]
+        ordem = ["passo-extensao" in a for a, _ in itens]
+        checagem = re.search(r'<div class="faixa-nota checagem-pratica">(.*?)</div>', s, re.S)
+        praticas.append((ident, minutos, obrigatorios, extensoes, ordem, checagem and checagem.group(1)))
+    return praticas
+
+
+def _conferir_pratica_em_camadas(praticas):
+    """C-07: missão obrigatória curta, extensão no fim e checagem antes do fim do cronômetro."""
+    for ident, minutos, obrigatorios, extensoes, ordem, checagem in praticas:
+        assert 1 <= len(obrigatorios) <= 4, ident
+        assert ordem == sorted(ordem), "%s: extensão no meio da lista" % ident
+        assert len(extensoes) <= 2, ident
+        if minutos > 8:
+            assert extensoes, "%s: prática de %d min sem extensão" % (ident, minutos)
+        assert checagem, "%s: sem faixa de checagem" % ident
+        assert "icones.svg#schedule" in checagem
+        n = int(re.search(r"<strong>Checagem aos (\d+) min:</strong>", checagem).group(1))
+        assert 0 < n < minutos, ident
+        assert "<strong>Debrief:</strong>" in checagem
+        texto = re.sub(r"<[^>]+>", " ", " ".join(obrigatorios))
+        assert "troquem de papel" in texto.lower(), "%s: troca de condutor sumiu" % ident
+
+
+def test_pratica_testclient_em_camadas_com_um_caminho_por_dupla():
+    """Seção 5 da auditoria: testes fornecidos; cada dupla implementa um caminho, 200, 422 ou domínio."""
+    praticas = _praticas_com_cronometro(_secoes())
+    assert [(p[0], p[1]) for p in praticas] == [("pratica-testclient", 12)]
+    _conferir_pratica_em_camadas(praticas)
+    obrigatorio = _texto(" ".join(praticas[0][2]))
+    assert "células prontas" in obrigatorio
+    assert "200 com dois tickers da cesta" in obrigatorio
+    assert "422 com início depois do fim" in obrigatorio
+    assert "erro de domínio com XPTO3" in obrigatorio
+    assert "Checagem aos 6 min" in praticas[0][5]

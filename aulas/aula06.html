@@ -328,12 +328,15 @@ def otimizar(pedido: PedidoCarteira) -> Resultado:
           <div class="cronometro" id="cronometro-testclient" data-minutos="12"></div>
         </div>
         <ol class="exercise-steps">
-          <li>Abram o notebook da aula no Colab. Quem está no teclado é o <strong>condutor</strong>; o outro é o <strong>navegador</strong>, que lê, pergunta e confere.</li>
-          <li>Seções 1 a 3: carreguem os dados, rodem <code>calcular</code> e definam a API no próprio notebook.</li>
-          <li>Seção 4: rodem o caso de sucesso (200) e o de entrada inválida (422). Leiam o campo que o Pydantic aponta.</li>
-          <li>Aos 6 minutos, troquem de papel. O novo condutor escreve o caso do ticker que não existe, com o status que a dupla decidiu antes de rodar.</li>
-          <li>Anotem os três casos: eles vão para o plano de testes do SPEC.md.</li>
+          <li>Seções 1 a 4, com as células prontas: o <strong>condutor</strong> roda e vê passar o 200 e o 422; o <strong>navegador</strong> lê o campo que o 422 aponta.</li>
+          <li>A dupla escreve o caso do caminho que recebeu: 200 com dois tickers da cesta, 422 com início depois do fim ou erro de domínio com <code>XPTO3</code> (célula c).</li>
+          <li>Aos 6 minutos, troquem de papel. O novo condutor fixa o status esperado antes de rodar e roda o caso.</li>
+          <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Escrevam os outros dois caminhos e anotem os três no plano de testes do SPEC.md.</li>
         </ol>
+        <div class="faixa-nota checagem-pratica">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
+          <p><strong>Checagem aos 6 min:</strong> a seção 4 passou e o caso da dupla está escrito, ainda sem rodar. <strong>Debrief:</strong> uma dupla por caminho mostra o status obtido, e a turma confronta o do <code>XPTO3</code> com o contrato do slide 12.</p>
+        </div>
         <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula06.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 06 no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5</p>

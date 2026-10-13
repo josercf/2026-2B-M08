@@ -371,12 +371,15 @@ realizado(w, teste, cdi.reindex(teste.index))</code></pre>
           <div class="cronometro" id="cronometro-backtest" data-minutos="12"></div>
         </div>
         <ol class="exercise-steps">
-          <li>Abram o notebook da aula no Colab. Quem está no teclado é o <strong>condutor</strong>; o outro é o <strong>navegador</strong>, que lê, pergunta e confere.</li>
-          <li>Seções 1 e 2: carreguem a cesta desde 2021 e rodem o otimizador da Aula 04 no treino 2023 e 2024.</li>
-          <li>Seção 3: rodem o backtest das duas carteiras em 2025 e montem a tabela de esperado contra realizado.</li>
-          <li>Aos 6 minutos, troquem de papel. O novo condutor plota o drawdown das duas carteiras e confere os -8,49% do máximo Sharpe.</li>
-          <li>Escrevam em uma linha qual número do A4 do grupo ainda não foi testado fora da amostra.</li>
+          <li>Seções 1 a 3, com as células prontas: o <strong>condutor</strong> roda; o <strong>navegador</strong> lê a tabela de esperado contra realizado das duas carteiras.</li>
+          <li>Confiram no gráfico da seção 3 o drawdown de -8,49% do máximo Sharpe.</li>
+          <li>Aos 6 minutos, troquem de papel. O novo condutor audita o código: algum dado de 2025 entra na estimativa (look-ahead)? O CDI do teste é o comparador certo?</li>
+          <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Seção 4: meçam a sobreposição das 33 janelas e digam quantos experimentos independentes elas contêm.</li>
         </ol>
+        <div class="faixa-nota checagem-pratica">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
+          <p><strong>Checagem aos 6 min:</strong> a tabela de esperado contra realizado está na tela e o drawdown foi conferido. <strong>Debrief:</strong> nos 3 minutos finais, cada dupla relata o problema de desenho que procurou e um número do A4 ainda não testado fora da amostra.</p>
+        </div>
         <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula05.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 05 no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
@@ -558,16 +561,20 @@ retorno anual de 29,39% bruto e
         <div class="slide-title-area slide-title-area-cronometro">
           <div>
             <div class="accent-bar"></div>
-            <h2>Prática em dupla: estabilidade e o ADR</h2>
+            <h2>Prática em dupla: estabilidade e recomendação condicionada</h2>
           </div>
           <div class="cronometro" id="cronometro-estabilidade" data-minutos="8"></div>
         </div>
         <ol class="exercise-steps">
-          <li>Seção 5: otimizem as duas carteiras em 2021 e 2022 e em 2023 e 2024 e calculem a carteira trocada entre as janelas.</li>
-          
-          <li>Troquem de papel aos 4 minutos. O novo condutor escreve o ADR de quanto confiar no modelo, com um número da seção 5. A seção 6 repete o widget do slide 16 e fica para depois da aula.</li>
-          <li>Leiam o ADR para a dupla vizinha: o número fora da amostra aparece?</li>
+          <li>Seção 5: rodem a carteira trocada entre os treinos de 2021 e 2022 e de 2023 e 2024. Duplas ímpares leem o máximo Sharpe; duplas pares, a variância mínima.</li>
+          <li>Aos 4 minutos, troquem de papel. O novo condutor escreve uma recomendação condicionada em duas linhas, "recomendamos ... se ...", com a carteira trocada medida.</li>
+          <li>Leiam a recomendação para a dupla vizinha, que leu a outra carteira.</li>
+          <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Depois da aula, para o A4: o ADR completo no modelo do curso, com o custo da reotimização.</li>
         </ol>
+        <div class="faixa-nota checagem-pratica">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
+          <p><strong>Checagem aos 4 min:</strong> a carteira trocada da carteira da dupla está anotada. <strong>Debrief:</strong> a escolha coletiva do slide seguinte julga recomendações ao comitê com as duas carteiras.</p>
+        </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
           <p class="footer-page">22</p>

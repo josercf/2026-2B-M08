@@ -105,3 +105,25 @@ def test_numeros_das_notas_do_professor_conferem_com_as_medicoes():
             assert "%s%% %s" % (br(peso), ticker) in linha
         assert "retorno %s%%" % br(carteira["retorno_anual_pct"]) in linha
         assert "volatilidade %s%%" % br(carteira["volatilidade_anual_pct"]) in linha
+
+
+def _trilha():
+    html = _ler(MATERIAL)
+    preparo = html.split('id="preparacao"')[1].split("</section>")[0]
+    assert 'id="trilha-minima"' in preparo
+    # o bloco da trilha vai do id até o primeiro subtítulo da preparação
+    return _texto(preparo.split('id="trilha-minima"')[1].split("<h3")[0])
+
+
+def test_trilha_minima_separa_indispensavel_recomendado_e_aprofundamento():
+    """C-08: tempos citados da Adalove; nenhuma Atividade Ponderada na semana 10."""
+    texto = _trilha()
+    tempos = _autoestudos_da_semana_10()
+    react = [t for t in tempos if t.startswith("React e FastAPI")][0]
+    llm = [t for t in tempos if t.startswith("LLMs com senso crítico")][0]
+    assert "Indispensável Autoestudo: React e FastAPI %s" % tempos[react] in texto
+    assert "Recomendado Autoestudo: LLMs com senso crítico %s" % tempos[llm] in texto
+    assert "Aprofundamento" in texto
+    assert "Nenhum dos dois autoestudos desta semana é Atividade Ponderada" in texto
+    assert texto.count("sem duração declarada") == 2
+    assert "até 60 segundos cada (ADR-005)" in texto

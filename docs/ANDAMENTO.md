@@ -136,11 +136,13 @@ Nada em andamento. Fechado em 13/10/2026:
 | API da Aula 06 sem erro 500 em carteira de dois ativos | `exemplos/aula06-api-carteira/backend/carteira/otimizador.py` |
 | Auditoria crítica de 13/10/2026, correções conceituais C-09 a C-13 e C-15 | `docs/auditorias/`, Aulas 03 a 06, ADR-010 |
 | Tema no `inteli-brand-kit` vigente: cantos retos, ícones Sharp em sprite, pesos do TIP-04, título em 40px com reserva do logo, `check_brand.py` com as três regras novas | ADR-011, `tools/icones.py`, `assets/icons/`, `tools/tests/test_icones.py` |
+| Práticas em camadas (até quatro passos obrigatórios, extensão rotulada, checagem e debrief) e trilha mínima de preparo em cada material, auditoria C-07 e C-08 | `aulas/`, `materiais/`, notas do professor, `tools/tests/test_praticas.py` |
 
-Da auditoria ficam abertos: o C-07 (separar obrigatório, extensão e ponto de checagem nas práticas),
-o C-08 (trilha mínima na seção "Preparação"), o C-14 (escopo da Aula 06, decisão do professor) e o
-COR-04 (coral só em elemento acionável, que exige regenerar as animações). C-01, C-02 e C-03
-correspondem às pendências P4, P5, P1 a P3 e P7 abaixo.
+Da auditoria ficam abertos: o C-14 (escopo da Aula 06, decisão do professor), o COR-04 (coral só em
+elemento acionável, que exige regenerar as animações), o ensaio cronometrado das práticas com um
+aluno ou monitor e o teste de projeção em sala, com a Manrope Light. A classificação de qual
+autoestudo é indispensável e qual é recomendado em cada trilha mínima foi proposta no acervo e
+espera a confirmação do professor. C-01, C-02 e C-03 correspondem às pendências P4, P5, P1 a P3 e P7 abaixo.
 
 ## Pendências abertas
 

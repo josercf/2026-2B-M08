@@ -139,3 +139,24 @@ def test_material_mede_o_custo_da_reotimizacao_com_a_premissa():
     assert "Sharpe passa de %s para %s" % (_num(c["mensal"]["bruto"]["sharpe"]),
                                            _num(c["mensal"]["liquido"]["sharpe"])) in texto
     assert "hipótese condicionada" in texto
+
+
+def _trilha():
+    html = _ler(MATERIAL)
+    preparo = html.split('id="preparacao"')[1].split("</section>")[0]
+    assert 'id="trilha-minima"' in preparo
+    # o bloco da trilha vai do id até o primeiro subtítulo da preparação
+    return _texto(preparo.split('id="trilha-minima"')[1].split("<h3")[0])
+
+
+def test_trilha_minima_separa_preparo_de_aprofundamento_e_de_avaliacao():
+    """C-08: tempos citados da Adalove; a Ponderada 2 aparece como avaliação, fora do preparo."""
+    texto = _trilha()
+    (t1, tempo1), (t2, tempo2) = _autoestudos_semana_08()
+    assert "Indispensável Autoestudo 1: Os limites do otimizador (1.1) %s" % tempo1 in texto
+    assert "Aprofundamento" in texto
+    assert "Atividade Ponderada 2 (%s na Adalove) é avaliação" % tempo2 in texto
+    assert "fica fora da trilha de preparo" in texto
+    # nenhum item sem duração declarada recebe tempo inventado
+    assert texto.count("sem duração declarada") == 3
+    assert "até 60 segundos cada (ADR-005)" in texto
