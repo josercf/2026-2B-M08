@@ -131,3 +131,91 @@ def test_referencias_citadas_existem_na_lista():
 
 def test_sem_travessao_no_deck():
     assert chr(0x2014) not in _html()
+
+
+def _secao(secao_id):
+    return [s for s in _secoes() if 'id="%s"' % secao_id in s][0]
+
+
+def _texto(trecho):
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", trecho))
+
+
+def _milhar(n):
+    return "{:,}".format(n).replace(",", ".")
+
+
+def test_resumo_das_janelas_declara_a_sobreposicao_medida():
+    """C-11: o slide das 33 janelas diz quanto do teste duas vizinhas compartilham."""
+    s = m.sobreposicao_deslizante()
+    texto = _texto(_secao("resumo-janelas"))
+    assert "%d dos %d meses de teste" % (s["meses_compartilhados"], s["meses_de_teste"]) in texto
+    assert "%s dos pregões, na mediana" % _pct(s["fracao_compartilhada_mediana"]) in texto
+    assert "até %d janelas" % s["janelas_por_pregao_maximo"] in texto
+    assert "%s pregões de teste somados são %s pregões distintos" % (
+        _milhar(s["pregoes_testados_somados"]), _milhar(s["pregoes_testados_distintos"])) in texto
+
+
+def test_slide_dos_anos_disjuntos_trava_cada_bloco():
+    d = m.blocos_disjuntos()
+    secao = _secao("janelas-disjuntas")
+    texto = _texto(secao)
+    for b in d["blocos"]:
+        celulas = [b["teste"][0].strftime("%Y"),
+                   "%s a %s" % (b["treino"][0].strftime("%m/%Y"), b["treino"][1].strftime("%m/%Y"))]
+        celulas += [_num(b[o][k]) for o in m.OBJETIVOS for k in ("prometido", "entregue")]
+        linha = re.search(r"<tr><td>%s</td>(.*?)</tr>" % celulas[0], secao, re.S).group(0)
+        assert [re.sub(r"<[^>]+>", "", c) for c in re.findall(r"<td[^>]*>(.*?)</td>", linha)] == celulas
+    assert "falhou em %d de %d" % (d["max_sharpe"]["abaixo_do_prometido"], d["n"]) in texto
+    assert "%d de %d anos" % (d["max_sharpe"]["abaixo_do_prometido"], d["n"]) in texto
+    assert "%d de %d anos" % (d["var_min"]["abaixo_do_prometido"], d["n"]) in texto
+    partidas = m.blocos_disjuntos_todas_as_partidas()
+    minimo = min(p["max_sharpe"]["abaixo_do_prometido"] for p in partidas)
+    assert "Nas %d escolhas possíveis" % len(partidas) in texto
+    assert "em pelo menos %d blocos em todas" % minimo in texto
+    assert "Por que 33 janelas não equivalem a 33 experimentos" in texto
+
+
+def test_slide_de_custo_trava_a_tabela_e_declara_a_premissa():
+    """C-12: carteira trocada e retorno líquido de cada frequência, com a premissa de custo."""
+    c = m.custo_da_reotimizacao()["max_sharpe"]
+    secao = _secao("custo-reotimizacao")
+    texto = _texto(secao)
+    for nome, _ in m.FREQUENCIAS:
+        f = c[nome]
+        celulas = [nome.capitalize(), str(f["reotimizacoes"]), _pct(f["trocada_media"]),
+                   _pct(f["trocada_por_ano"]), ("%.2f p.p." % (100 * f["custo_por_ano"])).replace(".", ",", 1),
+                   _pct(f["bruto"]["retorno"]), _pct(f["liquido"]["retorno"])]
+        linha = re.search(r"<tr[^>]*><td>%s</td>(.*?)</tr>" % celulas[0], secao, re.S).group(0)
+        assert re.findall(r"<td>(.*?)</td>", linha) == celulas
+    mensal = c["mensal"]
+    assert "troca %s ao ano" % _pct(mensal["trocada_por_ano"]) in texto
+    assert "custo tira %s p.p. por ano" % _num(100 * mensal["custo_por_ano"]) in texto
+    assert "Sharpe passa de %s para %s" % (_num(mensal["bruto"]["sharpe"]), _num(mensal["liquido"]["sharpe"])) in texto
+    assert "caminho de %d pregões" % mensal["pregoes"] in texto
+    assert "custo de %s sobre o valor negociado" % _pct(m.CUSTO_OPERACAO) in texto
+    assert "teste de %s a %s" % (mensal["inicio"].strftime("%d/%m/%Y"), mensal["fim"].strftime("%d/%m/%Y")) in texto
+
+
+def test_adr_de_exemplo_e_hipotese_condicionada_com_carteira_trocada_e_liquido():
+    c = m.custo_da_reotimizacao()["max_sharpe"]["mensal"]
+    texto = _texto(_secao("adr"))
+    assert "hipótese a validar" in texto
+    assert "Decisão condicionada" in texto
+    assert "se o custo for até %s" % _pct(m.CUSTO_OPERACAO) in texto
+    assert "%s da carteira trocada por ano" % _pct(c["trocada_por_ano"]) in texto
+    assert "%s bruto" % _pct(c["bruto"]["retorno"]) in texto
+    assert "%s líquido" % _pct(c["liquido"]["retorno"]) in texto
+    assert "sem valor de recomendação prática" in texto
+    assert "Reotimizar todo mês, treino de 24 meses.\n" not in _html()
+
+
+def test_quiz_final_pergunta_sobre_a_sobreposicao():
+    s = m.sobreposicao_deslizante()
+    texto = _texto(_secao("quiz-final"))
+    assert "Por que as 33 janelas não equivalem a 33 testes?" in texto
+    assert "%d dos %d meses de teste" % (s["meses_compartilhados"], s["meses_de_teste"]) in texto
+    d = m.blocos_disjuntos()
+    assert ("sem sobreposição cabem %d anos de teste, e o máximo Sharpe ficou abaixo do prometido em %d."
+            % (d["n"], d["max_sharpe"]["abaixo_do_prometido"])) in _secao("quiz-final")
+    assert len(re.findall(r'class="quiz-question"', _secao("quiz-final"))) == 3

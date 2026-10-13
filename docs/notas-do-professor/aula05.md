@@ -88,6 +88,17 @@ máximo Sharpe troca de ativo quando a janela anda um mês.
   0,70). Isso quer dizer que ela é melhor?" Resposta esperada: quer dizer que a promessa dela é mais
   conservadora e depende menos do retorno estimado; melhor depende do perfil do cliente. Erro comum:
   escolher a carteira pelo Sharpe entregue de um único período.
+- Slide 11, sobreposição: duas janelas vizinhas compartilham 11 dos 12 meses de teste (91,60% dos
+  pregões, na mediana), e um mesmo pregão entra no teste de até 12 janelas; os 8.231 pregões de
+  teste somados são 915 distintos. Pergunta socrática: "25 em 33 são 33 confirmações?" Resposta
+  esperada: não, porque janelas vizinhas medem quase o mesmo período. Erro comum: ler a contagem
+  como 33 experimentos e superestimar a evidência.
+- Slide 12, anos disjuntos: com a mesma regra de treino cabem três anos de teste sem sobreposição
+  (janelas 1, 13 e 25: 2023, 2024 e 2025). O máximo Sharpe entregou menos que prometeu em 2 de 3
+  (0,67 contra 1,59 em 2023, 1,39 contra -0,25 em 2024, 2,11 contra -0,32 em 2025); a variância
+  mínima, em 1 de 3. Nas 12 escolhas de mês de partida dos blocos, o máximo Sharpe fica abaixo em
+  pelo menos 2 blocos em todas. Fechar com a frase: a base comporta três experimentos
+  independentes, e o ADR do grupo diz isso.
 - O drawdown à direita muda com a janela de teste. Perguntar em que janela aparece o fundo mais
   profundo e o que aconteceu no mercado naquele período.
 
@@ -102,14 +113,14 @@ Interação: programação em dupla no notebook, seções 1 a 3, troca de papel 
   alinha as duas séries, e uma data da cesta ausente do CDI daria `NaN` no Sharpe. A lacuna de
   24/10/2025 fica na cesta com retorno zero nos três ETFs (ADR-009), e o CDI tem essa data.
 - Conferência rápida na sala: máximo Sharpe com drawdown de -8,49% em 08/04/2025.
-- Se a dupla terminar antes: rodar a seção 4 (janelas deslizantes) e conferir as 33 janelas.
+- Se a dupla terminar antes: rodar a seção 4 (janelas deslizantes), conferir as 33 janelas e a medida de sobreposição.
 
 ## Bloco 5: sensibilidade da fronteira
 
-Interação: previsão antes do clique no widget do slide 15. Cada dupla escolhe entre "retorno
+Interação: previsão antes do clique no widget do slide 16. Cada dupla escolhe entre "retorno
 perturbado em 5 p.p." e "Ledoit-Wolf". Registrar a contagem no quadro.
 
-- Resultado (slide 16): o retorno perturbado troca 19,75% do máximo Sharpe e 0,00% da variância
+- Resultado (slide 17): o retorno perturbado troca 19,75% do máximo Sharpe e 0,00% da variância
   mínima; Ledoit-Wolf troca 1,91% e 1,81%. A PETR4 sobe de 17% para 27%.
 - Pergunta socrática: "Por que a variância mínima não se mexe com o retorno perturbado?" Resposta:
   a função objetivo dela é só `w @ cov @ w`; o retorno esperado não entra. Erro comum: achar que
@@ -124,18 +135,35 @@ perturbado em 5 p.p." e "Ledoit-Wolf". Registrar a contagem no quadro.
 
 ## Bloco 6: estabilidade, ADR e escolha coletiva
 
-Animação do slide 17: antes de tocar, cada dupla responde se o ativo de maior peso na primeira
+Animação do slide 18: antes de tocar, cada dupla responde se o ativo de maior peso na primeira
 janela continua no topo na última. Resposta: não; a PETR4 começa com 76,52% e perde espaço para
 BBAS3, GOLD11 e IVVB11.
 
-Slide 18: definir carteira trocada no quadro com um exemplo de dois ativos (60/40 para 40/60 troca
+Slide 19: definir carteira trocada no quadro com um exemplo de dois ativos (60/40 para 40/60 troca
 20%). Entre 2021-2022 e 2023-2024: 82,60% no máximo Sharpe e 33,23% na variância mínima.
+
+Slide 20, custo da reotimização. Começar pela premissa, que é hipótese de aula, sem dado de
+corretora: 0,10% sobre o valor negociado (compras mais vendas), sem custo na compra inicial, pesos
+constantes entre reotimizações, de 02/01/2023 a 31/08/2026 (915 pregões). Reotimizar o máximo
+Sharpe todo mês troca 156,87% da carteira por ano (13,25% por reotimização, na média) e custa 0,31
+p.p. ao ano: retorno anual de 29,39% bruto e 29,08% líquido, Sharpe de 0,92 para 0,90. Trimestral:
+87,50% ao ano, 0,18 p.p., 25,93% e 25,76%. Anual: 48,54% ao ano, 0,10 p.p., 20,77% e 20,68%.
+
+- Pergunta socrática: "Então reotimizar todo mês é melhor?" Resposta esperada: a tabela não
+  sustenta isso; a diferença de retorno bruto vem de um único caminho de 915 pregões, e outro
+  período pode inverter a ordem. Erro comum: ler o retorno bruto da simulação como previsão.
+- Pergunta socrática: "O que mudaria a conta?" Resposta: o custo real da corretora do parceiro,
+  imposto sobre ganho de capital nas vendas e o tamanho do lote, nenhum deles medido aqui.
+
+Slide 21, ADR de exemplo: é exercício com a cesta de referência, sem valor de recomendação
+prática. A decisão aparece como hipótese condicionada ao custo, com a carteira trocada por ano e o
+retorno líquido. O ADR do grupo que propuser frequência de reotimização segue o mesmo formato.
 
 Dupla de 8 minutos (seção 5 do notebook e o ADR; a seção 6 repete o widget do Bloco 5 e fica para casa), troca de papel aos 4 minutos. Critério para
 o ADR lido em voz alta: tem pelo menos um número fora da amostra e diz o que o comitê precisa saber
 antes de usar os pesos.
 
-Escolha coletiva (slide 21, 4 minutos). Gabarito e o número que sustenta cada resposta:
+Escolha coletiva (slide 23, 4 minutos). Gabarito e o número que sustenta cada resposta:
 
 | Recomendação | Gabarito | Número que sustenta |
 |---|---|---|
@@ -145,13 +173,20 @@ Escolha coletiva (slide 21, 4 minutos). Gabarito e o número que sustenta cada r
 | 4. No máximo Sharpe, a volatilidade prevista errou menos que o retorno previsto | sustentada | 9,51% contra 10,35% na volatilidade; 32,05% contra 11,02% no retorno (na variância mínima é o contrário: 20,77% contra 21,12% no retorno, 7,46% contra 8,81% na volatilidade) |
 
 Na recomendação 2, provocar: "sustentada para 2025; o que as 33 janelas dizem?" A variância mínima
-teve Sharpe negativo em 5 das 33. Um ano é um ponto, e o comitê precisa saber disso.
+teve Sharpe negativo em 5 das 33, lembrando que as janelas se sobrepõem. Um ano é um ponto, e a base
+inteira comporta três anos de teste independentes; o comitê precisa saber disso.
+
+Na recomendação 3, o número que sustenta é a troca de pesos. A frequência de revisão que substitui o
+"um ano sem revisão" continua sendo hipótese: o slide 20 mostra a carteira trocada e o custo de cada
+frequência, sem eleger uma.
 
 ## Bloco 7: quiz e amarração
 
-Quiz de três perguntas (slide 22):
+Quiz de três perguntas (slide 24):
 
-1. Treino 2023 e 2024, teste 2025. Erro comum: "sortear 30% dos pregões", vazamento temporal.
+1. Vizinhas dividem 11 dos 12 meses de teste. Erro comum: "o treino de cada janela contém o teste";
+   o teste sempre começa depois do último dia do treino. Na revelação: sem sobreposição cabem 3 anos
+   de teste, e o máximo Sharpe ficou abaixo do prometido em 2.
 2. 0,00%. Erro comum: 19,75%, que é o efeito no máximo Sharpe; quem marca isso não separou as duas
    carteiras.
 3. Maior queda desde um pico. Erro comum: perda no ano; a carteira acumulou 10,96%.
@@ -163,5 +198,5 @@ cesta e perfil pelo último dígito do RA; enunciado e barema na Adalove.
 
 ## Se o tempo apertar
 
-Cortar primeiro o slide 12 (o código está no notebook) e reduzir a escolha coletiva para os itens 1
+Cortar primeiro o slide 13 (o código está no notebook) e reduzir a escolha coletiva para os itens 1
 e 4. Não cortar o Bloco 5: a sensibilidade é o argumento técnico do ADR.

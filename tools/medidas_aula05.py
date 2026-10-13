@@ -34,6 +34,18 @@ Decisões declaradas (valem para todo número da aula):
   último ano civil completo da janela, 2025.
 - Janelas deslizantes: treino de 24 meses e teste nos 12 meses seguintes, com
   passo de um mês, do treino iniciado em 01/2021 ao iniciado em 09/2023.
+- Sobreposição: duas janelas vizinhas compartilham 11 dos 12 meses de teste, e
+  um mesmo pregão entra no teste de até 12 janelas. As 33 janelas não são 33
+  experimentos independentes. A medida complementar usa só testes disjuntos:
+  as janelas de posição 0, 12 e 24, com testes nos anos civis de 2023, 2024 e
+  2025 e a mesma regra de treino (24 meses imediatamente antes do teste).
+- Reotimização com custo (hipótese declarada, não dado de corretora): de
+  01/2023 a 08/2026, os pesos são recalculados a cada 1, 3 ou 12 meses com os
+  24 meses anteriores de treino e ficam constantes até a reotimização seguinte.
+  Carteira trocada (turnover) = soma de |Δw| / 2 em cada reotimização, sem
+  contar a compra inicial nem a deriva dos pesos entre reotimizações. Custo de
+  0,10% sobre o valor negociado (compras mais vendas, soma de |Δw|), descontado
+  do retorno do primeiro pregão depois de cada reotimização.
 """
 import os
 import sys
@@ -67,6 +79,12 @@ TRES_JANELAS = (("2022-01-01", "2022-12-31"), ("2023-01-01", "2023-12-31"),
                 ("2024-01-01", "2024-12-31"))
 
 OBJETIVOS = ("max_sharpe", "var_min")
+# Testes disjuntos dentro das 33 janelas: a cada 12 posições, a partir da 0.
+PASSO_DISJUNTO = 12
+# Custo de transação hipotético: 0,10% sobre o valor negociado.
+CUSTO_OPERACAO = 0.001
+INICIO_REOTIMIZACAO = "2023-01-01"
+FREQUENCIAS = (("mensal", 1), ("trimestral", 3), ("anual", 12))
 
 
 def carregar_retornos():
@@ -250,6 +268,124 @@ def resumo_deslizante(resultados=None):
             "rotatividade_mensal_maxima": float(np.max(giro)),
         }
     return resumo
+
+
+def _pregoes_de_teste(resultados):
+    retornos = carregar_retornos()
+    return [retornos.loc[r["teste"][0]:r["teste"][1]].index for r in resultados]
+
+
+def sobreposicao_deslizante(resultados=None):
+    """Quanto do teste duas janelas vizinhas compartilham, e quantas vezes cada pregão é testado."""
+    resultados = resultados if resultados is not None else resultados_deslizantes()
+    testes = _pregoes_de_teste(resultados)
+    compartilhado = [len(a.intersection(b)) / len(a) for a, b in zip(testes[:-1], testes[1:])]
+    contagem = pd.Series(0, index=carregar_retornos().index)
+    for datas in testes:
+        contagem[datas] += 1
+    meses = [(r["teste"][0], r["teste"][1]) for r in resultados]
+    meses_comuns = (meses[0][1].to_period("M") - meses[1][0].to_period("M")).n + 1
+    return {
+        "meses_compartilhados": meses_comuns,
+        "meses_de_teste": MESES_TESTE,
+        "fracao_compartilhada_mediana": float(np.median(compartilhado)),
+        "fracao_compartilhada_minima": float(np.min(compartilhado)),
+        "fracao_compartilhada_maxima": float(np.max(compartilhado)),
+        "janelas_por_pregao_maximo": int(contagem.max()),
+        "pregoes_testados_distintos": int((contagem > 0).sum()),
+        "pregoes_testados_somados": int(contagem.sum()),
+    }
+
+
+def blocos_disjuntos(resultados=None, deslocamento=0):
+    """Janelas de teste sem sobreposição: posições deslocamento, deslocamento + 12, ..."""
+    resultados = resultados if resultados is not None else resultados_deslizantes()
+    escolhidas = [resultados[i] for i in range(deslocamento, len(resultados), PASSO_DISJUNTO)]
+    blocos = []
+    for r in escolhidas:
+        bloco = {"treino": r["treino"], "teste": r["teste"]}
+        for objetivo in OBJETIVOS:
+            bloco[objetivo] = {"prometido": r[objetivo]["esperado"]["sharpe"],
+                               "entregue": r[objetivo]["realizado"]["sharpe"]}
+        blocos.append(bloco)
+    resumo = {"blocos": blocos, "n": len(blocos)}
+    for objetivo in OBJETIVOS:
+        resumo[objetivo] = {"abaixo_do_prometido": int(sum(
+            b[objetivo]["entregue"] < b[objetivo]["prometido"] for b in blocos))}
+    return resumo
+
+
+def blocos_disjuntos_todas_as_partidas(resultados=None):
+    """Repete os blocos disjuntos para cada mês de partida possível (deslocamento de 0 a 11)."""
+    resultados = resultados if resultados is not None else resultados_deslizantes()
+    return [blocos_disjuntos(resultados, d) for d in range(PASSO_DISJUNTO)]
+
+
+def reotimizacao_com_custo(passo_meses, objetivo, custo=CUSTO_OPERACAO, retornos=None):
+    """Reotimiza a cada passo_meses, de 01/2023 ao fim do snapshot, com treino dos 24 meses anteriores.
+
+    Os pesos ficam constantes entre reotimizações. Na primeira reotimização a
+    carteira é montada sem custo; nas seguintes, o custo é custo vezes a soma de
+    |Δw| (valor negociado), descontado do primeiro pregão do mês.
+    """
+    retornos = retornos if retornos is not None else carregar_retornos()
+    mes = pd.Timestamp(INICIO_REOTIMIZACAO)
+    ultimo = retornos.index[-1]
+    w = None
+    giros, bruto, desconto, pesos = [], [], [], []
+    k = 0
+    while mes <= ultimo:
+        datas = retornos.loc[mes:mes + pd.offsets.MonthEnd(0)]
+        negociado = 0.0
+        if k % passo_meses == 0:
+            treino = retornos.loc[mes - pd.DateOffset(months=MESES_TREINO):mes - pd.Timedelta(days=1)]
+            mu, cov = estimar(treino)
+            novo = otimizar(mu, cov, cdi_anual(treino.index), objetivo)
+            if w is not None:
+                giros.append(rotatividade(w, novo))
+                negociado = float(np.abs(novo - w).sum())
+            w = novo
+            pesos.append(w)
+        diario = pd.Series(datas.to_numpy() @ w, index=datas.index)
+        corte = pd.Series(0.0, index=datas.index)
+        corte.iloc[0] = custo * negociado
+        bruto.append(diario)
+        desconto.append(corte)
+        mes = mes + pd.DateOffset(months=1)
+        k += 1
+    bruto = pd.concat(bruto)
+    desconto = pd.concat(desconto)
+    liquido = bruto - desconto
+    anos = len(bruto) / PREGOES_ANO
+    rf = cdi_anual(bruto.index)
+
+    def metricas(serie):
+        retorno = float(serie.mean() * PREGOES_ANO)
+        vol = float(serie.std() * np.sqrt(PREGOES_ANO))
+        return {"retorno": retorno, "vol": vol, "sharpe": (retorno - rf) / vol,
+                "acumulado": float((1 + serie).prod() - 1)}
+
+    return {
+        "reotimizacoes": len(giros) + 1,
+        "pesos": pesos,
+        "trocada_media": float(np.mean(giros)),
+        "trocada_por_ano": float(sum(giros) / anos),
+        "custo_por_ano": float(desconto.sum() / anos),
+        "bruto": metricas(bruto),
+        "liquido": metricas(liquido),
+        "rf": rf,
+        "pregoes": len(bruto),
+        "inicio": bruto.index[0],
+        "fim": bruto.index[-1],
+    }
+
+
+def custo_da_reotimizacao(custo=CUSTO_OPERACAO):
+    """Reotimização mensal, trimestral e anual das duas carteiras, com o custo hipotético."""
+    retornos = carregar_retornos()
+    return {objetivo: {nome: reotimizacao_com_custo(passo, objetivo, custo, retornos)
+                       for nome, passo in FREQUENCIAS}
+            for objetivo in OBJETIVOS}
 
 
 def pesos_na_janela(janela, objetivo, estimador="amostral"):

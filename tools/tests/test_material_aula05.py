@@ -96,3 +96,46 @@ def test_secao_da_amostra_declara_a_janela_comum_da_adr_009():
 def test_paginas_sem_travessao():
     for caminho in (MATERIAL, REFERENCIAS):
         assert chr(0x2014) not in _ler(caminho)
+
+
+def _num(valor):
+    return ("%.2f" % valor).replace(".", ",")
+
+
+def test_material_declara_a_sobreposicao_e_os_anos_disjuntos():
+    """C-11: o material explica por que 33 janelas não equivalem a 33 experimentos."""
+    s = m.sobreposicao_deslizante()
+    d = m.blocos_disjuntos()
+    texto = _texto(_ler(MATERIAL))
+    esperados = [
+        "compartilham %d dos %d meses de teste" % (s["meses_compartilhados"], s["meses_de_teste"]),
+        "%s dos pregões de teste" % _pct(s["fracao_compartilhada_mediana"]),
+        "até %d janelas" % s["janelas_por_pregao_maximo"],
+        "{:,}".format(s["pregoes_testados_somados"]).replace(",", "."),
+        "só %d pregões distintos" % s["pregoes_testados_distintos"],
+        "em %d de %d anos" % (d["max_sharpe"]["abaixo_do_prometido"], d["n"]),
+        "em %d de %d." % (d["var_min"]["abaixo_do_prometido"], d["n"]),
+    ]
+    for b in d["blocos"]:
+        esperados.append("%s %s a %s %s %s %s %s" % (
+            b["teste"][0].strftime("%Y"), b["treino"][0].strftime("%m/%Y"), b["treino"][1].strftime("%m/%Y"),
+            _num(b["max_sharpe"]["prometido"]), _num(b["max_sharpe"]["entregue"]),
+            _num(b["var_min"]["prometido"]), _num(b["var_min"]["entregue"])))
+    assert [v for v in esperados if v not in texto] == []
+
+
+def test_material_mede_o_custo_da_reotimizacao_com_a_premissa():
+    """C-12: carteira trocada e retorno líquido por frequência, com 0,10% declarado como premissa."""
+    c = m.custo_da_reotimizacao()["max_sharpe"]
+    texto = _texto(_ler(MATERIAL))
+    for nome, _ in m.FREQUENCIAS:
+        f = c[nome]
+        linha = "%s %d %s %s %s p.p. %s %s" % (
+            nome.capitalize(), f["reotimizacoes"], _pct(f["trocada_media"]), _pct(f["trocada_por_ano"]),
+            _num(100 * f["custo_por_ano"]), _pct(f["bruto"]["retorno"]), _pct(f["liquido"]["retorno"]))
+        assert linha in texto, linha
+    assert "premissa declarada" in texto
+    assert "%s sobre o valor negociado" % _pct(m.CUSTO_OPERACAO) in texto
+    assert "Sharpe passa de %s para %s" % (_num(c["mensal"]["bruto"]["sharpe"]),
+                                           _num(c["mensal"]["liquido"]["sharpe"])) in texto
+    assert "hipótese condicionada" in texto

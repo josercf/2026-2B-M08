@@ -207,3 +207,107 @@ def test_notebook_repete_a_regra_da_adr_009_sem_importar_tools():
     assert 'precos.ffill().pct_change(fill_method=None).loc["2021-01-01":].dropna()' in codigo
     assert "precos.dropna()" not in codigo
     assert "import retornos" not in codigo and "medidas_aula05" not in codigo
+
+
+def test_janelas_vizinhas_compartilham_11_dos_12_meses_de_teste(deslizantes):
+    """C-11: as 33 janelas se sobrepõem e não são 33 experimentos independentes."""
+    s = m.sobreposicao_deslizante(deslizantes)
+    assert (s["meses_compartilhados"], s["meses_de_teste"]) == (11, 12)
+    assert _r(s["fracao_compartilhada_mediana"]) == 0.9160
+    assert _r(s["fracao_compartilhada_minima"]) == 0.9076
+    assert _r(s["fracao_compartilhada_maxima"]) == 0.9274
+    assert s["janelas_por_pregao_maximo"] == 12
+    assert s["pregoes_testados_distintos"] == 915
+    assert s["pregoes_testados_somados"] == 8231
+
+
+def test_tres_anos_de_teste_sem_sobreposicao(deslizantes):
+    """Janelas 0, 12 e 24: testes em 2023, 2024 e 2025, mesma regra de treino de 24 meses."""
+    d = m.blocos_disjuntos(deslizantes)
+    assert d["n"] == 3
+    assert [b["teste"][0].strftime("%Y-%m-%d") for b in d["blocos"]] == ["2023-01-01", "2024-01-01", "2025-01-01"]
+    assert [b["treino"][0].strftime("%Y-%m-%d") for b in d["blocos"]] == ["2021-01-01", "2022-01-01", "2023-01-01"]
+    for a, b in zip(d["blocos"][:-1], d["blocos"][1:]):
+        assert a["teste"][1] < b["teste"][0]
+    assert [(_r(b["max_sharpe"]["prometido"], 2), _r(b["max_sharpe"]["entregue"], 2)) for b in d["blocos"]] == [
+        (0.67, 1.59), (1.39, -0.25), (2.11, -0.32)]
+    assert [(_r(b["var_min"]["prometido"], 2), _r(b["var_min"]["entregue"], 2)) for b in d["blocos"]] == [
+        (-0.70, 0.41), (-0.29, 1.09), (1.17, 0.77)]
+    assert d["max_sharpe"]["abaixo_do_prometido"] == 2
+    assert d["var_min"]["abaixo_do_prometido"] == 1
+
+
+def test_em_todo_mes_de_partida_o_maximo_sharpe_falha_em_ao_menos_dois_blocos(deslizantes):
+    partidas = m.blocos_disjuntos_todas_as_partidas(deslizantes)
+    assert len(partidas) == 12
+    assert [p["n"] for p in partidas] == [3] * 9 + [2] * 3
+    assert min(p["max_sharpe"]["abaixo_do_prometido"] for p in partidas) == 2
+
+
+@pytest.fixture(scope="module")
+def custo():
+    return m.custo_da_reotimizacao()
+
+
+@pytest.mark.parametrize("frequencia,reot,media,ano,custo_ano,bruto,liquido,sh_bruto,sh_liquido", [
+    ("mensal", 44, 0.1325, 1.5687, 0.0031, 0.2939, 0.2908, 0.92, 0.90),
+    ("trimestral", 15, 0.2269, 0.8750, 0.0018, 0.2593, 0.2576, 0.73, 0.72),
+    ("anual", 4, 0.5875, 0.4854, 0.0010, 0.2077, 0.2068, 0.41, 0.41),
+])
+def test_custo_da_reotimizacao_do_maximo_sharpe(custo, frequencia, reot, media, ano, custo_ano,
+                                                 bruto, liquido, sh_bruto, sh_liquido):
+    """C-12: carteira trocada e custo hipotético de 0,10% por operação, de 01/2023 a 08/2026."""
+    c = custo["max_sharpe"][frequencia]
+    assert c["reotimizacoes"] == reot
+    assert _r(c["trocada_media"]) == media
+    assert _r(c["trocada_por_ano"]) == ano
+    assert _r(c["custo_por_ano"]) == custo_ano
+    assert _r(c["bruto"]["retorno"]) == bruto
+    assert _r(c["liquido"]["retorno"]) == liquido
+    assert _r(c["bruto"]["sharpe"], 2) == sh_bruto
+    assert _r(c["liquido"]["sharpe"], 2) == sh_liquido
+    assert c["pregoes"] == 915
+    assert (c["inicio"].strftime("%d/%m/%Y"), c["fim"].strftime("%d/%m/%Y")) == ("02/01/2023", "31/08/2026")
+    assert _r(c["rf"]) == 0.1308
+
+
+def test_custo_da_reotimizacao_da_variancia_minima(custo):
+    c = custo["var_min"]
+    assert [_r(c[f]["trocada_por_ano"]) for f in ("mensal", "trimestral", "anual")] == [0.4179, 0.2775, 0.1395]
+    assert [_r(c[f]["custo_por_ano"]) for f in ("mensal", "trimestral", "anual")] == [0.0008, 0.0006, 0.0003]
+
+
+def test_custo_zero_devolve_o_retorno_bruto():
+    c = m.reotimizacao_com_custo(12, "max_sharpe", custo=0.0)
+    assert c["custo_por_ano"] == 0.0
+    assert c["liquido"]["retorno"] == c["bruto"]["retorno"]
+
+
+def test_custo_por_ano_e_custo_vezes_o_dobro_da_carteira_trocada(custo):
+    """Valor negociado = soma de |Δw| = 2 x carteira trocada; custo = 0,10% do negociado."""
+    for objetivo in m.OBJETIVOS:
+        for nome, _ in m.FREQUENCIAS:
+            c = custo[objetivo][nome]
+            assert abs(c["custo_por_ano"] - m.CUSTO_OPERACAO * 2 * c["trocada_por_ano"]) < 1e-12
+
+
+def test_reotimizacao_mensal_usa_os_treinos_das_janelas_deslizantes(deslizantes):
+    """Cada reotimização mensal até 09/2025 coincide com o treino de uma das 33 janelas."""
+    c = m.reotimizacao_com_custo(1, "max_sharpe", custo=0.0)
+    assert len(c["pesos"]) == 44
+    for k, r in enumerate(deslizantes):
+        assert np.allclose(c["pesos"][k], r["max_sharpe"]["pesos"], atol=1e-10), k
+    anual = m.reotimizacao_com_custo(12, "max_sharpe", custo=0.0)
+    assert [np.allclose(anual["pesos"][i], deslizantes[12 * i]["max_sharpe"]["pesos"], atol=1e-10)
+            for i in range(3)] == [True] * 3
+
+
+def test_notebook_mede_sobreposicao_e_custo_com_a_premissa_declarada():
+    import json
+    nb = json.load(open(os.path.join(m.RAIZ, "notebooks", "aula05.ipynb"), encoding="utf-8"))
+    codigo = "\n".join("".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code")
+    texto = "\n".join("".join(c["source"]) for c in nb["cells"])
+    assert "CUSTO = %s" % m.CUSTO_OPERACAO in codigo
+    assert "treinos[::%d]" % m.PASSO_DISJUNTO in codigo
+    assert 'pd.date_range("%s"' % m.INICIO_REOTIMIZACAO in codigo
+    assert "premissa declarada" in texto and "hipótese condicionada" in texto
