@@ -8,9 +8,10 @@
 
   <!-- Este material não é o roteiro do deck em prosa: abre pela Preparação do pré-aula e
        aprofunda o que o slide só aponta. Todo número vem de tools/medidas_aula03.py e está
-       travado em tools/tests/test_aula03.py. Retornos simples diários do Adj Close preenchido
-       para a frente por ativo, o mesmo tratamento da Aula 02. Nenhuma carteira da Ponderada 1
-       aparece aqui. -->
+       travado em tools/tests/test_aula03.py. Tratamento de ausência da ADR-009: a matriz da cesta
+       usa a janela comum dos 15 ativos (1.423 retornos desde 14/12/2020), par ou subconjunto usa a
+       janela comum dos ativos envolvidos e medida de um ativo usa a série inteira dele. Nenhuma
+       carteira da Ponderada 1 aparece aqui. -->
 
   <link rel="stylesheet" href="../assets/css/inteli-brand.css">
   <link rel="stylesheet" href="../assets/css/inteli-material.css">
@@ -104,8 +105,8 @@
             <details><summary>Resposta comentada</summary>
             <p>A correlação não tem unidade e fica entre −1 e 1, então dá para comparar pares e
             períodos. A covariância está em retorno ao quadrado e depende das duas volatilidades: a
-            covariância anual de 0,0570 entre PETR4 e VALE3 não diz, sozinha, se o vínculo é forte.
-            A correlação do mesmo par é 0,41.</p></details></li>
+            covariância anual de 0,0212 entre PETR4 e VALE3, na matriz da cesta, não diz, sozinha,
+            se o vínculo é forte. A correlação do mesmo par é 0,21.</p></details></li>
         </ol>
       </section>
 
@@ -145,39 +146,44 @@
         compara pares e períodos, e é ela que circula num relatório; a covariância é o que entra na
         conta do risco e na matriz que o motor do A3 consome.</p>
         <div class="doc-nota">
-          <p><strong>Correlação não é inclinação.</strong> A correlação de 0,80 entre ITUB4 e BBDC4
-          não diz que o BBDC4 sobe 0,80% quando o ITUB4 sobe 1%. Isso seria o coeficiente de uma
+          <p><strong>Correlação não é inclinação.</strong> A correlação de 0,72 entre ITUB4 e BBDC4
+          não diz que o BBDC4 sobe 0,72% quando o ITUB4 sobe 1%. Isso seria o coeficiente de uma
           regressão, o beta. A correlação diz quão consistente é o movimento conjunto, sem dizer o
           tamanho dele.</p>
         </div>
         <p>No pandas, <code>retornos.cov()</code> e <code>retornos.corr()</code> calculam as duas
-        matrizes de uma vez. Em cada par, os dois métodos usam os pregões em que os dois ativos têm
-        retorno: os pares com a GOLD11 usam 1.423 pregões, a partir da estreia do fundo em
-        11/12/2020, e os demais usam 1.907.</p>
+        matrizes de uma vez. Por padrão, cada par usa os pregões em que os dois ativos têm retorno,
+        e cada par fica numa janela diferente: com a GOLD11, que estreia em 11/12/2020, 1.423
+        pregões; sem ela, 1.907. Uma matriz montada assim não garante ser positiva semidefinida, e o
+        otimizador da Aula 04 pode devolver variância negativa. Por isso a matriz desta aula segue a
+        ADR-009 e parte da <strong>janela comum dos 15 ativos</strong>,
+        <code>retornos.dropna()</code>: 1.423 retornos, de 14/12/2020 a 31/08/2026. A seção 6 mede
+        o que essa janela custa.</p>
       </section>
 
       <section class="doc-secao" id="matriz">
         <h2>4. A matriz de correlação da cesta</h2>
-        <p>Com 15 ativos há 105 pares, e a correlação média deles é 0,30: a cesta inteira se move
+        <p>Com 15 ativos há 105 pares, e na janela comum a correlação média deles é 0,22: a cesta inteira se move
         junto em algum grau, porque todos respondem ao mesmo ciclo de juros e ao humor do mercado
         brasileiro.</p>
         <div class="doc-tabela-rolagem">
           <table class="doc-tabela">
             <thead><tr><th>Par</th><th>Correlação</th><th>Leitura</th></tr></thead>
             <tbody>
-              <tr><td>ITUB4 e BBDC4</td><td>0,80</td><td>a maior da cesta: dois bancos privados expostos a juros, crédito e regulação</td></tr>
-              <tr><td>BBAS3 e BOVA11</td><td>0,76</td><td>o BOVA11 replica o Ibovespa, em que os bancos pesam</td></tr>
-              <tr><td>ITUB4 e BBAS3</td><td>0,71</td><td>banco privado e banco público seguem o mesmo setor</td></tr>
-              <tr><td>PETR4 e VALE3</td><td>0,41</td><td>duas exportadoras de commodity, com ciclos diferentes</td></tr>
-              <tr><td>VALE3 e SUZB3</td><td>0,27</td><td>minério e celulose, ambos dolarizados</td></tr>
-              <tr><td>PETR4 e IVVB11</td><td>0,14</td><td>petroleira brasileira e bolsa americana em reais</td></tr>
-              <tr><td>ITUB4 e IVVB11</td><td>0,08</td><td>banco brasileiro e bolsa americana</td></tr>
+              <tr><td>ITUB4 e BBDC4</td><td>0,72</td><td>a maior da cesta: dois bancos privados expostos a juros, crédito e regulação</td></tr>
+              <tr><td>BBAS3 e BOVA11</td><td>0,65</td><td>o BOVA11 replica o Ibovespa, em que os bancos pesam</td></tr>
+              <tr><td>ITUB4 e BBAS3</td><td>0,61</td><td>banco privado e banco público seguem o mesmo setor</td></tr>
+              <tr><td>PETR4 e BOVA11</td><td>0,53</td><td>a Petrobras pesa no Ibovespa, ao lado de dezenas de outras ações</td></tr>
+              <tr><td>PETR4 e VALE3</td><td>0,21</td><td>duas exportadoras de commodity, com ciclos diferentes</td></tr>
+              <tr><td>ITUB4 e IVVB11</td><td>−0,08</td><td>banco brasileiro e bolsa americana em reais</td></tr>
+              <tr><td>PETR4 e IVVB11</td><td>−0,09</td><td>petroleira brasileira e bolsa americana em reais</td></tr>
               <tr><td>BOVA11 e GOLD11</td><td>−0,21</td><td>bolsa brasileira e ouro</td></tr>
             </tbody>
           </table>
         </div>
-        <p>Os dez pares mais negativos da matriz têm todos a GOLD11, e o menor é RENT3 com GOLD11,
-        −0,22. O ouro costuma ser procurado quando a bolsa cai, e a matriz registra isso. Na aula, a
+        <p>Os 21 pares negativos da matriz têm todos a GOLD11 ou o IVVB11, e o menor é RENT3 com
+        GOLD11, −0,22. O ouro costuma ser procurado quando a bolsa cai, o IVVB11 sobe em reais
+        quando o dólar sobe, e a matriz registra os dois movimentos. Na aula, a
         sala classifica estes oito pares por uma régua didática declarada no slide: correlação a
         partir de 0,60 concentra risco, de 0,30 a 0,60 é intermediária e abaixo de 0,30 diversifica.
         A régua é uma convenção didática desta aula, sem respaldo em padrão de mercado.</p>
@@ -189,14 +195,15 @@
         que minimiza o risco é:</p>
         <pre class="doc-codigo"><code>w* = (σb² − ρ σa σb) / (σa² + σb² − 2 ρ σa σb)</code></pre>
         <p>Sem venda a descoberto, o peso fica limitado entre 0 e 1. Aplicada aos três pares do
-        widget da aula, com volatilidades e correlações medidas na cesta:</p>
+        widget da aula. Cada par é medido na janela comum dos dois ativos (ADR-009): 1.907 retornos
+        desde 03/01/2019, ou 1.423 desde 14/12/2020 no par com a GOLD11.</p>
         <div class="doc-tabela-rolagem">
           <table class="doc-tabela">
             <thead><tr><th>Par</th><th>Correlação</th><th>Volatilidades</th><th>Peso de menor risco</th><th>Menor risco</th></tr></thead>
             <tbody>
               <tr><td>ITUB4 e BBDC4</td><td>0,80</td><td>29,36% e 34,09%</td><td>86,14% em ITUB4</td><td>29,22%</td></tr>
               <tr><td>PETR4 e IVVB11</td><td>0,14</td><td>39,25% e 20,15%</td><td>17,12% em PETR4</td><td>18,85%</td></tr>
-              <tr><td>BOVA11 e GOLD11</td><td>−0,21</td><td>23,41% e 19,80%</td><td>43,11% em BOVA11</td><td>13,47%</td></tr>
+              <tr><td>BOVA11 e GOLD11</td><td>−0,21</td><td>18,50% e 19,80%</td><td>52,79% em BOVA11</td><td>12,03%</td></tr>
             </tbody>
           </table>
         </div>
@@ -204,27 +211,29 @@
         volatilidade <strong>reduz</strong> o risco para 18,85%, abaixo dos 20,15% do IVVB11 sozinho.
         A correlação baixa faz os movimentos da PETR4 compensarem parte dos movimentos do IVVB11.
         No par de bancos acontece o contrário: com 0,80 de correlação, o melhor que a mistura
-        consegue fica a 0,14 ponto percentual do ITUB4 sozinho.</p>
+        consegue fica a 0,14 ponto percentual do ITUB4 sozinho. A correlação dos bancos aqui, 0,80, é
+        maior que os 0,72 da matriz da cesta porque a janela do par inclui março de 2020.</p>
       </section>
 
       <section class="doc-secao" id="anualizada">
         <h2>6. A covariância anualizada</h2>
         <p>Com retornos diários independentes, a variância de 252 pregões é 252 vezes a variância
         diária, e o mesmo vale para a covariância. Por isso a matriz anual é a diária vezes 252, e a
-        volatilidade anual é a raiz da diagonal. Na cesta, a diagonal anual da PETR4 é 0,1541, e a
-        raiz de 0,1541 devolve os 39,25% da Aula 02.</p>
+        volatilidade anual é a raiz da diagonal. Na janela comum dos 15 ativos, a diagonal anual da
+        PETR4 é 0,1116, e a raiz de 0,1116 dá 33,40%.</p>
         <pre class="doc-codigo"><code>precos = ler_csv("precos_ajustados.csv", index_col="data", parse_dates=["data"]).ffill()
 retornos = precos.pct_change(fill_method=None).iloc[1:]
-cov_anual = retornos.cov() * 252
-np.sqrt(np.diag(cov_anual))   # repete a volatilidade anual da Aula 02</code></pre>
+comum = retornos.dropna()     # janela comum dos 15 ativos (ADR-009)
+cov_anual = comum.cov() * 252
+np.sqrt(np.diag(cov_anual))   # volatilidade anual na janela comum</code></pre>
         <div class="doc-tabela-rolagem">
           <table class="doc-tabela">
             <thead><tr><th></th><th>PETR4</th><th>VALE3</th><th>ITUB4</th><th>IVVB11</th></tr></thead>
             <tbody>
-              <tr><td>PETR4</td><td>0,1541</td><td>0,0570</td><td>0,0525</td><td>0,0110</td></tr>
-              <tr><td>VALE3</td><td>0,0570</td><td>0,1259</td><td>0,0346</td><td>0,0200</td></tr>
-              <tr><td>ITUB4</td><td>0,0525</td><td>0,0346</td><td>0,0862</td><td>0,0049</td></tr>
-              <tr><td>IVVB11</td><td>0,0110</td><td>0,0200</td><td>0,0049</td><td>0,0406</td></tr>
+              <tr><td>PETR4</td><td>0,1116</td><td>0,0212</td><td>0,0261</td><td>−0,0055</td></tr>
+              <tr><td>VALE3</td><td>0,0212</td><td>0,0886</td><td>0,0178</td><td>0,0042</td></tr>
+              <tr><td>ITUB4</td><td>0,0261</td><td>0,0178</td><td>0,0651</td><td>−0,0035</td></tr>
+              <tr><td>IVVB11</td><td>−0,0055</td><td>0,0042</td><td>−0,0035</td><td>0,0312</td></tr>
             </tbody>
           </table>
         </div>
@@ -232,7 +241,7 @@ np.sqrt(np.diag(cov_anual))   # repete a volatilidade anual da Aula 02</code></p
           <p><strong>O erro de anualizar a correlação.</strong> É comum multiplicar as duas matrizes
           por 252 no mesmo passo. A correlação não tem período: ela é a covariância dividida pelos
           desvios padrão, e o fator 252 aparece em cima e embaixo e se cancela. Multiplicada por 252,
-          a correlação de 0,80 do par de bancos vira um número acima de 1, o que não existe. Quando
+          a correlação de 0,72 do par de bancos vira um número acima de 1, o que não existe. Quando
           aparecer uma correlação maior que 1, procure esse passo.</p>
           <p><strong>O erro de usar raiz de 252.</strong> Raiz de 252 anualiza o desvio padrão.
           Aplicada à matriz de covariância, que está em variância, subestima o risco anual.</p>
@@ -241,12 +250,33 @@ np.sqrt(np.diag(cov_anual))   # repete a volatilidade anual da Aula 02</code></p
         positiva definida (todo autovalor maior que zero). Uma matriz que não é positiva definida
         admite carteira com variância negativa, e o motor sorteia carteiras impossíveis. A matriz da
         cesta passa nas duas, e o notebook as executa.</p>
+        <h3>O custo da janela comum</h3>
+        <p>A Aula 02 mediu a PETR4 na série inteira dela, 39,25%. A diagonal da matriz dá 33,40%
+        porque a janela comum dos 15 ativos só começa quando a GOLD11 passa a ter cotação. Os 484
+        retornos anteriores ficam de fora da matriz, e com eles março de 2020:</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Medida</th><th>Série inteira, sem a GOLD11</th><th>Janela comum dos 15</th></tr></thead>
+            <tbody>
+              <tr><td>Primeiro retorno</td><td>03/01/2019</td><td>14/12/2020</td></tr>
+              <tr><td>Retornos</td><td>1.907</td><td>1.423</td></tr>
+              <tr><td>Pregões de março de 2020</td><td>22</td><td>0</td></tr>
+              <tr><td>Volatilidade anual da PETR4</td><td>39,25%</td><td>33,40%</td></tr>
+              <tr><td>Correlação de PETR4 e IVVB11</td><td>0,14</td><td>−0,09</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>É o efeito de descartar datas que a Aula 01 mostrou no tratamento de ausências. A
+        alternativa é tirar a GOLD11 da cesta: a janela comum dos 14 ativos restantes volta a ter
+        1.907 retornos, com março de 2020. O grupo registra essa escolha no ADR do estimador de
+        covariância do A3, com os números desta tabela, porque ela decide se o motor e o otimizador
+        da Aula 04 enxergam o choque de 2020.</p>
       </section>
 
       <section class="doc-secao" id="crise">
         <h2>7. Correlação em crise</h2>
         <p>A correlação da janela inteira é uma média de períodos calmos e de crises. Calculada em
-        janelas móveis de 63 pregões, cerca de um trimestre, ela mostra quando os pares passam a
+        janelas móveis de 63 pregões, cerca de um trimestre, na janela comum de cada par, ela mostra quando os pares passam a
         andar juntos. Em março de 2020, a correlação média dos pares sobe de 0,36, na janela
         inteira, para 0,74 nos 22 pregões do mês. As duas médias usam os 14 ativos com cotação em
         2020, sem a GOLD11.</p>
@@ -273,7 +303,7 @@ np.sqrt(np.diag(cov_anual))   # repete a volatilidade anual da Aula 02</code></p
         correlacionados.</p>
         <p>O estimador de Ledoit e Wolf (2004) mistura a matriz amostral com um alvo simples, a
         identidade multiplicada pela variância média dos ativos, e calcula dos próprios dados a
-        intensidade dessa mistura. Na amostra com os 15 ativos cotados, a partir de 14/12/2020:</p>
+        intensidade dessa mistura. Na janela comum dos 15 ativos, a mesma da matriz, a partir de 14/12/2020:</p>
         <div class="doc-tabela-rolagem">
           <table class="doc-tabela">
             <thead><tr><th>Últimos pregões</th><th>Desde</th><th>Encolhimento</th></tr></thead>
@@ -293,7 +323,8 @@ np.sqrt(np.diag(cov_anual))   # repete a volatilidade anual da Aula 02</code></p
 
       <section class="doc-secao" id="bancos">
         <h2>9. Uma carteira só de bancos</h2>
-        <p>Três ativos em partes iguais, medidos com a covariância anualizada da cesta:</p>
+        <p>Três ativos em partes iguais, medidos com a covariância anualizada na janela comum dos
+        três ativos, 1.907 retornos desde 03/01/2019:</p>
         <div class="doc-tabela-rolagem">
           <table class="doc-tabela">
             <thead><tr><th>Carteira</th><th>Média das volatilidades</th><th>Volatilidade da carteira</th><th>Redução</th></tr></thead>
@@ -317,8 +348,8 @@ np.sqrt(np.diag(cov_anual))   # repete a volatilidade anual da Aula 02</code></p
         <ul>
           <li>SPEC.md do motor de simulação, com a matriz de covariância anualizada como entrada.</li>
           <li>Matriz de covariância anualizada exportada para o motor, simétrica e positiva definida.</li>
-          <li>ADR do estimador de covariância (amostral ou Ledoit-Wolf, e com qual janela), com o
-            impacto numérico da escolha.</li>
+          <li>ADR do estimador de covariância (amostral ou Ledoit-Wolf, com qual janela e se a
+            GOLD11 fica na cesta ao custo de março de 2020), com o impacto numérico da escolha.</li>
         </ul>
         <p>O A3 vale 3 pontos. A review da Sprint 3 é em 19/11/2026, e a entrega vai até sexta,
         20/11/2026, 23h59. A Ponderada 1 vale 3 pontos, com o parecer situado no período analisado.</p>

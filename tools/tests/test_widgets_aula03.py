@@ -30,10 +30,9 @@ def test_heatmap_tem_matriz_simetrica_de_15_ativos_com_diagonal_um():
         for j in range(n):
             assert dados["correlacao"][i][j] == dados["correlacao"][j][i]
     i, j = dados["tickers"].index("ITUB4"), dados["tickers"].index("BBDC4")
-    assert dados["correlacao"][i][j] == 0.8034
-    assert dados["pregoes"][i][j] == 1907
-    g = dados["tickers"].index("GOLD11")
-    assert dados["pregoes"][g][g] == 1423
+    assert dados["correlacao"][i][j] == 0.7207
+    # Matriz da cesta na janela comum dos 15 ativos (ADR-009): todo par tem 1.423 pregões.
+    assert {p for linha in dados["pregoes"] for p in linha} == {1423}
     # A leitura inicial não entrega a resposta da pergunta disparada.
     assert dados["leitura"] == "Passe o cursor sobre uma célula."
 
@@ -44,3 +43,8 @@ def test_correlacao_peso_tem_os_tres_pares_medidos():
     petr = pares[1]
     assert (petr["rho"], petr["peso_minimo"], petr["risco_minimo"]) == (0.1397, 0.1712, 0.1885)
     assert "18,85%" in petr["medido"] and "17,12% em PETR4" in petr["medido"]
+    assert "1.907 pregões desde 03/01/2019" in petr["medido"]
+    ouro = pares[2]
+    assert (ouro["pregoes"], ouro["inicio"]) == (1423, "2020-12-14")
+    assert (ouro["vol_a"], ouro["peso_minimo"], ouro["risco_minimo"]) == (0.185, 0.5279, 0.1203)
+    assert "1.423 pregões desde 14/12/2020" in ouro["medido"]

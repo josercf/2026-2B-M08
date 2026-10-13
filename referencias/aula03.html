@@ -79,7 +79,7 @@
             <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.cov.html">DataFrame.cov</a> e
             <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.corr.html">DataFrame.corr</a>.
             <span class="doc-porque">Como os dois métodos tratam pregões sem retorno, par a
-            par.</span></li>
+            par, o que leva a matriz desta aula a partir da janela comum (referência 9).</span></li>
           <li>scikit-learn developers. <a href="https://scikit-learn.org/stable/modules/generated/sklearn.covariance.LedoitWolf.html">sklearn.covariance.LedoitWolf</a>.
             <span class="doc-porque">A implementação contra a qual a versão em NumPy do notebook é
             conferida.</span></li>
@@ -87,6 +87,10 @@
             do curso</a>.
             <span class="doc-porque">Formato do ADR do estimador de covariância pedido no
             A3.</span></li>
+          <li><a href="https://github.com/josercf/2026-2B-M08/blob/main/docs/adrs/ADR-009-tratamento-de-ausencia-unico-com-janela-comum.md">ADR-009</a>:
+            tratamento de ausência único, com janela comum na análise conjunta.
+            <span class="doc-porque">A regra que a matriz desta aula segue: janela comum dos 15
+            ativos, 1.423 retornos desde 14/12/2020, e o custo dela sobre março de 2020.</span></li>
         </ol>
       </section>
 

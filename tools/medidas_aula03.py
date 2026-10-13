@@ -5,24 +5,32 @@ peso e da correlação, a correlação móvel em crise e o encolhimento de
 Ledoit-Wolf. Todo número que o deck, o notebook, os widgets e as animações da
 Aula 03 citam sai daqui e está travado em tools/tests/test_aula03.py.
 
-Tratamento de ausências declarado, o mesmo da Aula 02 (tools/medidas_aula02.py)
-para a matriz repetir a tabela de volatilidade daquela aula: retornos simples
-diários do Adj Close preenchido para a frente por ativo (ffill), sem preencher
-antes da primeira cotação. A GOLD11 entra só a partir de 11/12/2020. A matriz
-da cesta usa, em cada par, os pregões em que os dois ativos têm retorno (o
-padrão de DataFrame.corr e DataFrame.cov). Medidas de um par ou de uma carteira
-leem essa mesma matriz, a que o A3 consome. A correlação móvel usa os pregões
-em que os dois ativos têm retorno, e o Ledoit-Wolf, os pregões com os 15
-ativos cotados.
+Tratamento de ausência da ADR-009, importado de tools/retornos.py: lacuna
+isolada preenchida com o último preço, nada preenchido antes da primeira
+cotação (a GOLD11 entra em 11/12/2020).
+
+- A matriz da cesta (heatmap, excerto, matriz exportada, escolha coletiva e
+  Ledoit-Wolf) usa a janela comum dos 15 ativos: 1.423 retornos, de 14/12/2020
+  a 31/08/2026. É a matriz que o otimizador da Aula 04 consome.
+- Análise de um par ou de um subconjunto (widget de peso, curva da animação,
+  carteiras de três ativos, correlação móvel e média de março de 2020) usa a
+  janela comum dos ativos envolvidos. Sem a GOLD11, essa janela tem 1.907
+  retornos e inclui março de 2020.
+- Medida de um ativo só (tabela de resgate da Aula 02, volatilidade comparada
+  com a diagonal) usa a série inteira do ativo.
 """
 import os
+import sys
 
 import numpy as np
-import pandas as pd
 
-RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DADOS = os.path.join(RAIZ, "dados")
-PREGOES_ANO = 252
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import retornos as r  # noqa: E402
+
+RAIZ = r.RAIZ
+DADOS = r.DADOS
+PREGOES_ANO = r.PREGOES_ANO
 JANELA_MOVEL = 63
 PARES_WIDGET = [("ITUB4", "BBDC4"), ("PETR4", "IVVB11"), ("BOVA11", "GOLD11")]
 PARES_MOVEIS = [("ITUB4", "BBDC4"), ("PETR4", "IVVB11")]
@@ -30,16 +38,27 @@ BANCOS = ["ITUB4", "BBDC4", "BBAS3"]
 MISTA = ["ITUB4", "PETR4", "IVVB11"]
 EXCERTO = ["PETR4", "VALE3", "ITUB4", "IVVB11"]
 JANELAS_LW = [63, 126, 252]
-
-
-def carregar_ajustados():
-    return pd.read_csv(os.path.join(DADOS, "precos_ajustados.csv"),
-                       index_col="data", parse_dates=["data"])
+SEM_GOLD = [t for t in r.TICKERS if t != "GOLD11"]
 
 
 def retornos():
-    """Retornos simples diários do Adj Close preenchido para a frente por ativo."""
-    return carregar_ajustados().ffill().pct_change(fill_method=None).iloc[1:]
+    """Retornos de cada ativo na série inteira dele (ADR-009), NaN antes da primeira cotação."""
+    return r.retornos_por_ativo()
+
+
+def retornos_cesta():
+    """Retornos dos 15 ativos na janela comum da cesta (ADR-009)."""
+    return r.retornos_janela_comum()
+
+
+def _iso(data):
+    return data.strftime("%Y-%m-%d")
+
+
+def janela_cesta():
+    """Início, fim e número de retornos da janela comum dos 15 ativos, declarados no slide."""
+    rets = retornos_cesta()
+    return {"retornos": int(len(rets)), "inicio": _iso(rets.index[0]), "fim": _iso(rets.index[-1])}
 
 
 # ---------------------------------------------------------------------------
@@ -114,11 +133,46 @@ def autoverificacao():
 # ---------------------------------------------------------------------------
 
 def matriz_correlacao():
-    return retornos().corr()
+    """Correlação da cesta na janela comum dos 15 ativos."""
+    return retornos_cesta().corr()
 
 
 def matriz_covariancia_anual():
-    return retornos().cov() * PREGOES_ANO
+    """Covariância anualizada da cesta na janela comum dos 15 ativos: a matriz exportada."""
+    return retornos_cesta().cov() * PREGOES_ANO
+
+
+def volatilidade_por_ativo():
+    """Volatilidade anual de cada ativo na série inteira dele, a da Aula 02."""
+    return retornos().apply(r.volatilidade_anual)
+
+
+def custo_janela_comum():
+    """O que a janela comum dos 15 ativos tira da cesta, medido sobre a PETR4.
+
+    Compara a série inteira da PETR4 (a da Aula 02) com a janela comum dos 15
+    ativos (a da matriz), e a correlação de PETR4 com IVVB11 na janela do par
+    com a da matriz. A janela comum dos 14 ativos sem a GOLD11 é a alternativa
+    que o grupo pesa no ADR.
+    """
+    serie = retornos()["PETR4"].dropna()
+    comum = retornos_cesta()
+    sem_ouro = r.retornos_janela_comum(SEM_GOLD)
+    par = r.retornos_janela_comum(["PETR4", "IVVB11"])
+    return {
+        "serie": {"retornos": int(len(serie)), "inicio": _iso(serie.index[0]),
+                  "marco_2020": int(len(serie.loc["2020-03"])),
+                  "vol_petr4": float(r.volatilidade_anual(serie)),
+                  "rho_petr4_ivvb11": float(par.corr().iloc[0, 1])},
+        "comum": {"retornos": int(len(comum)), "inicio": _iso(comum.index[0]),
+                  "marco_2020": int(len(comum.loc["2020-03-01":"2020-03-31"])),
+                  "vol_petr4": float(r.volatilidade_anual(comum["PETR4"])),
+                  "rho_petr4_ivvb11": float(comum[["PETR4", "IVVB11"]].corr().iloc[0, 1])},
+        "sem_gold": {"retornos": int(len(sem_ouro)), "inicio": _iso(sem_ouro.index[0]),
+                     "marco_2020": int(len(sem_ouro.loc["2020-03"])),
+                     "vol_petr4": float(r.volatilidade_anual(sem_ouro["PETR4"]))},
+        "fora": int(len(serie) - len(comum)),
+    }
 
 
 def pares_ordenados():
@@ -135,9 +189,14 @@ def correlacao_media(rets):
 
 
 def correlacao_media_marco_2020():
-    """Média dos pares sem o GOLD11, que só tem cotação a partir de 11/12/2020."""
-    sem_gold = retornos().drop(columns="GOLD11")
+    """Média dos pares na janela comum dos 14 ativos sem a GOLD11, que inclui março de 2020.
+
+    A GOLD11 só tem cotação a partir de 11/12/2020; com ela, a janela comum
+    perderia março de 2020, que é o assunto desta medida.
+    """
+    sem_gold = r.retornos_janela_comum(SEM_GOLD)
     return {
+        "retornos": int(len(sem_gold)),
         "janela": correlacao_media(sem_gold),
         "marco_2020": correlacao_media(sem_gold.loc["2020-03"]),
         "pregoes_marco_2020": int(len(sem_gold.loc["2020-03"])),
@@ -149,19 +208,19 @@ def correlacao_media_marco_2020():
 # ---------------------------------------------------------------------------
 
 def estatisticas_par(a, b):
-    """Volatilidade, retorno anual e correlação de um par, lidos da matriz da cesta.
+    """Volatilidade, retorno anual e correlação de um par, na janela comum do par (ADR-009).
 
-    Mesma fonte que o A3 consome: volatilidade da diagonal da covariância
-    anualizada, correlação da matriz par a par e retorno médio anual de cada
-    ativo no seu próprio histórico.
+    Os dois ativos são medidos nos mesmos pregões: sem a GOLD11, 1.907 retornos
+    desde 03/01/2019; com ela, 1.423 desde 14/12/2020.
     """
-    cov = matriz_covariancia_anual()
-    media = retornos().mean() * PREGOES_ANO
-    vol_a, vol_b = float(np.sqrt(cov.loc[a, a])), float(np.sqrt(cov.loc[b, b]))
-    rho = float(matriz_correlacao().loc[a, b])
+    rets = r.retornos_janela_comum([a, b])
+    vol_a, vol_b = (float(r.volatilidade_anual(rets[t])) for t in (a, b))
+    media = rets.mean() * PREGOES_ANO
+    rho = float(rets.corr().loc[a, b])
     w = peso_variancia_minima(vol_a, vol_b, rho)
     return {
-        "pregoes": int(retornos()[[a, b]].dropna().shape[0]),
+        "pregoes": int(len(rets)),
+        "inicio": _iso(rets.index[0]),
         "vol_a": vol_a, "vol_b": vol_b,
         "ret_a": float(media[a]), "ret_b": float(media[b]),
         "rho": rho,
@@ -174,9 +233,10 @@ def estatisticas_par(a, b):
 def carteira_igual(tickers):
     """Carteira de pesos iguais: volatilidade contra a média das volatilidades.
 
-    Usa a covariância anualizada da cesta, a mesma matriz que o A3 consome.
+    Usa a covariância anualizada na janela comum dos ativos da carteira
+    (ADR-009); sem a GOLD11, são os 1.907 retornos da janela inteira.
     """
-    cov = matriz_covariancia_anual().loc[tickers, tickers].to_numpy()
+    cov = (r.retornos_janela_comum(tickers).cov() * PREGOES_ANO).to_numpy()
     w = np.full(len(tickers), 1 / len(tickers))
     vol = float(np.sqrt(w @ cov @ w))
     media_vols = float(w @ np.sqrt(np.diag(cov)))
@@ -188,7 +248,7 @@ def carteira_igual(tickers):
 # ---------------------------------------------------------------------------
 
 def correlacao_movel(a, b, janela=JANELA_MOVEL):
-    rets = retornos()[[a, b]].dropna()
+    rets = r.retornos_janela_comum([a, b])
     return rets[a].rolling(janela).corr(rets[b]).dropna()
 
 
@@ -229,7 +289,7 @@ def ledoit_wolf(matriz):
 
 def encolhimento_por_janela():
     """Intensidade do Ledoit-Wolf nos últimos 63, 126 e 252 pregões e na amostra comum."""
-    completos = retornos().dropna()
+    completos = retornos_cesta()
     saida = {}
     for n in JANELAS_LW + [len(completos)]:
         trecho = completos.iloc[-n:]
@@ -239,7 +299,7 @@ def encolhimento_por_janela():
 
 
 def amostra_completa():
-    completos = retornos().dropna()
+    completos = retornos_cesta()
     return {"pregoes": int(len(completos)), "inicio": completos.index[0].strftime("%Y-%m-%d")}
 
 
@@ -253,15 +313,20 @@ RESGATE = ["PETR4", "ITUB4", "BBDC4", "IVVB11"]
 # declarada no slide.
 REGUA_CONCENTRA = 0.60
 REGUA_DIVERSIFICA = 0.30
-PARES_ESCOLHA = [("ITUB4", "BBDC4"), ("BBAS3", "BOVA11"), ("ITUB4", "BBAS3"), ("PETR4", "VALE3"),
-                 ("VALE3", "SUZB3"), ("PETR4", "IVVB11"), ("ITUB4", "IVVB11"), ("BOVA11", "GOLD11")]
+# Pares lidos da matriz da cesta (janela comum dos 15 ativos), em ordem
+# decrescente de correlação, com ao menos um par em cada classe da régua.
+PARES_ESCOLHA = [("ITUB4", "BBDC4"), ("BBAS3", "BOVA11"), ("ITUB4", "BBAS3"), ("PETR4", "BOVA11"),
+                 ("PETR4", "VALE3"), ("ITUB4", "IVVB11"), ("PETR4", "IVVB11"), ("BOVA11", "GOLD11")]
 
 
 def tabela_resgate():
-    """Retorno médio anual e volatilidade anual dos ativos do slide de resgate."""
-    cov = matriz_covariancia_anual()
+    """Retorno médio anual e volatilidade anual dos ativos do slide de resgate.
+
+    Medida de um ativo só: série inteira de cada ativo, a da tabela da Aula 02.
+    """
     media = retornos().mean() * PREGOES_ANO
-    return {t: {"ret": float(media[t]), "vol": float(np.sqrt(cov.loc[t, t]))} for t in RESGATE}
+    vols = volatilidade_por_ativo()
+    return {t: {"ret": float(media[t]), "vol": float(vols[t])} for t in RESGATE}
 
 
 def classificar(rho):

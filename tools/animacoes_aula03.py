@@ -9,6 +9,11 @@
    e de PETR4 com IVVB11 desenhada no tempo. No fim, março de 2020 é destacado
    com o pico de cada par. O pôster é o último quadro.
 
+Tratamento de ausência da ADR-009 (tools/retornos.py): os dois pares são
+medidos na janela comum dos dois ativos. Sem a GOLD11, essa janela tem 1.907
+retornos desde 03/01/2019 e inclui março de 2020, de que as duas animações
+dependem; main() confere isso antes de gravar.
+
 Uso: .venv/bin/python tools/animacoes_aula03.py
 """
 import os
@@ -20,6 +25,7 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import medidas_aula03 as m  # noqa: E402
+import retornos as r  # noqa: E402
 from midia import FPS, figura, gravar, metadados, violacoes  # noqa: E402
 from paleta import cor  # noqa: E402
 
@@ -150,7 +156,20 @@ def correlacao_movel():
     return gravar(fig, desenhar, total, "aula03-correlacao-movel", int(desenho * fim_2019 / len(datas)) - 1)
 
 
+def janela_dos_pares():
+    """Retornos e pregões de março de 2020 na janela comum de cada par animado."""
+    saida = {}
+    for par in [PAR_CURVA] + list(m.PARES_MOVEIS):
+        rets = r.retornos_janela_comum(list(par))
+        saida[par] = (len(rets), len(rets.loc["2020-03-01":"2020-03-31"]))
+    return saida
+
+
 def main():
+    for par, (n, marco) in janela_dos_pares().items():
+        if marco == 0:
+            print("%s com %s: a janela comum perdeu março de 2020 (%d retornos)" % (par + (n,)))
+            return 1
     for gerar in (curva_correlacao, correlacao_movel):
         mp4, _ = gerar()
         erros = violacoes(metadados(mp4))

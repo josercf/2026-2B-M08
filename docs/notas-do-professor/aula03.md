@@ -4,9 +4,11 @@ Correlação, Covariância e o Argumento Matemático da Diversificação. 10/11/
 Sprint 3, aula 22 do módulo. Horário de relógio a confirmar na Adalove (P1).
 
 Material de condução, não distribuído ao aluno. Todo número abaixo vem de
-`tools/medidas_aula03.py` e está travado em `tools/tests/test_aula03.py`. Retornos simples
-diários do Adj Close preenchido para a frente por ativo, o mesmo tratamento da Aula 02; nenhuma
-carteira da Ponderada 1 aparece na aula.
+`tools/medidas_aula03.py` e está travado em `tools/tests/test_aula03.py`. Tratamento de ausência
+da ADR-009 (`tools/retornos.py`): a matriz da cesta usa a janela comum dos 15 ativos (1.423
+retornos, de 14/12/2020 a 31/08/2026), a mesma que o otimizador da Aula 04 consome; par ou
+subconjunto usa a janela comum dos ativos envolvidos; medida de um ativo usa a série inteira dele,
+a da Aula 02. Nenhuma carteira da Ponderada 1 aparece na aula.
 
 ## Antes de entrar na sala
 
@@ -33,7 +35,7 @@ Sinal: no primeiro voto do Peer Instruction, mais da metade marca "exatamente em
 
 **Resgate.** "A Aula 02 deixou pronta a tabela de retorno e volatilidade anualizados da cesta,
 com o CDI como referência." A tabela do slide 3 repete quatro linhas dela: PETR4 39,25%, ITUB4
-29,36%, BBDC4 34,09%, IVVB11 20,15%.
+29,36%, BBDC4 34,09%, IVVB11 20,15%, cada ativo na série inteira dele.
 
 **Peer Instruction.** Dois ativos de 30% de volatilidade, correlação 0,5, metade em cada.
 
@@ -50,15 +52,16 @@ dupla rende; acima de 70%, revelar direto; abaixo de 30%, seguir o roteiro da se
 ## Bloco 2 (15 a 30): covariância, correlação e o heatmap
 
 **Pergunta disparada:** qual par da cesta a sala aposta como o mais correlacionado? Recolher três
-palpites antes de passar o cursor. Resposta: ITUB4 com BBDC4, 0,80. Palpites comuns: PETR4 com
-VALE3 (0,41, por serem as duas maiores da bolsa) e BBAS3 com BOVA11 (0,76, segundo lugar entre os
-pares citados).
+palpites antes de passar o cursor. Resposta: ITUB4 com BBDC4, 0,72 na janela comum dos 15 ativos.
+Palpites comuns: PETR4 com VALE3 (0,21, embora sejam as duas maiores da bolsa) e BBAS3 com BOVA11
+(0,65, segundo lugar entre os pares citados).
 
 | Pergunta quando a sala trava | Resposta esperada | Erro comum |
 |---|---|---|
-| A covariância de PETR4 com VALE3 é 0,0570. É alta? | Não dá para dizer sem as volatilidades; a correlação, 0,41, responde | ler covariância como se tivesse escala fixa |
+| A covariância de PETR4 com VALE3 é 0,0212. É alta? | Não dá para dizer sem as volatilidades; a correlação, 0,21, responde | ler covariância como se tivesse escala fixa |
 | Por que a diagonal do heatmap é 1? | Todo ativo tem correlação 1 consigo mesmo | achar que é dado faltante |
-| Por que a GOLD11 aparece com pares negativos? | O ouro tende a subir quando a bolsa cai; os dez pares mais negativos têm GOLD11 | ler correlação negativa como erro de dado |
+| Por que a GOLD11 e o IVVB11 aparecem com pares negativos? | O ouro tende a subir quando a bolsa cai, e o IVVB11 sobe em reais com o dólar; os 21 pares negativos têm um dos dois | ler correlação negativa como erro de dado |
+| Por que o cursor mostra 1.423 pregões em todo par? | A matriz usa a janela comum dos 15 ativos, que começa em 14/12/2020 por causa da GOLD11 | achar que faltam dados nos outros ativos |
 
 ## Bloco 3 (30 a 45): peso e correlação no widget
 
@@ -71,22 +74,37 @@ diversifica"). As duas revelam o mesmo erro, ignorar a correlação. Pedir que a
 mova o peso de 0% para 10% e leia o risco caindo.
 
 Depois, trocar para ITUB4 e BBDC4: o menor risco é 29,22% com 86,14% em ITUB4, a 0,14 ponto
-percentual do ITUB4 sozinho (29,36%). E BOVA11 com GOLD11: 13,47% com 43,11% em BOVA11.
+percentual do ITUB4 sozinho (29,36%). E BOVA11 com GOLD11: 12,03% com 52,79% em BOVA11.
+
+Cada par do widget é medido na janela comum dos dois ativos: 1.907 retornos desde 03/01/2019, ou
+1.423 desde 14/12/2020 no par com a GOLD11. Se alguém notar que ITUB4 e BBDC4 têm 0,80 no widget e
+0,72 no heatmap, a resposta é a janela: a do par inclui março de 2020, e a da matriz não. É a deixa
+para o slide 15.
 
 **Pergunta socrática.** "Se a correlação de PETR4 com IVVB11 fosse 1, quanto vocês colocariam em
 PETR4?" Resposta: nada; com correlação 1 o menor risco é o IVVB11 sozinho, 20,15%. Mova o
 controle de correlação até 1 para mostrar.
 
-## Bloco 4 (45 a 60): dupla no notebook
+## Bloco 4 (45 a 60): custo da janela comum e dupla no notebook
 
-Seções 1, 3 e 4. Cronômetro de 12 minutos, troca de papel aos 6.
+**Custo da janela comum (slide 15, dois minutos antes da dupla).** A diagonal do slide 14 dá 33,40%
+para a PETR4, e a Aula 02 deu 39,25%. A diferença é a janela: com a GOLD11, a matriz começa em
+14/12/2020, deixa de fora 484 retornos e perde os 22 pregões de março de 2020. A correlação de PETR4
+com IVVB11 cai de 0,14 (janela do par) para −0,09 (janela comum dos 15). Ligar com a Aula 01: é o
+mesmo efeito de descartar datas que a turma mediu ao tratar ausências. Sem a GOLD11, a janela comum
+dos 14 volta a 1.907 retornos, com março de 2020. Pergunta para a sala: "o parceiro ganha mais com o
+ouro na cesta ou com o choque de 2020 na matriz?" Não há resposta certa; o que se cobra é o ADR do
+estimador de covariância registrar a escolha com estes números.
+
+**Dupla no notebook.** Seções 1, 3 e 4. Cronômetro de 12 minutos, troca de papel aos 6.
 
 | Pergunta quando a dupla trava | Resposta esperada | Erro comum |
 |---|---|---|
-| A raiz da diagonal da PETR4 deu 2,47%. O que houve? | Faltou multiplicar por 252: essa é a volatilidade diária | anualizar só a correlação, ou esquecer o fator |
-| A correlação deu 202 entre ITUB4 e BBDC4. | A correlação foi multiplicada por 252; correlação não se anualiza | aplicar o fator nas duas matrizes no mesmo passo |
+| A raiz da diagonal da PETR4 deu 2,10%. O que houve? | Faltou multiplicar por 252: essa é a volatilidade diária | anualizar só a correlação, ou esquecer o fator |
+| A raiz da diagonal da PETR4 deu 39,25%, e não 33,40%. | A matriz saiu de `retornos.cov()` sem `dropna()`: cada par ficou na própria janela | pular a janela comum da ADR-009 |
+| A correlação deu 181 entre ITUB4 e BBDC4. | A correlação foi multiplicada por 252; correlação não se anualiza | aplicar o fator nas duas matrizes no mesmo passo |
 | A matriz deu 225 pares e média estranha. | O `stack()` da versão do pandas manteve os NaN do triângulo de baixo; acrescentar `.dropna()` | contar a diagonal e os dois triângulos |
-| Por que a GOLD11 tem menos pregões? | Estreia em 11/12/2020; o `ffill` não preenche antes da primeira cotação | preencher para trás com `bfill` |
+| Por que a GOLD11 tem menos pregões? | Estreia em 11/12/2020; o `ffill` não preenche antes da primeira cotação, e a janela comum começa no primeiro retorno dela | preencher para trás com `bfill` |
 
 Fechamento: cada dupla diz em uma linha onde a matriz entra no motor do A3 (na variância de cada
 carteira sorteada, `w @ cov @ w`).
@@ -96,7 +114,8 @@ carteira sorteada, `w @ cov @ w`).
 **Prever.** Antes da animação, as duplas anotam o que acontece com as duas linhas em março de
 2020. Resultado: ITUB4 com BBDC4 chega a 0,97 em 25/03/2020; PETR4 com IVVB11 sai de 0,01 no fim
 de 2019 para 0,77 no fim de março de 2020. A correlação média dos pares vai de 0,36 na janela
-inteira para 0,74 nos 22 pregões de março de 2020 (14 ativos, sem GOLD11).
+inteira para 0,74 nos 22 pregões de março de 2020, na janela comum dos 14 ativos sem a GOLD11
+(1.907 retornos); com a GOLD11, março de 2020 não estaria na janela.
 
 **Pergunta disparada:** o que uma correlação que sobe na crise faz com a diversificação prometida
 ao parceiro? Resposta esperada: a redução de risco calculada com a correlação média encolhe no
@@ -116,19 +135,24 @@ Régua declarada no slide (convenção didática da aula): ρ a partir de 0,60 c
 
 | Item | Par | ρ | Gabarito | Comentário falado |
 |---|---|---|---|---|
-| 1 | ITUB4 e BBDC4 | 0,80 | concentra | mesmo setor, mesmo risco de juros e crédito |
-| 2 | BBAS3 e BOVA11 | 0,76 | concentra | o ETF carrega os bancos no índice |
-| 3 | ITUB4 e BBAS3 | 0,71 | concentra | banco público e privado no mesmo ciclo |
-| 4 | PETR4 e VALE3 | 0,41 | intermediário | duas commodities, ciclos distintos; a sala costuma dizer "concentra" |
-| 5 | VALE3 e SUZB3 | 0,27 | diversifica | perto da borda; discutir que a régua é convenção |
-| 6 | PETR4 e IVVB11 | 0,14 | diversifica | o par do widget |
-| 7 | ITUB4 e IVVB11 | 0,08 | diversifica | bolsa americana em reais |
+| 1 | ITUB4 e BBDC4 | 0,72 | concentra | mesmo setor, mesmo risco de juros e crédito |
+| 2 | BBAS3 e BOVA11 | 0,65 | concentra | o ETF carrega os bancos no índice |
+| 3 | ITUB4 e BBAS3 | 0,61 | concentra | perto da borda de 0,60; discutir que a régua é convenção |
+| 4 | PETR4 e BOVA11 | 0,53 | intermediário | a Petrobras pesa no índice, ao lado de dezenas de outras ações |
+| 5 | PETR4 e VALE3 | 0,21 | diversifica | duas commodities, ciclos distintos; a sala costuma dizer "concentra" |
+| 6 | ITUB4 e IVVB11 | −0,08 | diversifica | bolsa americana em reais |
+| 7 | PETR4 e IVVB11 | −0,09 | diversifica | o par do widget, que na janela do par tem 0,14 |
 | 8 | BOVA11 e GOLD11 | −0,21 | diversifica | correlação negativa |
+
+As correlações são as da matriz da cesta, na janela comum dos 15 ativos (1.423 retornos desde
+14/12/2020).
 
 **Pensar e compartilhar.** Uma carteira só de bancos (ITUB4, BBDC4 e BBAS3 em partes iguais) tem
 29,64% de volatilidade contra 32,61% de média das volatilidades: redução de 9,11%. Trocando dois
-bancos por PETR4 e IVVB11, a redução vai a 27,18% (21,54% contra 29,58%). Resposta esperada às
-trocas: um ativo com correlação baixa com os bancos, como IVVB11 (0,08 com ITUB4) ou GOLD11. Erro
+bancos por PETR4 e IVVB11, a redução vai a 27,18% (21,54% contra 29,58%). As duas carteiras são
+medidas na janela comum dos três ativos, 1.907 retornos desde 03/01/2019. Resposta esperada às
+trocas: um ativo com correlação baixa com os bancos, como IVVB11 (−0,08 com ITUB4 na matriz) ou
+GOLD11. Erro
 comum: contar ativos ("três empresas, três riscos") em vez de medir correlação.
 
 Nenhuma carteira da Ponderada 1 é usada aqui. Se um aluno perguntar pela própria carteira,
@@ -138,14 +162,14 @@ responder que o diagnóstico é individual e o método é o desta aula.
 
 | Pergunta | Correta | Distratores e o que revelam |
 |---|---|---|
-| ITUB4 e BBDC4 têm correlação 0,80 | os dois tendem a subir e cair nos mesmos dias | "sobe 0,80% quando o outro sobe 1%" confunde com beta; "80% dos dias com o mesmo sinal" confunde com contagem |
+| ITUB4 e BBDC4 têm correlação 0,72 | os dois tendem a subir e cair nos mesmos dias | "sobe 0,72% quando o outro sobe 1%" confunde com beta; "72% dos dias com o mesmo sinal" confunde com contagem |
 | Anualizar a covariância diária | multiplicar por 252 | raiz de 252 vale para o desvio padrão; anualizar a correlação é erro |
 | Encolhimento de 10,72% com 63 pregões e 0,89% com 1.423 | menos pregões, estimativa mais ruidosa | "a crise de 2020 está nos 63 pregões" (começam em 03/06/2026); "percentual fixo" |
 
 Amarração, com os pesos do `PLANO_DE_ENSINO.md`, seção 5: A3 Motor de Simulação de Monte Carlo,
 peso 3, review da Sprint 3 em 19/11/2026 e entrega até sexta, 20/11/2026, 23h59; Ponderada 1,
 peso 3, carteira individualizada pelo último dígito do RA e parecer situado no período analisado.
-O A3 consome a matriz de covariância anualizada montada hoje. Na Aula 04, em 18/11/2026, a matriz
+O A3 consome a matriz de covariância anualizada montada hoje, na janela comum dos 15 ativos. Na Aula 04, em 18/11/2026, a matriz
 alimenta as 10.000 carteiras do motor.
 
 Atenção: o roteiro do Bloco 7 no `PLANEJAMENTO_AULA_A_AULA.md` ainda diz "A3 (2, a confirmar na

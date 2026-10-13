@@ -7,26 +7,36 @@
 
   <!-- Aula 03, 10/11/2026, Semana 5, Sprint 3 (Adalove da turma 2026-2B-T19). Roteiro: PLANEJAMENTO_AULA_A_AULA.md, Aula 03.
        Todo número deste deck está travado em tools/tests/test_aula03.py.
-       Retornos simples diários do Adj Close preenchido para a frente por ativo, o mesmo tratamento da Aula 02.
+       Tratamento de ausência da ADR-009 (tools/retornos.py): lacuna isolada preenchida, nada antes da
+       primeira cotação. A matriz da cesta usa a janela comum dos 15 ativos (1.423 retornos, de 14/12/2020
+       a 31/08/2026); par ou subconjunto usa a janela comum dos ativos envolvidos; medida de um ativo usa a
+       série inteira dele, a da Aula 02. O slide 15 mostra o custo da janela comum.
 
        Divisão dos 105 minutos de metodologia ativa (depois da daily de 15 min):
          Abertura (antes do Bloco 1)  slides 1 e 2   capa e agenda
          Bloco 1 (0 a 15)             slides 3 a 5   resgate da Aula 02, Peer Instruction, a conta
          Bloco 2 (15 a 30)            slides 6 a 9   covariância e correlação, heatmap, pergunta disparada
          Bloco 3 (30 a 45)            slides 10 a 12 animação da curva, widget com previsão, três pares
-         Bloco 4 (45 a 60)            slides 13 a 15 covariância anualizada e dupla no notebook (12 min)
-         Bloco 5 (60 a 75)            slides 16 a 19 correlação móvel, março de 2020, Ledoit-Wolf
-         Bloco 6 (75 a 90)            slides 20 a 22 escolha coletiva dos pares, pensar e compartilhar
-         Bloco 7 (90 a 105)           slides 23 a 27 quiz, notebook, A3 e Ponderada 1, referências
+         Bloco 4 (45 a 60)            slides 13 a 16 covariância anualizada, custo da janela comum e dupla no notebook (12 min)
+         Bloco 5 (60 a 75)            slides 17 a 20 correlação móvel, março de 2020, Ledoit-Wolf
+         Bloco 6 (75 a 90)            slides 21 a 23 escolha coletiva dos pares, pensar e compartilhar
+         Bloco 7 (90 a 105)           slides 24 a 28 quiz, notebook, A3 e Ponderada 1, referências
 
        Nenhuma carteira da Ponderada 1 aparece neste deck: os exemplos usam a cesta de referência
-       de dados/README.md. Se o tempo apertar, cortar primeiro o slide 19 (Ledoit-Wolf) para
+       de dados/README.md. Se o tempo apertar, cortar primeiro o slide 20 (Ledoit-Wolf) para
        a fala, sem slide, e reduzir a dupla do Bloco 4 para 10 minutos. -->
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="../assets/css/inteli-brand.css">
   <link rel="stylesheet" href="../assets/css/inteli-theme.css">
   <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
+  <style>
+    /* Slide 21: oito itens de escolha mais a régua cabem em 720px com folga para
+       as métricas de fonte do Linux do CI, sem mexer no tema. */
+    #escolha-pares .escolha-grid { gap: 8px 20px; }
+    #escolha-pares .escolha { padding: 8px 16px; }
+    #escolha-pares .escolha-item { margin-bottom: 6px; }
+  </style>
 </head>
 <body>
   <div class="reveal">
@@ -104,7 +114,7 @@
           <p>A carteira do parceiro diversifica de verdade ou repete o mesmo risco em ativos diferentes?</p>
         </div>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; janela 02/01/2019 a 31/08/2026 [1]</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; série inteira de cada ativo, 02/01/2019 a 31/08/2026 [1]</p>
           <p class="footer-page">3</p>
         </div>
       </section>
@@ -207,7 +217,7 @@ risco     = raiz de 0,0675 = 25,98%</code></pre>
         </table>
         <div class="faixa-nota">
           <span class="material-symbols-outlined" aria-hidden="true">swap_horiz</span>
-          <p>A covariância de 0,0570 ao ano entre PETR4 e VALE3 só é interpretável com as duas volatilidades; padronizada, vira correlação de 0,41.</p>
+          <p>A covariância de 0,0212 ao ano entre PETR4 e VALE3 só é interpretável com as duas volatilidades; padronizada, vira correlação de 0,21.</p>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [6]</p>
@@ -230,7 +240,7 @@ risco     = raiz de 0,0675 = 25,98%</code></pre>
         <div class="widget" data-widget="heatmap-correlacao" data-fonte="../assets/data/aula03-heatmap.json"
              data-largura="700" data-altura="410"></div>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1]</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; janela comum dos 15 ativos: 1.423 retornos, 14/12/2020 a 31/08/2026 [1] [9]</p>
           <p class="footer-page">8</p>
         </div>
       </section>
@@ -241,27 +251,27 @@ risco     = raiz de 0,0675 = 25,98%</code></pre>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>ITUB4 e BBDC4 têm a maior correlação, 0,80</h2>
+          <h2>ITUB4 e BBDC4 têm a maior correlação, 0,72</h2>
         </div>
         <div class="side-by-side">
           <table class="tabela-leitura">
             <thead><tr><th>Par</th><th>Correlação</th></tr></thead>
             <tbody>
-              <tr class="linha-destaque"><td>ITUB4 e BBDC4</td><td>0,80, a maior dos 105 pares</td></tr>
-              <tr><td>BBAS3 e BOVA11</td><td>0,76</td></tr>
-              <tr><td>PETR4 e VALE3</td><td>0,41</td></tr>
-              <tr><td>PETR4 e IVVB11</td><td>0,14</td></tr>
+              <tr class="linha-destaque"><td>ITUB4 e BBDC4</td><td>0,72, a maior dos 105 pares</td></tr>
+              <tr><td>BBAS3 e BOVA11</td><td>0,65</td></tr>
+              <tr><td>PETR4 e VALE3</td><td>0,21</td></tr>
+              <tr><td>PETR4 e IVVB11</td><td>−0,09</td></tr>
               <tr><td>RENT3 e GOLD11</td><td>−0,22, a menor</td></tr>
             </tbody>
           </table>
           <div>
-            <p>A média dos 105 pares é <strong>0,30</strong>: a cesta inteira se move junto, em algum grau.</p>
-            <p>Os dez pares mais negativos têm todos a GOLD11, o ETF de ouro: com o BOVA11, a correlação é −0,21.</p>
+            <p>A média dos 105 pares é <strong>0,22</strong>: a cesta inteira se move junto, em algum grau.</p>
+            <p>Os 21 pares negativos têm todos a GOLD11, o ETF de ouro, ou o IVVB11, a bolsa americana em reais.</p>
             <p>Dois bancos privados repetem o mesmo risco de crédito e de juros, e a matriz confirma.</p>
           </div>
         </div>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1]</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; janela comum dos 15 ativos: 1.423 retornos desde 14/12/2020 [1] [9]</p>
           <p class="footer-page">9</p>
         </div>
       </section>
@@ -278,7 +288,7 @@ risco     = raiz de 0,0675 = 25,98%</code></pre>
                poster="../assets/img/aula03-curva-correlacao-poster.png">
           <source src="../assets/video/aula03-curva-correlacao.mp4" type="video/mp4">
         </video>
-        <p>PETR4 com IVVB11, volatilidades e retornos medidos na cesta. Só a correlação varia, de +1 a −1.</p>
+        <p>PETR4 com IVVB11, volatilidades e retornos medidos na janela comum do par, 1.907 retornos desde 03/01/2019. Só a correlação varia, de +1 a −1.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1] [4]</p>
           <p class="footer-page">10</p>
@@ -318,7 +328,7 @@ risco     = raiz de 0,0675 = 25,98%</code></pre>
           <tbody>
             <tr><td>ITUB4 e BBDC4</td><td>0,80</td><td>29,36% e 34,09%</td><td>86,14% em ITUB4</td><td>29,22%</td></tr>
             <tr class="linha-destaque"><td>PETR4 e IVVB11</td><td>0,14</td><td>39,25% e 20,15%</td><td>17,12% em PETR4</td><td>18,85%</td></tr>
-            <tr><td>BOVA11 e GOLD11</td><td>−0,21</td><td>23,41% e 19,80%</td><td>43,11% em BOVA11</td><td>13,47%</td></tr>
+            <tr><td>BOVA11 e GOLD11</td><td>−0,21</td><td>18,50% e 19,80%</td><td>52,79% em BOVA11</td><td>12,03%</td></tr>
           </tbody>
         </table>
         <div class="faixa-nota">
@@ -326,7 +336,7 @@ risco     = raiz de 0,0675 = 25,98%</code></pre>
           <p>Com correlação 0,14, a carteira fica abaixo dos 20,15% do IVVB11, o ativo menos arriscado. Com 0,80, os bancos ficam a 0,14 ponto do ITUB4 sozinho.</p>
         </div>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1]</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; cada par na janela comum dos dois: 1.907 retornos, ou 1.423 com a GOLD11 [1] [9]</p>
           <p class="footer-page">12</p>
         </div>
       </section>
@@ -344,7 +354,7 @@ risco     = raiz de 0,0675 = 25,98%</code></pre>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>A diagonal anual da PETR4, 0,1541, é 39,25% ao quadrado</h2>
+          <h2>A diagonal anual da PETR4, 0,1116, é 33,40% ao quadrado</h2>
         </div>
         <div class="side-by-side">
           <pre class="code-compact" style="max-height: 300px"><code>precos = ler_csv("precos_ajustados.csv",
@@ -352,33 +362,68 @@ risco     = raiz de 0,0675 = 25,98%</code></pre>
                  parse_dates=["data"]).ffill()
 retornos = precos.pct_change(
     fill_method=None).iloc[1:]
+comum = retornos.dropna()  # ADR-009
 
-correlacao = retornos.corr()
-cov_anual = retornos.cov() * 252
+correlacao = comum.corr()
+cov_anual = comum.cov() * 252
 
 # a diagonal é a variância anual
 np.sqrt(np.diag(cov_anual))</code></pre>
           <table class="tabela-leitura">
             <thead><tr><th></th><th>PETR4</th><th>VALE3</th><th>ITUB4</th><th>IVVB11</th></tr></thead>
             <tbody>
-              <tr><td>PETR4</td><td>0,1541</td><td>0,0570</td><td>0,0525</td><td>0,0110</td></tr>
-              <tr><td>VALE3</td><td>0,0570</td><td>0,1259</td><td>0,0346</td><td>0,0200</td></tr>
-              <tr><td>ITUB4</td><td>0,0525</td><td>0,0346</td><td>0,0862</td><td>0,0049</td></tr>
-              <tr><td>IVVB11</td><td>0,0110</td><td>0,0200</td><td>0,0049</td><td>0,0406</td></tr>
+              <tr><td>PETR4</td><td>0,1116</td><td>0,0212</td><td>0,0261</td><td>−0,0055</td></tr>
+              <tr><td>VALE3</td><td>0,0212</td><td>0,0886</td><td>0,0178</td><td>0,0042</td></tr>
+              <tr><td>ITUB4</td><td>0,0261</td><td>0,0178</td><td>0,0651</td><td>−0,0035</td></tr>
+              <tr><td>IVVB11</td><td>−0,0055</td><td>0,0042</td><td>−0,0035</td><td>0,0312</td></tr>
             </tbody>
           </table>
         </div>
         <div class="faixa-nota">
           <span class="material-symbols-outlined" aria-hidden="true">grid_on</span>
-          <p>Excerto de 4 dos 15 ativos. A matriz é simétrica e positiva definida, condição para o motor sortear carteiras sem variância negativa.</p>
+          <p>Excerto de 4 dos 15 ativos, na janela comum dos 15: 1.423 retornos, de 14/12/2020 a 31/08/2026. A matriz é simétrica e positiva definida, condição para o motor sortear carteiras sem variância negativa.</p>
         </div>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1] [6]</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1] [6] [9]</p>
           <p class="footer-page">14</p>
         </div>
       </section>
 
       <!-- 15 -->
+      <section class="content-slide" id="custo-janela">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A janela comum com a GOLD11 leva a PETR4 de 39,25% a 33,40%</h2>
+        </div>
+        <div class="side-by-side">
+          <table class="tabela-leitura">
+            <thead><tr><th>Medida</th><th>Série inteira, sem a GOLD11</th><th>Janela comum dos 15</th></tr></thead>
+            <tbody>
+              <tr><td>Primeiro retorno</td><td>03/01/2019</td><td>14/12/2020</td></tr>
+              <tr><td>Retornos</td><td>1.907</td><td>1.423</td></tr>
+              <tr><td>Pregões de março de 2020</td><td>22</td><td>0</td></tr>
+              <tr class="linha-destaque"><td>Volatilidade anual da PETR4</td><td>39,25%</td><td>33,40%</td></tr>
+              <tr><td>Correlação de PETR4 e IVVB11</td><td>0,14</td><td>−0,09</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <p>A GOLD11 só tem cotação a partir de 11/12/2020. Para os 15 ativos terem retorno no mesmo pregão, a matriz deixa de fora 484 retornos, e com eles o choque de 2020.</p>
+            <p>É o efeito de descartar datas que a Aula 01 mediu. Sem a GOLD11, a janela comum dos 14 volta a ter 1.907 retornos e março de 2020.</p>
+          </div>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">gavel</span>
+          <p>O ADR do estimador de covariância do A3 registra se a GOLD11 fica na cesta, com este custo medido.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1] [9]</p>
+          <p class="footer-page">15</p>
+        </div>
+      </section>
+
+      <!-- 16 -->
       <section class="exercise-slide" id="pratica-matriz">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -391,26 +436,26 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </div>
         <ol class="exercise-steps">
           <li>Abram o notebook da aula no Colab. Quem está no teclado é o <strong>condutor</strong>; o outro é o <strong>navegador</strong>.</li>
-          <li>Seção 1: carreguem os retornos com o mesmo tratamento de ausências da Aula 02.</li>
+          <li>Seção 1: carreguem os retornos com o tratamento da ADR-009 e montem a janela comum dos 15 ativos.</li>
           <li>Seção 3: gerem a matriz de correlação e o heatmap; localizem o par de maior correlação.</li>
-          <li>Aos 6 minutos, troquem de papel. Seção 4: anualizem a covariância e confiram que a raiz da diagonal repete a volatilidade da Aula 02.</li>
+          <li>Aos 6 minutos, troquem de papel. Seção 4: anualizem a covariância e comparem a raiz da diagonal com a volatilidade da Aula 02.</li>
           <li>Anotem em uma linha onde a matriz vai entrar no motor do A3.</li>
         </ol>
         <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula03.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 03 no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">15</p>
+          <p class="footer-page">16</p>
         </div>
       </section>
 
-      <!-- 16 -->
+      <!-- 17 -->
       <section class="section-slide">
         <div class="accent-bar"></div>
         <h2>Correlação em crise</h2>
         <h3>A correlação dos pares sobe em março de 2020</h3>
       </section>
 
-      <!-- 17 -->
+      <!-- 18 -->
       <section class="content-slide" id="animacao-movel">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -428,11 +473,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </video>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1]</p>
-          <p class="footer-page">17</p>
+          <p class="footer-page">18</p>
         </div>
       </section>
 
-      <!-- 18 -->
+      <!-- 19 -->
       <section class="content-slide" id="crise">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -452,7 +497,7 @@ np.sqrt(np.diag(cov_anual))</code></pre>
             </tbody>
           </table>
           <div>
-            <p>As médias usam os 14 ativos com cotação em 2020: a GOLD11 só estreia em 11/12/2020.</p>
+            <p>As médias usam a janela comum dos 14 ativos sem a GOLD11, 1.907 retornos com março de 2020: a GOLD11 só estreia em 11/12/2020.</p>
             <p>O par que diversificava em 2019 passa a cair junto com a bolsa no pior mês da janela.</p>
           </div>
         </div>
@@ -462,11 +507,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1]</p>
-          <p class="footer-page">18</p>
+          <p class="footer-page">19</p>
         </div>
       </section>
 
-      <!-- 19 -->
+      <!-- 20 -->
       <section class="content-slide" id="ledoit-wolf">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -491,52 +536,52 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </div>
         <div class="faixa-nota">
           <span class="material-symbols-outlined" aria-hidden="true">tune</span>
-          <p>Amostra com os 15 ativos cotados. A Aula 05 compara os pesos ótimos com as duas matrizes.</p>
+          <p>Amostra na janela comum dos 15 ativos, a mesma da matriz. A Aula 05 compara os pesos ótimos com as duas matrizes.</p>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [5] [7]</p>
-          <p class="footer-page">19</p>
+          <p class="footer-page">20</p>
         </div>
       </section>
 
-      <!-- 20 -->
+      <!-- 21 -->
       <section class="content-slide" id="escolha-pares">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area slide-title-area-cronometro">
           <div>
             <div class="accent-bar"></div>
-            <h2>Quais pares concentram e quais diversificam</h2>
+            <h2>Classificação pela régua de correlação</h2>
           </div>
           <div class="cronometro" id="cronometro-escolha" data-minutos="5"></div>
         </div>
         <div class="escolha-grid">
           <div class="escolha">
-            <p class="escolha-item">1. ITUB4 e BBDC4, ρ = 0,80</p>
+            <p class="escolha-item">1. ITUB4 e BBDC4, ρ = 0,72</p>
             <ul class="escolha-opcoes"><li data-correct="true">Concentra</li><li>Intermediário</li><li>Diversifica</li></ul>
           </div>
           <div class="escolha">
-            <p class="escolha-item">5. VALE3 e SUZB3, ρ = 0,27</p>
+            <p class="escolha-item">5. PETR4 e VALE3, ρ = 0,21</p>
             <ul class="escolha-opcoes"><li>Concentra</li><li>Intermediário</li><li data-correct="true">Diversifica</li></ul>
           </div>
           <div class="escolha">
-            <p class="escolha-item">2. BBAS3 e BOVA11, ρ = 0,76</p>
+            <p class="escolha-item">2. BBAS3 e BOVA11, ρ = 0,65</p>
             <ul class="escolha-opcoes"><li data-correct="true">Concentra</li><li>Intermediário</li><li>Diversifica</li></ul>
           </div>
           <div class="escolha">
-            <p class="escolha-item">6. PETR4 e IVVB11, ρ = 0,14</p>
+            <p class="escolha-item">6. ITUB4 e IVVB11, ρ = −0,08</p>
             <ul class="escolha-opcoes"><li>Concentra</li><li>Intermediário</li><li data-correct="true">Diversifica</li></ul>
           </div>
           <div class="escolha">
-            <p class="escolha-item">3. ITUB4 e BBAS3, ρ = 0,71</p>
+            <p class="escolha-item">3. ITUB4 e BBAS3, ρ = 0,61</p>
             <ul class="escolha-opcoes"><li data-correct="true">Concentra</li><li>Intermediário</li><li>Diversifica</li></ul>
           </div>
           <div class="escolha">
-            <p class="escolha-item">7. ITUB4 e IVVB11, ρ = 0,08</p>
+            <p class="escolha-item">7. PETR4 e IVVB11, ρ = −0,09</p>
             <ul class="escolha-opcoes"><li>Concentra</li><li>Intermediário</li><li data-correct="true">Diversifica</li></ul>
           </div>
           <div class="escolha">
-            <p class="escolha-item">4. PETR4 e VALE3, ρ = 0,41</p>
+            <p class="escolha-item">4. PETR4 e BOVA11, ρ = 0,53</p>
             <ul class="escolha-opcoes"><li>Concentra</li><li data-correct="true">Intermediário</li><li>Diversifica</li></ul>
           </div>
           <div class="escolha">
@@ -547,11 +592,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         <p>Régua desta aula: ρ a partir de 0,60 concentra; de 0,30 a 0,60 é intermediário; abaixo de 0,30 diversifica.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1]</p>
-          <p class="footer-page">20</p>
+          <p class="footer-page">21</p>
         </div>
       </section>
 
-      <!-- 21 -->
+      <!-- 22 -->
       <section class="exercise-slide" id="so-bancos">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -569,11 +614,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">21</p>
+          <p class="footer-page">22</p>
         </div>
       </section>
 
-      <!-- 22 -->
+      <!-- 23 -->
       <section class="content-slide" id="bancos">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -594,11 +639,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1]</p>
-          <p class="footer-page">22</p>
+          <p class="footer-page">23</p>
         </div>
       </section>
 
-      <!-- 23 -->
+      <!-- 24 -->
       <section class="quiz-slide" id="quiz-final">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -608,17 +653,17 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </div>
         <div class="quiz-trio">
           <div class="quiz-container">
-            <p class="quiz-question">1. ITUB4 e BBDC4 têm correlação 0,80. O que isso diz?</p>
+            <p class="quiz-question">1. ITUB4 e BBDC4 têm correlação 0,72. O que isso diz?</p>
             <ul class="quiz-options">
               <li data-correct="true"
                   data-correct-msg="Certo: a correlação mede o quanto os dois retornos variam juntos, sem dizer o tamanho do movimento."
                   data-incorrect-msg="Não.">Os dois tendem a subir e cair nos mesmos dias</li>
               <li data-correct="false"
                   data-correct-msg="Certo."
-                  data-incorrect-msg="Isso seria o coeficiente de uma regressão, o beta; a correlação não tem unidade de retorno.">BBDC4 sobe 0,80% quando ITUB4 sobe 1%</li>
+                  data-incorrect-msg="Isso seria o coeficiente de uma regressão, o beta; a correlação não tem unidade de retorno.">BBDC4 sobe 0,72% quando ITUB4 sobe 1%</li>
               <li data-correct="false"
                   data-correct-msg="Certo."
-                  data-incorrect-msg="A correlação não conta dias de mesmo sinal: pesa o tamanho dos desvios de cada dia.">80% dos dias têm o mesmo sinal</li>
+                  data-incorrect-msg="A correlação não conta dias de mesmo sinal: pesa o tamanho dos desvios de cada dia.">72% dos dias têm o mesmo sinal</li>
             </ul>
           </div>
           <div class="quiz-container">
@@ -652,11 +697,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">23</p>
+          <p class="footer-page">24</p>
         </div>
       </section>
 
-      <!-- 24 -->
+      <!-- 25 -->
       <section class="exercise-slide" id="notebook">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -677,11 +722,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula03.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula03.ipynb" target="_blank" rel="noopener">Abrir no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">24</p>
+          <p class="footer-page">25</p>
         </div>
       </section>
 
-      <!-- 25 -->
+      <!-- 26 -->
       <section class="content-slide" id="a3">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -710,11 +755,11 @@ np.sqrt(np.diag(cov_anual))</code></pre>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [3] [8]</p>
-          <p class="footer-page">25</p>
+          <p class="footer-page">26</p>
         </div>
       </section>
 
-      <!-- 26 -->
+      <!-- 27 -->
       <section class="content-slide" id="referencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -731,14 +776,15 @@ np.sqrt(np.diag(cov_anual))</code></pre>
           <li id="ref-6"><a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.cov.html" target="_blank" rel="noopener">pandas: DataFrame.cov</a> e <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.corr.html" target="_blank" rel="noopener">DataFrame.corr</a>.</li>
           <li id="ref-7"><a href="https://scikit-learn.org/stable/modules/generated/sklearn.covariance.LedoitWolf.html" target="_blank" rel="noopener">scikit-learn: LedoitWolf</a>.</li>
           <li id="ref-8"><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a>.</li>
+          <li id="ref-9"><a href="https://github.com/josercf/2026-2B-M08/blob/main/docs/adrs/ADR-009-tratamento-de-ausencia-unico-com-janela-comum.md" target="_blank" rel="noopener">ADR-009</a>: tratamento de ausência único, com janela comum na análise conjunta.</li>
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">26</p>
+          <p class="footer-page">27</p>
         </div>
       </section>
 
-      <!-- 27 -->
+      <!-- 28 -->
       <section class="end-slide">
         <h1>Até 18/11/2026</h1>
         <h3>Aula 04: Da Nuvem à Fronteira, Monte Carlo e Otimização de Markowitz</h3>
@@ -752,7 +798,7 @@ np.sqrt(np.diag(cov_anual))</code></pre>
   <script>
     Reveal.initialize({
       width: 1280, height: 720, center: false, margin: 0,
-      hash: true, slideNumber: false, transition: 'fade'
+      hash: true, slideNumber: false, pdfSeparateFragments: false, transition: 'fade'
     });
   </script>
   <script src="../assets/js/inteli-quiz.js"></script>
