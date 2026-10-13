@@ -74,6 +74,15 @@ html.print-pdf.reveal-print .reveal .slides section[class] {
   padding: 44px 56px 72px !important;
 }
 
+/* No modo de impressao o Reveal grava "display: block" inline em cada
+   section, e o divisor de secao e o encerramento perdem o flex que os
+   centraliza: o titulo subia para o topo da pagina do PDF real (Aula 01,
+   13/10/2026). tools/tests/test_tema_legibilidade.py mede o centro. */
+html.print-pdf.reveal-print .reveal .slides section.section-slide[class],
+html.print-pdf.reveal-print .reveal .slides section.end-slide[class] {
+  display: flex !important;
+}
+
 /* A capa sangra o grafismo ate a borda e mantem o padding zero do tema. */
 html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   padding: 0 !important;
@@ -115,7 +124,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 .code-compact {
   /* Existe para o caso "bloco de codigo em slide que ja tem concept-cards".
      Sem isso o slide estoura os 720px. Manter o trecho em ate 18 linhas. */
-  font-size: var(--escala-complementar);
+  font-size: var(--escala-densa);
   line-height: 1.35;
   max-height: 300px;
   overflow: hidden;
@@ -371,16 +380,38 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
    slide depois que o paragrafo e injetado no DOM (ver check_slides.py). */
 .quiz-container .quiz-feedback {
   margin: 0;
-  font-size: var(--escala-complementar);
+  font-size: var(--escala-texto);
 }
 
 /* Botao flutuante que o inteli-print.js injeta. Escondido no proprio modo
-   de impressao por inteli-print.css (".print-button { display: none }"),
+   de impressao por inteli-print.css (".print-button {
+  /* Botao so com icone, no canto inferior esquerdo, fora da area util do
+     slide (a margem lateral e de 56px). No inferior direito ele cobria o
+     numero do rodape; no superior esquerdo, a barra do titulo (revisoes de
+     13/10/2026). tools/tests/test_tema_legibilidade.py mede as tres. */
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  z-index: 1000;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--seg-borda);
+  border-radius: 8px;
+  background: var(--seg-base);
+  color: var(--seg-texto);
+  cursor: pointer;
+}"),
    entao so aparece na tela normal do deck. */
 .print-button {
+  /* Canto superior esquerdo: no inferior direito o botao cobria o numero
+     do rodape de todo slide (revisoes de 13/10/2026). */
   position: fixed;
-  right: 24px;
-  bottom: 24px;
+  left: 12px;
+  top: 12px;
   z-index: 1000;
   padding: 10px 18px;
   border: 1px solid var(--seg-borda);
@@ -457,7 +488,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--escala-complementar);
+  font-size: var(--escala-densa);
 }
 
 .data-table th,
@@ -621,7 +652,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   padding: 6px 4px;
   text-align: center;
   cursor: pointer;
-  font-size: var(--escala-complementar);
+  font-size: var(--escala-texto);
 }
 
 /* Estados escritos pelo inteli-escolha.js. Seletor composto pelo mesmo motivo
@@ -672,7 +703,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 
 .widget-controles button {
   font: inherit;
-  font-size: var(--escala-complementar);
+  font-size: var(--escala-texto);
   padding: 6px 14px;
   border: 1px solid var(--seg-borda);
   border-radius: 999px;
@@ -778,7 +809,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 }
 
 .reveal .tabela-leitura th {
-  font-size: var(--escala-complementar);
+  font-size: var(--escala-densa);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--seg-primaria);
@@ -964,7 +995,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   background: var(--seg-superficie);
   border-left: 6px solid var(--seg-borda);
   border-radius: 8px;
-  font-size: var(--escala-complementar);
+  font-size: var(--escala-densa);
   line-height: 1.4;
   white-space: pre;
 }
@@ -1034,7 +1065,7 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 }
 
 .widget-controles .widget-rotulo {
-  font-size: var(--escala-complementar);
+  font-size: var(--escala-densa);
   min-width: 300px;
   align-self: center;
 }

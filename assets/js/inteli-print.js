@@ -22,7 +22,13 @@
     var botao = document.createElement('button');
     botao.type = 'button';
     botao.className = 'print-button';
-    botao.textContent = 'Exportar PDF';
+    botao.title = 'Exportar PDF';
+    botao.setAttribute('aria-label', 'Exportar PDF');
+    var icone = document.createElement('span');
+    icone.className = 'material-symbols-outlined';
+    icone.setAttribute('aria-hidden', 'true');
+    icone.textContent = 'picture_as_pdf';
+    botao.appendChild(icone);
     botao.addEventListener('click', function () {
       window.open(urlDeImpressao(), '_blank');
     });
@@ -69,6 +75,24 @@
     }
   }
 
+  // No PDF o <video> sai como player vazio ou com a barra de controles por
+  // cima do quadro. Troca cada video pelo poster dele, com a mesma classe e o
+  // mesmo style, para o slide impresso mostrar o quadro que o professor
+  // escolheu como capa da animacao.
+  function trocarVideosPorPoster() {
+    var videos = document.querySelectorAll('video');
+    for (var i = 0; i < videos.length; i++) {
+      var video = videos[i];
+      var img = document.createElement('img');
+      img.className = (video.className ? video.className + ' ' : '') + 'video-poster';
+      var estilo = video.getAttribute('style');
+      if (estilo) img.setAttribute('style', estilo);
+      img.setAttribute('src', video.getAttribute('poster') || '');
+      img.setAttribute('alt', video.getAttribute('aria-label') || 'Quadro inicial da animação');
+      video.parentNode.replaceChild(img, video);
+    }
+  }
+
   function estaEmModoImpressao() {
     return window.location.search.indexOf('print-pdf') !== -1;
   }
@@ -78,6 +102,7 @@
     if (estaEmModoImpressao()) {
       revelarGabarito();
       revelarEscolhas();
+      trocarVideosPorPoster();
     }
   }
 

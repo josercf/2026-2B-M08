@@ -40,7 +40,7 @@
      A razao entre os niveis e preservada; o corpo sobe para 18px porque
      13px projetado nao se le do fundo da sala.
 
-     Estes quatro tokens PRECISAM morar em :root. Custom property nao
+     Estes tokens de escala PRECISAM morar em :root. Custom property nao
      cascateia para fora do seletor que a declara: se elas cairem dentro de
      um bloco como "code, pre", o body resolve font-size para o 16px padrao
      do navegador e o piso de legibilidade vira letra morta, sem nenhum erro
@@ -48,6 +48,9 @@
   --escala-titulo: 44px;
   --escala-subtitulo: 26px;
   --escala-texto: 18px;
+  /* Codigo e tabela densa (13/10/2026): 18 linhas de codigo em 18px nao
+     cabem com o titulo em 720px, e 14px nao se le projetado. */
+  --escala-densa: 16px;
   --escala-complementar: 14px;
 }
 
