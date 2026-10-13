@@ -1,0 +1,90 @@
+/* Estilo da tela do gestor. Só tokens de assets/css/inteli-brand.css, importado
+   em main.jsx: nenhuma cor literal e nenhuma família tipográfica aqui. */
+
+body {
+  margin: 0;
+  background: var(--seg-superficie);
+  color: var(--seg-texto);
+}
+
+.pagina {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pagina h1 { font-size: 32px; margin: 0 0 6px; }
+.pagina h2 { font-size: var(--escala-subtitulo); margin: 0 0 12px; }
+
+.cartao {
+  background: var(--seg-base);
+  border: 1px solid var(--seg-borda);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin: 0;
+}
+
+.formulario {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.formulario label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: var(--escala-complementar);
+}
+
+.formulario input,
+button {
+  font: inherit;
+  font-size: var(--escala-texto);
+  padding: 8px 12px;
+  border: 1px solid var(--seg-borda);
+  border-radius: 8px;
+  background: var(--seg-base);
+  color: var(--seg-texto);
+}
+
+button {
+  background: var(--seg-primaria);
+  border-color: var(--seg-primaria);
+  color: var(--seg-base);
+  cursor: pointer;
+}
+
+button:disabled { opacity: 0.6; cursor: progress; }
+
+.acoes { display: flex; gap: 12px; margin-top: 14px; }
+
+.nota { font-size: var(--escala-complementar); margin: 0; }
+
+.alerta {
+  border-left: 4px solid var(--seg-destaque);
+}
+
+.tabela { width: 100%; border-collapse: collapse; }
+.tabela th, .tabela td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--seg-borda);
+}
+.tabela tr.destaque td { background: var(--seg-superficie); font-weight: 700; }
+
+.fronteira { width: 100%; height: auto; }
+.fronteira .eixo { stroke: var(--seg-borda); stroke-width: 1.5; }
+.fronteira .curva { fill: none; stroke: var(--seg-primaria); stroke-width: 3; }
+.fronteira .ativo { fill: var(--seg-borda); }
+.fronteira .otima { fill: var(--seg-secundaria); stroke: var(--seg-primaria); stroke-width: 2; }
+.fronteira .rotulo { fill: var(--seg-texto); font-size: 13px; }
+.fronteira .forte { font-weight: 700; }
+
+@media (max-width: 720px) {
+  .formulario { grid-template-columns: 1fr; }
+}

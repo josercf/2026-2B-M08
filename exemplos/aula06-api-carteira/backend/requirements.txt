@@ -1,0 +1,7 @@
+# Backend da API de exemplo da Aula 06. "fastapi[standard]" traz o comando
+# fastapi dev, o uvicorn e o httpx que a chamada ao LLM e o TestClient usam.
+fastapi[standard]
+pandas
+numpy
+scipy
+pytest

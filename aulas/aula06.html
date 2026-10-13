@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 06 - Do Script ao Produto: React, FastAPI e Interpretação com LLM</title>
+
+  <!-- Aula 06, 16/12/2026, Semana 10, Sprint 5 (Adalove da turma 2026-2B-T19). Roteiro: PLANEJAMENTO_AULA_A_AULA.md, Aula 06.
+       Todo número deste deck está travado em tools/tests/test_aula06.py, medido pela API de
+       exemplos/aula06-api-carteira sobre dados/ (tools/medidas_aula06.py).
+
+       Divisão dos 105 minutos de metodologia ativa (depois da daily de 15 min):
+         Bloco 1 (0 a 15)     slides 2 a 4    agenda, resgate da Aula 05, Peer Instruction
+         Bloco 2 (15 a 30)    slides 5 a 8    animação da requisição, contrato, montador
+         Bloco 3 (30 a 45)    slides 9 a 12   FastAPI ao vivo, cache, erro do ticker inexistente
+         Bloco 4 (45 a 60)    slide 13        dupla no notebook com TestClient (12 min)
+         Bloco 5 (60 a 75)    slides 14 a 16  componente React, CORS, escolha coletiva
+         Bloco 6 (75 a 90)    slides 17 a 20  LLM no backend, verificador, ativo trocado
+         Bloco 7 (90 a 105)   slides 21 a 25  quiz, notebook, A5, referências, encerramento
+
+       Se o tempo apertar, cortar primeiro o slide 11 (cache, que a animação da Preparação
+       já mostrou) e encurtar a escolha coletiva para 3 minutos. -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-theme.css">
+  <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 1 -->
+      <section class="cover-slide">
+        <div class="cover-panel">
+          <div class="cover-content">
+            <p class="cover-eyebrow">Módulo 08 AdmTech &middot; Computação &middot; Semana 10 &middot; 16/12/2026</p>
+            <h1>Do Script ao Produto</h1>
+            <h3>React, FastAPI e interpretação com LLM para o A5, Sprint 5</h3>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="content-slide" id="agenda">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Agenda do encontro</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead>
+            <tr><th>Bloco</th><th>Minutos</th><th>Tema</th><th>Interação que fecha o bloco</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Daily</td><td>15</td><td>O que fiz, o que vou fazer, impedimentos</td><td>módulo de cada entrega e chave fora do repositório</td></tr>
+            <tr><td>1</td><td>0 a 15</td><td>Resgate da Aula 05 e onde o otimizador roda</td><td>Peer Instruction</td></tr>
+            <tr><td>2</td><td>15 a 30</td><td>Cliente, servidor, HTTP, JSON e o contrato</td><td>previsão do status no montador</td></tr>
+            <tr><td>3</td><td>30 a 45</td><td>FastAPI ao vivo, Pydantic e cache</td><td>que erro para um ticker que não existe</td></tr>
+            <tr><td>4</td><td>45 a 60</td><td>A API testada com <code>TestClient</code></td><td>dupla no notebook, seções 3 e 4</td></tr>
+            <tr><td>5</td><td>60 a 75</td><td>O componente React e o CORS</td><td>escolha coletiva: navegador ou servidor</td></tr>
+            <tr><td>6</td><td>75 a 90</td><td>O LLM chamado pelo backend</td><td>que número conferir por código</td></tr>
+            <tr><td>7</td><td>90 a 105</td><td>Quiz e amarração com a Sprint 5</td><td>quiz de três perguntas</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+          <p>Horários de relógio a confirmar na Adalove; os blocos contam do fim da daily.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5</p>
+          <p class="footer-page">2</p>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="content-slide" id="resgate">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A Aula 05 deixou o teste fora da amostra pronto</h2>
+        </div>
+        <p>A Aula 05 deixou pronto o teste fora da amostra das duas carteiras ótimas e a medida de estabilidade dos pesos entre janelas. Hoje cada entrega vira um módulo que a API importa.</p>
+        <table class="tabela-leitura tabela-compacta">
+          <thead><tr><th>Entrega</th><th>Módulo no backend do exemplo</th><th>O que a API usa</th></tr></thead>
+          <tbody>
+            <tr><td>A1</td><td><code>carteira/dados.py</code></td><td>Adj Close e CDI, com <code>dropna</code> só nos tickers pedidos</td></tr>
+            <tr><td>A2</td><td><code>carteira/metricas.py</code></td><td>retornos diários e métricas anualizadas por 252</td></tr>
+            <tr><td>A3</td><td>módulo de Monte Carlo do grupo</td><td>rota de simulação, a cargo do grupo</td></tr>
+            <tr><td>A4</td><td><code>carteira/otimizador.py</code></td><td>variância mínima, máximo Sharpe e fronteira de 50 pontos</td></tr>
+            <tr><td>Aula 05</td><td>validação do grupo</td><td>teste fora da amostra e estabilidade, a cargo do grupo</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
+          <p>Um gestor do parceiro digita tickers numa tela. O otimizador roda no navegador ou no servidor?</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [1] [2]</p>
+          <p class="footer-page">3</p>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="quiz-slide" id="preparo">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Verificação do preparo</h2>
+        </div>
+        <div class="side-by-side">
+          <div class="quiz-container">
+            <p class="quiz-question">O gestor digita cinco tickers e clica em Otimizar. Onde o otimizador deve rodar?</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="Rodar no navegador obriga a reescrever A1, A2 e A4 em JavaScript e a mandar os dados inteiros para cada gestor.">No navegador, em JavaScript, para responder mais rápido</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: o Python das sprints roda no servidor, e o navegador recebe JSON para desenhar e exportar."
+                  data-incorrect-msg="Não.">No servidor, em Python, e o navegador recebe JSON</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="Dois otimizadores em duas linguagens divergem no primeiro arredondamento, e o grupo mantém o dobro de código.">Nos dois, para um conferir o outro</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="Imagem pronta tira do navegador os números: sem tabela de pesos, sem gráfico interativo e sem CSV.">No servidor, que devolve a imagem pronta do gráfico</li>
+            </ul>
+          </div>
+          <ol class="exercise-steps">
+            <li><strong>Votar</strong> sozinho, sem conversar.</li>
+            <li><strong>Discutir em dupla</strong> por dois minutos, defendendo o voto.</li>
+            <li><strong>Votar de novo</strong> e só então revelar.</li>
+          </ol>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [3]</p>
+          <p class="footer-page">4</p>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>Cliente, servidor e o contrato da API</h2>
+        <h3>Método HTTP, JSON e código de status</h3>
+      </section>
+
+      <!-- 6 -->
+      <section class="content-slide" id="requisicao">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O pedido volta com 50 pares da fronteira</h2>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p><strong>Antes de tocar:</strong> anote em qual das três caixas um pedido com ticker repetido para.</p>
+        </div>
+        <video class="video-slide" style="width: 747px; height: 420px" controls muted playsinline preload="metadata"
+               poster="../assets/img/aula06-requisicao-poster.png">
+          <source src="../assets/video/aula06-requisicao.mp4" type="video/mp4">
+        </video>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [2]</p>
+          <p class="footer-page">6</p>
+        </div>
+      </section>
+
+      <!-- 7 -->
+      <section class="content-slide" id="contrato">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Contrato da API do simulador</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead><tr><th>Rota</th><th>Entrada</th><th>Sucesso</th><th>Erros do contrato</th></tr></thead>
+          <tbody>
+            <tr><td><code>GET /ativos</code></td><td>nenhuma</td><td>200, tickers da base</td><td>nenhum</td></tr>
+            <tr class="linha-destaque"><td><code>POST /carteiras/otimizar</code></td><td>2 a 15 tickers, início, fim, taxa opcional</td><td>200, ativos, duas carteiras e fronteira</td><td>404 ticker fora da base; 422 entrada inválida</td></tr>
+            <tr><td><code>POST /carteiras/interpretar</code></td><td>o mesmo pedido</td><td>200, texto e verificação de cada número</td><td>404, 422; 503 sem chave; 502 provedor</td></tr>
+            <tr><td><code>POST /carteiras/exportar</code></td><td>o mesmo pedido</td><td>200, CSV com os pesos</td><td>404, 422</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">description</span>
+          <p>Este contrato vai para o SPEC.md antes de dividir o trabalho: frontend e backend passam a andar em paralelo.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [2] [8]</p>
+          <p class="footer-page">7</p>
+        </div>
+      </section>
+
+      <!-- 8 -->
+      <section class="content-slide" id="montador">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Nove requisições devolvem quatro status</h2>
+        </div>
+        <div class="widget" data-widget="montador-requisicao" data-fonte="../assets/data/aula06-requisicoes.json"
+             data-largura="1160" data-altura="440"></div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p>Cada dupla anota o status previsto antes de clicar em Enviar. Respostas gravadas da API de exemplo, sem chave do LLM.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [2]</p>
+          <p class="footer-page">8</p>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>FastAPI ao vivo</h2>
+        <h3>Rota por operação de negócio, Pydantic e <code>/docs</code></h3>
+      </section>
+
+      <!-- 10 -->
+      <section class="content-slide" id="fastapi">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A rota importa o otimizador das sprints</h2>
+        </div>
+        <div class="side-by-side">
+          <pre class="code-compact" style="max-height: 420px"><code>from carteira import dados, pipeline
+
+class PedidoCarteira(BaseModel):
+    tickers: list[str] = Field(min_length=2,
+                               max_length=15)
+    inicio: date = date(2019, 1, 1)
+    fim: date = date(2026, 8, 31)
+    # + taxa opcional e validador de repetição
+
+@lru_cache(maxsize=64)
+def _calcular(tickers, inicio, fim, rf):
+    try:
+        return Resultado(**pipeline.calcular(
+            tickers, inicio, fim, rf))
+    except dados.TickerDesconhecido as erro:
+        raise HTTPException(404, "Ticker fora ...")
+
+@app.post("/carteiras/otimizar")
+def otimizar(pedido: PedidoCarteira) -> Resultado:
+    return _calcular(tuple(pedido.tickers), ...)</code></pre>
+          <table class="tabela-leitura">
+            <tr><td>Rota</td><td>nome da operação do gestor, <code>/carteiras/otimizar</code></td></tr>
+            <tr><td>Pydantic</td><td>recusa a entrada errada com 422, antes de qualquer cálculo</td></tr>
+            <tr><td>Importa</td><td><code>pipeline.calcular</code> não sabe de HTTP e serve também ao notebook</td></tr>
+            <tr><td><code>/docs</code></td><td>documentação gerada dos mesmos modelos, para testar no navegador</td></tr>
+          </table>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [2] [5]</p>
+          <p class="footer-page">10</p>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="content-slide" id="cache">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O cache reduz 260 problemas de otimização a 104</h2>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p><strong>Antes de tocar:</strong> cada pedido novo resolve 52 problemas no SLSQP. Em quais dos cinco pedidos o servidor com cache volta a calcular?</p>
+        </div>
+        <video class="video-slide" style="width: 747px; height: 420px" controls muted playsinline preload="metadata"
+               poster="../assets/img/aula06-cache-poster.png">
+          <source src="../assets/video/aula06-cache.mp4" type="video/mp4">
+        </video>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [2]</p>
+          <p class="footer-page">11</p>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="content-slide" id="erros">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Erros do contrato da API</h2>
+        </div>
+        <div class="faixa-nota" style="margin: 0 0 18px">
+          <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
+          <p>Que erro a API deve devolver para um ticker que não existe? Se o ticker é entrada do usuário, por que 404 em vez de 422? Cada dupla responde antes de revelar.</p>
+        </div>
+        <table class="tabela-leitura tabela-compacta fragment">
+          <thead><tr><th>Status</th><th>Quem detecta</th><th>Exemplo</th><th>O que o gestor lê</th></tr></thead>
+          <tbody>
+            <tr><td>422</td><td>Pydantic, antes do cálculo</td><td>um ticker só; início depois do fim</td><td>escolha ao menos dois ativos e um período válido</td></tr>
+            <tr class="linha-destaque"><td>404</td><td>o coletor, ao procurar o ticker</td><td><code>XPTO3</code></td><td>algum ativo não está na base (XPTO3)</td></tr>
+            <tr><td>503</td><td>a rota de interpretação</td><td>servidor sem <code>OPENROUTER_API_KEY</code></td><td>os números da carteira continuam válidos</td></tr>
+            <tr><td>502</td><td>a rota de interpretação</td><td>o provedor do LLM não respondeu</td><td>os números da carteira continuam válidos</td></tr>
+          </tbody>
+        </table>
+        <p>Um 500 fica fora do contrato: é exceção sem tratamento, defeito do grupo.</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [8]</p>
+          <p class="footer-page">12</p>
+        </div>
+      </section>
+
+      <!-- 13 -->
+      <section class="exercise-slide" id="pratica-testclient">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Prática em dupla: a API sem servidor</h2>
+          </div>
+          <div class="cronometro" id="cronometro-testclient" data-minutos="12"></div>
+        </div>
+        <ol class="exercise-steps">
+          <li>Abram o notebook da aula no Colab. Quem está no teclado é o <strong>condutor</strong>; o outro é o <strong>navegador</strong>, que lê, pergunta e confere.</li>
+          <li>Seções 1 a 3: carreguem os dados, rodem <code>calcular</code> e definam a API no próprio notebook.</li>
+          <li>Seção 4: rodem o caso de sucesso (200) e o de entrada inválida (422). Leiam o campo que o Pydantic aponta.</li>
+          <li>Aos 6 minutos, troquem de papel. O novo condutor escreve o caso do ticker que não existe, com o status que a dupla decidiu antes de rodar.</li>
+          <li>Anotem os três casos: eles vão para o plano de testes do SPEC.md.</li>
+        </ol>
+        <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula06.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 06 no Colab</a></p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5</p>
+          <p class="footer-page">13</p>
+        </div>
+      </section>
+
+      <!-- 14 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>O componente React</h2>
+        <h3>Estado, <code>fetch</code>, carregamento, erro e o gráfico</h3>
+      </section>
+
+      <!-- 15 -->
+      <section class="content-slide" id="react">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O componente guarda estado e delega o cálculo</h2>
+        </div>
+        <div class="side-by-side">
+          <pre class="code-compact" style="max-height: 420px"><code>const [carregando, setCarregando] = useState(false);
+const [erro, setErro] = useState(null);
+const [resultado, setResultado] = useState(null);
+
+async function aoOtimizar(evento) {
+  evento.preventDefault();
+  setCarregando(true);
+  setErro(null);
+  try {
+    setResultado(await otimizar(pedido()));
+  } catch (e) {
+    setResultado(null);
+    setErro(e.message);   // já traduzida em api.js
+  } finally {
+    setCarregando(false);
+  }
+}</code></pre>
+          <table class="tabela-leitura">
+            <tr><td><code>useState</code></td><td>cada mudança de estado redesenha a tela</td></tr>
+            <tr><td><code>api.js</code></td><td>todo o <code>fetch</code> num arquivo; 404 vira "algum ativo não está na base"</td></tr>
+            <tr><td>Carregando</td><td>o botão vira "Calculando..." e não aceita outro clique</td></tr>
+            <tr><td>CORS</td><td>React em <code>localhost:5173</code>, API em <code>127.0.0.1:8000</code>: sem o middleware, o navegador descarta a resposta</td></tr>
+          </table>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [2] [3] [6]</p>
+          <p class="footer-page">15</p>
+        </div>
+      </section>
+
+      <!-- 16 -->
+      <section class="content-slide" id="escolha-camada">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Em que camada fica cada parte</h2>
+          </div>
+          <div class="cronometro" id="cronometro-escolha" data-minutos="4"></div>
+        </div>
+        <div class="escolha-grid">
+          <div class="escolha" id="escolha-1">
+            <p class="escolha-item">1. A chave do LLM</p>
+            <ul class="escolha-opcoes">
+              <li>Navegador</li>
+              <li data-correct="true">Servidor</li>
+              <li>Nos dois</li>
+            </ul>
+          </div>
+          <div class="escolha" id="escolha-2">
+            <p class="escolha-item">2. O cálculo da fronteira</p>
+            <ul class="escolha-opcoes">
+              <li>Navegador</li>
+              <li data-correct="true">Servidor</li>
+              <li>Nos dois</li>
+            </ul>
+          </div>
+          <div class="escolha" id="escolha-3">
+            <p class="escolha-item">3. O gráfico da fronteira</p>
+            <ul class="escolha-opcoes">
+              <li data-correct="true">Navegador</li>
+              <li>Servidor</li>
+              <li>Nos dois</li>
+            </ul>
+          </div>
+          <div class="escolha" id="escolha-4">
+            <p class="escolha-item">4. A validação da entrada</p>
+            <ul class="escolha-opcoes">
+              <li>Navegador</li>
+              <li>Servidor</li>
+              <li data-correct="true">Nos dois</li>
+            </ul>
+          </div>
+        </div>
+        <p>Cada dupla decide antes do clique. A sala vota em cada item.</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5</p>
+          <p class="footer-page">16</p>
+        </div>
+      </section>
+
+      <!-- 17 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>O LLM como componente do produto</h2>
+        <h3>Chamado pelo backend, conferido contra os números</h3>
+      </section>
+
+      <!-- 18 -->
+      <section class="content-slide" id="prompt">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O prompt leva os números reais da carteira</h2>
+        </div>
+        <div class="side-by-side">
+          <pre class="code-compact" style="max-height: 420px"><code>"maximo_sharpe": {
+ "pesos_pct": {
+  "PETR4": 23.33,
+  "WEGE3": 25.01,
+  "IVVB11": 51.65
+ },
+ "retorno_anual_pct": 26.92,
+ "volatilidade_anual_pct": 19.13,
+ "sharpe": 0.91
+},
+"taxa_livre_risco_pct": 9.51,
+"pregoes": 1906</code></pre>
+          <table class="tabela-leitura">
+            <tr><td>Chave</td><td><code>OPENROUTER_API_KEY</code> no ambiente do backend; <code>.env</code> fora do git</td></tr>
+            <tr><td>Contexto</td><td>o JSON de <code>/carteiras/otimizar</code>, em porcentagem; <code>pregoes</code> conta os retornos diários, depois do <code>dropna</code> nos 5 tickers</td></tr>
+            <tr><td>Regras</td><td>usar só esses números, declarar limitações, não prometer retorno</td></tr>
+            <tr><td>Modelo</td><td><code>LLM_MODELO</code> no ambiente: trocar de modelo muda custo por token e texto</td></tr>
+            <tr><td>Saída</td><td>o texto volta com a verificação de cada número citado</td></tr>
+          </table>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [4] [7]</p>
+          <p class="footer-page">18</p>
+        </div>
+      </section>
+
+      <!-- 19 -->
+      <section class="content-slide" id="verificador">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Exercício: conferir o texto número a número</h2>
+        </div>
+        <div class="widget" data-widget="verificador-numeros" data-fonte="../assets/data/aula06-verificador.json"
+             data-largura="1160" data-altura="400"></div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
+          <p>Que número desse texto o grupo consegue conferir por código? Marquem à mão antes de clicar.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [4]</p>
+          <p class="footer-page">19</p>
+        </div>
+      </section>
+
+      <!-- 20 -->
+      <section class="content-slide" id="ativo-trocado">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O verificador acusa 2 dos 3 erros plantados</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Trecho</th><th>Erro plantado</th><th>Verificação de presença</th><th>Valor certo</th></tr></thead>
+          <tbody>
+            <tr><td>17,13%</td><td>volatilidade alterada</td><td>acusa: não existe no JSON</td><td>19,13%</td></tr>
+            <tr><td>30,00%</td><td>promessa de retorno</td><td>acusa: não existe no JSON</td><td>nenhum: o JSON não tem futuro</td></tr>
+            <tr class="linha-destaque"><td>0,16</td><td>ativo trocado</td><td>aprova: existe, no IVVB11</td><td>o IVVB11 diversifica mais, com 0,16; VALE3 tem 0,32</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">fact_check</span>
+          <p>10 dos 12 números passam na verificação de presença, e 9 estão certos. A origem devolvida pelo verificador mostra o erro que a presença deixa passar.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; [4]</p>
+          <p class="footer-page">20</p>
+        </div>
+      </section>
+
+      <!-- 21 -->
+      <section class="quiz-slide" id="quiz-final">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Quiz de verificação</h2>
+        </div>
+        <div class="quiz-trio">
+          <div class="quiz-container">
+            <p class="quiz-question">1. O pedido traz só a PETR4. Que status a API devolve?</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="A PETR4 existe na base; 404 é para ticker que não existe.">404</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: o Pydantic exige ao menos dois tickers e recusa antes do cálculo."
+                  data-incorrect-msg="Não.">422</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="500 seria defeito do servidor; a entrada errada tem status próprio.">500</li>
+            </ul>
+          </div>
+          <div class="quiz-container">
+            <p class="quiz-question">2. Onde mora a <code>OPENROUTER_API_KEY</code>?</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="Toda variável VITE_ vai para o JavaScript que o navegador baixa.">Variável VITE_ do front</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="O repositório do grupo é público para a banca; vai só o .env.example vazio.">.env no repositório</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: só o processo do backend lê a chave."
+                  data-incorrect-msg="Não.">Ambiente do backend</li>
+            </ul>
+          </div>
+          <div class="quiz-container">
+            <p class="quiz-question">3. Que campo da verificação mostra o ativo trocado?</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="confere é verdadeiro para o 0,16: o número existe no JSON.">confere</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: a origem do 0,16 é ativos[IVVB11].correlacao_media."
+                  data-incorrect-msg="Não.">origem</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="O trecho repete o texto, sem dizer de onde o número veio.">trecho</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5</p>
+          <p class="footer-page">21</p>
+        </div>
+      </section>
+
+      <!-- 22 -->
+      <section class="exercise-slide" id="notebook">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Notebook da aula</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead><tr><th>Seção</th><th>O que entrega</th></tr></thead>
+          <tbody>
+            <tr><td>1 e 2</td><td>Os dados e os módulos das sprints numa função <code>calcular</code> sem HTTP</td></tr>
+            <tr><td>3 e 4</td><td>A API no notebook e os casos 200, 422 e do ticker inexistente com <code>TestClient</code></td></tr>
+            <tr><td>5</td><td>O cache contando os problemas de otimização por pedido</td></tr>
+            <tr><td>6 e 7</td><td>O prompt com os números reais, a chamada opcional e o verificador</td></tr>
+            <tr class="linha-destaque"><td>8</td><td>Desafio do A5: rota de métricas para pesos informados, com 422 para pesos que não somam 1</td></tr>
+          </tbody>
+        </table>
+        <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula06.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula06.ipynb" target="_blank" rel="noopener">Abrir no Colab</a> &middot; <a href="https://github.com/josercf/2026-2B-M08/blob/main/exemplos/aula06-api-carteira/README.md" target="_blank" rel="noopener">Exemplo com backend e frontend</a></p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5</p>
+          <p class="footer-page">22</p>
+        </div>
+      </section>
+
+      <!-- 23 -->
+      <section class="content-slide" id="a5">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Artefato A5 da Sprint 5</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead><tr><th>Critério do barema</th><th>Peso</th><th>O que hoje já adiantou</th></tr></thead>
+          <tbody>
+            <tr><td>Operabilidade por não programador</td><td>25%</td><td>estado de carregamento e erro traduzido para o gestor</td></tr>
+            <tr><td>Integração do pipeline</td><td>10%</td><td>API que importa os módulos, com cache da mesma consulta</td></tr>
+            <tr><td>Qualidade da interpretação por LLM</td><td>25%</td><td>prompt com os números reais e o verificador de números</td></tr>
+            <tr><td>Exportação e estabilidade</td><td>5%</td><td>rota de CSV e limite de 15 ativos no Pydantic</td></tr>
+            <tr><td>Especificação e documentação</td><td>15%</td><td>contrato da API no SPEC.md; README com <code>fastapi dev</code> e <code>npm run dev</code></td></tr>
+            <tr class="linha-destaque"><td>ADRs, nota individual</td><td>20%</td><td>divisão entre frontend e backend, rotas e desenho do prompt</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">event</span>
+          <p>A5 vale 2 pontos. <code>/backend</code> e <code>/frontend</code> separados, <code>.env.example</code> sem chave. Review da Sprint 5 em 18/12/2026, que fecha o módulo.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5 &middot; barema do REVISAO-LBL08-COMPUTACAO.md, Artefato 5 &middot; [9]</p>
+          <p class="footer-page">23</p>
+        </div>
+      </section>
+
+      <!-- 24 -->
+      <section class="content-slide" id="referencias">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Referências</h2>
+        </div>
+        <ol class="ref-columns">
+          <li id="ref-1"><a href="https://github.com/josercf/2026-2B-M08/blob/main/dados/README.md" target="_blank" rel="noopener">dados/README.md</a>: snapshot do case e cesta de 15 ativos.</li>
+          <li id="ref-2"><a href="https://github.com/josercf/2026-2B-M08/blob/main/exemplos/aula06-api-carteira/README.md" target="_blank" rel="noopener">exemplos/aula06-api-carteira</a>: API e tela de exemplo, com testes.</li>
+          <li id="ref-3">REACT. <a href="https://pt-br.react.dev/learn" target="_blank" rel="noopener">Início rápido</a>. Documentação oficial em português. Autoestudo: React e FastAPI: a interface conversando com o código Python.</li>
+          <li id="ref-4">HIROTA, F. <em>ChatGPT e inteligência artificial</em>. Actual, 2023. cap. 4, 12 e 13. Autoestudo: LLMs com senso crítico: codificação, limitações e bom uso.</li>
+          <li id="ref-5"><a href="https://fastapi.tiangolo.com/pt/tutorial/first-steps/" target="_blank" rel="noopener">FastAPI: Primeiros Passos</a>.</li>
+          <li id="ref-6"><a href="https://fastapi.tiangolo.com/pt/tutorial/cors/" target="_blank" rel="noopener">FastAPI: CORS</a>.</li>
+          <li id="ref-7"><a href="https://openrouter.ai/docs/quickstart" target="_blank" rel="noopener">OpenRouter: Quickstart</a>, API compatível com a da OpenAI.</li>
+          <li id="ref-8"><a href="https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Status" target="_blank" rel="noopener">MDN: códigos de status HTTP</a>.</li>
+          <li id="ref-9"><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a>.</li>
+        </ol>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 06 &middot; Sprint 5</p>
+          <p class="footer-page">24</p>
+        </div>
+      </section>
+
+      <!-- 25 -->
+      <section class="end-slide">
+        <h1>Review final em 18/12/2026</h1>
+        <h3>A Sprint 5 fecha o módulo com o A5 demonstrado ao parceiro</h3>
+        <h3>Prof. José Romualdo</h3>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280, height: 720, center: false, margin: 0,
+      hash: true, slideNumber: false, transition: 'fade'
+    });
+  </script>
+  <script src="../assets/js/inteli-quiz.js"></script>
+  <script src="../assets/js/inteli-zoom.js"></script>
+  <script src="../assets/js/inteli-print.js"></script>
+  <script src="../assets/js/inteli-cronometro.js"></script>
+  <script src="../assets/js/inteli-escolha.js"></script>
+  <script src="../assets/js/inteli-widgets.js"></script>
+  <script src="../assets/js/widgets/montador-requisicao.js"></script>
+  <script src="../assets/js/widgets/verificador-numeros.js"></script>
+</body>
+</html>

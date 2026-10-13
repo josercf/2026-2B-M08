@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material de apoio - Aula 06 - Do Script ao Produto</title>
+  <!-- Todo número desta página está travado em tools/tests/test_aula06.py e
+       tools/tests/test_material_aula06.py, medido por tools/medidas_aula06.py. -->
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-material.css">
+</head>
+<body>
+  <div class="doc">
+
+    <header class="doc-header">
+      <p class="doc-eyebrow">Módulo 08 AdmTech &middot; Computação &middot; Aula 06 &middot; Semana 10 &middot; Sprint 5 &middot; 16/12/2026</p>
+      <h1>Do Script ao Produto: React, FastAPI e Interpretação com LLM</h1>
+      <p class="doc-subtitulo">Material de apoio. Começa pela preparação do encontro e depois aprofunda o que os slides só apontam: o contrato da API, os erros que ela devolve, o cache, o CORS, a chave do LLM e a conferência dos números do texto. Alimenta o A5, Simulador Interativo integrado à interface e Interpretação por LLM.</p>
+    </header>
+
+    <nav class="doc-toc" aria-label="Sumário">
+      <h2>Sumário</h2>
+      <ol>
+        <li><a href="#preparacao">Preparação</a></li>
+        <li><a href="#duas-camadas">Por que duas camadas</a></li>
+        <li><a href="#contrato">HTTP, JSON e o contrato</a></li>
+        <li><a href="#erros">Lendo os erros da API</a></li>
+        <li><a href="#cache">Cache da consulta</a></li>
+        <li><a href="#react">O componente React e o CORS</a></li>
+        <li><a href="#llm">O LLM no backend</a></li>
+        <li><a href="#verificacao">Conferir cada número</a></li>
+        <li><a href="#depois">Depois do encontro</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc-conteudo">
+
+      <section class="doc-secao" id="preparacao">
+        <h2>1. Preparação</h2>
+        <p>O encontro abre medindo esta preparação com uma pergunta de Peer Instruction. Os dois autoestudos somam 110 minutos, e as duas animações e a autoverificação vêm depois deles.</p>
+
+        <h3>Autoestudos da semana, na Adalove</h3>
+        <ol>
+          <li><strong>React e FastAPI: a interface conversando com o código Python</strong> (60 min). Chegue com as duas pontas funcionando em separado: um componente React com input, estado e lista, e uma API mínima em FastAPI com <code>/docs</code> aberto.</li>
+          <li><strong>LLMs com senso crítico: codificação, limitações e bom uso</strong> (50 min). Onde os modelos erram e como escrever um prompt que a ferramenta consiga conferir.</li>
+        </ol>
+
+        <h3>Animação 1: o caminho de um pedido</h3>
+        <p><strong>O que observar:</strong> o pedido sai do navegador como JSON, a FastAPI valida antes de qualquer cálculo, os módulos das sprints resolvem 52 problemas de otimização e a resposta volta com os 50 pares da fronteira, que o navegador só desenha.</p>
+        <video controls muted playsinline preload="metadata" poster="../assets/img/aula06-requisicao-poster.png" style="width: 100%; height: auto">
+          <source src="../assets/video/aula06-requisicao.mp4" type="video/mp4">
+        </video>
+
+        <h3>Animação 2: o tempo de resposta com e sem cache</h3>
+        <p><strong>O que observar:</strong> cinco pedidos chegam em sequência, três da consulta A e dois da consulta B. A barra mede o trabalho do servidor em problemas de otimização resolvidos, que é o que demora num pedido: sem cache, 260; com cache, 104. Repare em qual pedido o servidor com cache volta a calcular.</p>
+        <video controls muted playsinline preload="metadata" poster="../assets/img/aula06-cache-poster.png" style="width: 100%; height: auto">
+          <source src="../assets/video/aula06-cache.mp4" type="video/mp4">
+        </video>
+
+        <h3>Autoverificação, sem nota</h3>
+        <p>Responda por escrito antes de abrir cada resposta.</p>
+        <ol>
+          <li>
+            <p>Quando o gestor clica em Otimizar, o que o navegador recebe da API, e quem desenha o gráfico?</p>
+            <details><summary>Resposta comentada</summary>
+              <p>Um JSON com as métricas por ativo, as duas carteiras ótimas e os pares da fronteira. O gráfico é desenhado no navegador, a partir desses números. Se o servidor mandasse uma imagem pronta, a tela perderia a tabela de pesos, o gráfico interativo e a exportação em CSV.</p>
+            </details>
+          </li>
+          <li>
+            <p>Na animação 1, em qual das três caixas um pedido com um ticker só para, e com qual código de status?</p>
+            <details><summary>Resposta comentada</summary>
+              <p>No servidor, na validação do Pydantic, com 422. O pedido nem chega aos módulos das sprints: a regra de 2 a 15 tickers está no modelo de entrada, e por isso nenhum problema de otimização é resolvido.</p>
+            </details>
+          </li>
+          <li>
+            <p>Quantos problemas de otimização um pedido novo resolve no exemplo, e de onde vem esse número?</p>
+            <details><summary>Resposta comentada</summary>
+              <p>52: um para a carteira de variância mínima, um para a de máximo Sharpe e um para cada um dos 50 pontos da fronteira. É a conta que explica por que repetir a mesma consulta sem cache custa caro.</p>
+            </details>
+          </li>
+          <li>
+            <p>Na animação 2, o pedido 3 usa os mesmos cinco ativos dos pedidos 1 e 2. Por que o servidor com cache resolve 52 problemas de novo?</p>
+            <details><summary>Resposta comentada</summary>
+              <p>Porque a janela de dados mudou: a consulta B começa em 2021. A chave do cache é a consulta inteira (tickers, início, fim e taxa livre de risco), e qualquer diferença nela é outra consulta, com outra fronteira.</p>
+            </details>
+          </li>
+          <li>
+            <p>O autoestudo de LLMs lista a alucinação entre as limitações. Que duas defesas o produto do A5 tem contra um número inventado no texto do modelo?</p>
+            <details><summary>Resposta comentada</summary>
+              <p>Mandar no prompt os números reais da otimização, com a regra de usar só esses números, e conferir por código cada número que o texto citar contra o mesmo JSON. A primeira reduz a chance de invenção; a segunda mede o que escapou.</p>
+            </details>
+          </li>
+        </ol>
+      </section>
+
+      <section class="doc-secao" id="duas-camadas">
+        <h2>2. Por que duas camadas</h2>
+        <p>A Aula 05 deixou pronto o teste fora da amostra das duas carteiras ótimas e a medida de estabilidade dos pesos entre janelas. Hoje o trabalho das cinco sprints vira produto: o gestor do parceiro não abre notebook, ele digita tickers numa tela.</p>
+        <p>O otimizador roda no servidor, em Python, porque é lá que estão o coletor do A1, as métricas do A2 e o otimizador do A4, já testados. Reescrever tudo em JavaScript para rodar no navegador criaria uma segunda versão do mesmo cálculo, que diverge da primeira no primeiro arredondamento, e obrigaria a mandar o histórico de preços inteiro para cada gestor. O navegador fica com o que só ele faz bem: formulário, estado da tela e desenho.</p>
+        <p>No exemplo do acervo, a função <code>pipeline.calcular</code> encadeia as três camadas e devolve um dicionário, sem nada de HTTP. A mesma função serve à API, ao notebook e aos testes, e é isso que "importar sem copiar código" quer dizer na prática.</p>
+        <pre class="doc-codigo"><code>exemplos/aula06-api-carteira/
+  backend/
+    carteira/dados.py        coletor (A1)
+    carteira/metricas.py     risco e retorno (A2)
+    carteira/otimizador.py   otimizador (A4)
+    carteira/pipeline.py     as três camadas numa função
+    main.py                  rotas, Pydantic, cache, CORS
+    interpretacao.py         prompt, chamada ao LLM, verificador
+  frontend/
+    src/api.js               todo o HTTP e a tradução de erro
+    src/App.jsx              formulário, estados, tabela
+    src/Fronteira.jsx        gráfico em SVG</code></pre>
+      </section>
+
+      <section class="doc-secao" id="contrato">
+        <h2>3. HTTP, JSON e o contrato da API</h2>
+        <p>Cada pedido HTTP tem um método, um caminho e, no caso do POST, um corpo em JSON. A resposta traz um código de status e outro JSON. O contrato da API é a tabela abaixo: escrita no SPEC.md antes de dividir o trabalho, ela deixa quem faz o frontend e quem faz o backend trabalharem em paralelo, cada um testando contra o mesmo combinado.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Rota</th><th>Entrada</th><th>Sucesso</th><th>Erros do contrato</th></tr></thead>
+            <tbody>
+              <tr><td><code>GET /ativos</code></td><td>nenhuma</td><td>200, os 15 tickers da base</td><td>nenhum</td></tr>
+              <tr><td><code>POST /carteiras/otimizar</code></td><td>2 a 15 tickers sem repetição, início, fim e taxa livre de risco opcional</td><td>200, métricas por ativo, as duas carteiras e a fronteira</td><td>404 ticker fora da base; 422 entrada inválida ou período com menos de 60 pregões</td></tr>
+              <tr><td><code>POST /carteiras/interpretar</code></td><td>o mesmo pedido</td><td>200, prompt, texto, modelo e verificação de cada número</td><td>404 e 422; 503 sem chave no servidor; 502 falha do provedor</td></tr>
+              <tr><td><code>POST /carteiras/exportar</code></td><td>o mesmo pedido</td><td>200, CSV com os pesos das duas carteiras</td><td>404 e 422</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Para o pedido de referência da aula (PETR4, VALE3, ITUB4, WEGE3 e IVVB11, de 01/01/2019 a 31/08/2026), a API devolve 1.906 retornos diários: o IVVB11 está sem cotação em 24/10/2025, o coletor descarta essa data só para os tickers pedidos, e o primeiro pregão não tem retorno. A carteira de máximo Sharpe fica com 51,65% em IVVB11, 25,01% em WEGE3 e 23,33% em PETR4, com retorno anual de 26,92%, volatilidade de 19,13% e Sharpe de 0,91, usando o CDI do período, de 9,51% ao ano, como taxa livre de risco.</p>
+      </section>
+
+      <section class="doc-secao" id="erros">
+        <h2>4. Lendo os erros da API</h2>
+        <p>No montador de requisição do deck, a turma provoca os erros de propósito: um ticker só, datas invertidas, um ticker que não existe. Cada erro tem um código diferente porque cada um é detectado num lugar diferente e pede uma correção diferente de quem usa a tela.</p>
+        <h3>O 422 do Pydantic</h3>
+        <p>Com um ticker só, a API responde 422 e um corpo como este:</p>
+        <pre class="doc-codigo"><code>{"detail": [{"type": "too_short",
+             "loc": ["body", "tickers"],
+             "msg": "List should have at least 2 items after validation, not 1"}]}</code></pre>
+        <p>A mensagem diz três coisas. <code>loc</code> aponta onde está o problema: no corpo do pedido, no campo <code>tickers</code>. <code>type</code> diz qual regra falhou, o <code>min_length=2</code> declarado no modelo. <code>msg</code> diz o que chegou: uma lista com um item. Nenhuma linha do otimizador rodou. Esse erro é pedagógico porque mostra o contrato funcionando sozinho: a regra foi escrita uma vez, no modelo, e vale para toda rota que recebe <code>PedidoCarteira</code>, inclusive no <code>/docs</code>.</p>
+        <h3>O 404 do ticker inexistente</h3>
+        <p>Com <code>["PETR4", "XPTO3"]</code>, o pedido é bem formado: dois tickers, datas em ordem. O Pydantic aprova, e é o coletor que descobre que <code>XPTO3</code> não está na base. A rota traduz a exceção <code>TickerDesconhecido</code> em 404 com o ticker na mensagem, e o frontend mostra ao gestor "Algum ativo pedido não está na base de dados. Confira o código do ticker. (XPTO3)". Devolver 422 aqui misturaria dois problemas diferentes; devolver 500 diria que o servidor quebrou, quando quem precisa corrigir é o gestor.</p>
+        <h3>O 503 sem chave</h3>
+        <p>Na rota de interpretação, um servidor sem <code>OPENROUTER_API_KEY</code> responde 503. O número da carteira continua válido, e a tela diz isso: a falha é só da camada de texto.</p>
+        <div class="doc-nota">
+          <p>Um 500 na sua API é sempre defeito do grupo: uma exceção que nenhuma rota tratou. O plano de testes do SPEC.md precisa ter ao menos um caso para cada status do contrato.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="cache">
+        <h2>5. Cache da consulta</h2>
+        <p>O <code>@lru_cache</code> sobre a função que calcula guarda o resultado de cada consulta. Na sequência da animação, cinco pedidos com duas consultas diferentes custam 260 problemas de otimização sem cache e 104 com cache, porque só a primeira vez de cada consulta calcula.</p>
+        <p>Dois cuidados que o ADR de cache do grupo precisa registrar. Primeiro, a chave: tickers, início, fim e taxa livre de risco, na mesma ordem e na mesma caixa; por isso o exemplo normaliza os tickers para maiúsculas antes de consultar o cache. Segundo, o alcance: o <code>lru_cache</code> vive na memória do processo, some quando o servidor reinicia e não é compartilhado entre dois processos. Para a review, com um servidor só, isso basta.</p>
+      </section>
+
+      <section class="doc-secao" id="react">
+        <h2>6. O componente React e o CORS</h2>
+        <p>O componente guarda o estado da tela com <code>useState</code>: os campos do formulário, se está carregando, a mensagem de erro e o resultado. Cada <code>set</code> redesenha a tela. Toda chamada HTTP mora em <code>src/api.js</code>, que devolve dados ou lança um erro já traduzido para o gestor; o componente não sabe de status nem de URL.</p>
+        <pre class="doc-codigo"><code>async function aoOtimizar(evento) {
+  evento.preventDefault();
+  setCarregando(true);
+  setErro(null);
+  try {
+    setResultado(await otimizar(pedido()));
+  } catch (e) {
+    setResultado(null);
+    setErro(e.message);   // já traduzida em api.js
+  } finally {
+    setCarregando(false);
+  }
+}</code></pre>
+        <h3>O erro de CORS</h3>
+        <p>Com o React em <code>http://localhost:5173</code> e a API em <code>http://127.0.0.1:8000</code>, a primeira chamada sem configuração falha com esta mensagem no console do navegador:</p>
+        <pre class="doc-codigo"><code>Access to fetch at 'http://127.0.0.1:8000/carteiras/otimizar' from origin
+'http://localhost:5173' has been blocked by CORS policy: Response to preflight
+request doesn't pass access control check: No 'Access-Control-Allow-Origin'
+header is present on the requested resource.</code></pre>
+        <p>A mensagem confunde porque a API pode ter respondido normalmente: quem bloqueia é o navegador, que só entrega a resposta ao JavaScript de outra origem quando o servidor declara que aquela origem é permitida. Origem é a combinação de protocolo, endereço e porta, e as portas 5173 e 8000 já fazem duas origens. A correção é no backend, com o <code>CORSMiddleware</code> liberando a origem do frontend, e nunca com uma extensão de navegador que desliga a checagem, porque o gestor não vai ter essa extensão.</p>
+        <pre class="doc-codigo"><code>app.add_middleware(CORSMiddleware,
+                   allow_origins=[os.environ.get("FRONTEND_ORIGEM", "http://localhost:5173")],
+                   allow_methods=["GET", "POST"], allow_headers=["Content-Type"])</code></pre>
+      </section>
+
+      <section class="doc-secao" id="llm">
+        <h2>7. O LLM no backend</h2>
+        <p>A chamada ao LLM acontece no servidor, com a chave na variável de ambiente <code>OPENROUTER_API_KEY</code> do processo do backend. A OpenRouter tem API compatível com a da OpenAI, e o modelo é escolhido pela variável <code>LLM_MODELO</code>: trocar de modelo muda o custo por token e o texto, e essa escolha merece um ADR com o custo medido por chamada.</p>
+        <div class="doc-nota">
+          <p>Tudo o que o navegador baixa, qualquer pessoa lê, inclusive as variáveis <code>VITE_*</code> do Vite, que são copiadas para dentro do JavaScript. A chave nunca vai para o frontend. No repositório vai só o <code>.env.example</code>, com a chave vazia; o <code>.env</code> fica no <code>.gitignore</code>.</p>
+        </div>
+        <p>O prompt tem duas partes: as regras de escrita (usar só os números do JSON, em porcentagem com duas casas, declarar as limitações, não recomendar compra nem prometer retorno) e o próprio JSON da otimização, recortado e convertido para porcentagem. É esse JSON que torna o texto conferível depois.</p>
+      </section>
+
+      <section class="doc-secao" id="verificacao">
+        <h2>8. Conferir cada número</h2>
+        <p>O texto do slide de exercício foi escrito pelo acervo a partir dos números reais, no estilo de um LLM, com três erros plantados e declarados. Nenhum modelo o gerou. Ele tem 12 números, e o verificador da API confere cada um contra o JSON do prompt.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Trecho</th><th>Erro plantado</th><th>Verificação de presença</th><th>Valor certo</th></tr></thead>
+            <tbody>
+              <tr><td>17,13%</td><td>volatilidade da carteira de máximo Sharpe alterada</td><td>acusa: o número não existe no JSON</td><td>19,13%</td></tr>
+              <tr><td>30,00%</td><td>promessa de retorno para o próximo ano</td><td>acusa: o número não existe no JSON</td><td>nenhum: o JSON não tem retorno futuro</td></tr>
+              <tr><td>0,16</td><td>correlação média do IVVB11 atribuída à VALE3</td><td>aprova: o número existe, no IVVB11</td><td>o IVVB11 é o que mais diversifica, com 0,16; a VALE3 tem 0,32</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>O verificador confere 10 de 12 números e acusa 2; dos 10 que passam, 9 estão certos. Ele faz uma verificação de presença: pega número inventado e número alterado, e deixa passar número certo no ativo errado. Por isso ele devolve também a origem de cada número: para o 0,16, a origem é <code>ativos[IVVB11].correlacao_media</code>, e quem lê a tabela vê na hora que a frase fala da VALE3. Uma regra mais estrita, que exige o mesmo ticker na frase e na origem, pega esse erro e passa a depender de como o modelo escreve a frase. A leitura humana continua no fluxo, agora com o código apontando onde olhar.</p>
+      </section>
+
+      <section class="doc-secao" id="depois">
+        <h2>9. Depois do encontro</h2>
+        <h3>Desafio do notebook</h3>
+        <p>Acrescentar a rota <code>POST /carteiras/metricas</code>, que recebe pesos informados pelo gestor e devolve retorno, volatilidade e Sharpe da carteira, com 422 para pesos que não somam 1, e testar os dois casos com <code>TestClient</code>.</p>
+        <h3>Avanço do A5</h3>
+        <ul>
+          <li>Contrato da API no SPEC.md, com o plano de testes, antes de dividir o trabalho.</li>
+          <li><code>/backend</code> e <code>/frontend</code> separados, com <code>.env.example</code> sem chave real.</li>
+          <li>README com <code>fastapi dev</code> no backend e <code>npm install</code> e <code>npm run dev</code> no frontend.</li>
+          <li>Cache da consulta e exportação em CSV.</li>
+          <li>ADR da divisão entre frontend e backend, com a decisão de cada parte do produto.</li>
+        </ul>
+        <p>O A5 vale 2 pontos, e a review da Sprint 5, em 18/12/2026, fecha o módulo. O exemplo completo, com testes, está em <a href="https://github.com/josercf/2026-2B-M08/blob/main/exemplos/aula06-api-carteira/README.md" target="_blank" rel="noopener">exemplos/aula06-api-carteira</a>.</p>
+        <h3>Leitura complementar</h3>
+        <p>Páginas de primeiros passos e de CORS da documentação do FastAPI, listadas em <a href="../referencias/aula06.html">referências da Aula 06</a>.</p>
+      </section>
+
+    </main>
+
+    <footer class="doc-rodape">
+      <p>Módulo 08 AdmTech &middot; Computação &middot; Prof. José Romualdo &middot; Números medidos sobre <code>dados/</code> pela API de <code>exemplos/aula06-api-carteira</code>.</p>
+    </footer>
+  </div>
+
+  <nav class="doc-nav" aria-label="Navegação">
+    <a href="../index.html"><span class="material-symbols-outlined" aria-hidden="true">home</span>Portal</a>
+    <a href="../aulas/aula06.html"><span class="material-symbols-outlined" aria-hidden="true">slideshow</span>Slides</a>
+    <a href="../referencias/aula06.html"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span>Referências</a>
+  </nav>
+</body>
+</html>
