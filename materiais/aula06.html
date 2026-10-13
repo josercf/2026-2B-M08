@@ -120,13 +120,13 @@
             <thead><tr><th>Rota</th><th>Entrada</th><th>Sucesso</th><th>Erros do contrato</th></tr></thead>
             <tbody>
               <tr><td><code>GET /ativos</code></td><td>nenhuma</td><td>200, os 15 tickers da base</td><td>nenhum</td></tr>
-              <tr><td><code>POST /carteiras/otimizar</code></td><td>2 a 15 tickers sem repetição, início, fim e taxa livre de risco opcional</td><td>200, métricas por ativo, as duas carteiras e a fronteira</td><td>404 ticker fora da base; 422 entrada inválida ou período com menos de 60 pregões</td></tr>
+              <tr><td><code>POST /carteiras/otimizar</code></td><td>2 a 15 tickers sem repetição, início, fim e taxa livre de risco opcional</td><td>200, início e fim da janela comum, número de retornos, métricas por ativo, as duas carteiras e a fronteira</td><td>404 ticker fora da base; 422 entrada inválida ou janela comum com menos de 60 retornos</td></tr>
               <tr><td><code>POST /carteiras/interpretar</code></td><td>o mesmo pedido</td><td>200, prompt, texto, modelo e verificação de cada número</td><td>404 e 422; 503 sem chave no servidor; 502 falha do provedor</td></tr>
               <tr><td><code>POST /carteiras/exportar</code></td><td>o mesmo pedido</td><td>200, CSV com os pesos das duas carteiras</td><td>404 e 422</td></tr>
             </tbody>
           </table>
         </div>
-        <p>Para o pedido de referência da aula (PETR4, VALE3, ITUB4, WEGE3 e IVVB11, de 01/01/2019 a 31/08/2026), a API devolve 1.906 retornos diários: o IVVB11 está sem cotação em 24/10/2025, o coletor descarta essa data só para os tickers pedidos, e o primeiro pregão não tem retorno. A carteira de máximo Sharpe fica com 51,65% em IVVB11, 25,01% em WEGE3 e 23,33% em PETR4, com retorno anual de 26,92%, volatilidade de 19,13% e Sharpe de 0,91, usando o CDI do período, de 9,51% ao ano, como taxa livre de risco.</p>
+        <p>Para o pedido de referência da aula (PETR4, VALE3, ITUB4, WEGE3 e IVVB11, de 01/01/2019 a 31/08/2026), a API devolve 1.907 retornos diários, de 03/01/2019 a 31/08/2026. O tratamento de ausência é o do módulo (ADR-009): o IVVB11 está sem cotação em 24/10/2025 e recebe o último preço, os retornos são recortados na janela comum dos tickers pedidos, e o primeiro pregão não tem retorno. A resposta declara o início e o fim dessa janela; com a GOLD11 no pedido, ela começa em 14/12/2020. A carteira de máximo Sharpe fica com 51,64% em IVVB11, 25,02% em WEGE3 e 23,33% em PETR4, com retorno anual de 26,90%, volatilidade de 19,13% e Sharpe de 0,91, usando o CDI do período, de 9,51% ao ano, como taxa livre de risco.</p>
       </section>
 
       <section class="doc-secao" id="erros">

@@ -20,7 +20,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-from carteira import dados, pipeline
+from carteira import dados, otimizador, pipeline
 import interpretacao
 
 app = FastAPI(title="Simulador de carteira eficiente", version="0.6.0")
@@ -65,6 +65,8 @@ class Carteira(BaseModel):
 
 class Resultado(BaseModel):
     tickers: list[str]
+    inicio_janela: str
+    fim_janela: str
     pregoes: int
     taxa_livre_risco: float
     ativos: list[Ativo]
@@ -96,6 +98,8 @@ def _calcular(tickers, inicio, fim, rf):
         raise HTTPException(404, "Ticker fora da base: " + ", ".join(erro.tickers))
     except dados.PeriodoSemDados as erro:
         raise HTTPException(422, "Período sem dados suficientes: " + str(erro))
+    except otimizador.NaoConvergiu as erro:
+        raise HTTPException(422, "Otimização sem solução para este pedido: " + str(erro))
 
 
 def calcular(pedido: PedidoCarteira) -> Resultado:

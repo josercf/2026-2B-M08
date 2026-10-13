@@ -50,24 +50,28 @@ def tickers_disponiveis():
     return list(ler_csv("precos_ajustados.csv", nrows=0).columns.drop("data"))
 
 
-def precos(tickers, inicio, fim):
-    """Adj Close dos tickers entre inicio e fim, inclusive.
+def precos(tickers):
+    """Adj Close dos tickers na série inteira, com as lacunas isoladas preenchidas.
 
-    Tratamento de ausência declarado: descarta as datas em que algum dos
-    tickers pedidos está sem cotação (dropna só no subconjunto pedido).
+    Tratamento de ausência do módulo (ADR-009 do acervo): a lacuna isolada,
+    pregão sem cotação de um ativo que já era negociado, recebe o último preço
+    (ffill). O ffill nunca preenche antes da primeira cotação: a GOLD11 segue
+    sem preço até 11/12/2020. O recorte de datas fica para depois dos retornos,
+    em metricas.retornos, que usa a janela comum dos tickers pedidos.
     """
     tabela = ler_csv("precos_ajustados.csv", index_col="data", parse_dates=["data"])
     fora = [t for t in tickers if t not in tabela.columns]
     if fora:
         raise TickerDesconhecido(fora)
-    recorte = tabela.loc[inicio:fim, list(tickers)].dropna()
-    if len(recorte) < 60:
-        raise PeriodoSemDados("o período tem %d pregões com todos os ativos; o mínimo é 60" % len(recorte))
-    return recorte
+    return tabela[list(tickers)].ffill()
 
 
 def taxa_livre_risco(inicio, fim):
-    """CDI acumulado no período, anualizado por 252 pregões (SGS 12, em % ao dia)."""
+    """CDI acumulado no período, anualizado por 252 pregões (SGS 12, em % ao dia).
+
+    O pipeline passa a primeira e a última data da janela comum, para a taxa
+    cobrir os mesmos pregões dos retornos.
+    """
     cdi = ler_csv("cdi_diario.csv", index_col="data", parse_dates=["data"])["valor"]
     recorte = cdi.loc[inicio:fim] / 100
     return float(np.prod(1 + recorte) ** (PREGOES_ANO / len(recorte)) - 1)

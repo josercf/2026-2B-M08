@@ -1,4 +1,4 @@
-// Testes do cliente da API, sem navegador e sem dependência: node --test src/
+// Testes do cliente da API, sem navegador e sem dependência: node --test src/api.test.js
 // O fetch é trocado por uma função falsa, então nenhum servidor precisa subir.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
@@ -44,8 +44,8 @@ test('status desconhecido cai na mensagem genérica', () => {
 });
 
 test('otimizar devolve o JSON quando a API responde 200', async () => {
-  const dados = await otimizar({ tickers: ['PETR4', 'VALE3'] }, respostaFalsa(200, { pregoes: 1906 }));
-  assert.equal(dados.pregoes, 1906);
+  const dados = await otimizar({ tickers: ['PETR4', 'VALE3'] }, respostaFalsa(200, { pregoes: 1907 }));
+  assert.equal(dados.pregoes, 1907);
 });
 
 test('otimizar lança erro traduzido e guarda o status quando a API responde 404', async () => {

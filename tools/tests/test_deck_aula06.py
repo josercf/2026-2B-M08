@@ -93,6 +93,7 @@ def test_numeros_do_prompt_conferem_com_a_api(medidas):
     assert '"sharpe": %s' % sharpe["sharpe"] in prompt
     assert '"taxa_livre_risco_pct": %s' % c["taxa_livre_risco_pct"] in prompt
     assert '"pregoes": %d' % c["pregoes"] in prompt
+    assert '"inicio_janela": "%s"' % c["inicio_janela"] in prompt
 
 
 def test_titulos_com_numero_conferem_com_as_medicoes(medidas):
@@ -102,7 +103,7 @@ def test_titulos_com_numero_conferem_com_as_medicoes(medidas):
     com = medidas.problemas_por_pedido(com_cache=True)
     assert "O pedido volta com %d pares da fronteira" % len(r["fronteira"]) in html
     assert "O cache reduz %d problemas de otimização a %d" % (sum(sem), sum(com)) in html
-    assert "cada pedido novo resolve %d problemas" % sem[0] in html
+    assert "cada pedido novo calcula %d carteiras" % sem[0] in html
     assert "Nove requisições" in html and len(medidas.requisicoes()) == 9
     assert len(set(medidas.status_por_caso().values())) == 4  # "quatro status"
 

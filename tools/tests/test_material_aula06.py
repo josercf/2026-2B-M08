@@ -69,6 +69,12 @@ def test_numeros_do_material_conferem_com_as_medicoes():
     assert "retorno anual de %s%%, volatilidade de %s%% e Sharpe de %s" % (
         br(s["retorno_anual_pct"]), br(s["volatilidade_anual_pct"]), br(s["sharpe"])) in texto
     assert "{:,}".format(c["pregoes"]).replace(",", ".") + " retornos diários" in texto
+    assert "de %s a %s" % tuple("/".join(reversed(d.split("-")))
+                                for d in (c["inicio_janela"], c["fim_janela"])) in texto
+    com_ouro = m.cliente().post("/carteiras/otimizar", json=dict(
+        m.PEDIDO, tickers=["PETR4", "BOVA11", "GOLD11"])).json()
+    assert "com a GOLD11 no pedido, ela começa em %s" % "/".join(
+        reversed(com_ouro["inicio_janela"].split("-"))) in texto
     assert "de %s%% ao ano" % br(c["taxa_livre_risco_pct"]) in texto
     sem, com = m.problemas_por_pedido(False), m.problemas_por_pedido(True)
     assert "sem cache, %d; com cache, %d" % (sum(sem), sum(com)) in texto
@@ -77,3 +83,25 @@ def test_numeros_do_material_conferem_com_as_medicoes():
     conferem = sum(v["confere"] for v in verificacao)
     assert "confere %d de %d números e acusa %d" % (conferem, len(verificacao), len(verificacao) - conferem) in texto
     assert "os %d tickers da base" % len(m.requisicoes()[0]["resposta"]) in texto
+
+
+def test_numeros_das_notas_do_professor_conferem_com_as_medicoes():
+    pytest.importorskip("fastapi")
+    pytest.importorskip("scipy")
+    import medidas_aula06 as m
+
+    notas = _ler(os.path.join(RAIZ, "docs", "notas-do-professor", "aula06.md"))
+    c = m.contexto()
+    br = lambda x: ("%.2f" % x).replace(".", ",")
+    data = lambda iso: "/".join(reversed(iso.split("-")))
+    assert "| %s, de %s a %s (ADR-009" % ("{:,}".format(c["pregoes"]).replace(",", "."),
+                                          data(c["inicio_janela"]), data(c["fim_janela"])) in notas
+    assert "| %s%% ao ano |" % br(c["taxa_livre_risco_pct"]) in notas
+    for nome in ("maximo_sharpe", "variancia_minima"):
+        carteira = c[nome]
+        linha = [l for l in notas.splitlines()
+                 if l.startswith("| %s |" % ("Máximo Sharpe" if nome == "maximo_sharpe" else "Variância mínima"))][0]
+        for ticker, peso in carteira["pesos_pct"].items():
+            assert "%s%% %s" % (br(peso), ticker) in linha
+        assert "retorno %s%%" % br(carteira["retorno_anual_pct"]) in linha
+        assert "volatilidade %s%%" % br(carteira["volatilidade_anual_pct"]) in linha

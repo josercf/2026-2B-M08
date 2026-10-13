@@ -27,7 +27,8 @@ presença que a própria API usa.
    mede o que ele devolve. Se o exemplo mudar, o deck, o material, o notebook e os widgets
    reprovam juntos em `tools/tests/test_aula06.py`, `test_deck_aula06.py` e `test_material_aula06.py`.
 2. **Tempo de relógio não trava em teste.** O tempo de resposta varia com a máquina e com a carga.
-   A contagem de chamadas ao SLSQP é determinística (52 por pedido novo; 260 sem cache e 104 com
+   A contagem de carteiras calculadas é determinística (52 por pedido novo: as duas ótimas e os
+   50 pontos da fronteira, o último sem o SLSQP por ser a carteira de um ativo só; 260 sem cache e 104 com
    cache na sequência A, A, B, A, B) e mede o que demora num pedido.
 3. **Erro plantado tem que ser conhecido de antemão.** Um texto gerado por um LLM de verdade muda a
    cada chamada e não pode ser travado em teste. O texto do exercício é escrito por código com os
@@ -56,7 +57,10 @@ presença que a própria API usa.
 
 - Deck, material, notebook, widgets e animações citam números que a API de exemplo devolve hoje,
   travados em teste.
-- O exemplo tem 16 testes de backend e 8 de frontend, rodados pela suíte do acervo.
+- O exemplo tem 21 testes de backend e 8 de frontend, rodados pela suíte do acervo. Em 13/10/2026
+  um pedido de dois ativos (PETR4 e GOLD11) derrubava a API com 500, porque o SLSQP não convergia
+  no último ponto da fronteira; o ponto passou a ser calculado direto e a não convergência
+  restante devolve 422.
 - O exercício do Bloco 6 é reprodutível e tem gabarito fixo.
 
 **Negativas**

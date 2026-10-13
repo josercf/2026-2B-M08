@@ -40,7 +40,8 @@ def test_montador_tem_nove_casos_com_os_status_medidos():
 def test_montador_mostra_a_fronteira_encurtada_e_diz_quantos_pares_faltam():
     caso = [c for c in _json("aula06-requisicoes.json")["casos"]
             if c["chave"] == "POST /carteiras/otimizar|valido"][0]
-    assert '"pregoes": 1906' in caso["resposta"]
+    assert '"pregoes": 1907' in caso["resposta"]
+    assert '"inicio_janela": "2019-01-03"' in caso["resposta"]
     assert "mais 48 pares" in caso["resposta"]
 
 

@@ -43,6 +43,8 @@ def contexto(resultado):
                 "volatilidade_anual_pct": _pct(c["volatilidade"]),
                 "sharpe": round(c["sharpe"], 2)}
     return {
+        "inicio_janela": resultado["inicio_janela"],
+        "fim_janela": resultado["fim_janela"],
         "pregoes": resultado["pregoes"],
         "taxa_livre_risco_pct": _pct(resultado["taxa_livre_risco"]),
         "ativos": [{"ticker": a["ticker"], "retorno_anual_pct": _pct(a["retorno"]),

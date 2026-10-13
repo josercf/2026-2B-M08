@@ -67,7 +67,7 @@ def contexto():
 
 
 def problemas_por_pedido(com_cache):
-    """Problemas de otimização (chamadas ao SLSQP) resolvidos por pedido da sequência.
+    """Carteiras calculadas pelo otimizador (duas ótimas e 50 pontos da fronteira) por pedido da sequência.
 
     Sem cache, cada pedido refaz as duas carteiras ótimas e os 50 pontos da
     fronteira. Com cache, o pedido repetido devolve o resultado guardado.

@@ -24,10 +24,10 @@ Sprint 5, Aula 43 do módulo na Adalove. Horário de relógio a confirmar (P1). 
 | Medida | Valor |
 |---|---|
 | Pedido de referência | PETR4, VALE3, ITUB4, WEGE3 e IVVB11, de 01/01/2019 a 31/08/2026 |
-| Retornos diários no pedido | 1.906 (IVVB11 sem cotação em 24/10/2025, `dropna` só nos pedidos) |
+| Retornos diários no pedido | 1.907, de 03/01/2019 a 31/08/2026 (ADR-009: lacuna da IVVB11 em 24/10/2025 preenchida, janela comum dos tickers pedidos) |
 | CDI do período, taxa livre de risco | 9,51% ao ano |
-| Máximo Sharpe | 51,65% IVVB11, 25,01% WEGE3, 23,33% PETR4; retorno 26,92%, volatilidade 19,13%, Sharpe 0,91 |
-| Variância mínima | 61,64% IVVB11, 22,55% ITUB4, 10,94% WEGE3, 2,53% VALE3, 2,34% PETR4; retorno 21,05%, volatilidade 16,72% |
+| Máximo Sharpe | 51,64% IVVB11, 25,02% WEGE3, 23,33% PETR4; retorno 26,90%, volatilidade 19,13%, Sharpe 0,91 |
+| Variância mínima | 61,65% IVVB11, 22,55% ITUB4, 10,94% WEGE3, 2,54% VALE3, 2,32% PETR4; retorno 21,04%, volatilidade 16,71% |
 | Problemas de otimização por pedido novo | 52 (1 + 1 + 50 pontos da fronteira) |
 | Cinco pedidos (A, A, B, A, B) | 260 sem cache, 104 com cache |
 | Status do montador | 200, 404, 422 e 503 nas nove combinações |

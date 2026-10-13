@@ -33,12 +33,18 @@ def test_backend_passa_nos_proprios_testes():
         [sys.executable, "-m", "pytest", "tests", "-q", "-p", "no:cacheprovider", "-W", "ignore"],
         cwd=BACKEND, env=ambiente, capture_output=True, text=True, timeout=300)
     assert saida.returncode == 0, saida.stdout[-3000:] + saida.stderr[-2000:]
-    assert "16 passed" in saida.stdout
+    # Contagem exata de testes travava a suíte a cada teste novo do backend.
+    assert " passed" in saida.stdout and "failed" not in saida.stdout
 
 
 @pytest.mark.skipif(shutil.which("node") is None, reason="node não instalado")
 def test_cliente_do_frontend_passa_nos_proprios_testes():
-    saida = subprocess.run(["node", "--test", "src/"], cwd=FRONTEND,
+    # Os arquivos vão um a um: "node --test src/" só aceita diretório a partir do
+    # Node 21 e falha no Node 18 e 20 com "Cannot find module".
+    testes = sorted(os.path.join("src", n) for n in os.listdir(os.path.join(FRONTEND, "src"))
+                    if n.endswith(".test.js"))
+    assert testes, "nenhum src/*.test.js no frontend"
+    saida = subprocess.run(["node", "--test", *testes], cwd=FRONTEND,
                            capture_output=True, text=True, timeout=120)
     assert saida.returncode == 0, saida.stdout[-3000:] + saida.stderr[-2000:]
     assert re.search(r"pass 8\b", saida.stdout)

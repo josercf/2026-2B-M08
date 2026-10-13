@@ -7,6 +7,8 @@ import { exportarCsv, interpretar, montarPedido, otimizar } from './api.js';
 import Fronteira from './Fronteira.jsx';
 
 const pct = (x) => (100 * x).toFixed(2).replace('.', ',') + '%';
+// 2019-01-03 vira 03/01/2019, como o gestor lê data.
+const dataBr = (iso) => iso.split('-').reverse().join('/');
 
 function TabelaCarteiras({ resultado }) {
   return (
@@ -139,7 +141,8 @@ export default function App() {
             <h2>Fronteira eficiente</h2>
             <Fronteira resultado={resultado} />
             <p className="nota">
-              {resultado.pregoes} retornos diários; CDI de {pct(resultado.taxa_livre_risco)} ao ano como taxa livre de risco.
+              {resultado.pregoes} retornos diários na janela comum dos ativos, de {dataBr(resultado.inicio_janela)} a{' '}
+              {dataBr(resultado.fim_janela)}; CDI de {pct(resultado.taxa_livre_risco)} ao ano como taxa livre de risco.
             </p>
           </section>
           <section className="cartao">

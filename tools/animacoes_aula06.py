@@ -175,7 +175,7 @@ def cache():
     eixo.set_ylim(-0.75, 1.5)
     eixo.set_yticks([1, 0])
     eixo.set_yticklabels(["Sem cache", "Com cache"], fontsize=19)
-    eixo.set_xlabel("problemas de otimização resolvidos (chamadas ao SLSQP), acumulados")
+    eixo.set_xlabel("carteiras calculadas pelo otimizador, acumuladas")
     for lado in ("top", "right", "left"):
         eixo.spines[lado].set_visible(False)
     servidos = eixo.text(0, -0.55, "", ha="left", va="center", fontsize=16, color=cor("--seg-texto"))

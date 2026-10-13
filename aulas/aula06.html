@@ -86,8 +86,8 @@
         <table class="tabela-leitura tabela-compacta">
           <thead><tr><th>Entrega</th><th>Módulo no backend do exemplo</th><th>O que a API usa</th></tr></thead>
           <tbody>
-            <tr><td>A1</td><td><code>carteira/dados.py</code></td><td>Adj Close e CDI, com <code>dropna</code> só nos tickers pedidos</td></tr>
-            <tr><td>A2</td><td><code>carteira/metricas.py</code></td><td>retornos diários e métricas anualizadas por 252</td></tr>
+            <tr><td>A1</td><td><code>carteira/dados.py</code></td><td>Adj Close e CDI, com a lacuna isolada preenchida pelo último preço (ADR-009)</td></tr>
+            <tr><td>A2</td><td><code>carteira/metricas.py</code></td><td>retornos na janela comum dos tickers pedidos e métricas anualizadas por 252</td></tr>
             <tr><td>A3</td><td>módulo de Monte Carlo do grupo</td><td>rota de simulação, a cargo do grupo</td></tr>
             <tr><td>A4</td><td><code>carteira/otimizador.py</code></td><td>variância mínima, máximo Sharpe e fronteira de 50 pontos</td></tr>
             <tr><td>Aula 05</td><td>validação do grupo</td><td>teste fora da amostra e estabilidade, a cargo do grupo</td></tr>
@@ -276,7 +276,7 @@ def otimizar(pedido: PedidoCarteira) -> Resultado:
         </div>
         <div class="faixa-nota">
           <span class="material-symbols-outlined" aria-hidden="true">edit</span>
-          <p><strong>Antes de tocar:</strong> cada pedido novo resolve 52 problemas no SLSQP. Em quais dos cinco pedidos o servidor com cache volta a calcular?</p>
+          <p><strong>Antes de tocar:</strong> cada pedido novo calcula 52 carteiras no otimizador. Em quais dos cinco pedidos o servidor com cache volta a calcular?</p>
         </div>
         <video class="video-slide" style="width: 747px; height: 420px" controls muted playsinline preload="metadata"
                poster="../assets/img/aula06-cache-poster.png">
@@ -458,18 +458,19 @@ async function aoOtimizar(evento) {
           <pre class="code-compact" style="max-height: 420px"><code>"maximo_sharpe": {
  "pesos_pct": {
   "PETR4": 23.33,
-  "WEGE3": 25.01,
-  "IVVB11": 51.65
+  "WEGE3": 25.02,
+  "IVVB11": 51.64
  },
- "retorno_anual_pct": 26.92,
+ "retorno_anual_pct": 26.9,
  "volatilidade_anual_pct": 19.13,
  "sharpe": 0.91
 },
 "taxa_livre_risco_pct": 9.51,
-"pregoes": 1906</code></pre>
+"inicio_janela": "2019-01-03",
+"pregoes": 1907</code></pre>
           <table class="tabela-leitura">
             <tr><td>Chave</td><td><code>OPENROUTER_API_KEY</code> no ambiente do backend; <code>.env</code> fora do git</td></tr>
-            <tr><td>Contexto</td><td>o JSON de <code>/carteiras/otimizar</code>, em porcentagem; <code>pregoes</code> conta os retornos diários, depois do <code>dropna</code> nos 5 tickers</td></tr>
+            <tr><td>Contexto</td><td>o JSON de <code>/carteiras/otimizar</code>, em porcentagem; <code>pregoes</code> conta os retornos diários da janela comum dos 5 tickers, que começa em <code>inicio_janela</code></td></tr>
             <tr><td>Regras</td><td>usar só esses números, declarar limitações, não prometer retorno</td></tr>
             <tr><td>Modelo</td><td><code>LLM_MODELO</code> no ambiente: trocar de modelo muda custo por token e texto</td></tr>
             <tr><td>Saída</td><td>o texto volta com a verificação de cada número citado</td></tr>
@@ -678,7 +679,7 @@ async function aoOtimizar(evento) {
   <script>
     Reveal.initialize({
       width: 1280, height: 720, center: false, margin: 0,
-      hash: true, slideNumber: false, transition: 'fade'
+      hash: true, slideNumber: false, pdfSeparateFragments: false, transition: 'fade'
     });
   </script>
   <script src="../assets/js/inteli-quiz.js"></script>

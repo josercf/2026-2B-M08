@@ -9,8 +9,8 @@ API e desenha. Os números vêm do snapshot em `dados/` do acervo.
 
 | Pasta ou arquivo | Papel |
 |---|---|
-| `backend/carteira/dados.py` | coletor (A1) reduzido: Adj Close e CDI do snapshot, com `dropna` só nos tickers pedidos |
-| `backend/carteira/metricas.py` | risco e retorno (A2): retornos diários e métricas anualizadas por 252 |
+| `backend/carteira/dados.py` | coletor (A1) reduzido: Adj Close e CDI do snapshot, com a lacuna isolada preenchida pelo último preço (ADR-009) |
+| `backend/carteira/metricas.py` | risco e retorno (A2): retornos diários na janela comum dos tickers pedidos e métricas anualizadas por 252 |
 | `backend/carteira/otimizador.py` | otimizador (A4): variância mínima, máximo Sharpe e fronteira de 50 pontos |
 | `backend/carteira/pipeline.py` | as três camadas numa função só, sem nada de FastAPI |
 | `backend/main.py` | rotas, modelos Pydantic, cache, CORS e códigos de status |
@@ -24,7 +24,7 @@ API e desenha. Os números vêm do snapshot em `dados/` do acervo.
 | Rota | Entrada | Sucesso | Erros do contrato |
 |---|---|---|---|
 | `GET /ativos` | nenhuma | 200, lista de tickers da base | nenhum |
-| `POST /carteiras/otimizar` | `tickers` (2 a 15, sem repetição), `inicio`, `fim`, `taxa_livre_risco` opcional | 200, métricas por ativo, as duas carteiras e a fronteira | 404 ticker fora da base; 422 entrada inválida ou período com menos de 60 pregões |
+| `POST /carteiras/otimizar` | `tickers` (2 a 15, sem repetição), `inicio`, `fim`, `taxa_livre_risco` opcional | 200, início e fim da janela comum, número de retornos, métricas por ativo, as duas carteiras e a fronteira | 404 ticker fora da base; 422 entrada inválida ou janela comum com menos de 60 retornos |
 | `POST /carteiras/interpretar` | o mesmo pedido | 200, prompt, texto, modelo e a verificação de cada número | 404 e 422 como acima; 503 sem chave no servidor; 502 falha do provedor |
 | `POST /carteiras/exportar` | o mesmo pedido | 200, CSV com os pesos das duas carteiras | 404 e 422 como acima |
 
@@ -37,7 +37,7 @@ Backend, a partir de `backend/`:
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-python -m pytest tests -v          # 16 testes, sem rede e sem chave
+python -m pytest tests -v          # 21 testes, sem rede e sem chave
 cp .env.example .env               # preencher OPENROUTER_API_KEY só para a interpretação
 set -a && source .env && set +a    # exporta as variáveis para o processo
 fastapi dev main.py                # http://127.0.0.1:8000/docs
@@ -47,7 +47,7 @@ Frontend, a partir de `frontend/`, com o backend rodando:
 
 ```bash
 npm install
-npm test                           # testes de src/api.js com node --test, sem navegador
+npm test                           # node --test src/api.test.js, sem navegador
 npm run dev                        # http://localhost:5173
 ```
 
