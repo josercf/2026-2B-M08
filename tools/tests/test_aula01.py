@@ -117,3 +117,23 @@ def test_preencher_cria_retorno_zero_e_acumula_no_pregao_seguinte(ticker, no_dia
 
 def test_bova11_ivvb11_e_gold11_faltam_juntos_em_24_10_2025():
     assert m.data_ausencia_compartilhada().strftime("%Y-%m-%d") == "2025-10-24"
+
+
+@pytest.mark.parametrize("ticker,razao,opcao", [
+    ("PETR4", 0.2613, "26%"),
+    ("VALE3", 0.5257, "53%"),
+    ("SUZB3", 0.8637, "86%"),
+    ("BOVA11", 1.0, "100%"),
+])
+def test_opcoes_do_peer_instruction_sao_razoes_reais_da_cesta(ticker, razao, opcao):
+    """As quatro opções do slide de verificação do preparo são a razão Adj Close / Close
+    de um ativo no primeiro pregão, arredondada ao inteiro. A VALE3 mede 52,57%, então a
+    opção é 53%, e não 52% como o roteiro registrava."""
+    ajustado = m.carregar_precos("precos_ajustados.csv").iloc[0]
+    fechamento = m.carregar_precos("precos_fechamento.csv").iloc[0]
+    medida = float(ajustado[ticker] / fechamento[ticker])
+    assert round(medida, 4) == razao
+    assert "%d%%" % round(100 * medida) == opcao
+    deck = open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+                             "aulas", "aula01.html"), encoding="utf-8").read()
+    assert ">%s</li>" % opcao in deck

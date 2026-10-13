@@ -1,0 +1,813 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 01 - Aquisição de Dados de Mercado</title>
+
+  <!-- Aula 01, 20/10/2026, Semana 2, Sprint 1 (Adalove da turma 2026-2B-T19). Roteiro: PLANEJAMENTO_AULA_A_AULA.md, Aula 01.
+       Todo número deste deck está travado em tools/tests/test_aula01.py.
+
+       Divisão dos 105 minutos de metodologia ativa (depois da daily de 15 min):
+         Abertura (antes do Bloco 1)  slides 1 a 4   apresentação do professor, combinados, agenda
+         Bloco 1 (0 a 15)             slides 5 a 8   o parceiro, as cinco entregas, Peer Instruction
+         Bloco 2 (15 a 30)            slides 9 a 11  três visões, animação MGLU3 com previsão
+         Bloco 3 (30 a 45)            slides 12 e 13 widget B3SA3, escolha coletiva
+         Bloco 4 (45 a 60)            slides 14 a 16 o coletor e a dupla no notebook (12 min)
+         Bloco 5 (60 a 75)            slides 17 a 19 ausências, animação e widget
+         Bloco 6 (75 a 90)            slides 20 a 22 efeito na volatilidade, ADR, dupla (12 min)
+         Bloco 7 (90 a 105)           slides 23 a 27 quiz, notebook, A1, referências
+
+       A apresentação do professor e os combinados (slides 2 e 3) entram só nesta aula,
+       a primeira do módulo, e consomem a folga da abertura: se o tempo apertar, cortar
+       primeiro o slide 21 (exemplo de ADR) e reduzir a segunda dupla para 8 minutos. -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-theme.css">
+  <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 1 -->
+      <section class="cover-slide">
+        <div class="cover-panel">
+          <div class="cover-content">
+            <p class="cover-eyebrow">Módulo 08 AdmTech &middot; Computação &middot; Semana 2 &middot; 20/10/2026</p>
+            <h1>Aquisição de Dados de Mercado</h1>
+            <h3>Coleta confiável e reproduzível para o A1, Sprint 1</h3>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="content-slide" id="professor">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Prof. José Romualdo</h2>
+        </div>
+        <div class="perfil">
+          <div class="perfil-painel">
+            <p class="perfil-monograma">JR</p>
+            <div>
+              <p class="perfil-nome">José Romualdo Costa Filho</p>
+              <p class="perfil-papel">Professor de Computação do Módulo 08 AdmTech</p>
+            </div>
+          </div>
+          <div class="perfil-conteudo">
+            <table class="tabela-leitura">
+              <tr>
+                <td><span class="material-symbols-outlined" aria-hidden="true">school</span>Formação</td>
+                <td>Análise e Desenvolvimento de Sistemas (Uninove), especialização em Governança de TI</td>
+              </tr>
+              <tr>
+                <td><span class="material-symbols-outlined" aria-hidden="true">work</span>Trajetória</td>
+                <td>Desenvolvimento e arquitetura de software no Itaú BBA, na Infraero, na Atento e na Liq, com foco em pesquisa e inovação</td>
+              </tr>
+              <tr>
+                <td><span class="material-symbols-outlined" aria-hidden="true">account_balance</span>No Inteli</td>
+                <td>Computação: coleta, risco e retorno, simulação, otimização e o produto com LLM</td>
+              </tr>
+              <tr>
+                <td><span class="material-symbols-outlined" aria-hidden="true">psychology</span>Como ensino</td>
+                <td>Conceito antes de ferramenta. IA entra como apoio em todas as sprints e como produto na última</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">2</p>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="content-slide" id="combinados">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Combinados de participação e entregas</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead>
+            <tr><th>Item</th><th>Regra</th><th>Prazo</th></tr>
+          </thead>
+          <tbody>
+            <tr class="linha-destaque">
+              <td><span class="material-symbols-outlined" aria-hidden="true">forum</span>Participação</td>
+              <td>Nota concedida pelo professor a contribuições relevantes, aderentes ao módulo e ao problema do parceiro: contestar um número com dado, propor um tratamento, explicar o código do grupo</td>
+              <td>em cada encontro</td>
+            </tr>
+            <tr>
+              <td><span class="material-symbols-outlined" aria-hidden="true">edit_note</span>Autoestudo em sala</td>
+              <td>Entregue na Adalove</td>
+              <td>até o fim da instrução</td>
+            </tr>
+            <tr>
+              <td><span class="material-symbols-outlined" aria-hidden="true">home_work</span>Autoestudo para casa</td>
+              <td>Entregue na Adalove</td>
+              <td>sexta, 23h59</td>
+            </tr>
+            <tr>
+              <td><span class="material-symbols-outlined" aria-hidden="true">inventory_2</span>Artefatos</td>
+              <td>Repositório do grupo com SPEC.md, README e ADRs; o notebook roda do zero sem editar código</td>
+              <td>sexta, 23h59</td>
+            </tr>
+            <tr>
+              <td><span class="material-symbols-outlined" aria-hidden="true">smart_toy</span>Uso de IA</td>
+              <td>Permitido. O ADR individual, com o número medido nos dados do grupo e commits ao longo da sprint, mostra a autoria</td>
+              <td>ADRs: 20% de cada artefato</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">3</p>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="content-slide" id="agenda">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Agenda do encontro</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead>
+            <tr><th>Bloco</th><th>Minutos</th><th>Tema</th><th>Interação que fecha o bloco</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Daily</td><td>15</td><td>O que fiz, o que vou fazer, impedimentos</td><td>acesso ao Colab, ao repositório e a <code>dados/</code></td></tr>
+            <tr><td>1</td><td>0 a 15</td><td>O parceiro, a ferramenta e as cinco entregas</td><td>Peer Instruction sobre o Adj Close da PETR4</td></tr>
+            <tr><td>2</td><td>15 a 30</td><td>Três visões do mesmo preço</td><td>previsão antes da animação da MGLU3</td></tr>
+            <tr><td>3</td><td>30 a 45</td><td>Desdobramento da B3SA3 no widget</td><td>escolha coletiva de quatro perguntas</td></tr>
+            <tr><td>4</td><td>45 a 60</td><td>Um coletor que outra pessoa consegue rodar</td><td>dupla no notebook, seções 1 e 2</td></tr>
+            <tr><td>5</td><td>60 a 75</td><td>Ausências reais do provedor</td><td>que número o grupo registra no ADR</td></tr>
+            <tr><td>6</td><td>75 a 90</td><td>Descartar ou preencher, e o primeiro ADR</td><td>dupla no notebook, seções 3 e 4</td></tr>
+            <tr><td>7</td><td>90 a 105</td><td>Quiz e amarração com a Sprint 1</td><td>quiz de três perguntas</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+          <p>Horários de relógio a confirmar na Adalove; os blocos contam do fim da daily.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">4</p>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="content-slide" id="parceiro">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Onde alocar o excedente de caixa do parceiro</h2>
+        </div>
+        <div class="side-by-side">
+          <div>
+            <p>O módulo constrói uma <strong>ferramenta de simulação de carteira eficiente</strong>: o gestor informa os ativos, a ferramenta calcula a Fronteira Eficiente de Markowitz e explica o resultado em português.</p>
+            <p>A análise se sustenta em dados públicos e verificáveis, coletados pelo próprio grupo, com cada decisão de tratamento documentada.</p>
+          </div>
+          <table class="tabela-leitura">
+            <tr><td>Base</td><td>histórico de preços convertido em retornos diários</td></tr>
+            <tr><td>Referências</td><td>CDI como taxa livre de risco, Selic como ciclo, IPCA como régua de retorno real</td></tr>
+            <tr><td>Decisão</td><td>os gestores definem a tolerância a risco e o otimizador devolve a carteira</td></tr>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">database</span>
+          <p>Nenhuma análise das próximas sprints é melhor do que os dados que o A1 coletar hoje.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [6]</p>
+          <p class="footer-page">5</p>
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="content-slide" id="entregas">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Entregas de Computação por sprint</h2>
+        </div>
+        <ol class="trilha">
+          <li class="trilha-atual">
+            <span class="trilha-numero">A1</span>
+            <p class="trilha-titulo">Coletor e Processador de Dados de Mercado</p>
+            <p>Sprint 1 &middot; peso 3</p>
+          </li>
+          <li>
+            <span class="trilha-numero">A2</span>
+            <p class="trilha-titulo">Módulo de Análise de Risco e Retorno Individual</p>
+            <p>Sprint 2 &middot; peso 3</p>
+          </li>
+          <li>
+            <span class="trilha-numero">A3</span>
+            <p class="trilha-titulo">Motor de Simulação de Monte Carlo</p>
+            <p>Sprint 3 &middot; peso 3</p>
+          </li>
+          <li>
+            <span class="trilha-numero">A4</span>
+            <p class="trilha-titulo">Otimizador de Carteira com Fronteira Eficiente</p>
+            <p>Sprints 3 e 4 &middot; peso 3</p>
+          </li>
+          <li>
+            <span class="trilha-numero">A5</span>
+            <p class="trilha-titulo">Simulador Interativo integrado à interface e Interpretação por LLM</p>
+            <p>Sprint 5 &middot; peso 2</p>
+          </li>
+        </ol>
+        <table class="tabela-leitura">
+          <thead><tr><th>Em todo artefato</th><th>Peso no barema</th><th>Nota</th></tr></thead>
+          <tbody>
+            <tr><td>A ferramenta funcionando, com os critérios de cada sprint</td><td>65%</td><td>grupo</td></tr>
+            <tr><td>Especificação e documentação: SPEC.md antes de codar, README, docstrings</td><td>15%</td><td>grupo</td></tr>
+            <tr><td>ADRs com o impacto numérico da decisão, por autoria de commit</td><td>20%</td><td>individual</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">info</span>
+          <p>Pesos da Adalove. Ponderadas individuais de 3 pontos nos autoestudos das Aulas 03 (10/11) e 05 (01/12).</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">6</p>
+        </div>
+      </section>
+
+      <!-- 7 -->
+      <section class="quiz-slide" id="preparo">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Verificação do preparo</h2>
+        </div>
+        <div class="side-by-side">
+          <div class="quiz-container">
+            <p class="quiz-question">No primeiro pregão de 2019, quanto o Adj Close da PETR4 vale em relação ao Close?</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="100% é a razão do BOVA11, um ETF que não distribui proventos.">100%</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="86% é a razão da SUZB3, que pagou bem menos proventos na janela.">86%</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="53% é a razão da VALE3. A PETR4 pagou ainda mais proventos depois de 2019.">53%</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: 26,13%. Os proventos pagos até 2026 descontam quase três quartos do preço de 2019."
+                  data-incorrect-msg="Não.">26%</li>
+            </ul>
+          </div>
+          <ol class="exercise-steps">
+            <li><strong>Votar</strong> sozinho, sem conversar.</li>
+            <li><strong>Discutir em dupla</strong> por dois minutos, defendendo o voto.</li>
+            <li><strong>Votar de novo</strong> e só então revelar.</li>
+          </ol>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; autoestudos [2] [3]</p>
+          <p class="footer-page">7</p>
+        </div>
+      </section>
+
+      <!-- 8 -->
+      <section class="content-slide" id="proventos">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Adj Close da PETR4 vale 26% do Close em 2019</h2>
+        </div>
+        <div class="numero-destaque">
+          <p class="numero-destaque-valor">26,13%</p>
+          <div class="numero-destaque-texto">
+            <p>No primeiro pregão de 2019, o Adj Close da PETR4 vale 26,13% do Close: os proventos pagos até 2026 foram descontados do preço antigo.</p>
+            <p>Com proventos reinvestidos, a PETR4 rendeu 616,00% na janela. Só pelo preço, 87,12%.</p>
+            </div>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Ativo</th><th>Retorno de preço (Close)</th><th>Retorno total (Adj Close)</th></tr></thead>
+          <tbody>
+            <tr><td>PETR4</td><td>87,12%</td><td>616,00%</td></tr>
+            <tr><td>VALE3</td><td>52,38%</td><td>189,86%</td></tr>
+            <tr><td>BBAS3</td><td>-14,65%</td><td>42,09%</td></tr>
+            <tr><td>BOVA11</td><td>98,84%</td><td>98,84%</td></tr>
+          </tbody>
+        </table>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; janela 02/01/2019 a 31/08/2026 [1]</p>
+          <p class="footer-page">8</p>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>Visões do mesmo preço</h2>
+        <h3>Negociado, Close e Adj Close respondem a perguntas diferentes</h3>
+      </section>
+
+      <!-- 10 -->
+      <section class="content-slide" id="mglu3">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O grupamento da MGLU3 vira alta de 896%</h2>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p><strong>Antes de tocar:</strong> anote o que acontece com cada uma das três linhas em 27/05/2024, data do grupamento de 10 para 1.</p>
+        </div>
+        <video class="video-slide" style="max-height: 400px" controls muted playsinline preload="metadata"
+               poster="../assets/img/aula01-tres-visoes-mglu3-poster.png">
+          <source src="../assets/video/aula01-tres-visoes-mglu3.mp4" type="video/mp4">
+        </video>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">10</p>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="content-slide" id="visoes">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Pergunta de negócio de cada visão de preço</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Visão</th><th>Como é obtida</th><th>Pergunta de negócio que responde</th></tr></thead>
+          <tbody>
+            <tr><td>Negociado</td><td>Close multiplicado pelos fatores dos eventos posteriores à data</td><td>Que preço apareceu na tela do pregão naquele dia?</td></tr>
+            <tr><td>Close</td><td>Fechamento já dividido por desdobramento, grupamento e bonificação</td><td>Quanto rendeu quem comprou e segurou, sem reinvestir proventos?</td></tr>
+            <tr class="linha-destaque"><td>Adj Close</td><td>Close com os proventos posteriores também descontados</td><td>Quanto rendeu quem reinvestiu cada provento? Base do risco e do retorno do otimizador</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
+          <p>Qual das três visões responde quanto R$ 1.000 aplicados em 2019 viraram?</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">11</p>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="content-slide" id="widget-visoes">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O desdobramento da B3SA3 derruba o preço negociado em 67,17%</h2>
+        </div>
+        <div class="widget" data-widget="tres-visoes" data-fonte="../assets/data/aula01-tres-visoes.json"
+             data-inicial="B3SA3" data-largura="1000" data-altura="300"></div>
+        <p><strong>E a WEGE3 em 28/04/2021?</strong> Cada dupla prevê a queda do negociado e a do Close antes do clique.</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">12</p>
+        </div>
+      </section>
+
+      <!-- 13 -->
+      <section class="content-slide" id="escolha-visoes">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Qual visão responde a cada pergunta</h2>
+          </div>
+          <div class="cronometro" id="cronometro-escolha" data-minutos="4"></div>
+        </div>
+        <div class="escolha-grid">
+          <div class="escolha" id="escolha-1">
+            <p class="escolha-item">1. Quanto R$ 1.000 em PETR4 em 2019 viraram, com proventos</p>
+            <ul class="escolha-opcoes">
+              <li>Negociado</li>
+              <li>Close</li>
+              <li data-correct="true">Adj Close</li>
+            </ul>
+          </div>
+          <div class="escolha" id="escolha-2">
+            <p class="escolha-item">2. Preço na tela do home broker em 14/05/2021</p>
+            <ul class="escolha-opcoes">
+              <li data-correct="true">Negociado</li>
+              <li>Close</li>
+              <li>Adj Close</li>
+            </ul>
+          </div>
+          <div class="escolha" id="escolha-3">
+            <p class="escolha-item">3. Volatilidade anual para o otimizador</p>
+            <ul class="escolha-opcoes">
+              <li>Negociado</li>
+              <li>Close</li>
+              <li data-correct="true">Adj Close</li>
+            </ul>
+          </div>
+          <div class="escolha" id="escolha-4">
+            <p class="escolha-item">4. Valor de mercado da empresa naquele dia</p>
+            <ul class="escolha-opcoes">
+              <li data-correct="true">Negociado</li>
+              <li>Close</li>
+              <li>Adj Close</li>
+            </ul>
+          </div>
+        </div>
+        <p>Cada dupla decide antes do clique. A sala vota em cada item.</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">13</p>
+        </div>
+      </section>
+
+      <!-- 14 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>Um coletor que outra pessoa consegue rodar</h2>
+        <h3>Parâmetros, queda para o snapshot e fim exclusivo</h3>
+      </section>
+
+      <!-- 15 -->
+      <section class="content-slide" id="coletar">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A função coletar cai para o snapshot sem rede</h2>
+        </div>
+        <div class="side-by-side">
+          <pre class="code-compact" style="max-height: 380px"><code>def coletar(tickers, inicio, fim):
+    if os.environ.get("M08_OFFLINE") != "1":
+        try:
+            import yfinance as yf
+            fim_exclusivo = (pd.Timestamp(fim)
+                             + pd.Timedelta(days=1))
+            bruto = yf.download(
+                [t + ".SA" for t in tickers],
+                start=inicio, end=fim_exclusivo,
+                auto_adjust=False, timeout=20)
+            if not bruto.empty:
+                return (bruto["Close"], bruto["Adj Close"],
+                        "yfinance, ao vivo")
+        except Exception as erro:
+            print("seguindo com o snapshot:", erro)
+    fech = ler_csv("precos_fechamento.csv")
+    ajus = ler_csv("precos_ajustados.csv")
+    return (fech.loc[inicio:fim, tickers],
+            ajus.loc[inicio:fim, tickers], "snapshot de dados/")</code></pre>
+          <table class="tabela-leitura">
+            <tr><td>Parâmetros</td><td>tickers e datas entram como argumento: a mesma função serve a cesta de qualquer grupo</td></tr>
+            <tr><td>Queda</td><td>sem rede ou com <code>M08_OFFLINE=1</code>, lê o snapshot versionado e termina</td></tr>
+            <tr><td>Fim exclusivo</td><td>o <code>end</code> do yfinance não inclui o dia: soma-se um dia para pegar o último pregão</td></tr>
+          </table>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [4]</p>
+          <p class="footer-page">15</p>
+        </div>
+      </section>
+
+      <!-- 16 -->
+      <section class="exercise-slide" id="pratica-coletor">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Prática em dupla: o coletor</h2>
+          </div>
+          <div class="cronometro" id="cronometro-coletor" data-minutos="12"></div>
+        </div>
+        <ol class="exercise-steps">
+          <li>Abram o notebook da aula no Colab. Quem está no teclado é o <strong>condutor</strong>; o outro é o <strong>navegador</strong>, que lê, pergunta e confere.</li>
+          <li>Seção 1: confirmem a cesta de 15 ativos e a janela de 01/01/2019 a 31/08/2026.</li>
+          <li>Seção 2: rodem <code>coletar</code> e anotem a origem impressa (ao vivo ou snapshot).</li>
+          <li>Aos 6 minutos, troquem de papel. O novo condutor roda de novo com <code>M08_OFFLINE=1</code> e compara o resultado.</li>
+          <li>Registrem em uma linha o que mudaria no coletor para a cesta do grupo.</li>
+        </ol>
+        <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 01 no Colab</a></p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">16</p>
+        </div>
+      </section>
+
+      <!-- 17 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>Ausências reais do provedor</h2>
+        <h3>Descartar ou preencher muda o risco medido</h3>
+      </section>
+
+      <!-- 18 -->
+      <section class="content-slide" id="mapa-ausencias">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Três ETFs ficaram sem cotação em 24/10/2025</h2>
+        </div>
+        <video class="video-slide" style="max-height: 410px" controls muted playsinline preload="metadata"
+               poster="../assets/img/aula01-mapa-ausencias-poster.png">
+          <source src="../assets/video/aula01-mapa-ausencias.mp4" type="video/mp4">
+        </video>
+        <p>BOVA11, IVVB11 e GOLD11 sem preço num pregão normal da B3. A GOLD11 tem ainda 484 pregões vazios antes da primeira cotação, em 11/12/2020.</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
+          <p class="footer-page">18</p>
+        </div>
+      </section>
+
+      <!-- 19 -->
+      <section class="content-slide" id="widget-ausencias">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Descartar datas mantém 1.423 dos 1.908 pregões</h2>
+        </div>
+        <div class="widget" data-widget="ausencias" data-fonte="../assets/data/aula01-ausencias.json"
+             data-inicial="descartar"></div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
+          <p>O que sumiu da série junto com esses 485 pregões, e que número o grupo registra no ADR?</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">19</p>
+        </div>
+      </section>
+
+      <!-- 20 -->
+      <section class="content-slide" id="volatilidade">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Descartar datas leva a PETR4 a 33,41%</h2>
+        </div>
+        <div class="side-by-side">
+          <table class="tabela-leitura">
+            <thead><tr><th>Volatilidade anual</th><th>Descartar</th><th>Preencher</th></tr></thead>
+            <tbody>
+              <tr class="linha-destaque"><td>PETR4</td><td>33,41%</td><td>39,25%</td></tr>
+              <tr><td>VALE3</td><td>29,77%</td><td>35,49%</td></tr>
+              <tr><td>BOVA11</td><td>18,51%</td><td>23,41%</td></tr>
+              <tr><td>IVVB11</td><td>17,67%</td><td>20,15%</td></tr>
+              <tr><td>MGLU3</td><td>67,75%</td><td>65,41%</td></tr>
+            </tbody>
+          </table>
+          <div>
+            <p><strong>Descartar</strong> as datas com ausência começa a cesta em 11/12/2020, junto com a GOLD11, e apaga a crise de março de 2020 de todos os ativos.</p>
+            <p><strong>Preencher</strong> com o último preço cria retorno zero no BOVA11 em 24/10/2025 e acumula 0,93% no pregão seguinte, 27/10/2025.</p>
+            <p>Nenhuma das duas é neutra: a escolha muda o risco que o otimizador vai ver.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1] [5]</p>
+          <p class="footer-page">20</p>
+        </div>
+      </section>
+
+      <!-- 21 -->
+      <section class="content-slide" id="adr">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O ADR registra o número que a decisão muda</h2>
+        </div>
+        <div class="side-by-side">
+          <pre class="code-compact" style="max-height: 400px"><code># ADR 0001: Tratamento de datas sem cotação
+
+- Status: aceito
+- Decisores: aluno responsável pelo coletor
+
+## Contexto e problema
+GOLD11 estreia em 11/12/2020 e três ETFs
+ficam sem preço em 24/10/2025.
+
+## Decisão
+Preencher com o último preço por ativo,
+porque descartar apaga março de 2020.
+
+## Consequências
+- Impacto numérico: volatilidade anual da
+  PETR4 fica em 39,25% (33,41% descartando).
+- Ruim: retorno zero artificial em 24/10/2025.</code></pre>
+          <div>
+            <p>O ADR é a parte individual da nota: <strong>20% de cada artefato</strong>, avaliado pela autoria dos commits.</p>
+            <p>Conta o ADR que cita o número medido nos dados do grupo e que entra no repositório junto com a mudança de código, ao longo da sprint.</p>
+            <p><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a> [7], no formato MADR [8].</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">21</p>
+        </div>
+      </section>
+
+      <!-- 22 -->
+      <section class="exercise-slide" id="pratica-ausencias">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Prática em dupla: ausências e o primeiro ADR</h2>
+          </div>
+          <div class="cronometro" id="cronometro-ausencias" data-minutos="12"></div>
+        </div>
+        <ol class="exercise-steps">
+          <li>Seção 3: comparem as três visões de preço para um ativo da cesta com evento corporativo.</li>
+          <li>Seção 4: gerem o relatório de ausências por ativo e rodem os dois tratamentos.</li>
+          <li>Escolham um tratamento para a cesta do grupo e anotem a volatilidade anual da PETR4 sob cada um.</li>
+          <li>Troquem de papel aos 6 minutos. O novo condutor abre o modelo de ADR e escreve contexto, decisão e o impacto numérico.</li>
+          <li>Leiam o ADR em voz alta para a dupla vizinha: o número aparece?</li>
+        </ol>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">22</p>
+        </div>
+      </section>
+
+      <!-- 23 -->
+      <section class="quiz-slide" id="quiz-final">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Quiz de verificação</h2>
+        </div>
+        <div class="quiz-trio">
+          <div class="quiz-container">
+            <p class="quiz-question">1. Em 17/05/2021 o preço negociado da B3SA3 cai 67%. Por quê?</p>
+            <ul class="quiz-options">
+              <li data-correct="true"
+                  data-correct-msg="Certo: desdobramento de 1 para 3, a mesma empresa dividida em mais ações."
+                  data-incorrect-msg="Não.">Desdobramento</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="O Close caiu só 1,51% no dia: o mercado não derreteu.">Queda de mercado</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="O provedor publicou o dado certo; o salto vem do evento.">Erro do provedor</li>
+            </ul>
+          </div>
+          <div class="quiz-container">
+            <p class="quiz-question">2. Qual tratamento tira março de 2020 da PETR4?</p>
+            <ul class="quiz-options">
+              <li data-correct="true"
+                  data-correct-msg="Certo: dropna na cesta inteira começa a série junto com a GOLD11."
+                  data-incorrect-msg="Não.">dropna na cesta</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="O preenchimento mantém os 1.908 pregões.">Preencher para a frente</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="A PETR4 sozinha não tem ausência em 2020.">dropna só na PETR4</li>
+            </ul>
+          </div>
+          <div class="quiz-container">
+            <p class="quiz-question">3. Qual coluna alimenta a volatilidade do otimizador?</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="O negociado tem saltos falsos de desdobramento.">Negociado</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="O Close ignora os proventos e subestima o retorno.">Close</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: retorno total, sem saltos de evento."
+                  data-incorrect-msg="Não.">Adj Close</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">23</p>
+        </div>
+      </section>
+
+      <!-- 24 -->
+      <section class="exercise-slide" id="notebook">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Notebook da aula</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Seção</th><th>O que entrega</th></tr></thead>
+          <tbody>
+            <tr><td>1 e 2</td><td>A cesta, a janela e a função <code>coletar</code> com queda para o snapshot</td></tr>
+            <tr><td>3</td><td>As três visões de preço reconstruídas e a pergunta para a dupla</td></tr>
+            <tr><td>4 e 5</td><td>O relatório de ausências, os dois tratamentos e o ADR da decisão</td></tr>
+            <tr class="linha-destaque"><td>6</td><td>Desafio do A1: trocar a cesta pela do grupo e escrever três casos de teste no SPEC.md</td></tr>
+          </tbody>
+        </table>
+        <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Abrir no Colab</a></p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">24</p>
+        </div>
+      </section>
+
+      <!-- 25 -->
+      <section class="content-slide" id="a1">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Artefato A1 da Sprint 1</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Critério do barema</th><th>Peso</th><th>O que hoje já adiantou</th></tr></thead>
+          <tbody>
+            <tr><td>Pipeline funcional</td><td>25%</td><td>a função <code>coletar</code> parametrizada por tickers e datas</td></tr>
+            <tr><td>Tratamento de dados</td><td>20%</td><td>Adj Close escolhido, ausências medidas e tratadas</td></tr>
+            <tr><td>Relatório descritivo</td><td>10%</td><td>média, desvio, mínimo e máximo por ativo, até a entrega</td></tr>
+            <tr><td>Reprodutibilidade</td><td>10%</td><td>queda para o snapshot, roda do zero sem editar código</td></tr>
+            <tr><td>Especificação e documentação</td><td>15%</td><td>SPEC.md com plano de testes escrito antes de codar</td></tr>
+            <tr class="linha-destaque"><td>ADRs, nota individual</td><td>20%</td><td>o ADR de ausências com o número da PETR4</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">event</span>
+          <p>A1 vale 3 pontos. Entrega até sexta, 23/10/2026, 23h59, com review no mesmo dia. Na Aula 02, os retornos saem do Adj Close já tratado.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">25</p>
+        </div>
+      </section>
+
+      <!-- 26 -->
+      <section class="content-slide" id="referencias">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Referências</h2>
+        </div>
+        <ol class="ref-columns">
+          <li id="ref-1"><a href="https://github.com/josercf/2026-2B-M08/blob/main/dados/README.md" target="_blank" rel="noopener">dados/README.md</a>: snapshot do case, três visões de preço e falhas do provedor.</li>
+          <li id="ref-2">CAETANO, M. A. L. <a href="https://integrada.minhabiblioteca.com.br/reader/books/9786555062410" target="_blank" rel="noopener"><em>Python e mercado financeiro</em></a>. Blucher, 2021. cap. 8 e 10. Autoestudo: Coleta de dados financeiros e DataFrames com Pandas.</li>
+          <li id="ref-3">CÓDIGO QUANT. <a href="https://www.youtube.com/watch?v=7GGrt3-rRH8" target="_blank" rel="noopener">Python para investimentos #1: cotações do Yahoo Finance com Google Colab</a>. YouTube. Autoestudo: Cotações do Yahoo Finance no Colab, do jeito reaproveitável.</li>
+          <li id="ref-4"><a href="https://ranaroussi.github.io/yfinance/" target="_blank" rel="noopener">Documentação do yfinance</a>.</li>
+          <li id="ref-5"><a href="https://pandas.pydata.org/docs/user_guide/missing_data.html" target="_blank" rel="noopener">pandas: Working with missing data</a>.</li>
+          <li id="ref-6"><a href="https://dadosabertos.bcb.gov.br/" target="_blank" rel="noopener">Banco Central, dados abertos do SGS</a>: séries 12, 432, 433 e 1.</li>
+          <li id="ref-7"><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a>.</li>
+          <li id="ref-8"><a href="https://adr.github.io/madr/" target="_blank" rel="noopener">MADR: Markdown Any Decision Records</a>.</li>
+        </ol>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">26</p>
+        </div>
+      </section>
+
+      <!-- 27 -->
+      <section class="end-slide">
+        <h1>Até 05/11/2026</h1>
+        <h3>Aula 02: Dados Financeiros, Do Preço ao Retorno</h3>
+        <h3>Prof. José Romualdo</h3>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280, height: 720, center: false, margin: 0,
+      hash: true, slideNumber: false, transition: 'fade'
+    });
+  </script>
+  <script src="../assets/js/inteli-quiz.js"></script>
+  <script src="../assets/js/inteli-zoom.js"></script>
+  <script src="../assets/js/inteli-print.js"></script>
+  <script src="../assets/js/inteli-cronometro.js"></script>
+  <script src="../assets/js/inteli-escolha.js"></script>
+  <script src="../assets/js/inteli-widgets.js"></script>
+  <script src="../assets/js/widgets/tres-visoes.js"></script>
+  <script src="../assets/js/widgets/ausencias.js"></script>
+</body>
+</html>
