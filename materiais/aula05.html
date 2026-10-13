@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material de apoio &middot; Aula 05 &middot; Validação e Robustez do Modelo</title>
+  <meta name="description" content="Material de apoio da Aula 05 do Módulo 08 AdmTech: preparação pré-aula, divisão temporal entre treino e teste, backtest fora da amostra, drawdown, janelas deslizantes, estabilidade dos pesos e sensibilidade da fronteira ao retorno esperado e ao estimador de covariância.">
+
+  <!-- Este material aprofunda o que o deck só aponta. Todo número citado vem de
+       tools/medidas_aula05.py e está travado em tools/tests/test_aula05.py e
+       tools/tests/test_material_aula05.py. Amostra: Adj Close de 04/01/2021 a
+       31/08/2026, com 24/10/2025 descartada na cesta inteira, anualização por 252
+       e CDI das datas de cada janela como taxa livre de risco. -->
+
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-material.css">
+</head>
+<body>
+  <div class="doc">
+
+    <header class="doc-header">
+      <p class="doc-eyebrow">Módulo 08 AdmTech &middot; Aula 05 &middot; 01/12/2026 &middot; Semana 8 &middot; Sprint 4</p>
+      <h1>Material de apoio: Validação e Robustez do Modelo</h1>
+      <p class="doc-subtitulo">A Aula 04 deixou prontas as carteiras de variância mínima e de máximo
+      Sharpe e a fronteira de 50 pontos, calculadas num notebook. Esta aula testa as duas carteiras
+      num período que o otimizador não viu, mede quanto os pesos mudam de uma janela de dados para
+      outra e qual estimativa mais mexe neles. A seção 1 é o preparo antes do encontro.</p>
+    </header>
+
+    <nav class="doc-toc" aria-label="Sumário">
+      <h2>Nesta página</h2>
+      <ol>
+        <li><a href="#preparacao">Preparação</a></li>
+        <li><a href="#amostra">A amostra desta aula</a></li>
+        <li><a href="#treino-teste">Treino e teste no tempo</a></li>
+        <li><a href="#esperado-realizado">Esperado contra realizado</a></li>
+        <li><a href="#drawdown">Drawdown</a></li>
+        <li><a href="#janelas">Janelas deslizantes e estabilidade</a></li>
+        <li><a href="#sensibilidade">Sensibilidade da fronteira</a></li>
+        <li><a href="#adr">O ADR de quanto confiar no modelo</a></li>
+        <li><a href="#depois">Depois do encontro</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc-conteudo">
+
+      <section class="doc-secao" id="preparacao">
+        <h2>1. Preparação</h2>
+        <p>O encontro abre com uma votação sobre o conteúdo desta seção. Faça as três partes antes da
+        aula, nesta ordem.</p>
+
+        <h3>1.1 Autoestudos da semana, na Adalove</h3>
+        <ol>
+          <li><strong>Os limites do otimizador: premissas, sensibilidade e risco de modelo</strong>
+          (70 min): por que uma carteira ótima no papel pode falhar na prática, com atenção às
+          premissas e à sensibilidade das soluções de otimização, e um vídeo sobre como medir a perda
+          máxima de uma estratégia.</li>
+          <li><strong>Atividade Ponderada 2: A carteira ótima sobrevive fora da amostra?</strong>
+          (120 min): a atividade individual desta semana. O enunciado e o barema estão na Adalove.</li>
+        </ol>
+
+        <h3>1.2 Duas animações do conceito central</h3>
+        <p><strong>A curva de drawdown no teste.</strong> As duas carteiras ótimas de 2023 e 2024
+        aplicadas em 2025, pregão a pregão, ao lado do CDI. Observe qual delas termina o ano acima do
+        CDI e em que mês cada uma atinge a maior queda desde um pico.</p>
+        <video controls muted playsinline preload="metadata"
+               poster="../assets/img/aula05-drawdown-teste-poster.png" style="width: 100%; max-width: 760px; display: block; margin: 0 0 16px;">
+          <source src="../assets/video/aula05-drawdown-teste.mp4" type="video/mp4">
+        </video>
+        <p><strong>A janela de treino deslizando.</strong> A janela de 24 meses anda um mês por vez,
+        e cada janela acrescenta uma barra com os pesos da carteira de máximo Sharpe otimizada nela.
+        Observe se o ativo de maior peso na primeira janela continua no topo até a última, e compare
+        o Sharpe prometido com o entregue na legenda.</p>
+        <video controls muted playsinline preload="metadata"
+               poster="../assets/img/aula05-janela-deslizante-poster.png" style="width: 100%; max-width: 760px; display: block; margin: 0 0 16px;">
+          <source src="../assets/video/aula05-janela-deslizante.mp4" type="video/mp4">
+        </video>
+
+        <h3>1.3 Autoverificação, sem nota</h3>
+        <p>Responda antes de abrir a resposta comentada.</p>
+        <ol>
+          <li>Na animação do drawdown, qual das duas carteiras termina 2025 abaixo do CDI?
+            <details><summary>Resposta comentada</summary>
+            <p>A de máximo Sharpe. Ela acumulou 10,96% em 2025, contra 14,26% do CDI no mesmo período,
+            e a de variância mínima acumulou 22,83%. A carteira de maior Sharpe prometido no treino
+            foi a de menor retorno no teste.</p></details></li>
+          <li>O drawdown máximo do máximo Sharpe em 2025 foi de -8,49%. A carteira perdeu 8,49% no
+          ano?
+            <details><summary>Resposta comentada</summary>
+            <p>Não. Ela terminou o ano com 10,96% de ganho. O drawdown mede a maior queda do
+            patrimônio desde um pico anterior, e esse fundo aconteceu em 08/04/2025. É a perda que
+            quem entrou no pico teria visto no pior momento, e é a medida que um cliente sente.</p></details></li>
+          <li>Na animação da janela deslizante, o ativo de maior peso na primeira janela continua no
+          topo até a última?
+            <details><summary>Resposta comentada</summary>
+            <p>Não. A PETR4 tem 83,27% da carteira na primeira janela, de 2021 e 2022, e vai perdendo
+            espaço para BBAS3, GOLD11 e IVVB11 conforme a janela anda. A legenda final mostra que, em
+            25 das 33 janelas, o Sharpe entregue ficou abaixo do prometido.</p></details></li>
+          <li>Por que o período de teste precisa vir depois do período de treino, em vez de ser
+          sorteado entre os pregões?
+            <details><summary>Resposta comentada</summary>
+            <p>Porque o comitê vai aplicar a carteira no futuro, sem conhecer os retornos que ainda
+            não aconteceram. Sorteando pregões, o treino enxerga dias posteriores ao teste, e o
+            resultado medido fica melhor do que o que a carteira consegue entregar de fato.</p></details></li>
+          <li>O autoestudo trata da sensibilidade da solução ótima aos parâmetros do problema. Qual
+          parâmetro do otimizador de Markowitz é estimado com mais erro, o retorno esperado ou a
+          covariância?
+            <details><summary>Resposta comentada</summary>
+            <p>O retorno esperado. A média de dois anos de retornos diários tem erro padrão da ordem
+            da volatilidade dividida pela raiz do número de anos, e na cesta a mediana desse
+            erro é de 17,63% ao ano (seção 7). A covariância usa as mesmas observações com mais
+            eficiência. A carteira de máximo Sharpe usa o retorno esperado e por isso herda esse
+            erro; a de variância mínima só usa a covariância.</p></details></li>
+        </ol>
+      </section>
+
+      <section class="doc-secao" id="amostra">
+        <h2>2. A amostra desta aula</h2>
+        <p>A aula usa o <code>Adj Close</code> dos 15 ativos da cesta de referência a partir de
+        04/01/2021, primeiro pregão de 2021. A Aula 04 começou em 11/12/2020, data da primeira
+        cotação do GOLD11; aqui o início vai para o primeiro pregão do ano seguinte para que as janelas
+        de treino e de teste caiam em anos e meses civis inteiros, com os 15 ativos presentes desde o
+        primeiro dia.</p>
+        <p>Dentro do período sobra uma única data com ausência, 24/10/2025, em que BOVA11, IVVB11 e
+        GOLD11 ficaram sem cotação (Aula 01). Ela sai da cesta inteira, e o retorno do pregão seguinte
+        cobre os dois dias. Sobram 1.411 pregões de preço e 1.410 retornos diários, até 31/08/2026.</p>
+        <div class="doc-nota">
+          <p><strong>Para o ADR do grupo.</strong> A janela de dados é uma decisão com impacto
+          numérico, e esta aula mostra quanto: a mesma cesta, otimizada em 2021 e 2022 ou em 2023 e
+          2024, produz carteiras de máximo Sharpe com 82,60% da carteira diferente
+          (seção 6).</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="treino-teste">
+        <h2>3. Treino e teste no tempo</h2>
+        <p>O otimizador da Aula 04 recebe retorno esperado, covariância e CDI estimados numa janela de
+        dados e devolve os pesos que seriam ótimos <em>se o futuro repetisse aquela janela</em>. Para
+        saber se o resultado vale fora dela, a amostra é dividida em duas partes, na ordem do tempo:</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Período</th><th>Datas</th><th>Pregões</th><th>Uso</th></tr></thead>
+            <tbody>
+              <tr><td>Treino</td><td>02/01/2023 a 30/12/2024</td><td>499</td><td>estimar e otimizar</td></tr>
+              <tr><td>Teste</td><td>02/01/2025 a 30/12/2025</td><td>249</td><td>aplicar os pesos congelados e medir</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>No teste, os pesos não mudam: a carteira rende, a cada pregão, a soma dos retornos dos
+        ativos ponderada pelos pesos do treino. Essa conta supõe rebalanceamento diário de volta aos
+        pesos originais, sem custo de transação, que é a mesma premissa do retorno esperado do
+        otimizador. Retorno e volatilidade do teste são anualizados por 252, como no treino, para que
+        esperado e realizado sejam comparáveis.</p>
+        <div class="doc-nota">
+          <p><strong>Vazamento temporal.</strong> Sortear 30% dos pregões de 2023 a 2025 para o teste
+          parece mais "estatístico", mas faz o treino conhecer dias posteriores aos do teste. O
+          otimizador aprende, por exemplo, a alta de um ativo que aconteceu em 2025 e é avaliado em
+          dias de 2024. O resultado medido no notebook fica acima do que o comitê vai ver na prática.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="esperado-realizado">
+        <h2>4. Esperado contra realizado</h2>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Carteira</th><th>Retorno</th><th>Volatilidade</th><th>Sharpe</th><th>Acumulado em 2025</th></tr></thead>
+            <tbody>
+              <tr><td>Máximo Sharpe, esperado no treino</td><td>32,05%</td><td>9,51%</td><td>2,11</td><td></td></tr>
+              <tr><td>Máximo Sharpe, realizado em 2025</td><td>11,06%</td><td>10,36%</td><td>-0,31</td><td>10,96%</td></tr>
+              <tr><td>Variância mínima, esperado no treino</td><td>20,77%</td><td>7,46%</td><td>1,17</td><td></td></tr>
+              <tr><td>Variância mínima, realizado em 2025</td><td>21,20%</td><td>8,83%</td><td>0,78</td><td>22,83%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Três leituras saem da tabela.</p>
+        <ol>
+          <li><strong>No máximo Sharpe, a volatilidade errou menos que o retorno.</strong> 9,51%
+          prevista contra 10,36% realizada. Na variância mínima a volatilidade subiu de 7,46% para
+          8,83%, mais do que o erro de retorno dela. O retorno de 2025 nesta tabela é a média diária
+          anualizada por 252; o acumulado no ano está na última coluna.</li>
+          <li><strong>O retorno previsto do máximo Sharpe erra muito.</strong> 32,05% esperados contra
+          11,06% realizados. O otimizador escolhe os ativos com maior retorno médio no treino, e parte
+          desse retorno era acaso daquela janela. Michaud (1989) chamou o otimizador de média e
+          variância de "maximizador de erro de estimação" por esse motivo.</li>
+          <li><strong>O CDI subiu.</strong> A taxa livre de risco foi de 12,00% ao ano no treino e de
+          14,32% ao ano no teste. Como o Sharpe é o retorno menos o CDI dividido pela volatilidade, o
+          mesmo retorno vale menos Sharpe quando o CDI sobe. O máximo Sharpe rendeu menos que o CDI e
+          por isso tem Sharpe negativo.</li>
+        </ol>
+        <p>A variância mínima não usa o retorno esperado. Ela prometeu menos e entregou um retorno
+        praticamente igual ao esperado, 21,20% contra 20,77%; o Sharpe caiu de 1,17 para 0,78 pela
+        volatilidade um pouco maior e pelo CDI mais alto.</p>
+      </section>
+
+      <section class="doc-secao" id="drawdown">
+        <h2>5. Drawdown</h2>
+        <p>Volatilidade mede a dispersão dos retornos diários e trata alta e queda do mesmo jeito. Quem
+        decide alocar o caixa de uma empresa pergunta outra coisa: quanto o patrimônio chegou a cair
+        desde o melhor momento. Essa é a medida de drawdown.</p>
+<pre class="doc-codigo"><code>patrimonio = (1 + diario).cumprod()          # começa em 1 no primeiro pregão do teste
+queda = patrimonio / patrimonio.cummax() - 1  # 0 nos picos, negativo abaixo deles
+drawdown_maximo = queda.min()                 # a pior queda desde um pico
+data_do_fundo = queda.idxmin()</code></pre>
+        <p>Em 2025, o máximo Sharpe teve drawdown máximo de -8,49%, com fundo em 08/04/2025, e a
+        variância mínima, de -4,75%, com fundo em 13/08/2025. As duas terminaram o ano no positivo. O
+        drawdown mede a pior perda que alguém que entrou num pico teria visto antes da recuperação, o
+        que pode acontecer num ano que termina com ganho.</p>
+        <div class="doc-nota">
+          <p><strong>Leitura para o comitê.</strong> O drawdown responde se a carteira cabe no
+          perfil do cliente. Um cliente que precisa do caixa em data marcada se importa com quanto
+          pode estar abaixo do pico no dia do resgate; um cliente de horizonte longo tolera quedas
+          maiores. Na Ponderada 2, o perfil que você recebe é o critério dessa leitura.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="janelas">
+        <h2>6. Janelas deslizantes e estabilidade dos pesos</h2>
+        <p>Um único ano de teste pode ter sido sorte ou azar. As janelas deslizantes repetem o mesmo
+        experimento: treino de 24 meses, teste nos 12 meses seguintes, e a janela anda um mês por vez.
+        Do treino iniciado em 01/2021 ao iniciado em 09/2023 cabem 33 janelas, com o último teste
+        terminando em 08/2026.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Medida nas 33 janelas</th><th>Máximo Sharpe</th><th>Variância mínima</th></tr></thead>
+            <tbody>
+              <tr><td>Janelas com Sharpe entregue abaixo do prometido</td><td>25</td><td>14</td></tr>
+              <tr><td>Janelas com Sharpe entregue negativo</td><td>9</td><td>5</td></tr>
+              <tr><td>Sharpe prometido, mediana</td><td>1,35</td><td>0,21</td></tr>
+              <tr><td>Sharpe entregue, mediana</td><td>0,53</td><td>0,70</td></tr>
+              <tr><td>Carteira trocada de um mês para o seguinte, mediana</td><td>11,91%</td><td>3,23%</td></tr>
+              <tr><td>Carteira trocada de um mês para o seguinte, máximo</td><td>32,32%</td><td>7,88%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>Carteira trocada</strong> é a medida de estabilidade usada na aula: metade da soma,
+        ativo a ativo, da diferença absoluta entre dois vetores de pesos. Zero é a mesma carteira e
+        100% é trocar tudo; o número é a fração do patrimônio que precisaria mudar de mãos para ir de
+        uma versão à outra. Entre a janela de 2021 e 2022 e a de 2023 e 2024, o máximo Sharpe troca
+        82,60% da carteira: a PETR4 cai de 83,27% para 17,40%, e IVVB11 e GOLD11, que tinham peso zero,
+        passam a 41,51% e 21,06%. A variância mínima troca 33,23%.</p>
+        <p>O máximo Sharpe ficou abaixo da promessa em 25 das 33 janelas, e a variância mínima, em 14.
+        O que separa as duas é o retorno esperado, que só o máximo Sharpe usa (seção 7).</p>
+        <div class="doc-nota">
+          <p><strong>Uma mensagem do SLSQP que aparece nas janelas.</strong> Em algumas janelas o
+          otimizador para com <code>Positive directional derivative for linesearch</code> e
+          <code>success=False</code>. A mensagem diz que a busca em linha não encontrou passo que
+          melhorasse a função na precisão pedida, o que acontece quando o ponto já está em cima do
+          ótimo e a tolerância é mais apertada do que a aritmética permite. O otimizador da aula tenta
+          de novo com tolerância um degrau mais folgada antes de desistir, e só aceita resultado com
+          <code>success=True</code>. Ignorar o <code>success</code> e usar o <code>x</code> devolvido
+          é o erro a evitar: em outra situação, a mesma linha de código entrega pesos que não são
+          ótimos.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="sensibilidade">
+        <h2>7. Sensibilidade da fronteira</h2>
+        <p>Duas mudanças na mesma janela de treino de 2023 e 2024 medem qual estimativa mais move os
+        pesos.</p>
+        <h3>7.1 Retorno esperado perturbado</h3>
+        <p>Cada retorno esperado anual recebe mais ou menos 5 pontos percentuais, com o sinal sorteado
+        por semente fixa. O tamanho da perturbação é pequeno perto do erro de estimação: com dois anos
+        de dados, o erro padrão da média anual de um ativo é a volatilidade anual dividida pela raiz de
+        dois, e a mediana desse erro na cesta é 17,63%. Mesmo assim, o máximo Sharpe troca 19,75% da
+        carteira, e a PETR4 sobe de 17% para 27%. A variância mínima troca 0,00%, porque o retorno
+        esperado não entra na conta dela.</p>
+        <h3>7.2 Covariância de Ledoit-Wolf</h3>
+        <p>O estimador de Ledoit e Wolf (2004) é uma média ponderada entre a covariância amostral e um
+        alvo simples, a identidade multiplicada pela variância média. O peso do alvo, chamado de
+        encolhimento, é escolhido pelos próprios dados: cresce quando há poucas observações por
+        ativo e encolhe quando há muitas. Com 499 pregões e 15 ativos, o encolhimento ótimo é de
+        apenas 2,41%, e a troca de estimador move 1,91% do máximo Sharpe e 1,81% da variância
+        mínima.</p>
+        <div class="doc-nota">
+          <p><strong>Quando Ledoit-Wolf faz diferença.</strong> Com janelas curtas e muitos ativos, a
+          covariância amostral fica instável e o encolhimento cresce. Na Ponderada 2 e no A4, meça o
+          encolhimento na sua janela antes de atribuir a ele a estabilidade dos pesos, e registre no
+          ADR o número medido, não o efeito esperado.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="adr">
+        <h2>8. O ADR de quanto confiar no modelo</h2>
+        <p>O A4 pede que a fragilidade dos pesos seja comunicada ao parceiro com honestidade. O lugar
+        dessa comunicação no repositório é um ADR que declara quanto confiar no otimizador, com o
+        número fora da amostra medido nos dados do grupo. Esqueleto, a partir do
+        <a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">modelo do curso</a>:</p>
+<pre class="doc-codigo"><code># ADR NNNN: Janela de dados e confiança no otimizador
+
+## Contexto e problema
+Qual carteira o otimizador prometeu na janela de treino e o que ela entregou no teste.
+
+## Opções consideradas
+- Janela de treino A (datas) e janela B (datas)
+- Covariância amostral e Ledoit-Wolf
+
+## Decisão
+A janela, o estimador e a frequência de reotimização escolhidos, com o porquê.
+
+## Consequências
+- Impacto numérico: Sharpe prometido contra entregue, drawdown no teste
+  e carteira trocada entre janelas, medidos nos dados do grupo.
+- O que o comitê precisa saber antes de usar os pesos.</code></pre>
+      </section>
+
+      <section class="doc-secao" id="depois">
+        <h2>9. Depois do encontro</h2>
+        <p><strong>Desafio do notebook.</strong> Reotimizar o máximo Sharpe do grupo em três janelas
+        de 12 meses seguidas (seção 7 do notebook), medir quanto cada peso varia e escrever o que isso
+        significa para a recomendação ao comitê. Na cesta de referência, o maior peso é BBAS3 em 2022 e
+        em 2023, com 35,84% e 30,71%, e passa a ser IVVB11 em 2024, com 52,56%.</p>
+        <p><strong>Avanço do A4.</strong> A tabela comparativa das duas carteiras ótimas com o
+        resultado fora da amostra e o ADR da janela de dados e do estimador de covariância, com o
+        impacto numérico. O A4 vale 3 pontos; a review da Sprint 4 é em 04/12/2026, e a entrega, na
+        sexta, 04/12/2026, às 23h59.</p>
+        <p><strong>Ponderada 2.</strong> Individual, 3 pontos, com cesta e perfil de cliente definidos
+        pelo último dígito do RA. O enunciado e o barema estão na Adalove; este material usa só a cesta
+        de referência.</p>
+        <p><strong>Leitura complementar.</strong> O capítulo 6 de Bodie, Kane e Marcus, sobre risco de
+        estimação, citado na Ponderada 2. A página de
+        <a href="../referencias/aula05.html">referências</a> lista as fontes.</p>
+        <p>O laboratório completo está no
+        <a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula05.ipynb" target="_blank" rel="noopener">notebook da Aula 05</a>.</p>
+      </section>
+
+    </main>
+
+    <p class="doc-rodape">Prof. José Romualdo &middot; Módulo 08 AdmTech &middot; 2026-2B-T19</p>
+
+  </div>
+
+  <nav class="doc-nav" aria-label="Navegação da aula">
+    <a href="../index.html"><span class="material-symbols-outlined" aria-hidden="true">home</span>Portal</a>
+    <a href="../aulas/aula05.html"><span class="material-symbols-outlined" aria-hidden="true">slideshow</span>Slides</a>
+    <a href="../referencias/aula05.html"><span class="material-symbols-outlined" aria-hidden="true">link</span>Referências</a>
+  </nav>
+</body>
+</html>

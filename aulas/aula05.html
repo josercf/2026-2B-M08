@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 05 - Validação e Robustez do Modelo</title>
+
+  <!-- Aula 05, 01/12/2026 (terça), Semana 8, Sprint 4 (Adalove da turma 2026-2B-T19). Roteiro: PLANEJAMENTO_AULA_A_AULA.md, Aula 05.
+       Todo número deste deck está travado em tools/tests/test_aula05.py e tools/tests/test_widgets_aula05.py.
+       Período do estudo, tratamento de ausência, anualização e taxa livre de risco: cabeçalho de tools/medidas_aula05.py.
+
+       Divisão dos 105 minutos de metodologia ativa (depois da daily de 15 min):
+         Abertura (antes do Bloco 1)  slides 1 e 2   capa e agenda
+         Bloco 1 (0 a 15)             slides 3 a 5   resgate da Aula 04, o que o treino promete, Peer Instruction
+         Bloco 2 (15 a 30)            slides 6 a 9   treino e teste, animação do drawdown com previsão, esperado contra realizado
+         Bloco 3 (30 a 45)            slides 10 e 11 widget da janela de treino com previsão, resumo das 33 janelas
+         Bloco 4 (45 a 60)            slides 12 e 13 o backtest em código e a dupla no notebook (12 min)
+         Bloco 5 (60 a 75)            slides 14 a 16 sensibilidade: previsão, widget e resultado
+         Bloco 6 (75 a 90)            slides 17 a 21 animação da janela, estabilidade, ADR, dupla (8 min) e escolha coletiva (4 min)
+         Bloco 7 (90 a 105)           slides 22 a 27 quiz, notebook, A4, Ponderada 2, referências
+
+       Se o tempo apertar, cortar primeiro o slide 12 (o código já está no notebook) e reduzir
+       a escolha coletiva para dois itens. -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-theme.css">
+  <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 1 -->
+      <section class="cover-slide">
+        <div class="cover-panel">
+          <div class="cover-content">
+            <p class="cover-eyebrow">Módulo 08 AdmTech &middot; Computação &middot; Semana 8 &middot; 01/12/2026</p>
+            <h1>Validação e Robustez do Modelo</h1>
+            <h3>Teste fora da amostra para o A4 e a Ponderada 2, Sprint 4</h3>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="content-slide" id="agenda">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Agenda do encontro</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead>
+            <tr><th>Bloco</th><th>Minutos</th><th>Tema</th><th>Interação que fecha o bloco</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Daily</td><td>15</td><td>O que fiz, o que vou fazer, impedimentos</td><td>estado do otimizador e janela de dados usada</td></tr>
+            <tr><td>1</td><td>0 a 15</td><td>Resgate da fronteira da Aula 04</td><td>Peer Instruction sobre o Sharpe prometido</td></tr>
+            <tr><td>2</td><td>15 a 30</td><td>O otimizador converge para o passado</td><td>pergunta disparada sobre o que faltou testar</td></tr>
+            <tr><td>3</td><td>30 a 45</td><td>A janela de treino desliza</td><td>previsão antes de mover o widget</td></tr>
+            <tr><td>4</td><td>45 a 60</td><td>Backtest das duas carteiras ótimas</td><td>dupla no notebook, seções 1 a 3</td></tr>
+            <tr><td>5</td><td>60 a 75</td><td>Sensibilidade da fronteira</td><td>previsão antes de perturbar a estimativa</td></tr>
+            <tr><td>6</td><td>75 a 90</td><td>Estabilidade dos pesos e o ADR</td><td>escolha coletiva de recomendações ao comitê</td></tr>
+            <tr><td>7</td><td>90 a 105</td><td>Quiz e amarração com a Sprint 4</td><td>quiz de três perguntas</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+          <p>Horários de relógio a confirmar na Adalove; os blocos contam do fim da daily.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
+          <p class="footer-page">2</p>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="content-slide" id="resgate">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Resgate da Aula 04</h2>
+        </div>
+        <div class="side-by-side">
+          <div>
+            <p>A Aula 04 deixou prontas as carteiras de <strong>variância mínima</strong> e de <strong>máximo Sharpe</strong> e a fronteira de 50 pontos, calculadas num notebook.</p>
+            <p>As duas carteiras foram escolhidas olhando só para o passado: retorno médio, covariância e CDI de uma janela de dados que já terminou.</p>
+          </div>
+          <table class="tabela-leitura">
+            <tr><td>Otimizador</td><td>SLSQP, pesos que somam 1, sem venda a descoberto</td></tr>
+            <tr><td>Entrada</td><td>retorno esperado e covariância anualizados por 252</td></tr>
+            <tr><td>Saída</td><td>pesos, retorno, volatilidade e Sharpe esperados</td></tr>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
+          <p>O comitê do parceiro vai aplicar esses pesos no ano seguinte. O que garante que eles funcionam lá?</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
+          <p class="footer-page">3</p>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="content-slide" id="promessa">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Otimizado em 2023 e 2024, o máximo Sharpe promete 2,11</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Carteira, treino 2023 e 2024</th><th>Retorno esperado</th><th>Volatilidade</th><th>Sharpe</th><th>Maiores pesos</th></tr></thead>
+          <tbody>
+            <tr class="linha-destaque"><td>Máximo Sharpe</td><td>32,05%</td><td>9,51%</td><td>2,11</td><td>IVVB11 41,51%, GOLD11 21,06%, PETR4 17,40%, BBAS3 16,81%</td></tr>
+            <tr><td>Variância mínima</td><td>20,77%</td><td>7,46%</td><td>1,17</td><td>IVVB11 27,44%, GOLD11 22,58%, EGIE3 16,12%, BBAS3 8,24%</td></tr>
+          </tbody>
+        </table>
+        <p>Cesta de referência de 15 ativos, Adj Close, 499 pregões de treino. CDI de 12,00% ao ano no treino como taxa livre de risco.</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4 &middot; [1]</p>
+          <p class="footer-page">4</p>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="quiz-slide" id="preparo">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Verificação do preparo</h2>
+        </div>
+        <div class="side-by-side">
+          <div class="quiz-container">
+            <p class="quiz-question">A carteira de máximo Sharpe otimizada em 2023 e 2024 promete Sharpe 2,11. Aplicada em 2025, o que ela entrega?</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="O otimizador escolhe os pesos que mais aproveitaram o acaso do treino, e o acaso não se repete.">Perto de 2,11: os pesos são ótimos</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="Na mediana das 33 janelas de teste o máximo Sharpe entregou 0,53. Em 2025, menos ainda.">Menos, mas acima de 1</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: -0,31. Acumulou 10,96% em 2025, abaixo dos 14,26% do CDI."
+                  data-incorrect-msg="Não.">Sharpe negativo: rende menos que o CDI</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="O CDI subiu de 12,00% no treino para 14,32% no teste, e CDI maior reduz o Sharpe.">Mais, porque o CDI subiu</li>
+            </ul>
+          </div>
+          <ol class="exercise-steps">
+            <li><strong>Votar</strong> sozinho, sem conversar.</li>
+            <li><strong>Discutir em dupla</strong> por dois minutos, defendendo o voto com a animação do drawdown da preparação.</li>
+            <li><strong>Votar de novo</strong> e só então revelar.</li>
+          </ol>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
+          <p class="footer-page">5</p>
+        </div>
+      </section>
+
+      <!-- 6 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>O otimizador converge para o passado</h2>
+        <h3>Treino, teste e a comparação entre esperado e realizado</h3>
+      </section>
+
+      <!-- 7 -->
+      <section class="content-slide" id="treino-teste">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O teste usa 249 pregões fora do treino</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Período</th><th>Datas</th><th>Pregões</th><th>Para que serve</th></tr></thead>
+          <tbody>
+            <tr><td>Treino</td><td>02/01/2023 a 30/12/2024</td><td>499</td><td>estimar retorno e covariância e otimizar os pesos</td></tr>
+            <tr class="linha-destaque"><td>Teste</td><td>02/01/2025 a 30/12/2025</td><td>249</td><td>aplicar os pesos congelados e medir o realizado</td></tr>
+          </tbody>
+        </table>
+        <div class="side-by-side">
+          <div>
+            <p><strong>A divisão é no tempo.</strong> Sortear pregões para o teste deixaria o treino enxergar dias posteriores a ele, e o resultado pareceria melhor do que o comitê vai ver.</p>
+          </div>
+          <div>
+            <p><strong>Uma data a menos.</strong> 24/10/2025 sai da cesta inteira, porque BOVA11, IVVB11 e GOLD11 ficaram sem cotação (Aula 01). O pregão seguinte cobre os dois dias.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4 &middot; [1]</p>
+          <p class="footer-page">7</p>
+        </div>
+      </section>
+
+      <!-- 8 -->
+      <section class="content-slide" id="animacao-drawdown">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O máximo Sharpe acumulou 10,96% em 2025</h2>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p><strong>Antes de tocar:</strong> anote em que mês de 2025 cada carteira atinge a maior queda desde um pico, e qual das duas cai mais.</p>
+        </div>
+        <video class="video-slide" style="max-height: 440px" controls muted playsinline preload="metadata"
+               poster="../assets/img/aula05-drawdown-teste-poster.png">
+          <source src="../assets/video/aula05-drawdown-teste.mp4" type="video/mp4">
+        </video>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4 &middot; [1] [3]</p>
+          <p class="footer-page">8</p>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="content-slide" id="esperado-realizado">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O máximo Sharpe prometeu 2,11 e entregou -0,31</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Carteira</th><th>Retorno</th><th>Volatilidade</th><th>Sharpe</th><th>Drawdown máximo</th></tr></thead>
+          <tbody>
+            <tr><td>Máximo Sharpe, esperado</td><td>32,05%</td><td>9,51%</td><td>2,11</td><td>não medido no treino</td></tr>
+            <tr class="linha-destaque"><td>Máximo Sharpe, realizado</td><td>11,06%</td><td>10,36%</td><td>-0,31</td><td>-8,49% em 08/04/2025</td></tr>
+            <tr><td>Variância mínima, esperado</td><td>20,77%</td><td>7,46%</td><td>1,17</td><td>não medido no treino</td></tr>
+            <tr class="linha-destaque"><td>Variância mínima, realizado</td><td>21,20%</td><td>8,83%</td><td>0,78</td><td>-4,75% em 13/08/2025</td></tr>
+          </tbody>
+        </table>
+        <p>No máximo Sharpe, a volatilidade foi de 9,51% para 10,36% e o retorno médio anualizado caiu de 32,05% para 11,06%, abaixo do CDI anualizado do teste, de 14,32%. Na variância mínima, o retorno quase acertou e a volatilidade subiu de 7,46% para 8,83%.</p>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
+          <p>Que parte do resultado da Aula 04 o grupo ainda não tinha testado?</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4 &middot; retorno e volatilidade anualizados por 252 &middot; [1] [6]</p>
+          <p class="footer-page">9</p>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="content-slide" id="widget-janela">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A janela de treino desliza 33 vezes</h2>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p><strong>Antes de mover:</strong> quanto da carteira de máximo Sharpe troca de ativo quando a janela anda um mês?</p>
+        </div>
+        <div class="widget" data-widget="janela-treino" data-fonte="../assets/data/aula05-janela-treino.json"
+             data-inicial="0" data-objetivo="max_sharpe" data-largura="1000" data-altura="300"></div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4 &middot; treino de 24 meses, teste nos 12 seguintes &middot; marca coral: peso da janela anterior</p>
+          <p class="footer-page">10</p>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="content-slide" id="resumo-janelas">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Em 25 das 33 janelas o máximo Sharpe entregou menos que prometeu</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Medida nas 33 janelas</th><th>Máximo Sharpe</th><th>Variância mínima</th></tr></thead>
+          <tbody>
+            <tr class="linha-destaque"><td>Janelas com Sharpe entregue abaixo do prometido</td><td>25</td><td>14</td></tr>
+            <tr><td>Janelas que renderam menos que o CDI (Sharpe negativo)</td><td>9</td><td>5</td></tr>
+            <tr><td>Sharpe prometido, mediana</td><td>1,35</td><td>0,21</td></tr>
+            <tr><td>Sharpe entregue, mediana</td><td>0,53</td><td>0,70</td></tr>
+            <tr class="linha-destaque"><td>Carteira trocada de um mês para o seguinte, mediana</td><td>11,91%</td><td>3,23%</td></tr>
+            <tr><td>Carteira trocada de um mês para o seguinte, máximo</td><td>32,32%</td><td>7,88%</td></tr>
+          </tbody>
+        </table>
+        <p>A variância mínima não usa o retorno esperado, e por isso promete pouco e oscila pouco.</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4 &middot; treinos de 01/2021 a 09/2023, testes até 08/2026 &middot; [1] [5]</p>
+          <p class="footer-page">11</p>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="content-slide" id="backtest-codigo">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O backtest congela os pesos do treino</h2>
+        </div>
+        <div class="side-by-side">
+          <pre class="code-compact" style="max-height: 400px"><code>def realizado(w, retornos_teste, cdi_teste):
+    diario = retornos_teste.to_numpy() @ w
+    diario = pd.Series(diario, retornos_teste.index)
+    retorno = diario.mean() * 252
+    vol = diario.std() * np.sqrt(252)
+    rf = (1 + cdi_teste).prod() ** (252 / len(cdi_teste)) - 1
+    patrimonio = (1 + diario).cumprod()
+    queda = patrimonio / patrimonio.cummax() - 1
+    return {"retorno": retorno, "vol": vol,
+            "sharpe": (retorno - rf) / vol,
+            "drawdown_max": queda.min()}
+
+treino = retornos.loc["2023":"2024"]
+teste = retornos.loc["2025"]
+mu, cov = estimar(treino)
+w = otimizar(mu, cov, cdi_anual(treino.index), "max_sharpe")
+realizado(w, teste, cdi.reindex(teste.index))</code></pre>
+          <table class="tabela-leitura">
+            <tr><td>Pesos</td><td>vêm só do treino e não mudam durante o teste</td></tr>
+            <tr><td>Patrimônio</td><td>começa em 1 e acumula o retorno diário da carteira</td></tr>
+            <tr><td>Drawdown</td><td>queda do patrimônio desde o maior valor anterior a cada dia</td></tr>
+            <tr><td>Taxa livre</td><td>CDI das datas do próprio teste</td></tr>
+          </table>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4 &middot; [3]</p>
+          <p class="footer-page">12</p>
+        </div>
+      </section>
+
+      <!-- 13 -->
+      <section class="exercise-slide" id="pratica-backtest">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Prática em dupla: o backtest fora da amostra</h2>
+          </div>
+          <div class="cronometro" id="cronometro-backtest" data-minutos="12"></div>
+        </div>
+        <ol class="exercise-steps">
+          <li>Abram o notebook da aula no Colab. Quem está no teclado é o <strong>condutor</strong>; o outro é o <strong>navegador</strong>, que lê, pergunta e confere.</li>
+          <li>Seções 1 e 2: carreguem a cesta desde 2021 e rodem o otimizador da Aula 04 no treino 2023 e 2024.</li>
+          <li>Seção 3: rodem o backtest das duas carteiras em 2025 e montem a tabela de esperado contra realizado.</li>
+          <li>Aos 6 minutos, troquem de papel. O novo condutor plota o drawdown das duas carteiras e confere os -8,49% do máximo Sharpe.</li>
+          <li>Escrevam em uma linha qual número do A4 do grupo ainda não foi testado fora da amostra.</li>
+        </ol>
+        <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula05.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 05 no Colab</a></p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
+          <p class="footer-page">13</p>
+        </div>
+      </section>
+
+      <!-- 14 -->
+      <section class="section-slide">
+        <div class="accent-bar"></div>
+        <h2>Sensibilidade da fronteira</h2>
+        <h3>Retorno esperado perturbado ou covariância de Ledoit-Wolf</h3>
+      </section>
+
+      <!-- 15 -->
+      <section class="content-slide" id="widget-sensibilidade">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Sensibilidade dos pesos a duas mudanças de estimativa</h2>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p><strong>Antes de clicar:</strong> qual mudança mexe mais nos pesos, somar ou tirar 5 p.p. de cada retorno esperado ou trocar a covariância por Ledoit-Wolf?</p>
+        </div>
+        <div class="widget" data-widget="sensibilidade-pesos" data-fonte="../assets/data/aula05-sensibilidade.json"
+             data-inicial="base" data-objetivo="max_sharpe" data-largura="900" data-altura="250"></div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4 &middot; treino 2023 e 2024, sinal de cada perturbação sorteado com semente fixa</p>
+          <p class="footer-page">15</p>
+        </div>
+      </section>
+
+      <!-- 16 -->
+      <section class="content-slide" id="sensibilidade">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>No máximo Sharpe, 5 p.p. trocam 19,75%</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Carteira trocada em relação à original</th><th>Retorno esperado &plusmn;5 p.p.</th><th>Ledoit-Wolf</th></tr></thead>
+          <tbody>
+            <tr class="linha-destaque"><td>Máximo Sharpe</td><td>19,75%</td><td>1,91%</td></tr>
+            <tr><td>Variância mínima</td><td>0,00%</td><td>1,81%</td></tr>
+          </tbody>
+        </table>
+        <div class="side-by-side">
+          <div>
+            <p><strong>O retorno esperado é a estimativa mais frágil.</strong> Com dois anos de treino, o erro padrão mediano do retorno anual de um ativo é 17,63%: a perturbação de 5 p.p. cabe folgada dentro dele. A PETR4 sobe de 17% para 27% da carteira. A variância mínima ignora o retorno esperado e fica igual.</p>
+          </div>
+          <div>
+            <p><strong>Ledoit-Wolf mexe pouco aqui.</strong> Com 499 pregões e 15 ativos, o encolhimento ótimo é de 2,41%, e as duas carteiras mudam menos de 2%.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4 &middot; [2] [4] [7]</p>
+          <p class="footer-page">16</p>
+        </div>
+      </section>
+
+      <!-- 17 -->
+      <section class="content-slide" id="animacao-janela">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O máximo Sharpe troca 11,91% por mês</h2>
+        </div>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+          <p><strong>Antes de tocar:</strong> o ativo de maior peso na primeira janela continua no topo na última?</p>
+        </div>
+        <video class="video-slide" style="max-height: 440px" controls muted playsinline preload="metadata"
+               poster="../assets/img/aula05-janela-deslizante-poster.png">
+          <source src="../assets/video/aula05-janela-deslizante.mp4" type="video/mp4">
+        </video>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4 &middot; [1]</p>
+          <p class="footer-page">17</p>
+        </div>
+      </section>
+
+      <!-- 18 -->
+      <section class="content-slide" id="estabilidade">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Entre biênios, 82,60% do máximo Sharpe muda</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Carteira</th><th>Treino 2021 e 2022</th><th>Treino 2023 e 2024</th><th>Trocado</th></tr></thead>
+          <tbody>
+            <tr class="linha-destaque"><td>Máximo Sharpe</td><td>PETR4 83,27%, VALE3 16,73%</td><td>IVVB11 41,51%, GOLD11 21,06%, PETR4 17,40%, BBAS3 16,81%</td><td>82,60%</td></tr>
+            <tr><td>Variância mínima</td><td>GOLD11 36,36%, EGIE3 27,00% e outros</td><td>IVVB11 27,44%, GOLD11 22,58%, EGIE3 16,12% e outros</td><td>33,23%</td></tr>
+          </tbody>
+        </table>
+        <p>A variância mínima troca menos porque não usa o retorno esperado, a estimativa mais frágil das duas. Recomendar o máximo Sharpe ao comitê inclui dizer com que frequência os pesos serão revistos.</p>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">functions</span>
+          <p><strong>Carteira trocada</strong> = metade da soma, ativo a ativo, da diferença absoluta entre os pesos. Zero é a mesma carteira; 100% é trocar tudo.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4 &middot; [1]</p>
+          <p class="footer-page">18</p>
+        </div>
+      </section>
+
+      <!-- 19 -->
+      <section class="content-slide" id="adr">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O ADR declara quanto confiar no modelo, com o número do teste</h2>
+        </div>
+        <div class="side-by-side">
+          <pre class="code-compact" style="max-height: 400px; font-size: var(--escala-texto)"><code># ADR 0010: Confiança no otimizador
+
+## Contexto
+Na cesta de referência, o máximo Sharpe
+de 2023-2024 prometia 2,11 e entregou
+-0,31 em 2025.
+
+## Decisão
+Reotimizar todo mês, treino de 24 meses.
+
+## Impacto numérico
+Entre 2021-2022 e 2023-2024, 82,60%
+do máximo Sharpe troca de ativo;
+33,23% da variância mínima.</code></pre>
+          <div>
+            <p>O ADR diz <strong>quanto confiar</strong> no otimizador, citando o resultado fora da amostra medido nos dados do grupo.</p>
+            <p>A janela de dados e o estimador de covariância entram como decisões registradas, cada uma com o impacto numérico que provocou.</p>
+            <p><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a> [8].</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4 &middot; exemplo com a cesta de referência</p>
+          <p class="footer-page">19</p>
+        </div>
+      </section>
+
+      <!-- 20 -->
+      <section class="exercise-slide" id="pratica-estabilidade">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Prática em dupla: estabilidade e o ADR</h2>
+          </div>
+          <div class="cronometro" id="cronometro-estabilidade" data-minutos="8"></div>
+        </div>
+        <ol class="exercise-steps">
+          <li>Seção 5: otimizem as duas carteiras em 2021 e 2022 e em 2023 e 2024 e calculem a carteira trocada entre as janelas.</li>
+          
+          <li>Troquem de papel aos 4 minutos. O novo condutor escreve o ADR de quanto confiar no modelo, com um número da seção 5. A seção 6 repete o widget do slide 15 e fica para depois da aula.</li>
+          <li>Leiam o ADR para a dupla vizinha: o número fora da amostra aparece?</li>
+        </ol>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
+          <p class="footer-page">20</p>
+        </div>
+      </section>
+
+      <!-- 21 -->
+      <section class="content-slide" id="escolha-comite">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Recomendações ao comitê e o teste fora da amostra</h2>
+          </div>
+          <div class="cronometro" id="cronometro-escolha" data-minutos="4"></div>
+        </div>
+        <div class="escolha-grid">
+          <div class="escolha" id="escolha-1">
+            <p class="escolha-item">1. O máximo Sharpe entrega Sharpe perto de 2 fora da amostra</p>
+            <ul class="escolha-opcoes escolha-duas">
+              <li>Sustentada</li>
+              <li data-correct="true">Não sustentada</li>
+            </ul>
+          </div>
+          <div class="escolha" id="escolha-2">
+            <p class="escolha-item">2. A variância mínima rendeu mais que o CDI em 2025</p>
+            <ul class="escolha-opcoes escolha-duas">
+              <li data-correct="true">Sustentada</li>
+              <li>Não sustentada</li>
+            </ul>
+          </div>
+          <div class="escolha" id="escolha-3">
+            <p class="escolha-item">3. Os pesos de máximo Sharpe podem ficar um ano sem revisão</p>
+            <ul class="escolha-opcoes escolha-duas">
+              <li>Sustentada</li>
+              <li data-correct="true">Não sustentada</li>
+            </ul>
+          </div>
+          <div class="escolha" id="escolha-4">
+            <p class="escolha-item">4. No máximo Sharpe, a volatilidade prevista errou menos que o retorno previsto</p>
+            <ul class="escolha-opcoes escolha-duas">
+              <li data-correct="true">Sustentada</li>
+              <li>Não sustentada</li>
+            </ul>
+          </div>
+        </div>
+        <p>Cada dupla decide antes do clique e defende a resposta com um número da aula.</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
+          <p class="footer-page">21</p>
+        </div>
+      </section>
+
+      <!-- 22 -->
+      <section class="quiz-slide" id="quiz-final">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Quiz de verificação</h2>
+        </div>
+        <div class="quiz-trio">
+          <div class="quiz-container">
+            <p class="quiz-question">1. Qual divisão testa a carteira fora da amostra?</p>
+            <ul class="quiz-options">
+              <li data-correct="true"
+                  data-correct-msg="Certo: o teste começa depois do último dia do treino."
+                  data-incorrect-msg="Não.">Treino 2023 e 2024, teste 2025</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="Sortear dias deixa o treino ver o futuro do teste.">Sortear 30% dos pregões para o teste</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="Medir no próprio treino repete o Sharpe prometido.">Medir em 2023 e 2024</li>
+            </ul>
+          </div>
+          <div class="quiz-container">
+            <p class="quiz-question">2. Quanto 5 p.p. no retorno esperado mudam a variância mínima?</p>
+            <ul class="quiz-options">
+              <li data-correct="true"
+                  data-correct-msg="Certo: a variância mínima só usa a covariância."
+                  data-incorrect-msg="Não.">0,00%</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="1,81% é o efeito de Ledoit-Wolf.">1,81%</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="19,75% é o efeito no máximo Sharpe.">19,75%</li>
+            </ul>
+          </div>
+          <div class="quiz-container">
+            <p class="quiz-question">3. Drawdown máximo de -8,49% em 2025 quer dizer</p>
+            <ul class="quiz-options">
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="A carteira acumulou 10,96% no ano.">perda de 8,49% no ano</li>
+              <li data-correct="true"
+                  data-correct-msg="Certo: em 08/04/2025, contra o pico anterior."
+                  data-incorrect-msg="Não.">maior queda desde um pico</li>
+              <li data-correct="false"
+                  data-correct-msg="Certo."
+                  data-incorrect-msg="A volatilidade realizada foi 10,36%.">volatilidade de 8,49%</li>
+            </ul>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
+          <p class="footer-page">22</p>
+        </div>
+      </section>
+
+      <!-- 23 -->
+      <section class="exercise-slide" id="notebook">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Notebook da aula</h2>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Seção</th><th>O que entrega</th></tr></thead>
+          <tbody>
+            <tr><td>1 e 2</td><td>A cesta desde 2021 e o otimizador da Aula 04 com SLSQP</td></tr>
+            <tr><td>3 e 4</td><td>O backtest de 2025 e as 33 janelas deslizantes</td></tr>
+            <tr><td>5 e 6</td><td>A carteira trocada entre janelas e a sensibilidade com Ledoit-Wolf</td></tr>
+            <tr class="linha-destaque"><td>7</td><td>Desafio: reotimizar em três janelas, medir quanto cada peso varia e escrever o que isso significa para o comitê</td></tr>
+          </tbody>
+        </table>
+        <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula05.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula05.ipynb" target="_blank" rel="noopener">Abrir no Colab</a></p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
+          <p class="footer-page">23</p>
+        </div>
+      </section>
+
+      <!-- 24 -->
+      <section class="content-slide" id="a4">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Artefato A4 da Sprint 4</h2>
+        </div>
+        <table class="tabela-leitura tabela-compacta">
+          <thead><tr><th>Critério do barema</th><th>Peso</th><th>O que hoje já adiantou</th></tr></thead>
+          <tbody>
+            <tr><td>Corretude da otimização</td><td>30%</td><td>as duas carteiras conferidas fora da amostra</td></tr>
+            <tr><td>Fronteira completa</td><td>15%</td><td>a fronteira da Aula 04, agora com a janela de dados declarada</td></tr>
+            <tr class="linha-destaque"><td>Leitura analítica</td><td>10%</td><td>tabela das duas carteiras com o resultado fora da amostra</td></tr>
+            <tr><td>Integração</td><td>10%</td><td>o backtest consome o otimizador sem copiar código</td></tr>
+            <tr><td>Especificação e documentação</td><td>15%</td><td>caso de teste com a janela de treino e a de teste no SPEC.md</td></tr>
+            <tr class="linha-destaque"><td>ADRs, nota individual</td><td>20%</td><td>o ADR da janela e do estimador, com o impacto numérico</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">event</span>
+          <p>A4 vale 3 pontos. Os pesos ótimos mudam com a janela, e o A4 comunica isso ao parceiro. Entrega até sexta, 04/12/2026, 23h59, com review no mesmo dia.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
+          <p class="footer-page">24</p>
+        </div>
+      </section>
+
+      <!-- 25 -->
+      <section class="content-slide" id="ponderada2">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Ponderada 2 e a próxima aula</h2>
+        </div>
+        <table class="tabela-leitura">
+          <tr class="linha-destaque"><td>Ponderada 2</td><td>A carteira ótima sobrevive fora da amostra? Individual, 3 pontos, com cesta e perfil de cliente definidos pelo último dígito do RA. Enunciado e barema na Adalove.</td></tr>
+          <tr><td>O que a aula cobre</td><td>divisão em treino e teste, backtest das duas carteiras, drawdown, carteira trocada entre janelas</td></tr>
+          <tr><td>O que fica com você</td><td>a cesta e o perfil do seu RA, a leitura dos números e a recomendação ao comitê</td></tr>
+          <tr><td>Aula 06, 16/12/2026</td><td>React, FastAPI e interpretação com LLM sobre os números que o A4 calcula</td></tr>
+        </table>
+        <div class="faixa-nota">
+          <span class="material-symbols-outlined" aria-hidden="true">menu_book</span>
+          <p>Leitura complementar: Bodie, Kane e Marcus, capítulo 6, sobre risco de estimação [4].</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
+          <p class="footer-page">25</p>
+        </div>
+      </section>
+
+      <!-- 26 -->
+      <section class="content-slide" id="referencias">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Referências</h2>
+        </div>
+        <ol class="ref-columns">
+          <li id="ref-1"><a href="https://github.com/josercf/2026-2B-M08/blob/main/dados/README.md" target="_blank" rel="noopener">dados/README.md</a>: snapshot do case, cesta de referência e ausências do provedor.</li>
+          <li id="ref-2">LACHTERMACHER, G. <em>Pesquisa operacional na tomada de decisões</em>. 5. ed. LTC, 2016. cap. 7 e 8. Autoestudo: Os limites do otimizador: premissas, sensibilidade e risco de modelo.</li>
+          <li id="ref-3">OUTSPOKEN MARKET. Simulação de Monte Carlo e drawdowns. YouTube. Vídeo do mesmo autoestudo.</li>
+          <li id="ref-4">BODIE, Z.; KANE, A.; MARCUS, A. <em>Fundamentos de investimentos</em>. 9. ed. AMGH, 2014. cap. 6. Autoestudo: Atividade Ponderada 2: A carteira ótima sobrevive fora da amostra?</li>
+          <li id="ref-5">MICHAUD, R. O. The Markowitz optimization enigma: is optimized optimal? <em>Financial Analysts Journal</em>, v. 45, n. 1, 1989.</li>
+          <li id="ref-6"><a href="https://dadosabertos.bcb.gov.br/" target="_blank" rel="noopener">Banco Central, dados abertos do SGS</a>: série 12, CDI.</li>
+          <li id="ref-7">LEDOIT, O.; WOLF, M. Honey, I shrunk the sample covariance matrix. <em>Journal of Portfolio Management</em>, v. 30, n. 4, 2004.</li>
+          <li id="ref-8"><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a>.</li>
+        </ol>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 05 &middot; Sprint 4</p>
+          <p class="footer-page">26</p>
+        </div>
+      </section>
+
+      <!-- 27 -->
+      <section class="end-slide">
+        <h1>Até 16/12/2026</h1>
+        <h3>Aula 06: Do Script ao Produto, React, FastAPI e Interpretação com LLM</h3>
+        <h3>Prof. José Romualdo</h3>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280, height: 720, center: false, margin: 0,
+      hash: true, slideNumber: false, transition: 'fade'
+    });
+  </script>
+  <script src="../assets/js/inteli-quiz.js"></script>
+  <script src="../assets/js/inteli-zoom.js"></script>
+  <script src="../assets/js/inteli-print.js"></script>
+  <script src="../assets/js/inteli-cronometro.js"></script>
+  <script src="../assets/js/inteli-escolha.js"></script>
+  <script src="../assets/js/inteli-widgets.js"></script>
+  <script src="../assets/js/widgets/janela-treino.js"></script>
+  <script src="../assets/js/widgets/sensibilidade-pesos.js"></script>
+</body>
+</html>

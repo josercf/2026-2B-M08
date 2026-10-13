@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referências &middot; Aula 05 &middot; Validação e Robustez do Modelo</title>
+  <meta name="description" content="Autoestudos da Semana 08 na Adalove e leitura complementar da Aula 05 do Módulo 08 AdmTech: Validação e Robustez do Modelo.">
+
+  <!-- Duas seções fixas, nesta ordem:
+       1. Autoestudos da semana, copiados de docs/autoestudos-por-semana.md
+          (Semana 08), título por título, com o tempo da tabela final.
+       2. Leitura complementar do professor, que existe mesmo sem curadoria
+          fechada. A numeração repete a do slide de referências do deck. -->
+
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-material.css">
+</head>
+<body>
+  <div class="doc">
+
+    <header class="doc-header">
+      <p class="doc-eyebrow">Módulo 08 AdmTech &middot; Aula 05 &middot; 01/12/2026 &middot; Semana 08</p>
+      <h1>Referências: Validação e Robustez do Modelo</h1>
+      <p class="doc-subtitulo">A Semana 08 tem um Encontro de Instrução de Computação e dois
+      autoestudos, que o encontro pressupõe feitos. O segundo é a Ponderada 2, de 3 pontos.</p>
+    </header>
+
+    <nav class="doc-toc" aria-label="Sumário">
+      <h2>Nesta página</h2>
+      <ol>
+        <li><a href="#autoestudos">Autoestudos da semana (Adalove)</a></li>
+        <li><a href="#complementar">Leitura complementar do professor</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc-conteudo">
+
+      <section class="doc-secao" id="autoestudos">
+        <h2>1. Autoestudos da semana (Adalove)</h2>
+        <ol class="doc-referencias">
+          <li>Os limites do otimizador: premissas, sensibilidade e risco de modelo (70 min)
+            <span class="doc-porque">LACHTERMACHER, G. <em>Pesquisa operacional na tomada de
+            decisões</em>. 5. ed. Rio de Janeiro: LTC, 2016. cap. 7 (p. 153) e cap. 8 (p. 171), mais o
+            vídeo de Outspoken Market sobre simulação de Monte Carlo e drawdowns. Base dos Blocos 2, 3 e
+            5: premissas e sensibilidade da solução ótima e a medida de perda máxima.</span></li>
+          <li>Atividade Ponderada 2: A carteira ótima sobrevive fora da amostra? (120 min)
+            <span class="doc-porque">BODIE, Z.; KANE, A.; MARCUS, A. <em>Fundamentos de
+            investimentos</em>. 9. ed. Porto Alegre: AMGH, 2014. cap. 6, p. 148. Atividade individual
+            de 3 pontos; enunciado e barema na Adalove.</span></li>
+        </ol>
+        <div class="doc-nota">
+          <p>Títulos e tempos copiados de <code>docs/autoestudos-por-semana.md</code>, Semana 08,
+          conferido contra a Adalove da turma 2026-2B-T19. O acesso ao conteúdo é pela Adalove, com o
+          login institucional.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="complementar">
+        <h2>2. Leitura complementar do professor</h2>
+        <p>A curadoria definitiva desta seção ainda será preenchida pelo professor. Até lá, ficam aqui
+        as fontes citadas no deck, na mesma numeração do slide de referências. A leitura indicada no
+        roteiro da aula é a de número 4, sobre risco de estimação.</p>
+        <ol class="doc-referencias">
+          <li><a href="https://github.com/josercf/2026-2B-M08/blob/main/dados/README.md" target="_blank" rel="noopener">dados/README.md</a>
+            <span class="doc-porque">Snapshot do case, cesta de 15 ativos e a ausência de 24/10/2025
+            que define a amostra da aula.</span></li>
+          <li>LACHTERMACHER, G. <em>Pesquisa operacional na tomada de decisões</em>. 5. ed. LTC, 2016. cap. 7 e 8.
+            <span class="doc-porque">Autoestudo: Os limites do otimizador: premissas, sensibilidade e
+            risco de modelo.</span></li>
+          <li>OUTSPOKEN MARKET. Simulação de Monte Carlo e drawdowns. YouTube.
+            <span class="doc-porque">Vídeo do mesmo autoestudo, sobre a medida de perda máxima de uma
+            estratégia.</span></li>
+          <li>BODIE, Z.; KANE, A.; MARCUS, A. <em>Fundamentos de investimentos</em>. 9. ed. AMGH, 2014. cap. 6.
+            <span class="doc-porque">Risco de estimação e diversificação eficiente. Leitura
+            complementar da aula, citada na Ponderada 2.</span></li>
+          <li>MICHAUD, R. O. The Markowitz optimization enigma: is optimized optimal? <em>Financial
+          Analysts Journal</em>, v. 45, n. 1, p. 31-42, 1989.
+            <span class="doc-porque">Por que o otimizador de média e variância concentra peso nos ativos
+            cujo retorno foi superestimado.</span></li>
+          <li><a href="https://dadosabertos.bcb.gov.br/" target="_blank" rel="noopener">Banco Central, dados abertos do SGS</a>
+            <span class="doc-porque">Série 12, CDI diário, a taxa livre de risco do Sharpe no treino e
+            no teste.</span></li>
+          <li>LEDOIT, O.; WOLF, M. Honey, I shrunk the sample covariance matrix. <em>The Journal of
+          Portfolio Management</em>, v. 30, n. 4, p. 110-119, 2004.
+            <span class="doc-porque">O estimador de covariância encolhida usado no Bloco 5, com a
+            intensidade de encolhimento escolhida pelos dados.</span></li>
+          <li><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a>
+            <span class="doc-porque">Formato do ADR que declara quanto confiar no modelo.</span></li>
+        </ol>
+      </section>
+
+    </main>
+
+    <p class="doc-rodape">Prof. José Romualdo &middot; Módulo 08 AdmTech &middot; 2026-2B-T19</p>
+
+  </div>
+
+  <nav class="doc-nav" aria-label="Navegação da aula">
+    <a href="../index.html"><span class="material-symbols-outlined" aria-hidden="true">home</span>Portal</a>
+    <a href="../aulas/aula05.html"><span class="material-symbols-outlined" aria-hidden="true">slideshow</span>Slides</a>
+    <a href="../materiais/aula05.html"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span>Material</a>
+  </nav>
+</body>
+</html>
