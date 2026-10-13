@@ -37,3 +37,16 @@ def test_conexao_ociosa_nao_trava_a_proxima_requisicao_real():
     finally:
         ociosa.close()
         httpd.shutdown()
+
+
+def test_fila_de_conexoes_aguenta_rajada_do_chromium_com_maquina_carregada():
+    # Com a máquina carregada (vários agentes rodando Playwright em paralelo),
+    # o backlog padrão de 5 conexões do socketserver enchia antes de o
+    # servidor aceitar, e o Chromium recebia net::ERR_CONNECTION_RESET no
+    # check_widgets em 5 de 6 rodadas. A fila precisa comportar a rajada.
+    porta = check_slides.porta_livre()
+    httpd = check_slides.servir(porta)
+    try:
+        assert httpd.request_queue_size >= 128
+    finally:
+        httpd.shutdown()

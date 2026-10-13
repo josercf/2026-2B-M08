@@ -718,3 +718,330 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   background: var(--seg-superficie);
 }
 
+
+/* ==========================================================================
+   Componentes de layout do M08 2026-2B (13/10/2026): perfil do professor,
+   número em destaque, trilha das sprints e tabela em corpo de leitura.
+   Só tokens; a fonte de título dos números vem de inteli-brand.css.
+   ========================================================================== */
+
+/* Perfil do professor: painel roxo à esquerda (uma face só do grafismo, sem
+   preencher as três, p.82) e o conteúdo em tabela à direita. */
+.perfil {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 40px;
+  align-items: stretch;
+  flex: 1;
+}
+
+.perfil-painel {
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+  border-radius: 14px;
+  padding: 28px 26px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-bottom: 8px solid var(--seg-secundaria);
+}
+
+.reveal .perfil-monograma {
+  font-size: 120px;
+  line-height: 1;
+  margin: 0;
+  color: var(--seg-secundaria);
+}
+
+.reveal .perfil-painel p { color: var(--inteli-branco); margin: 0; }
+.reveal .perfil-painel .perfil-nome { font-size: var(--escala-subtitulo); font-weight: 700; }
+.reveal .perfil-painel .perfil-papel { font-size: var(--escala-texto); }
+
+.perfil-conteudo { display: flex; flex-direction: column; gap: 18px; }
+
+/* Tabela com corpo de 18px, para slides em que a tabela é o conteúdo
+   principal e precisa ser lida do fundo da sala (a .data-table usa 14px
+   porque divide o slide com outros blocos). */
+.tabela-leitura {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reveal .tabela-leitura th,
+.reveal .tabela-leitura td {
+  font-size: var(--escala-texto);
+  line-height: 1.4;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--seg-borda);
+  text-align: left;
+  vertical-align: top;
+}
+
+.reveal .tabela-leitura th {
+  font-size: var(--escala-complementar);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--seg-primaria);
+  border-bottom: 2px solid var(--seg-primaria);
+}
+
+.tabela-leitura td:first-child { font-weight: 700; white-space: nowrap; }
+
+.tabela-leitura tr.linha-destaque td {
+  background: var(--seg-superficie);
+  border-left: 4px solid var(--seg-secundaria);
+}
+
+.tabela-leitura .material-symbols-outlined {
+  font-size: 22px;
+  vertical-align: -5px;
+  margin-right: 8px;
+  color: var(--seg-primaria);
+}
+
+/* Número em destaque: o achado do slide em tamanho de manchete, com a
+   leitura ao lado. Usado em slide analítico de um número só. */
+.numero-destaque {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 40px;
+  align-items: center;
+  background: var(--seg-superficie);
+  border-left: 8px solid var(--seg-secundaria);
+  border-radius: 14px;
+  padding: 26px 34px;
+}
+
+.reveal .numero-destaque-valor {
+  font-size: 112px;
+  line-height: 1;
+  margin: 0;
+  color: var(--seg-primaria);
+}
+
+.numero-destaque-texto p { margin: 0 0 8px; }
+.numero-destaque-texto p:last-child { margin: 0; }
+
+/* Trilha das sprints: sequência numerada ligada por uma linha, para as
+   cinco entregas. Lista numerada com o número em destaque, preferida a
+   cartões quando há ordem. */
+.trilha {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  position: relative;
+}
+
+.trilha li {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: var(--escala-complementar);
+  line-height: 1.4;
+}
+
+.trilha-numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--seg-base);
+  border: 3px solid var(--seg-primaria);
+  color: var(--seg-primaria);
+  font-size: 24px;
+}
+
+.trilha li.trilha-atual .trilha-numero {
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+  border-color: var(--seg-primaria);
+  box-shadow: 0 0 0 6px var(--seg-secundaria);
+}
+
+.reveal .trilha-titulo { font-size: var(--escala-texto); font-weight: 700; margin: 0; }
+.reveal .trilha li p { font-size: var(--escala-complementar); margin: 0; }
+
+/* Faixa de leitura abaixo de um bloco principal: uma frase de amarração. */
+.faixa-nota {
+  margin-top: auto;
+  background: var(--seg-superficie);
+  border-radius: 10px;
+  padding: 12px 18px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.reveal .faixa-nota p { margin: 0; }
+.faixa-nota .material-symbols-outlined { font-size: 26px; color: var(--seg-primaria); }
+
+/* Três perguntas curtas de quiz lado a lado, cada uma com o próprio
+   .quiz-container (o inteli-quiz.js trata cada container de forma isolada). */
+.quiz-trio {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.quiz-trio .quiz-container { max-width: none; gap: 12px; }
+.quiz-trio .quiz-options li { padding: 10px 14px; }
+
+.data-table tr.linha-destaque td {
+  background: var(--seg-superficie);
+  font-weight: 700;
+}
+
+/* Respiro entre um bloco de destaque e a tabela que o sustenta. */
+.trilha,
+.numero-destaque,
+.perfil { margin-bottom: 28px; }
+
+/* Tabela de leitura com muitas linhas (agenda de oito blocos): mantém os
+   18px do corpo e reduz só o respiro vertical. */
+.reveal .tabela-leitura.tabela-compacta td,
+.reveal .tabela-leitura.tabela-compacta th { padding: 6px 12px; }
+
+/* ==========================================================================
+   Aula 06: montador de requisição e verificador de números
+   (assets/js/widgets/montador-requisicao.js e verificador-numeros.js).
+   Só tokens. Estados por seletor composto, para vencer a regra base do
+   componente (inteli-deck-design, seção 8.1).
+   ========================================================================== */
+
+.widget .montador-linha {
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+}
+
+/* Botões e rótulos dos widgets da Aula 06 no piso de 18px do corpo: são lidos
+   do fundo da sala antes do clique. */
+.widget .montador-linha button,
+.widget .verificador-controles button {
+  font-size: var(--escala-texto);
+}
+
+.montador-rotulo {
+  min-width: 64px;
+  font-size: var(--escala-texto);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.widget-controles button.montador-enviar {
+  margin-left: auto;
+  background: var(--seg-secundaria);
+  border-color: var(--seg-secundaria);
+  font-weight: 700;
+}
+
+.widget-controles button:disabled {
+  border-style: dashed;
+  cursor: not-allowed;
+}
+
+.montador-painel {
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.reveal pre.montador-caixa {
+  margin: 0;
+  width: auto;
+  box-shadow: none;
+  height: 300px;
+  overflow: auto;
+  padding: 12px 14px;
+  background: var(--seg-superficie);
+  border-left: 6px solid var(--seg-borda);
+  border-radius: 8px;
+  font-size: var(--escala-complementar);
+  line-height: 1.4;
+  white-space: pre;
+}
+
+.reveal pre.montador-caixa.status-ok { border-left-color: var(--seg-secundaria); }
+.reveal pre.montador-caixa.status-cliente { border-left-color: var(--seg-destaque); }
+.reveal pre.montador-caixa.status-servidor { border-left-color: var(--seg-primaria); }
+
+.reveal .verificador-aviso {
+  margin: 0;
+  align-self: stretch;
+  font-size: var(--escala-texto);
+  font-weight: 700;
+}
+
+.reveal .verificador-texto {
+  margin: 0;
+  align-self: stretch;
+  background: var(--seg-superficie);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: var(--escala-texto);
+  line-height: 1.7;
+}
+
+.verificador-numero {
+  padding: 1px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--seg-borda);
+  background: var(--seg-base);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.verificador-numero.confere {
+  background: var(--seg-secundaria);
+  border-color: var(--seg-secundaria);
+}
+
+.verificador-numero.nao-confere {
+  background: var(--seg-base);
+  border-color: var(--seg-destaque);
+  box-shadow: inset 0 0 0 2px var(--seg-destaque);
+}
+
+.verificador-numero.plantado {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--seg-destaque);
+  text-underline-offset: 4px;
+}
+
+.reveal .widget-leitura.verificador-leitura {
+  align-self: stretch;
+  text-align: left;
+  min-height: 52px;
+}
+
+/* ==========================================================================
+   Aula 05: controle deslizante do widget janela-treino
+   (assets/js/widgets/janela-treino.js). Só tokens.
+   ========================================================================== */
+.widget-controles .widget-deslizante {
+  width: 320px;
+  accent-color: var(--seg-primaria);
+  cursor: pointer;
+}
+
+.widget-controles .widget-rotulo {
+  font-size: var(--escala-complementar);
+  min-width: 300px;
+  align-self: center;
+}
+
+/* Aula 05: escolha coletiva com dois destinos (sustentada ou não pelo teste).
+   Seletor composto para vencer ".escolha-opcoes" (0,1,0) sem tocar na regra
+   base de três colunas. */
+.escolha-opcoes.escolha-duas {
+  grid-template-columns: repeat(2, 1fr);
+}

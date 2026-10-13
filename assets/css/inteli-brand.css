@@ -98,3 +98,14 @@ code, pre, kbd, samp, .mono {
   direction: ltr;
   -webkit-font-smoothing: antialiased;
 }
+
+/* Número em destaque e monograma do perfil (decks a partir da Aula 01 de
+   2026-2B). Usam a fonte de título porque são o elemento de maior peso do
+   slide; a declaração mora aqui porque o check_brand.py proíbe font-family
+   fora deste arquivo. O tamanho fica no tema. */
+.numero-destaque-valor,
+.perfil-monograma,
+.trilha-numero {
+  font-family: var(--fonte-titulo);
+  font-weight: 500;
+}

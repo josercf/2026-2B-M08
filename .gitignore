@@ -13,6 +13,7 @@ __pycache__/
 # A chave da OpenRouter da Aula 06 vive em variável de ambiente, nunca no git.
 .env
 .env.*
+!.env.example
 
 # Enunciado, tabela por RA e barema das ponderadas vivem na Adalove.
 Ponderada*
@@ -20,3 +21,7 @@ ponderada*
 
 # Saídas de execução dos notebooks.
 saida/
+
+# Dependências e build do frontend React do exemplo da Aula 06.
+node_modules/
+dist/

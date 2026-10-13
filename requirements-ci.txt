@@ -14,3 +14,8 @@ ipykernel
 pandas
 numpy
 matplotlib
+#
+# Otimizador (Aulas 04 a 06) e exemplo FastAPI da Aula 06
+scipy
+fastapi
+httpx

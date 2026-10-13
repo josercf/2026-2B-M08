@@ -65,9 +65,15 @@ def servir(porta):
     handler = lambda *a, **k: http.server.SimpleHTTPRequestHandler(  # noqa: E731
         *a, directory=RAIZ, **k
     )
-    socketserver.ThreadingTCPServer.allow_reuse_address = True
-    socketserver.ThreadingTCPServer.daemon_threads = True
-    httpd = socketserver.ThreadingTCPServer(("127.0.0.1", porta), handler)
+    # A fila de conexões padrão do socketserver tem 5 lugares. Com a máquina
+    # carregada, a rajada de conexões do Chromium enche essa fila antes de o
+    # servidor aceitar, e o excedente volta como net::ERR_CONNECTION_RESET.
+    class Servidor(socketserver.ThreadingTCPServer):
+        allow_reuse_address = True
+        daemon_threads = True
+        request_queue_size = 128
+
+    httpd = Servidor(("127.0.0.1", porta), handler)
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     return httpd
 
