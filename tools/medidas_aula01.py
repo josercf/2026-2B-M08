@@ -115,3 +115,36 @@ def data_ausencia_compartilhada():
     fechamento = carregar_precos("precos_fechamento.csv")
     compartilhada = fechamento[["BOVA11", "IVVB11", "GOLD11"]].isna().all(axis=1)
     return compartilhada[compartilhada].index[0]
+
+
+def razao_ajustado_fechamento(ticker):
+    """Adj Close dividido pelo Close no primeiro pregão da janela.
+
+    Mede quanto dos proventos pagos depois daquela data foi descontado do preço
+    antigo: quanto menor a razão, maior o peso dos proventos no retorno total.
+    """
+    ajustado = carregar_precos("precos_ajustados.csv")[ticker].dropna()
+    fechamento = carregar_precos("precos_fechamento.csv")[ticker].dropna()
+    return float(ajustado.iloc[0] / fechamento.iloc[0])
+
+
+def linhas_com_fim_exclusivo(inicio="2026-08-01", fim="2026-08-31"):
+    """Alternativas do Peer Instruction de abertura sobre o end do yfinance.
+
+    yf.download(start=inicio, end=fim) devolve uma linha por pregão de inicio
+    até o dia anterior a fim, porque o end é exclusivo. Os pregões vêm do
+    snapshot (que é a própria saída do yfinance) e os dias corridos, do
+    calendário. Cada alternativa errada corresponde a um erro comum:
+    contar dias corridos, contar dias corridos com o fim exclusivo, ou contar
+    os pregões esquecendo que o end exclui o último dia.
+    """
+    pregoes = carregar_precos("precos_fechamento.csv").index
+    fim_ts = pd.Timestamp(fim)
+    return {
+        "dias_corridos": len(pd.date_range(inicio, fim)),
+        "dias_corridos_fim_exclusivo": len(pd.date_range(inicio, fim_ts - pd.Timedelta(days=1))),
+        "pregoes_inclusivo": int(((pregoes >= inicio) & (pregoes <= fim_ts)).sum()),
+        "pregoes_fim_exclusivo": int(((pregoes >= inicio) & (pregoes < fim_ts)).sum()),
+        "fim_e_pregao": bool(fim_ts in pregoes),
+        "dia_da_semana_do_fim": fim_ts.dayofweek,
+    }

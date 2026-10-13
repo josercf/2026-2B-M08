@@ -41,10 +41,13 @@ Daily da equipe (15 min)
 
 Metodologia ativa (105 min)
   Bloco 1 (0 a 15 min)  Abertura do módulo: o parceiro, a ferramenta de simulação de carteira
-    eficiente e as cinco entregas por sprint, de A1 a A5. Fecha em Peer Instruction: "No primeiro
-    pregão de 2019, quanto o Adj Close da PETR4 vale em relação ao Close?", com as opções 100%,
-    86%, 53% e 26%. Cada distrator é a razão real de outro ativo da cesta (BOVA11, SUZB3 e VALE3),
-    e a certa é 26,13%. Votar, discutir em dupla, votar de novo.
+    eficiente e as cinco entregas por sprint, de A1 a A5. Fecha em Peer Instruction sobre o
+    conteúdo dos dois autoestudos: "`yf.download("PETR4.SA", start="2026-08-01",
+    end="2026-08-31")`: quantas linhas o DataFrame devolve?", com as opções 31, 30, 21 e 20. Cada
+    distrator é um erro comum medido no snapshot e no calendário (dias corridos de agosto, dias
+    corridos com o fim exclusivo e os 21 pregões de agosto com o `end` tratado como inclusivo), e
+    a certa é 20, porque o `end` exclusivo deixa de fora o pregão de 31/08/2026. Votar, discutir
+    em dupla, votar de novo.
   Bloco 2 (15 a 30 min)  As três visões de preço (negociado, ajustado por desdobramento, ajustado
     por proventos) e o que cada uma responde. Antes de tocar a animação, a turma prevê e registra
     no papel o que acontece com as três linhas da MGLU3 em 27/05/2024, data do grupamento de fator
@@ -71,8 +74,10 @@ Metodologia ativa (105 min)
     (retornos calculados a partir do Adj Close já tratado).
 
 Depois do encontro
-  Desafio do notebook: rodar o coletor do zero em máquina limpa, com a rede desligada por
-    `M08_OFFLINE=1`, e conferir que o resultado bate com o da aula.
+  Desafio do notebook: rodar o coletor do zero em máquina limpa (um Colab novo), com a rede
+    desligada por `M08_OFFLINE=1`, e conferir que o resultado bate com o da aula; depois rodar o
+    mesmo coletor com a cesta e a janela do grupo e registrar os casos de teste das duas rodadas
+    no SPEC.md.
   Avanço do A1: SPEC.md com as interfaces do coletor e o plano de testes, relatório descritivo por
     ativo e o ADR de tratamento de ausências assinado por cada aluno.
   Leitura complementar: seções 4 e 5 de `dados/README.md`, com as três visões de preço e as falhas

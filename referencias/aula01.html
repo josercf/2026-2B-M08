@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referências &middot; Aula 01 &middot; Aquisição de Dados de Mercado</title>
+  <meta name="description" content="Autoestudos da Semana 2 na Adalove e leitura complementar da Aula 01 do Módulo 08 AdmTech.">
+
+  <!-- Duas seções fixas, nesta ordem:
+       1. Autoestudos da semana, copiados de docs/autoestudos-por-semana.md, título por título,
+          com o tempo da mesma fonte.
+       2. Leitura complementar do professor, que nunca é omitida. A lista dela segue a
+          numeração [1] a [8] do slide de referências do deck. -->
+
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-material.css">
+</head>
+<body>
+  <div class="doc">
+
+    <header class="doc-header">
+      <p class="doc-eyebrow">Módulo 08 AdmTech &middot; Aula 01 &middot; 20/10/2026 &middot; Semana 2</p>
+      <h1>Referências: Aquisição de Dados de Mercado</h1>
+      <p class="doc-subtitulo">Os dois autoestudos da Semana 2 e as fontes citadas no deck e no
+      material de apoio da Aula 01, na mesma numeração do slide de referências.</p>
+    </header>
+
+    <nav class="doc-toc" aria-label="Sumário">
+      <h2>Nesta página</h2>
+      <ol>
+        <li><a href="#autoestudos">Autoestudos da semana</a></li>
+        <li><a href="#complementar">Leitura complementar do professor</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc-conteudo">
+
+      <section class="doc-secao" id="autoestudos">
+        <h2>1. Autoestudos da semana</h2>
+        <p>Semana 2, que cobre o encontro de 20/10/2026. Os dois autoestudos que o roteiro desta
+        aula pressupõe:</p>
+        <ol class="doc-referencias">
+          <li>Coleta de dados financeiros e DataFrames com Pandas (70 min)
+            <span class="doc-porque">CAETANO, M. A. L. Python e mercado financeiro. São Paulo:
+            Blucher, 2021. cap. 8 e 10. Base da leitura de cotações para um DataFrame, com índice de
+            datas e valores ausentes, usada nos Blocos 4 a 6.</span></li>
+          <li>Cotações do Yahoo Finance no Colab, do jeito reaproveitável (35 min)
+            <span class="doc-porque">CÓDIGO QUANT. Python para investimentos #1: cotações do Yahoo
+            Finance com Google Colab. YouTube. Base do Peer Instruction de abertura, sobre o
+            <code>end</code> do <code>yfinance</code>, e da função <code>coletar</code>.</span></li>
+        </ol>
+        <div class="doc-nota">
+          <p>Títulos e tempos copiados de <code>docs/autoestudos-por-semana.md</code>, conferido em
+          13/10/2026 contra a Adalove da turma 2026-2B-T19. O acesso ao conteúdo é pela Adalove.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="complementar">
+        <h2>2. Leitura complementar do professor</h2>
+        <p>A curadoria desta seção ainda será fechada pelo professor. O roteiro da aula indica as
+        seções 4 e 5 de <code>dados/README.md</code>, com as três visões de preço e as falhas do
+        provedor medidas no snapshot. Até lá, ficam aqui as fontes citadas no deck e no material de
+        apoio, na mesma numeração do slide de referências.</p>
+        <ol class="doc-referencias">
+          <li id="ref-1"><a href="https://github.com/josercf/2026-2B-M08/blob/main/dados/README.md" target="_blank" rel="noopener">dados/README.md</a>
+            <span class="doc-porque">O snapshot do case, a cesta de 15 ativos, as três visões de
+            preço (seção 4) e as falhas do provedor (seção 5).</span></li>
+          <li id="ref-2">CAETANO, M. A. L. <a href="https://integrada.minhabiblioteca.com.br/reader/books/9786555062410" target="_blank" rel="noopener"><em>Python e mercado financeiro</em></a>. Blucher, 2021. cap. 8 e 10.
+            <span class="doc-porque">Autoestudo: Coleta de dados financeiros e DataFrames com
+            Pandas.</span></li>
+          <li id="ref-3">CÓDIGO QUANT. <a href="https://www.youtube.com/watch?v=7GGrt3-rRH8" target="_blank" rel="noopener">Python para investimentos #1: cotações do Yahoo Finance com Google Colab</a>. YouTube.
+            <span class="doc-porque">Autoestudo: Cotações do Yahoo Finance no Colab, do jeito
+            reaproveitável.</span></li>
+          <li id="ref-4"><a href="https://ranaroussi.github.io/yfinance/" target="_blank" rel="noopener">Documentação do yfinance</a>
+            <span class="doc-porque">Os parâmetros <code>start</code>, <code>end</code> e
+            <code>auto_adjust</code> de <code>yf.download</code>, usados no coletor.</span></li>
+          <li id="ref-5"><a href="https://pandas.pydata.org/docs/user_guide/missing_data.html" target="_blank" rel="noopener">pandas: Working with missing data</a>
+            <span class="doc-porque"><code>dropna</code> e <code>ffill</code>, os dois tratamentos
+            de ausência comparados nos Blocos 5 e 6.</span></li>
+          <li id="ref-6"><a href="https://dadosabertos.bcb.gov.br/" target="_blank" rel="noopener">Banco Central, dados abertos do SGS</a>
+            <span class="doc-porque">Séries 12, 432, 433 e 1: CDI, Selic, IPCA e dólar, as
+            referências do case apresentadas na abertura.</span></li>
+          <li id="ref-7"><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a>
+            <span class="doc-porque">O formato do ADR de tratamento de ausências pedido no A1.</span></li>
+          <li id="ref-8"><a href="https://adr.github.io/madr/" target="_blank" rel="noopener">MADR: Markdown Any Decision Records</a>
+            <span class="doc-porque">O formato de origem do modelo do curso.</span></li>
+        </ol>
+      </section>
+
+    </main>
+
+    <p class="doc-rodape">Prof. José Romualdo &middot; Módulo 08 AdmTech &middot; Computação &middot;
+    2026-2B-T19</p>
+
+  </div>
+
+  <nav class="doc-nav" aria-label="Navegação da aula">
+    <a href="../index.html"><span class="material-symbols-outlined" aria-hidden="true">home</span>Portal</a>
+    <a href="../aulas/aula01.html"><span class="material-symbols-outlined" aria-hidden="true">slideshow</span>Slides</a>
+    <a href="../materiais/aula01.html"><span class="material-symbols-outlined" aria-hidden="true">menu_book</span>Material</a>
+  </nav>
+</body>
+</html>

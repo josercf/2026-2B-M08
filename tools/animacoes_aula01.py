@@ -2,11 +2,16 @@
 
 1. aula01-tres-visoes-mglu3 (24 s): as três visões de preço da MGLU3 desenhadas
    no tempo, em escala logarítmica, com cada evento corporativo rotulado quando a
-   linha chega nele. O pôster é o último quadro.
+   linha chega nele. O pôster é um quadro anterior ao grupamento de 27/05/2024:
+   a turma registra a previsão sobre esse evento antes do play, e o pôster não
+   pode entregar a resposta.
 2. aula01-mapa-ausencias (20 s): a matriz de pregões por ativo preenchida ativo a
    ativo; no fim, o bloco vazio do GOLD11 e o pregão em que BOVA11, IVVB11 e
    GOLD11 ficam sem cotação juntos destacados, e o número de pregões que o
    dropna mantém. O pôster é o último quadro.
+
+Nos dois vídeos, nenhum rótulo ou legenda abaixo de 0.18 da altura do quadro: a barra de
+controles do <video> cobre a faixa de baixo, como as Aulas 02 a 06 já tratam.
 
 Uso: .venv/bin/python tools/animacoes_aula01.py
 """
@@ -46,7 +51,7 @@ def tres_visoes_mglu3():
     eventos = eventos[eventos["ticker"] == "MGLU3"].reset_index(drop=True)
 
     fig = figura()
-    eixo = fig.add_axes([0.09, 0.12, 0.87, 0.80])
+    eixo = fig.add_axes([0.09, 0.24, 0.87, 0.70])
     eixo.set_yscale("log")
     eixo.set_xlim(visoes.index[0], visoes.index[-1])
     eixo.set_ylim(visoes.min().min() * 0.6, visoes.max().max() * 2.2)
@@ -64,20 +69,32 @@ def tres_visoes_mglu3():
     datas = visoes.index
     quadros_desenho = 20 * FPS
     total = quadros_desenho + 4 * FPS
-    rotulados = set()
+    rotulos = {}
+
+    def pontos_desenhados(i):
+        return max(2, int(round(len(datas) * min(i + 1, quadros_desenho) / quadros_desenho)))
+
+    # Pôster: o último quadro em que a linha ainda não alcançou o grupamento,
+    # recuado em 20 pregões para a véspera não ficar colada no salto.
+    grupamento = eventos.loc[eventos["fator"] < 1, "data"].iloc[0]
+    alvo = datas.get_loc(grupamento) - 20
+    quadro_poster = max(i for i in range(quadros_desenho) if pontos_desenhados(i) <= alvo)
 
     def desenhar(i):
-        k = max(2, int(round(len(datas) * min(i + 1, quadros_desenho) / quadros_desenho)))
+        k = pontos_desenhados(i)
         for chave, linha in linhas.items():
             linha.set_data(datas[:k], visoes[chave].values[:k])
+        # O pôster é gravado depois do vídeo: cada rótulo liga e desliga pelo
+        # quadro pedido, para nenhum evento posterior ao pôster aparecer nele.
+        for data, rotulo in rotulos.items():
+            rotulo.set_visible(data <= datas[k - 1])
         for n, (data, fator) in enumerate(zip(eventos["data"], eventos["fator"])):
-            if data <= datas[k - 1] and data not in rotulados:
-                rotulados.add(data)
+            if data <= datas[k - 1] and data not in rotulos:
                 # Evento perto do fim da série: deslocar para a esquerda, senão o
                 # rótulo sai pela borda direita da figura (visto no pôster).
                 perto_da_borda = (data - datas[0]) > 0.85 * (datas[-1] - datas[0])
                 deslocamento = (-14 if perto_da_borda else 14, 40 if n % 2 == 0 else -56)
-                eixo.annotate("%s\n%s" % (_data_br(data), descrever_evento(fator)),
+                rotulos[data] = eixo.annotate("%s\n%s" % (_data_br(data), descrever_evento(fator)),
                               xy=(data, visoes.loc[data, "negociado"]), xytext=deslocamento,
                               textcoords="offset points", fontsize=15, color=cor("--seg-texto"),
                               ha="right" if perto_da_borda else "left",
@@ -88,7 +105,7 @@ def tres_visoes_mglu3():
                               bbox={"boxstyle": "round,pad=0.35", "facecolor": cor("--seg-base"),
                                     "edgecolor": "none"})
 
-    return gravar(fig, desenhar, total, "aula01-tres-visoes-mglu3", total - 1)
+    return gravar(fig, desenhar, total, "aula01-tres-visoes-mglu3", quadro_poster)
 
 
 def mapa_ausencias():
@@ -101,9 +118,10 @@ def mapa_ausencias():
     mapa_de_cor.set_bad(cor("--seg-base"))
 
     fig = figura()
-    # Eixo mais baixo que largo (0.30 em vez de 0.24 no rodapé) para sobrar
-    # altura para a legenda final de três linhas, sem reduzir a fonte dela.
-    eixo = fig.add_axes([0.10, 0.30, 0.87, 0.62])
+    # Eixo de 0.46 a 0.94: a legenda final de três linhas fica entre 0.22 e
+    # 0.38, acima da barra de controles do <video> e do degradê dela, sem
+    # reduzir a fonte.
+    eixo = fig.add_axes([0.10, 0.46, 0.87, 0.48])
     visivel = np.full(presente.shape, np.nan)
     imagem = eixo.imshow(visivel, aspect="auto", cmap=mapa_de_cor, vmin=0, vmax=1,
                          interpolation="nearest")
@@ -114,7 +132,7 @@ def mapa_ausencias():
     eixo.set_xticklabels([str(ano) for ano in anos])
     for lado in ("top", "right", "left", "bottom"):
         eixo.spines[lado].set_visible(False)
-    legenda = fig.text(0.10, 0.05, "", fontsize=19, color=cor("--seg-texto"))
+    legenda = fig.text(0.10, 0.22, "", fontsize=19, color=cor("--seg-texto"))
 
     gold = list(fechamento.columns).index("GOLD11")
     primeiro_gold = int(np.argmax(presente[gold] == 1))

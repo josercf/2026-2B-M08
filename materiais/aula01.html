@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material de apoio &middot; Aula 01 &middot; Aquisição de Dados de Mercado</title>
+  <meta name="description" content="Material de apoio da Aula 01 do Módulo 08 AdmTech: preparação pré-aula, as três visões de preço, proventos, o coletor reproduzível com fim exclusivo, as ausências reais do provedor, descartar ou preencher e o primeiro ADR.">
+
+  <!-- Este material abre pela Preparação do pré-aula e aprofunda o que o slide só aponta,
+       sem repetir o roteiro do deck. Todo número vem de tools/medidas_aula01.py e está
+       travado em tools/tests/test_aula01.py e em tools/tests/test_deck_aula01.py. -->
+
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-material.css">
+</head>
+<body>
+  <div class="doc">
+
+    <header class="doc-header">
+      <p class="doc-eyebrow">Módulo 08 AdmTech &middot; Aula 01 &middot; 20/10/2026 &middot; Semana 2 &middot; Sprint 1</p>
+      <h1>Material de apoio: Aquisição de Dados de Mercado</h1>
+      <p class="doc-subtitulo">Primeira aula do módulo. O parceiro precisa decidir onde alocar
+      excedentes de caixa, e a ferramenta de simulação de carteira eficiente que o módulo constrói
+      depende de um histórico de preços confiável. Esta aula deixa pronto o coletor parametrizado
+      por tickers e datas, com o preço ajustado escolhido e as ausências tratadas e documentadas. É
+      a base do A1, Coletor e Processador de Dados de Mercado.</p>
+    </header>
+
+    <nav class="doc-toc" aria-label="Sumário">
+      <h2>Nesta página</h2>
+      <ol>
+        <li><a href="#preparacao">Preparação</a></li>
+        <li><a href="#visoes">Três visões do mesmo preço</a></li>
+        <li><a href="#proventos">Proventos: retorno de preço e retorno total</a></li>
+        <li><a href="#coletor">Um coletor que outra pessoa consegue rodar</a></li>
+        <li><a href="#fim-exclusivo">O end exclusivo do yfinance</a></li>
+        <li><a href="#ausencias">Ausências reais do provedor</a></li>
+        <li><a href="#tratamentos">Descartar ou preencher</a></li>
+        <li><a href="#adr">O primeiro ADR</a></li>
+        <li><a href="#depois">Depois do encontro</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc-conteudo">
+
+      <section class="doc-secao" id="preparacao">
+        <h2>1. Preparação</h2>
+        <p>O encontro abre medindo o preparo, com uma pergunta de Peer Instruction sobre o conteúdo
+        desta seção. Faça as três partes antes da aula.</p>
+
+        <h3>Autoestudos da semana</h3>
+        <ol>
+          <li>Coleta de dados financeiros e DataFrames com Pandas (70 min)</li>
+          <li>Cotações do Yahoo Finance no Colab, do jeito reaproveitável (35 min)</li>
+        </ol>
+        <p>Os dois estão na Adalove. O primeiro cobre a leitura de cotações para um DataFrame do
+        pandas, com índice de datas, seleção de colunas e tratamento de valores ausentes; o segundo
+        mostra a chamada do <code>yfinance</code> no Colab, com os parâmetros de ticker e de datas
+        que o coletor da aula transforma em função.</p>
+
+        <h3>Animação 1: as três visões de preço da MGLU3</h3>
+        <video controls muted playsinline preload="metadata" style="width: 100%; height: auto; border-radius: 10px;"
+               poster="../assets/img/aula01-tres-visoes-mglu3-poster.png">
+          <source src="../assets/video/aula01-tres-visoes-mglu3.mp4" type="video/mp4">
+        </video>
+        <p><strong>O que observar:</strong> as três linhas são o mesmo ativo, de 2019 a 2026, em
+        escala logarítmica. Repare em qual linha salta em cada data rotulada e qual segue contínua,
+        e na distância entre as duas linhas de baixo, que não muda de forma nos eventos.</p>
+
+        <h3>Animação 2: o mapa de ausências da cesta</h3>
+        <video controls muted playsinline preload="metadata" style="width: 100%; height: auto; border-radius: 10px;"
+               poster="../assets/img/aula01-mapa-ausencias-poster.png">
+          <source src="../assets/video/aula01-mapa-ausencias.mp4" type="video/mp4">
+        </video>
+        <p><strong>O que observar:</strong> cada linha é um ativo e cada coluna, um pregão. Verde
+        tem cotação, coral não tem. Repare no bloco coral do começo da GOLD11, na linha tracejada
+        perto do fim e em quantos pregões sobram quando toda data com alguma ausência é descartada.</p>
+
+        <h3>Autoverificação, sem nota</h3>
+        <ol>
+          <li>No <code>yf.download</code>, a data passada em <code>end</code> entra no resultado?
+            Como um coletor garante o último pregão pedido?
+            <details><summary>Resposta comentada</summary>
+            <p>Não entra: o <code>end</code> é exclusivo. O coletor da aula soma um dia à data final
+            antes de chamar a biblioteca. Quando a data final é um pregão, esquecer esse detalhe
+            perde exatamente o último dia da janela, sem nenhuma mensagem de erro.</p></details></li>
+          <li>Na animação 1, o que acontece com o Close da MGLU3 em 06/08/2019, data do
+            desdobramento de 8 para 1?
+            <details><summary>Resposta comentada</summary>
+            <p>Nada visível: o Close do Yahoo já vem dividido pelos fatores de desdobramento,
+            grupamento e bonificação. Quem salta é o preço negociado na data, que cai -86,74% de um
+            pregão para o outro. Nenhum dos 15 eventos da cesta faz o Close variar mais de 7% no
+            dia.</p></details></li>
+          <li>Qual coluna mede quanto rendeu quem reinvestiu todos os proventos, e o que o coletor
+            precisa pedir ao <code>yfinance</code> para recebê-la?
+            <details><summary>Resposta comentada</summary>
+            <p>O Adj Close. O coletor chama <code>yf.download</code> com
+            <code>auto_adjust=False</code>, que devolve o Close e o Adj Close lado a lado; com
+            <code>auto_adjust=True</code>, a biblioteca substitui o Close pelo preço ajustado e não
+            entrega as duas visões separadas.</p></details></li>
+          <li>Na animação 2, quantos pregões a GOLD11 passa sem cotação antes de estrear, e em que
+            data BOVA11, IVVB11 e GOLD11 ficam sem cotação juntas?
+            <details><summary>Resposta comentada</summary>
+            <p>484 pregões, até a primeira cotação em 11/12/2020. As três ETFs ficam sem cotação em
+            24/10/2025, pregão normal da B3. Somando as duas coisas, a GOLD11 tem 485 ausências na
+            janela.</p></details></li>
+          <li>Num DataFrame com os 15 ativos nas colunas, o que <code>df.dropna()</code> remove?
+            <details><summary>Resposta comentada</summary>
+            <p>Toda linha (pregão) com ao menos uma célula vazia, em qualquer ativo. Na cesta da
+            aula, sobram 1.423 dos 1.908 pregões, e a série começa em 11/12/2020, junto com a
+            GOLD11. Os outros 14 ativos perdem março de 2020 sem ter nenhuma ausência própria
+            naquele mês.</p></details></li>
+        </ol>
+      </section>
+
+      <section class="doc-secao" id="visoes">
+        <h2>2. Três visões do mesmo preço</h2>
+        <p>O Yahoo Finance entrega duas colunas de fechamento, e a aula reconstrói uma terceira. As
+        três descrevem o mesmo pregão e respondem a perguntas de negócio diferentes.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Visão</th><th>Como é obtida</th><th>Pergunta que responde</th></tr></thead>
+            <tbody>
+              <tr><td>Negociado</td><td>Close multiplicado pelos fatores dos eventos posteriores à data</td><td>que preço apareceu na tela do pregão naquele dia</td></tr>
+              <tr><td>Close</td><td>fechamento dividido pelos fatores de desdobramento, grupamento e bonificação</td><td>quanto rendeu quem comprou e segurou, sem reinvestir proventos</td></tr>
+              <tr><td>Adj Close</td><td>Close com os proventos posteriores também descontados</td><td>quanto rendeu quem reinvestiu cada provento; base do risco e do retorno do otimizador</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Como o preço negociado é reconstruído</h3>
+        <pre class="doc-codigo"><code>serie = fechamento[ticker].dropna()
+fator = np.ones(len(serie))
+for data, f in zip(eventos["data"], eventos["fator"]):
+    fator = fator * np.where(serie.index &lt; data, f, 1.0)
+negociado = serie * fator</code></pre>
+        <p>O <code>fator</code> de <code>eventos_desdobramento.csv</code> é o número de ações novas
+        por ação antiga: 8 num desdobramento de 8 para 1, 0,1 num grupamento de 10 para 1. Toda data
+        anterior ao evento é multiplicada por ele, o que desfaz a divisão que o Yahoo aplicou.
+        Depois do último evento do ativo, as duas séries coincidem.</p>
+        <h3>Os saltos que só o negociado mostra</h3>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Ativo</th><th>Data</th><th>Evento</th><th>Negociado no dia</th></tr></thead>
+            <tbody>
+              <tr><td>MGLU3</td><td>06/08/2019</td><td>desdobramento de 8 para 1</td><td>-86,74%</td></tr>
+              <tr><td>MGLU3</td><td>14/10/2020</td><td>desdobramento de 4 para 1</td><td>-75,31%</td></tr>
+              <tr><td>MGLU3</td><td>27/05/2024</td><td>grupamento de 10 para 1</td><td>896,21%</td></tr>
+              <tr><td>B3SA3</td><td>17/05/2021</td><td>desdobramento de 3 para 1</td><td>-67,17%</td></tr>
+              <tr><td>WEGE3</td><td>28/04/2021</td><td>desdobramento de 2 para 1</td><td>-50,69%</td></tr>
+              <tr><td>BBAS3</td><td>16/04/2024</td><td>desdobramento de 2 para 1</td><td>-50,57%</td></tr>
+              <tr><td>EGIE3</td><td>27/11/2025</td><td>bonificação de 40% em ações</td><td>-28,51%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>No dia do desdobramento da B3SA3, o Close variou -1,51%, o movimento real do mercado. Na
+        MGLU3, o preço negociado vai de R$ 1,32 em 24/05/2024 para R$ 13,15 em 27/05/2024: a empresa
+        valia o mesmo nos dois pregões, dividida em dez vezes menos ações.</p>
+        <div class="doc-nota">
+          <p>Um cálculo de retorno sobre o preço negociado tomaria esses saltos como movimentos de
+          mercado e inflaria a volatilidade de qualquer ativo com evento corporativo. O negociado
+          serve para conferir o preço da tela e o valor de mercado daquele dia; para risco e retorno,
+          a aula usa o Adj Close.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="proventos">
+        <h2>3. Proventos: retorno de preço e retorno total</h2>
+        <p>A distância entre o Close e o Adj Close são os dividendos e juros sobre capital próprio
+        pagos depois de cada data. Quanto mais o ativo distribui, mais o Adj Close antigo fica abaixo
+        do Close.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Ativo</th><th>Adj Close sobre Close em 02/01/2019</th><th>Retorno de preço (Close)</th><th>Retorno total (Adj Close)</th></tr></thead>
+            <tbody>
+              <tr><td>PETR4</td><td>26,13%</td><td>87,12%</td><td>616,00%</td></tr>
+              <tr><td>VALE3</td><td>52,57%</td><td>52,38%</td><td>189,86%</td></tr>
+              <tr><td>ITUB4</td><td>63,27%</td><td>21,02%</td><td>91,20%</td></tr>
+              <tr><td>BBAS3</td><td>59,77%</td><td>-14,65%</td><td>42,09%</td></tr>
+              <tr><td>BOVA11</td><td>100,00%</td><td>98,84%</td><td>98,84%</td></tr>
+              <tr><td>IVVB11</td><td>100,00%</td><td>347,03%</td><td>347,03%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Janela de 02/01/2019 a 31/08/2026. Na PETR4, o Adj Close de 2019 vale 26,13% do Close: os
+        proventos pagos até 2026 descontam quase três quartos do preço antigo, e o retorno total
+        chega a 616,00%, contra 87,12% só pelo preço. A BBAS3 perdeu 14,65% no preço e ainda assim
+        rendeu 42,09% a quem reinvestiu. BOVA11 e IVVB11 não registram provento no período, e as
+        duas colunas coincidem.</p>
+        <p>O notebook calcula a razão para qualquer ativo com
+        <code>ajustado.iloc[0] / fechamento.iloc[0]</code>.</p>
+      </section>
+
+      <section class="doc-secao" id="coletor">
+        <h2>4. Um coletor que outra pessoa consegue rodar</h2>
+        <p>O critério de reprodutibilidade do A1 pede um notebook que roda do zero, sem editar
+        código. A função <code>coletar</code> da seção 2 do notebook cumpre isso com três
+        decisões.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Decisão</th><th>O que resolve</th></tr></thead>
+            <tbody>
+              <tr><td>tickers, início e fim como argumentos</td><td>a mesma função serve a cesta e a janela de qualquer grupo</td></tr>
+              <tr><td>queda para o snapshot de <code>dados/</code></td><td>sem rede, sem <code>yfinance</code> instalado ou com o provedor fora do ar, o notebook termina com os dados versionados e imprime a origem</td></tr>
+              <tr><td>variável <code>M08_OFFLINE=1</code></td><td>força a leitura do snapshot mesmo com rede, que é como o notebook roda no CI e no desafio da máquina limpa</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A origem impressa (<code>yfinance, ao vivo</code> ou <code>snapshot de dados/</code>)
+        entra no relatório do A1. Sem ela, quem lê o resultado não sabe se o número veio da coleta
+        do dia ou do snapshot de 17/09/2026.</p>
+        <p>Quando a coleta ao vivo falha, o coletor escreve
+        <code>coleta ao vivo falhou, seguindo com o snapshot:</code> seguido do nome da exceção. A
+        mensagem diz qual caminho foi seguido e por quê: uma <code>ModuleNotFoundError</code> indica
+        ambiente sem a biblioteca, e um erro de conexão indica rede ou provedor. Engolir a exceção
+        sem imprimir nada deixaria o grupo achando que coletou ao vivo.</p>
+      </section>
+
+      <section class="doc-secao" id="fim-exclusivo">
+        <h2>5. O end exclusivo do yfinance</h2>
+        <p>A pergunta de abertura do encontro pede o número de linhas de
+        <code>yf.download("PETR4.SA", start="2026-08-01", end="2026-08-31")</code>. Cada alternativa
+        errada corresponde a uma conta que parece razoável.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Alternativa</th><th>Conta que a produz</th></tr></thead>
+            <tbody>
+              <tr><td>31</td><td>dias corridos de agosto</td></tr>
+              <tr><td>30</td><td>dias corridos até a véspera do <code>end</code></td></tr>
+              <tr><td>21</td><td>pregões de agosto, tratando o <code>end</code> como inclusivo</td></tr>
+              <tr><td>20, a certa</td><td>pregões de 03/08 a 28/08/2026: o <code>end</code> exclusivo deixa de fora 31/08, uma segunda-feira com pregão</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>O DataFrame do <code>yfinance</code> tem uma linha por pregão, sem fim de semana nem
+        feriado, e o intervalo segue a convenção do Python de excluir o limite final. O erro é
+        silencioso: a chamada termina sem aviso, e o último pregão da janela simplesmente não está
+        lá. Por isso o coletor soma um dia ao fim pedido:</p>
+        <pre class="doc-codigo"><code>fim_exclusivo = (pd.Timestamp(fim) + pd.Timedelta(days=1)).strftime("%Y-%m-%d")</code></pre>
+        <p>Um caso de teste no SPEC.md que confere a última data devolvida pega esse erro na
+        primeira execução.</p>
+      </section>
+
+      <section class="doc-secao" id="ausencias">
+        <h2>6. Ausências reais do provedor</h2>
+        <p>O snapshot tem 487 células vazias de preço, todas reais, nenhuma de leitura:</p>
+        <ul>
+          <li><strong>GOLD11</strong>: 485 pregões sem cotação. Os 484 primeiros são anteriores à
+            primeira cotação do fundo, em 11/12/2020, e o último é 24/10/2025.</li>
+          <li><strong>BOVA11 e IVVB11</strong>: um pregão cada, 24/10/2025, o mesmo da GOLD11.</li>
+        </ul>
+        <p>24/10/2025 foi um pregão normal da B3, e os outros 12 ativos têm cotação nesse dia. A
+        ausência é do provedor. Nenhum dado existe para preencher os 484 pregões da GOLD11 antes da
+        estreia, e qualquer tratamento que invente preço ali cria um histórico que o fundo nunca
+        teve.</p>
+        <pre class="doc-codigo"><code>vazios = fechamento.isna().sum()
+print(vazios[vazios &gt; 0])
+print(fechamento["GOLD11"].first_valid_index())</code></pre>
+      </section>
+
+      <section class="doc-secao" id="tratamentos">
+        <h2>7. Descartar ou preencher</h2>
+        <p>Os dois tratamentos mais comuns mudam o risco que o otimizador vai ver, cada um por um
+        motivo.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Critério</th><th>Descartar (<code>dropna</code> na cesta)</th><th>Preencher (<code>ffill</code>)</th></tr></thead>
+            <tbody>
+              <tr><td>Pregões mantidos</td><td>1.423 dos 1.908</td><td>1.908</td></tr>
+              <tr><td>Início da série da cesta</td><td>11/12/2020</td><td>02/01/2019, com a GOLD11 vazia até a estreia</td></tr>
+              <tr><td>Março de 2020</td><td>sai de todos os ativos</td><td>permanece</td></tr>
+              <tr><td>Efeito em 24/10/2025</td><td>pregão removido</td><td>retorno zero no dia e variação acumulada no pregão seguinte</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Volatilidade anual sob cada tratamento</h3>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Ativo</th><th>Descartar</th><th>Preencher</th></tr></thead>
+            <tbody>
+              <tr><td>PETR4</td><td>33,41%</td><td>39,25%</td></tr>
+              <tr><td>VALE3</td><td>29,77%</td><td>35,49%</td></tr>
+              <tr><td>MGLU3</td><td>67,75%</td><td>65,41%</td></tr>
+              <tr><td>BOVA11</td><td>18,51%</td><td>23,41%</td></tr>
+              <tr><td>IVVB11</td><td>17,67%</td><td>20,15%</td></tr>
+              <tr><td>GOLD11</td><td>19,80%</td><td>19,80%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Descartar tira da amostra o choque de 2020 e derruba a volatilidade da PETR4 de 39,25%
+        para 33,41%. A MGLU3 vai no sentido contrário, de 65,41% para 67,75%, porque os pregões de
+        2019 e 2020 que saem eram, para ela, menos dispersos que os seguintes. A GOLD11 não muda: a
+        série dela começa na mesma data em que o <code>dropna</code> começa a cesta.</p>
+        <p>Preencher copia o último preço para 24/10/2025. O retorno desse dia fica em zero, e o
+        pregão seguinte, 27/10/2025, acumula a variação dos dois dias: 0,93% no BOVA11, 1,72% no
+        IVVB11 e -3,37% na GOLD11. São três pregões em 1.908, e o efeito na volatilidade é pequeno;
+        o que pesa na comparação acima é a janela.</p>
+        <div class="doc-nota">
+          <p>Um terceiro caminho, <code>dropna</code> por ativo, mantém cada série no próprio
+          período. Ele funciona para métricas de um ativo e cria um problema quando a análise junta
+          ativos, como a matriz de covariância da Sprint 3: cada par passa a ser medido numa janela
+          diferente. As Aulas 02 a 06 preenchem a lacuna isolada, não inventam preço antes da
+          estreia e declaram a janela comum quando juntam ativos.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="adr">
+        <h2>8. O primeiro ADR</h2>
+        <p>O ADR (Architecture Decision Record) registra uma decisão, o contexto que a motivou e a
+        consequência medida. No A1 ele é a parte individual da nota, 20% de cada artefato, avaliada
+        pela autoria dos commits. O modelo do curso segue o formato MADR, com estas seções
+        mínimas:</p>
+        <ol>
+          <li><strong>Contexto e problema</strong>: o que os dados mostraram (as ausências medidas
+            no coletor do grupo).</li>
+          <li><strong>Decisão</strong>: o tratamento escolhido, em uma frase.</li>
+          <li><strong>Consequências</strong>: o impacto numérico, com o número antes e depois, e o
+            efeito colateral aceito.</li>
+        </ol>
+        <p>O exemplo do deck decide preencher, citando a volatilidade anual da PETR4 de 39,25% contra
+        33,41% descartando. É um exemplo: o grupo decide o próprio tratamento com os números medidos
+        na cesta dele, e um ADR que decide descartar é igualmente válido quando cita o que a decisão
+        custa. O que reprova um ADR é a ausência do número.</p>
+      </section>
+
+      <section class="doc-secao" id="depois">
+        <h2>9. Depois do encontro</h2>
+        <h3>Desafio do notebook</h3>
+        <p>A seção 6 do notebook tem três partes, nesta ordem:</p>
+        <ol>
+          <li>Rodar o coletor num Colab novo, sem nenhum arquivo do grupo, com
+            <code>M08_OFFLINE=1</code>, e conferir que o resultado bate com o da aula: 1.908
+            pregões, de 02/01/2019 a 31/08/2026.</li>
+          <li>Rodar o mesmo coletor com a cesta e a janela do grupo e anotar a origem impressa, o
+            número de pregões e as ausências por ativo.</li>
+          <li>Registrar no SPEC.md os casos de teste das duas rodadas, com entrada, resultado
+            esperado e origem do número, e acrescentar as verificações na célula final.</li>
+        </ol>
+        <h3>Avanço do A1</h3>
+        <ul>
+          <li>SPEC.md com as interfaces do coletor e o plano de testes, escrito antes de codar.</li>
+          <li>Relatório descritivo por ativo: média, desvio, mínimo e máximo.</li>
+          <li>ADR de tratamento de ausências, assinado por cada aluno, com o número medido.</li>
+        </ul>
+        <p>O A1 vale 3 pontos. A review da Sprint 1 e a entrega do A1 caem no mesmo dia, sexta,
+        23/10/2026, com entrega até 23h59. Na Aula 02, os retornos saem do Adj Close já tratado pelo
+        coletor.</p>
+        <h3>Leitura complementar</h3>
+        <p>As seções 4 e 5 de <code>dados/README.md</code>, com as três visões de preço e as falhas
+        do provedor medidas no snapshot. As demais fontes estão na
+        <a href="../referencias/aula01.html">página de referências</a>.</p>
+      </section>
+
+    </main>
+
+    <p class="doc-rodape">Prof. José Romualdo &middot; Módulo 08 AdmTech &middot; Computação &middot;
+    2026-2B-T19</p>
+
+  </div>
+
+  <nav class="doc-nav" aria-label="Navegação da aula">
+    <a href="../index.html"><span class="material-symbols-outlined" aria-hidden="true">home</span>Portal</a>
+    <a href="../aulas/aula01.html"><span class="material-symbols-outlined" aria-hidden="true">slideshow</span>Slides</a>
+    <a href="../referencias/aula01.html"><span class="material-symbols-outlined" aria-hidden="true">link</span>Referências</a>
+  </nav>
+</body>
+</html>

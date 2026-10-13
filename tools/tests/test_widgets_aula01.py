@@ -58,3 +58,13 @@ def test_leitura_do_preencher_cita_a_data_medida_e_os_tres_etfs():
     assert m.data_ausencia_compartilhada().strftime("%d/%m/%Y") in leitura
     for ticker in ("BOVA11", "IVVB11", "GOLD11"):
         assert ticker in leitura
+
+
+def test_tres_visoes_desenha_legenda_das_linhas_ligadas():
+    """Revisão de 13/10/2026: o canvas mostrava três linhas sem dizer qual era qual."""
+    with open(os.path.join(m.RAIZ, "assets", "js", "widgets", "tres-visoes.js"), encoding="utf-8") as fh:
+        js = fh.read()
+    legenda = js.split("// Legenda:", 1)[1].split("leitura.textContent", 1)[0]
+    assert "estado.ligadas[v.chave]" in legenda
+    assert "ctx.fillText(v.rotulo" in legenda
+    assert "api.cor(v.token)" in legenda

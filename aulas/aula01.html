@@ -10,17 +10,17 @@
 
        Divisão dos 105 minutos de metodologia ativa (depois da daily de 15 min):
          Abertura (antes do Bloco 1)  slides 1 a 4   apresentação do professor, combinados, agenda
-         Bloco 1 (0 a 15)             slides 5 a 8   o parceiro, as cinco entregas, Peer Instruction
+         Bloco 1 (0 a 15)             slides 5 a 8   o parceiro, as cinco entregas, Peer Instruction sobre o end do yfinance
          Bloco 2 (15 a 30)            slides 9 a 11  três visões, animação MGLU3 com previsão
-         Bloco 3 (30 a 45)            slides 12 e 13 widget B3SA3, escolha coletiva
-         Bloco 4 (45 a 60)            slides 14 a 16 o coletor e a dupla no notebook (12 min)
-         Bloco 5 (60 a 75)            slides 17 a 19 ausências, animação e widget
-         Bloco 6 (75 a 90)            slides 20 a 22 efeito na volatilidade, ADR, dupla (12 min)
-         Bloco 7 (90 a 105)           slides 23 a 27 quiz, notebook, A1, referências
+         Bloco 3 (30 a 45)            slides 12 a 14 widget B3SA3, escolha coletiva, proventos da PETR4
+         Bloco 4 (45 a 60)            slides 15 a 17 o coletor e a dupla no notebook (12 min)
+         Bloco 5 (60 a 75)            slides 18 a 20 ausências, animação e widget
+         Bloco 6 (75 a 90)            slides 21 a 23 efeito na volatilidade, ADR, dupla (12 min)
+         Bloco 7 (90 a 105)           slides 24 a 28 quiz, notebook, A1, referências
 
        A apresentação do professor e os combinados (slides 2 e 3) entram só nesta aula,
        a primeira do módulo, e consomem a folga da abertura: se o tempo apertar, cortar
-       primeiro o slide 21 (exemplo de ADR) e reduzir a segunda dupla para 8 minutos. -->
+       primeiro o slide 22 (exemplo de ADR) e reduzir a segunda dupla para 8 minutos. -->
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="../assets/css/inteli-brand.css">
@@ -145,9 +145,9 @@
           </thead>
           <tbody>
             <tr><td>Daily</td><td>15</td><td>O que fiz, o que vou fazer, impedimentos</td><td>acesso ao Colab, ao repositório e a <code>dados/</code></td></tr>
-            <tr><td>1</td><td>0 a 15</td><td>O parceiro, a ferramenta e as cinco entregas</td><td>Peer Instruction sobre o Adj Close da PETR4</td></tr>
+            <tr><td>1</td><td>0 a 15</td><td>O parceiro, a ferramenta e as cinco entregas</td><td>Peer Instruction sobre o <code>end</code> do yfinance</td></tr>
             <tr><td>2</td><td>15 a 30</td><td>Três visões do mesmo preço</td><td>previsão antes da animação da MGLU3</td></tr>
-            <tr><td>3</td><td>30 a 45</td><td>Desdobramento da B3SA3 no widget</td><td>escolha coletiva de quatro perguntas</td></tr>
+            <tr><td>3</td><td>30 a 45</td><td>Desdobramento da B3SA3 e proventos da PETR4</td><td>escolha coletiva de quatro perguntas</td></tr>
             <tr><td>4</td><td>45 a 60</td><td>Um coletor que outra pessoa consegue rodar</td><td>dupla no notebook, seções 1 e 2</td></tr>
             <tr><td>5</td><td>60 a 75</td><td>Ausências reais do provedor</td><td>que número o grupo registra no ADR</td></tr>
             <tr><td>6</td><td>75 a 90</td><td>Descartar ou preencher, e o primeiro ADR</td><td>dupla no notebook, seções 3 e 4</td></tr>
@@ -256,20 +256,20 @@
         </div>
         <div class="side-by-side">
           <div class="quiz-container">
-            <p class="quiz-question">No primeiro pregão de 2019, quanto o Adj Close da PETR4 vale em relação ao Close?</p>
+            <p class="quiz-question"><code>yf.download("PETR4.SA", start="2026-08-01", end="2026-08-31")</code>: quantas linhas o DataFrame devolve?</p>
             <ul class="quiz-options">
               <li data-correct="false"
                   data-correct-msg="Certo."
-                  data-incorrect-msg="100% é a razão do BOVA11, um ETF que não distribui proventos.">100%</li>
+                  data-incorrect-msg="31 são os dias corridos de agosto. O yfinance devolve uma linha por pregão, sem fim de semana nem feriado.">31</li>
               <li data-correct="false"
                   data-correct-msg="Certo."
-                  data-incorrect-msg="86% é a razão da SUZB3, que pagou bem menos proventos na janela.">86%</li>
+                  data-incorrect-msg="30 são os dias corridos até 30/08. O fim exclusivo está certo, mas o DataFrame só tem pregões.">30</li>
               <li data-correct="false"
                   data-correct-msg="Certo."
-                  data-incorrect-msg="53% é a razão da VALE3. A PETR4 pagou ainda mais proventos depois de 2019.">53%</li>
+                  data-incorrect-msg="21 são os pregões de agosto contando 31/08. O end é exclusivo e deixa esse pregão de fora.">21</li>
               <li data-correct="true"
-                  data-correct-msg="Certo: 26,13%. Os proventos pagos até 2026 descontam quase três quartos do preço de 2019."
-                  data-incorrect-msg="Não.">26%</li>
+                  data-correct-msg="Certo: 20. Agosto de 2026 teve 21 pregões, e o end exclusivo deixa de fora 31/08, uma segunda-feira."
+                  data-incorrect-msg="Não.">20</li>
             </ul>
           </div>
           <ol class="exercise-steps">
@@ -285,31 +285,30 @@
       </section>
 
       <!-- 8 -->
-      <section class="content-slide" id="proventos">
+      <section class="content-slide" id="fim-exclusivo">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Adj Close da PETR4 vale 26% do Close em 2019</h2>
+          <h2>O end exclusivo devolve 20 dos 21 pregões</h2>
         </div>
         <div class="numero-destaque">
-          <p class="numero-destaque-valor">26,13%</p>
+          <p class="numero-destaque-valor">20</p>
           <div class="numero-destaque-texto">
-            <p>No primeiro pregão de 2019, o Adj Close da PETR4 vale 26,13% do Close: os proventos pagos até 2026 foram descontados do preço antigo.</p>
-            <p>Com proventos reinvestidos, a PETR4 rendeu 616,00% na janela. Só pelo preço, 87,12%.</p>
-            </div>
+            <p>Agosto de 2026 teve 21 pregões no snapshot. O <code>end</code> do yfinance é exclusivo: com <code>end="2026-08-31"</code>, o pregão de segunda-feira, 31/08, fica de fora.</p>
+            <p>O coletor do Bloco 4 soma um dia ao fim pedido para incluir o último pregão.</p>
+          </div>
         </div>
         <table class="tabela-leitura">
-          <thead><tr><th>Ativo</th><th>Retorno de preço (Close)</th><th>Retorno total (Adj Close)</th></tr></thead>
+          <thead><tr><th>Alternativa errada</th><th>Conta que a produz</th></tr></thead>
           <tbody>
-            <tr><td>PETR4</td><td>87,12%</td><td>616,00%</td></tr>
-            <tr><td>VALE3</td><td>52,38%</td><td>189,86%</td></tr>
-            <tr><td>BBAS3</td><td>-14,65%</td><td>42,09%</td></tr>
-            <tr><td>BOVA11</td><td>98,84%</td><td>98,84%</td></tr>
+            <tr><td>31</td><td>contar os dias corridos de agosto</td></tr>
+            <tr><td>30</td><td>contar os dias corridos até a véspera do <code>end</code></td></tr>
+            <tr><td>21</td><td>contar os pregões e tratar o <code>end</code> como inclusivo</td></tr>
           </tbody>
         </table>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; janela 02/01/2019 a 31/08/2026 [1]</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1] [4]</p>
           <p class="footer-page">8</p>
         </div>
       </section>
@@ -327,7 +326,7 @@
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>O grupamento da MGLU3 vira alta de 896%</h2>
+          <h2>Grupamento da MGLU3 em 27/05/2024 nas três visões</h2>
         </div>
         <div class="faixa-nota">
           <span class="material-symbols-outlined" aria-hidden="true">edit</span>
@@ -338,7 +337,7 @@
           <source src="../assets/video/aula01-tres-visoes-mglu3.mp4" type="video/mp4">
         </video>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
           <p class="footer-page">10</p>
         </div>
       </section>
@@ -381,7 +380,7 @@
              data-inicial="B3SA3" data-largura="1000" data-altura="300"></div>
         <p><strong>E a WEGE3 em 28/04/2021?</strong> Cada dupla prevê a queda do negociado e a do Close antes do clique.</p>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
           <p class="footer-page">12</p>
         </div>
       </section>
@@ -407,7 +406,7 @@
             </ul>
           </div>
           <div class="escolha" id="escolha-2">
-            <p class="escolha-item">2. Preço na tela do home broker em 14/05/2021</p>
+            <p class="escolha-item">2. Preço da B3SA3 na tela do home broker em 14/05/2021</p>
             <ul class="escolha-opcoes">
               <li data-correct="true">Negociado</li>
               <li>Close</li>
@@ -433,19 +432,49 @@
         </div>
         <p>Cada dupla decide antes do clique. A sala vota em cada item.</p>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
           <p class="footer-page">13</p>
         </div>
       </section>
 
       <!-- 14 -->
+      <section class="content-slide" id="proventos">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Com proventos, a PETR4 rende 616,00% na janela</h2>
+        </div>
+        <div class="numero-destaque">
+          <p class="numero-destaque-valor">616,00%</p>
+          <div class="numero-destaque-texto">
+            <p>Com proventos reinvestidos (Adj Close), a PETR4 rendeu 616,00% na janela. Só pelo preço (Close), 87,12%.</p>
+            <p>No primeiro pregão de 2019, o Adj Close da PETR4 vale 26,13% do Close: os proventos pagos até 2026 foram descontados do preço antigo.</p>
+          </div>
+        </div>
+        <table class="tabela-leitura">
+          <thead><tr><th>Ativo</th><th>Retorno de preço (Close)</th><th>Retorno total (Adj Close)</th></tr></thead>
+          <tbody>
+            <tr><td>PETR4</td><td>87,12%</td><td>616,00%</td></tr>
+            <tr><td>VALE3</td><td>52,38%</td><td>189,86%</td></tr>
+            <tr><td>BBAS3</td><td>-14,65%</td><td>42,09%</td></tr>
+            <tr><td>BOVA11</td><td>98,84%</td><td>98,84%</td></tr>
+          </tbody>
+        </table>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; janela 02/01/2019 a 31/08/2026 [1]</p>
+          <p class="footer-page">14</p>
+        </div>
+      </section>
+
+      <!-- 15 -->
       <section class="section-slide">
         <div class="accent-bar"></div>
         <h2>Um coletor que outra pessoa consegue rodar</h2>
         <h3>Parâmetros, queda para o snapshot e fim exclusivo</h3>
       </section>
 
-      <!-- 15 -->
+      <!-- 16 -->
       <section class="content-slide" id="coletar">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -481,11 +510,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [4]</p>
-          <p class="footer-page">15</p>
+          <p class="footer-page">16</p>
         </div>
       </section>
 
-      <!-- 16 -->
+      <!-- 17 -->
       <section class="exercise-slide" id="pratica-coletor">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -506,18 +535,18 @@
         <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 01 no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">16</p>
+          <p class="footer-page">17</p>
         </div>
       </section>
 
-      <!-- 17 -->
+      <!-- 18 -->
       <section class="section-slide">
         <div class="accent-bar"></div>
         <h2>Ausências reais do provedor</h2>
         <h3>Descartar ou preencher muda o risco medido</h3>
       </section>
 
-      <!-- 18 -->
+      <!-- 19 -->
       <section class="content-slide" id="mapa-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -532,17 +561,17 @@
         <p>BOVA11, IVVB11 e GOLD11 sem preço num pregão normal da B3. A GOLD11 tem ainda 484 pregões vazios antes da primeira cotação, em 11/12/2020.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
-          <p class="footer-page">18</p>
+          <p class="footer-page">19</p>
         </div>
       </section>
 
-      <!-- 19 -->
+      <!-- 20 -->
       <section class="content-slide" id="widget-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Descartar datas mantém 1.423 dos 1.908 pregões</h2>
+          <h2>O tratamento define 1.908 ou 1.423 pregões</h2>
         </div>
         <div class="widget" data-widget="ausencias" data-fonte="../assets/data/aula01-ausencias.json"
              data-inicial="descartar"></div>
@@ -552,11 +581,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">19</p>
+          <p class="footer-page">20</p>
         </div>
       </section>
 
-      <!-- 20 -->
+      <!-- 21 -->
       <section class="content-slide" id="volatilidade">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -578,25 +607,25 @@
           <div>
             <p><strong>Descartar</strong> as datas com ausência começa a cesta em 11/12/2020, junto com a GOLD11, e apaga a crise de março de 2020 de todos os ativos.</p>
             <p><strong>Preencher</strong> com o último preço cria retorno zero no BOVA11 em 24/10/2025 e acumula 0,93% no pregão seguinte, 27/10/2025.</p>
-            <p>Nenhuma das duas é neutra: a escolha muda o risco que o otimizador vai ver.</p>
+            <p>Cada tratamento muda o risco que o otimizador vai ver.</p>
           </div>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1] [5]</p>
-          <p class="footer-page">20</p>
+          <p class="footer-page">21</p>
         </div>
       </section>
 
-      <!-- 21 -->
+      <!-- 22 -->
       <section class="content-slide" id="adr">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>O ADR registra o número que a decisão muda</h2>
+          <h2>Exemplo de ADR com o número medido</h2>
         </div>
         <div class="side-by-side">
-          <pre class="code-compact" style="max-height: 400px"><code># ADR 0001: Tratamento de datas sem cotação
+          <pre class="code-compact" style="max-height: 400px"><code># ADR 0001 (exemplo): datas sem cotação
 
 - Status: aceito
 - Decisores: aluno responsável pelo coletor
@@ -614,18 +643,18 @@ porque descartar apaga março de 2020.
   PETR4 fica em 39,25% (33,41% descartando).
 - Ruim: retorno zero artificial em 24/10/2025.</code></pre>
           <div>
-            <p>O ADR é a parte individual da nota: <strong>20% de cada artefato</strong>, avaliado pela autoria dos commits.</p>
-            <p>Conta o ADR que cita o número medido nos dados do grupo e que entra no repositório junto com a mudança de código, ao longo da sprint.</p>
+            <p><strong>Exemplo.</strong> As Aulas 02 a 06 preenchem as lacunas isoladas e usam a janela comum quando juntam ativos. O grupo decide o tratamento dele com os números medidos no próprio coletor, e pode decidir descartar.</p>
+            <p>O ADR é a parte individual da nota: <strong>20% de cada artefato</strong>, avaliado pela autoria dos commits, com o número medido nos dados do grupo.</p>
             <p><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a> [7], no formato MADR [8].</p>
           </div>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">21</p>
+          <p class="footer-page">22</p>
         </div>
       </section>
 
-      <!-- 22 -->
+      <!-- 23 -->
       <section class="exercise-slide" id="pratica-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -645,11 +674,11 @@ porque descartar apaga março de 2020.
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">22</p>
+          <p class="footer-page">23</p>
         </div>
       </section>
 
-      <!-- 23 -->
+      <!-- 24 -->
       <section class="quiz-slide" id="quiz-final">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -703,11 +732,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">23</p>
+          <p class="footer-page">24</p>
         </div>
       </section>
 
-      <!-- 24 -->
+      <!-- 25 -->
       <section class="exercise-slide" id="notebook">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -721,17 +750,17 @@ porque descartar apaga março de 2020.
             <tr><td>1 e 2</td><td>A cesta, a janela e a função <code>coletar</code> com queda para o snapshot</td></tr>
             <tr><td>3</td><td>As três visões de preço reconstruídas e a pergunta para a dupla</td></tr>
             <tr><td>4 e 5</td><td>O relatório de ausências, os dois tratamentos e o ADR da decisão</td></tr>
-            <tr class="linha-destaque"><td>6</td><td>Desafio do A1: trocar a cesta pela do grupo e escrever três casos de teste no SPEC.md</td></tr>
+            <tr class="linha-destaque"><td>6</td><td>Desafio do A1: rodar o coletor num Colab novo com <code>M08_OFFLINE=1</code>, depois com a cesta do grupo, e registrar os casos de teste no SPEC.md</td></tr>
           </tbody>
         </table>
         <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Abrir no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">24</p>
+          <p class="footer-page">25</p>
         </div>
       </section>
 
-      <!-- 25 -->
+      <!-- 26 -->
       <section class="content-slide" id="a1">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -752,15 +781,15 @@ porque descartar apaga março de 2020.
         </table>
         <div class="faixa-nota">
           <span class="material-symbols-outlined" aria-hidden="true">event</span>
-          <p>A1 vale 3 pontos. Entrega até sexta, 23/10/2026, 23h59, com review no mesmo dia. Na Aula 02, os retornos saem do Adj Close já tratado.</p>
+          <p>A1 vale 3 pontos. Review da Sprint 1 e entrega do A1 no mesmo dia: sexta, 23/10/2026, com entrega até 23h59. Na Aula 02, os retornos saem do Adj Close já tratado.</p>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">25</p>
+          <p class="footer-page">26</p>
         </div>
       </section>
 
-      <!-- 26 -->
+      <!-- 27 -->
       <section class="content-slide" id="referencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -780,11 +809,11 @@ porque descartar apaga março de 2020.
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">26</p>
+          <p class="footer-page">27</p>
         </div>
       </section>
 
-      <!-- 27 -->
+      <!-- 28 -->
       <section class="end-slide">
         <h1>Até 05/11/2026</h1>
         <h3>Aula 02: Dados Financeiros, Do Preço ao Retorno</h3>
@@ -798,7 +827,7 @@ porque descartar apaga março de 2020.
   <script>
     Reveal.initialize({
       width: 1280, height: 720, center: false, margin: 0,
-      hash: true, slideNumber: false, transition: 'fade'
+      hash: true, slideNumber: false, pdfSeparateFragments: false, transition: 'fade'
     });
   </script>
   <script src="../assets/js/inteli-quiz.js"></script>

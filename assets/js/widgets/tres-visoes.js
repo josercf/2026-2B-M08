@@ -56,7 +56,8 @@
 
       var serie = dados.tickers[estado.ticker];
       var ctx = canvas.getContext('2d');
-      var margem = { esquerda: 80, direita: 16, topo: 12, base: 34 };
+      // Topo de 32 px: a faixa de cima guarda a legenda das linhas ligadas.
+      var margem = { esquerda: 80, direita: 16, topo: 32, base: 34 };
       ctx.fillStyle = api.cor('--seg-base');
       ctx.fillRect(0, 0, largura, altura);
 
@@ -128,6 +129,24 @@
           if (aberto) { ctx.lineTo(px(i), py(x)); } else { ctx.moveTo(px(i), py(x)); aberto = true; }
         });
         ctx.stroke();
+      });
+
+      // Legenda: um traço na cor de cada visão ligada, na ordem dos botões.
+      ctx.font = api.fonte(14, 600);
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      var x = margem.esquerda;
+      VISOES.forEach(function (v) {
+        if (!estado.ligadas[v.chave]) return;
+        ctx.strokeStyle = api.cor(v.token);
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(x, 12);
+        ctx.lineTo(x + 22, 12);
+        ctx.stroke();
+        ctx.fillStyle = api.cor('--seg-texto');
+        ctx.fillText(v.rotulo, x + 30, 12);
+        x += 30 + ctx.measureText(v.rotulo).width + 28;
       });
 
       leitura.textContent = serie.leitura;

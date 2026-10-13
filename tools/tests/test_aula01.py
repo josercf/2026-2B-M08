@@ -119,21 +119,31 @@ def test_bova11_ivvb11_e_gold11_faltam_juntos_em_24_10_2025():
     assert m.data_ausencia_compartilhada().strftime("%Y-%m-%d") == "2025-10-24"
 
 
-@pytest.mark.parametrize("ticker,razao,opcao", [
-    ("PETR4", 0.2613, "26%"),
-    ("VALE3", 0.5257, "53%"),
-    ("SUZB3", 0.8637, "86%"),
-    ("BOVA11", 1.0, "100%"),
+@pytest.mark.parametrize("ticker,razao", [
+    ("PETR4", 0.2613),
+    ("VALE3", 0.5257),
+    ("SUZB3", 0.8637),
+    ("ITUB4", 0.6327),
+    ("BBAS3", 0.5977),
+    ("BOVA11", 1.0),
+    ("IVVB11", 1.0),
 ])
-def test_opcoes_do_peer_instruction_sao_razoes_reais_da_cesta(ticker, razao, opcao):
-    """As quatro opções do slide de verificação do preparo são a razão Adj Close / Close
-    de um ativo no primeiro pregão, arredondada ao inteiro. A VALE3 mede 52,57%, então a
-    opção é 53%, e não 52% como o roteiro registrava."""
-    ajustado = m.carregar_precos("precos_ajustados.csv").iloc[0]
-    fechamento = m.carregar_precos("precos_fechamento.csv").iloc[0]
-    medida = float(ajustado[ticker] / fechamento[ticker])
-    assert round(medida, 4) == razao
-    assert "%d%%" % round(100 * medida) == opcao
-    deck = open(os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-                             "aulas", "aula01.html"), encoding="utf-8").read()
-    assert ">%s</li>" % opcao in deck
+def test_razao_adj_close_sobre_close_no_primeiro_pregao(ticker, razao):
+    """Peso dos proventos no preço de 2019: a PETR4 vale 26,13% do Close no Adj Close,
+    e o BOVA11, que não distribui proventos, vale 100%. Citado no Bloco 3 do deck e na
+    autoverificação do material."""
+    assert round(m.razao_ajustado_fechamento(ticker), 4) == razao
+
+
+def test_end_exclusivo_do_yfinance_devolve_20_dos_21_pregoes_de_agosto():
+    """Alternativas do Peer Instruction de abertura: yf.download(start="2026-08-01",
+    end="2026-08-31"). 31/08/2026 é uma segunda-feira com pregão, e o end exclusivo
+    o deixa de fora."""
+    assert m.linhas_com_fim_exclusivo() == {
+        "dias_corridos": 31,
+        "dias_corridos_fim_exclusivo": 30,
+        "pregoes_inclusivo": 21,
+        "pregoes_fim_exclusivo": 20,
+        "fim_e_pregao": True,
+        "dia_da_semana_do_fim": 0,
+    }
