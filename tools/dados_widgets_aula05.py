@@ -1,5 +1,8 @@
 """JSON dos widgets da Aula 05, a partir de tools/medidas_aula05.py.
 
+Os retornos vêm de tools/retornos.py (ADR-009): janela comum dos 15 ativos desde
+04/01/2021, com a lacuna de 24/10/2025 preenchida pelo preço anterior.
+
 Uso: .venv/bin/python tools/dados_widgets_aula05.py
 Saída: assets/data/aula05-janela-treino.json e assets/data/aula05-sensibilidade.json
 """

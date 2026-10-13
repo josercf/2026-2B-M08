@@ -83,6 +83,16 @@ def test_numeros_do_material_vem_das_medicoes():
     assert [v for v in esperados if v not in texto] == []
 
 
+def test_secao_da_amostra_declara_a_janela_comum_da_adr_009():
+    retornos = m.carregar_retornos()
+    n = "{:,}".format(len(retornos)).replace(",", ".")
+    texto = _texto(_ler(MATERIAL))
+    assert "ADR-009" in texto
+    assert "são %s retornos diários, de %s a %s" % (n, retornos.index[0].strftime("%d/%m/%Y"),
+                                                    retornos.index[-1].strftime("%d/%m/%Y")) in texto
+    assert "descartada" not in _ler(MATERIAL)
+
+
 def test_paginas_sem_travessao():
     for caminho in (MATERIAL, REFERENCIAS):
         assert chr(0x2014) not in _ler(caminho)

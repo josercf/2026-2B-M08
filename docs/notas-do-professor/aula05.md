@@ -2,10 +2,12 @@
 
 Artefato interno de condução, não distribuído ao aluno. Aula de 01/12/2026 (terça), Semana 8,
 Sprint 4, Aula 38 do módulo na Adalove; horário de relógio a confirmar (P1). Todo número abaixo vem
-de `tools/medidas_aula05.py` e está travado em `tools/tests/test_aula05.py`. Amostra: Adj Close de
-04/01/2021 a 31/08/2026, com 24/10/2025 descartada na cesta inteira, anualização por 252, CDI das
-datas de cada janela como taxa livre de risco. Divisão principal: treino 2023 e 2024 (499 pregões),
-teste 2025 (249 pregões).
+de `tools/medidas_aula05.py` e está travado em `tools/tests/test_aula05.py`. Amostra: tratamento de
+ausência do módulo (ADR-009, `tools/retornos.py`), retornos do Adj Close na janela comum dos 15
+ativos, 1.412 retornos de 04/01/2021 a 31/08/2026, com a lacuna de 24/10/2025 preenchida pelo preço
+anterior (retorno zero em BOVA11, IVVB11 e GOLD11 nesse dia); anualização por 252, CDI das datas de
+cada janela como taxa livre de risco. Divisão principal: treino 2023 e 2024 (499 pregões), teste
+2025 (250 pregões).
 
 ## Antes do encontro
 
@@ -13,8 +15,8 @@ teste 2025 (249 pregões).
   montam e que os dois vídeos tocam no navegador da sala.
 - Não distribuir o PDF exportado pelo botão do deck: ele revela o gabarito do Peer Instruction, do
   quiz final e da escolha coletiva.
-- A Aula 04 usou a amostra a partir de 11/12/2020; esta aula começa em 04/01/2021 para que as
-  janelas caiam em anos e meses civis inteiros. Se um grupo estranhar que os pesos não batem com os
+- A Aula 04 usa a janela comum dos 15 ativos, que começa em 14/12/2020 (ADR-009); esta aula
+  começa em 04/01/2021 para que as janelas caiam em anos e meses civis inteiros. Se um grupo estranhar que os pesos não batem com os
   da Aula 04, a resposta é exatamente o assunto do dia: outra janela, outros pesos.
 - A Ponderada 2 é individual e vence nesta semana. Nada da aula usa a cesta nem os perfis da
   Ponderada; o exemplo é sempre a cesta de referência. Responder dúvidas de método, nunca de número
@@ -39,7 +41,7 @@ Aplicada em 2025, o que ela entrega?
 |---|---|---|
 | Perto de 2,11: os pesos são ótimos | não | trata "ótimo" como propriedade da carteira, e não da janela em que foi calculada |
 | Menos, mas acima de 1 | não | intuição certa de que piora, sem dimensionar o erro do retorno esperado |
-| Sharpe negativo: rende menos que o CDI | sim (-0,31) | |
+| Sharpe negativo: rende menos que o CDI | sim (-0,32) | |
 | Mais, porque o CDI subiu | não | inverte o papel do CDI no Sharpe: CDI maior diminui o numerador |
 
 Critério de discussão: entre 30% e 70% de acerto na primeira votação, dois minutos em dupla e nova
@@ -74,7 +76,7 @@ avaliados na mesma janela; nada foi medido fora dela.
 Interação: previsão antes de mover o controle. Cada dupla escreve um número: quanto da carteira de
 máximo Sharpe troca de ativo quando a janela anda um mês.
 
-- Começar na primeira janela (PETR4 83,3%, VALE3 16,7%) e andar uma janela por vez nas cinco
+- Começar na primeira janela (PETR4 76,5%, VALE3 23,5%) e andar uma janela por vez nas cinco
   primeiras, lendo a frase de baixo. Depois pular para a divisão principal (janela 25 de 33, treino
   01/2023 a 12/2024).
 - Trocar para variância mínima e repetir: a marca coral (peso da janela anterior) fica quase em
@@ -96,9 +98,9 @@ Interação: programação em dupla no notebook, seções 1 a 3, troca de papel 
 - Ponto de travamento comum: `retornos_teste @ w` com `w` numa ordem de ativos diferente da ordem
   das colunas. O notebook usa a mesma ordem de `retornos.columns`; quem montou pesos à mão por
   dicionário precisa reindexar.
-- Segundo travamento: CDI com datas faltando no `reindex`. O CDI do SGS tem 24/10/2025, que a cesta
-  não tem; o `reindex` pelas datas da cesta resolve. Datas da cesta ausentes do CDI dariam `NaN` no
-  Sharpe.
+- Segundo travamento: CDI e cesta com calendários diferentes. O `reindex` pelas datas da cesta
+  alinha as duas séries, e uma data da cesta ausente do CDI daria `NaN` no Sharpe. A lacuna de
+  24/10/2025 fica na cesta com retorno zero nos três ETFs (ADR-009), e o CDI tem essa data.
 - Conferência rápida na sala: máximo Sharpe com drawdown de -8,49% em 08/04/2025.
 - Se a dupla terminar antes: rodar a seção 4 (janelas deslizantes) e conferir as 33 janelas.
 
@@ -123,7 +125,7 @@ perturbado em 5 p.p." e "Ledoit-Wolf". Registrar a contagem no quadro.
 ## Bloco 6: estabilidade, ADR e escolha coletiva
 
 Animação do slide 17: antes de tocar, cada dupla responde se o ativo de maior peso na primeira
-janela continua no topo na última. Resposta: não; a PETR4 começa com 83,27% e perde espaço para
+janela continua no topo na última. Resposta: não; a PETR4 começa com 76,52% e perde espaço para
 BBAS3, GOLD11 e IVVB11.
 
 Slide 18: definir carteira trocada no quadro com um exemplo de dois ativos (60/40 para 40/60 troca
@@ -137,10 +139,10 @@ Escolha coletiva (slide 21, 4 minutos). Gabarito e o número que sustenta cada r
 
 | Recomendação | Gabarito | Número que sustenta |
 |---|---|---|
-| 1. O máximo Sharpe entrega Sharpe perto de 2 fora da amostra | não sustentada | -0,31 em 2025; mediana de 0,53 nas 33 janelas |
+| 1. O máximo Sharpe entrega Sharpe perto de 2 fora da amostra | não sustentada | -0,32 em 2025; mediana de 0,53 nas 33 janelas |
 | 2. A variância mínima rendeu mais que o CDI em 2025 | sustentada | 22,83% contra 14,26% |
 | 3. Os pesos de máximo Sharpe podem ficar um ano sem revisão | não sustentada | 11,91% trocados por mês na mediana; 82,60% entre biênios |
-| 4. No máximo Sharpe, a volatilidade prevista errou menos que o retorno previsto | sustentada | 9,51% contra 10,36% na volatilidade; 32,05% contra 11,06% no retorno (na variância mínima é o contrário: 20,77% contra 21,20% no retorno, 7,46% contra 8,83% na volatilidade) |
+| 4. No máximo Sharpe, a volatilidade prevista errou menos que o retorno previsto | sustentada | 9,51% contra 10,35% na volatilidade; 32,05% contra 11,02% no retorno (na variância mínima é o contrário: 20,77% contra 21,12% no retorno, 7,46% contra 8,81% na volatilidade) |
 
 Na recomendação 2, provocar: "sustentada para 2025; o que as 33 janelas dizem?" A variância mínima
 teve Sharpe negativo em 5 das 33. Um ano é um ponto, e o comitê precisa saber disso.

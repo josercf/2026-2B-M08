@@ -145,7 +145,7 @@
                   data-correct-msg="Certo."
                   data-incorrect-msg="Na mediana das 33 janelas de teste o máximo Sharpe entregou 0,53. Em 2025, menos ainda.">Menos, mas acima de 1</li>
               <li data-correct="true"
-                  data-correct-msg="Certo: -0,31. Acumulou 10,96% em 2025, abaixo dos 14,26% do CDI."
+                  data-correct-msg="Certo: -0,32. Acumulou 10,96% em 2025, abaixo dos 14,26% do CDI."
                   data-incorrect-msg="Não.">Sharpe negativo: rende menos que o CDI</li>
               <li data-correct="false"
                   data-correct-msg="Certo."
@@ -177,13 +177,13 @@
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>O teste usa 249 pregões fora do treino</h2>
+          <h2>O teste usa 250 pregões fora do treino</h2>
         </div>
         <table class="tabela-leitura">
           <thead><tr><th>Período</th><th>Datas</th><th>Pregões</th><th>Para que serve</th></tr></thead>
           <tbody>
             <tr><td>Treino</td><td>02/01/2023 a 30/12/2024</td><td>499</td><td>estimar retorno e covariância e otimizar os pesos</td></tr>
-            <tr class="linha-destaque"><td>Teste</td><td>02/01/2025 a 30/12/2025</td><td>249</td><td>aplicar os pesos congelados e medir o realizado</td></tr>
+            <tr class="linha-destaque"><td>Teste</td><td>02/01/2025 a 30/12/2025</td><td>250</td><td>aplicar os pesos congelados e medir o realizado</td></tr>
           </tbody>
         </table>
         <div class="side-by-side">
@@ -191,7 +191,7 @@
             <p><strong>A divisão é no tempo.</strong> Sortear pregões para o teste deixaria o treino enxergar dias posteriores a ele, e o resultado pareceria melhor do que o comitê vai ver.</p>
           </div>
           <div>
-            <p><strong>Uma data a menos.</strong> 24/10/2025 sai da cesta inteira, porque BOVA11, IVVB11 e GOLD11 ficaram sem cotação (Aula 01). O pregão seguinte cobre os dois dias.</p>
+            <p><strong>Amostra (ADR-009).</strong> Janela comum dos 15 ativos desde 04/01/2021: 1.412 retornos até 31/08/2026. Em 24/10/2025, BOVA11, IVVB11 e GOLD11 ficaram sem cotação; o preço anterior é repetido, o retorno deles nesse dia é zero, e o pregão seguinte leva a variação dos dois dias.</p>
           </div>
         </div>
         <div class="slide-footer">
@@ -228,18 +228,18 @@
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>O máximo Sharpe prometeu 2,11 e entregou -0,31</h2>
+          <h2>O máximo Sharpe prometeu 2,11 e entregou -0,32</h2>
         </div>
         <table class="tabela-leitura">
           <thead><tr><th>Carteira</th><th>Retorno</th><th>Volatilidade</th><th>Sharpe</th><th>Drawdown máximo</th></tr></thead>
           <tbody>
             <tr><td>Máximo Sharpe, esperado</td><td>32,05%</td><td>9,51%</td><td>2,11</td><td>não medido no treino</td></tr>
-            <tr class="linha-destaque"><td>Máximo Sharpe, realizado</td><td>11,06%</td><td>10,36%</td><td>-0,31</td><td>-8,49% em 08/04/2025</td></tr>
+            <tr class="linha-destaque"><td>Máximo Sharpe, realizado</td><td>11,02%</td><td>10,35%</td><td>-0,32</td><td>-8,49% em 08/04/2025</td></tr>
             <tr><td>Variância mínima, esperado</td><td>20,77%</td><td>7,46%</td><td>1,17</td><td>não medido no treino</td></tr>
-            <tr class="linha-destaque"><td>Variância mínima, realizado</td><td>21,20%</td><td>8,83%</td><td>0,78</td><td>-4,75% em 13/08/2025</td></tr>
+            <tr class="linha-destaque"><td>Variância mínima, realizado</td><td>21,12%</td><td>8,81%</td><td>0,77</td><td>-4,75% em 13/08/2025</td></tr>
           </tbody>
         </table>
-        <p>No máximo Sharpe, a volatilidade foi de 9,51% para 10,36% e o retorno médio anualizado caiu de 32,05% para 11,06%, abaixo do CDI anualizado do teste, de 14,32%. Na variância mínima, o retorno quase acertou e a volatilidade subiu de 7,46% para 8,83%.</p>
+        <p>No máximo Sharpe, a volatilidade foi de 9,51% para 10,35% e o retorno médio anualizado caiu de 32,05% para 11,02%, abaixo do CDI anualizado do teste, de 14,32%. Na variância mínima, o retorno quase acertou e a volatilidade subiu de 7,46% para 8,81%.</p>
         <div class="faixa-nota">
           <span class="material-symbols-outlined" aria-hidden="true">quiz</span>
           <p>Que parte do resultado da Aula 04 o grupo ainda não tinha testado?</p>
@@ -449,8 +449,8 @@ realizado(w, teste, cdi.reindex(teste.index))</code></pre>
         <table class="tabela-leitura">
           <thead><tr><th>Carteira</th><th>Treino 2021 e 2022</th><th>Treino 2023 e 2024</th><th>Trocado</th></tr></thead>
           <tbody>
-            <tr class="linha-destaque"><td>Máximo Sharpe</td><td>PETR4 83,27%, VALE3 16,73%</td><td>IVVB11 41,51%, GOLD11 21,06%, PETR4 17,40%, BBAS3 16,81%</td><td>82,60%</td></tr>
-            <tr><td>Variância mínima</td><td>GOLD11 36,36%, EGIE3 27,00% e outros</td><td>IVVB11 27,44%, GOLD11 22,58%, EGIE3 16,12% e outros</td><td>33,23%</td></tr>
+            <tr class="linha-destaque"><td>Máximo Sharpe</td><td>PETR4 76,52%, VALE3 23,48%</td><td>IVVB11 41,51%, GOLD11 21,06%, PETR4 17,40%, BBAS3 16,81%</td><td>82,60%</td></tr>
+            <tr><td>Variância mínima</td><td>GOLD11 35,91%, EGIE3 27,06% e outros</td><td>IVVB11 27,44%, GOLD11 22,58%, EGIE3 16,12% e outros</td><td>33,23%</td></tr>
           </tbody>
         </table>
         <p>A variância mínima troca menos porque não usa o retorno esperado, a estimativa mais frágil das duas. Recomendar o máximo Sharpe ao comitê inclui dizer com que frequência os pesos serão revistos.</p>
@@ -478,7 +478,7 @@ realizado(w, teste, cdi.reindex(teste.index))</code></pre>
 ## Contexto
 Na cesta de referência, o máximo Sharpe
 de 2023-2024 prometia 2,11 e entregou
--0,31 em 2025.
+-0,32 em 2025.
 
 ## Decisão
 Reotimizar todo mês, treino de 24 meses.
@@ -618,7 +618,7 @@ do máximo Sharpe troca de ativo;
                   data-incorrect-msg="Não.">maior queda desde um pico</li>
               <li data-correct="false"
                   data-correct-msg="Certo."
-                  data-incorrect-msg="A volatilidade realizada foi 10,36%.">volatilidade de 8,49%</li>
+                  data-incorrect-msg="A volatilidade realizada foi 10,35%.">volatilidade de 8,49%</li>
             </ul>
           </div>
         </div>
@@ -743,7 +743,7 @@ do máximo Sharpe troca de ativo;
   <script>
     Reveal.initialize({
       width: 1280, height: 720, center: false, margin: 0,
-      hash: true, slideNumber: false, transition: 'fade'
+      hash: true, slideNumber: false, pdfSeparateFragments: false, transition: 'fade'
     });
   </script>
   <script src="../assets/js/inteli-quiz.js"></script>

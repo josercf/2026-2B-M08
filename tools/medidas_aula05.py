@@ -9,13 +9,19 @@ sai daqui e está travado em tools/tests/test_aula05.py.
 
 Decisões declaradas (valem para todo número da aula):
 
-- Preço: Adj Close de precos_ajustados.csv, os 15 ativos da cesta de referência.
-- Período do estudo: de 04/01/2021, primeiro pregão de 2021, a 31/08/2026. O
-  GOLD11 só tem cotação a partir de 11/12/2020; começar em 2021 deixa as janelas
-  em anos civis inteiros e todos os 15 ativos presentes desde o primeiro dia.
-- Ausências: dentro do período sobra uma só data com ausência, 24/10/2025
-  (BOVA11, IVVB11 e GOLD11 sem cotação). Ela é descartada para a cesta inteira
-  (dropna), e o retorno do pregão seguinte cobre os dois dias.
+- Preço e ausências: tratamento único do módulo (ADR-009), de tools/retornos.py.
+  Adj Close de precos_ajustados.csv, os 15 ativos da cesta de referência; lacuna
+  isolada preenchida com o último preço (ffill), nada preenchido antes da
+  primeira cotação, e a análise conjunta na janela comum dos 15 ativos
+  (retornos_janela_comum).
+- Período do estudo: de 04/01/2021, primeiro pregão de 2021, a 31/08/2026. A
+  janela comum dos 15 ativos começa em 14/12/2020, por causa do GOLD11; começar
+  em 2021 é escolha de desenho do estudo, que deixa as janelas em anos civis
+  inteiros. São 1.412 retornos, de 04/01/2021 a 31/08/2026; o primeiro mede a
+  variação desde o último pregão de 2020.
+- Dentro do período há uma data com lacuna, 24/10/2025 (BOVA11, IVVB11 e GOLD11
+  sem cotação). Ela fica na amostra com o preço do dia anterior: retorno zero
+  nesses três ETFs nesse dia, e o pregão seguinte leva a variação dos dois dias.
 - Retorno e risco anualizados por 252 pregões: média aritmética diária vezes
   252 e desvio-padrão diário vezes raiz de 252, iguais no treino e no teste para
   que esperado e realizado sejam comparáveis.
@@ -30,14 +36,19 @@ Decisões declaradas (valem para todo número da aula):
   passo de um mês, do treino iniciado em 01/2021 ao iniciado em 09/2023.
 """
 import os
+import sys
 
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 
-RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DADOS = os.path.join(RAIZ, "dados")
-PREGOES_ANO = 252
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+import retornos  # noqa: E402
+
+RAIZ = retornos.RAIZ
+DADOS = retornos.DADOS
+PREGOES_ANO = retornos.PREGOES_ANO
 
 INICIO_ESTUDO = "2021-01-01"
 TREINO = ("2023-01-01", "2024-12-31")
@@ -58,22 +69,15 @@ TRES_JANELAS = (("2022-01-01", "2022-12-31"), ("2023-01-01", "2023-12-31"),
 OBJETIVOS = ("max_sharpe", "var_min")
 
 
-def carregar_precos():
-    """Adj Close dos 15 ativos no período do estudo, sem as datas com ausência."""
-    precos = pd.read_csv(os.path.join(DADOS, "precos_ajustados.csv"),
-                         index_col="data", parse_dates=["data"])
-    return precos.loc[INICIO_ESTUDO:].dropna()
-
-
-def datas_descartadas():
-    """Pregões do período do estudo removidos pelo dropna."""
-    precos = pd.read_csv(os.path.join(DADOS, "precos_ajustados.csv"),
-                         index_col="data", parse_dates=["data"]).loc[INICIO_ESTUDO:]
-    return list(precos.index[precos.isna().any(axis=1)])
-
-
 def carregar_retornos():
-    return carregar_precos().pct_change().dropna()
+    """Retornos diários dos 15 ativos na janela comum, de 04/01/2021 a 31/08/2026 (ADR-009)."""
+    return retornos.retornos_janela_comum(inicio=INICIO_ESTUDO)
+
+
+def datas_preenchidas():
+    """Pregões do período do estudo em que algum ativo teve a lacuna preenchida."""
+    lacunas = retornos.lacunas_preenchidas()
+    return sorted(set(lacunas.loc[INICIO_ESTUDO:].index))
 
 
 def carregar_cdi():
@@ -314,7 +318,7 @@ def cdi_no_periodo(inicio, fim):
     """Patrimônio do CDI composto em todas as datas do SGS 12 entre inicio e fim, inclusive.
 
     Começa em 1 antes do primeiro dia, como a carteira no teste. Usa todas as
-    datas do CDI, inclusive 24/10/2025, que só a cesta de preços perdeu.
+    datas do CDI entre inicio e fim.
     """
     taxas = carregar_cdi().loc[inicio:fim]
     return (1 + taxas).cumprod()

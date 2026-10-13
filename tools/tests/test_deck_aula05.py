@@ -79,6 +79,18 @@ def test_todo_numero_medido_aparece_no_deck(numeros):
     assert faltando == []
 
 
+def test_slide_de_treino_e_teste_declara_a_amostra_da_adr_009():
+    """Início e número de retornos da janela comum, como a ADR-009 pede."""
+    retornos = m.carregar_retornos()
+    n = "{:,}".format(len(retornos)).replace(",", ".")
+    secao = [s for s in _secoes() if 'id="treino-teste"' in s][0]
+    assert "ADR-009" in secao
+    assert "desde %s: %s retornos até %s" % (retornos.index[0].strftime("%d/%m/%Y"), n,
+                                             retornos.index[-1].strftime("%d/%m/%Y")) in secao
+    assert "24/10/2025" in secao and "retorno deles nesse dia é zero" in secao
+    assert "sai da cesta inteira" not in _html()
+
+
 def test_contagens_das_janelas_deslizantes_no_titulo():
     r = m.resumo_deslizante()
     assert "Em %d das 33 janelas o máximo Sharpe" % r["max_sharpe"]["abaixo_do_prometido"] in _html()

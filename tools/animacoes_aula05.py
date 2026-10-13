@@ -1,5 +1,8 @@
 """Animações da Aula 05, a partir de dados/ via tools/medidas_aula05.py.
 
+Os retornos vêm de tools/retornos.py (ADR-009): janela comum dos 15 ativos desde
+04/01/2021, com a lacuna de 24/10/2025 preenchida pelo preço anterior.
+
 1. aula05-janela-deslizante (37 s): a janela de treino de 24 meses desliza de mês
    em mês sobre a linha do tempo, e cada janela acrescenta uma barra com os pesos
    da carteira de máximo Sharpe otimizada nela. A legenda de cada quadro traz o

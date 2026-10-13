@@ -8,8 +8,9 @@
 
   <!-- Este material aprofunda o que o deck só aponta. Todo número citado vem de
        tools/medidas_aula05.py e está travado em tools/tests/test_aula05.py e
-       tools/tests/test_material_aula05.py. Amostra: Adj Close de 04/01/2021 a
-       31/08/2026, com 24/10/2025 descartada na cesta inteira, anualização por 252
+       tools/tests/test_material_aula05.py. Amostra: retornos do Adj Close na janela
+       comum dos 15 ativos (ADR-009, tools/retornos.py), de 04/01/2021 a 31/08/2026,
+       com a lacuna de 24/10/2025 preenchida pelo preço anterior, anualização por 252
        e CDI das datas de cada janela como taxa livre de risco. -->
 
   <link rel="stylesheet" href="../assets/css/inteli-brand.css">
@@ -93,7 +94,7 @@
           <li>Na animação da janela deslizante, o ativo de maior peso na primeira janela continua no
           topo até a última?
             <details><summary>Resposta comentada</summary>
-            <p>Não. A PETR4 tem 83,27% da carteira na primeira janela, de 2021 e 2022, e vai perdendo
+            <p>Não. A PETR4 tem 76,52% da carteira na primeira janela, de 2021 e 2022, e vai perdendo
             espaço para BBAS3, GOLD11 e IVVB11 conforme a janela anda. A legenda final mostra que, em
             25 das 33 janelas, o Sharpe entregue ficou abaixo do prometido.</p></details></li>
           <li>Por que o período de teste precisa vir depois do período de treino, em vez de ser
@@ -116,14 +117,18 @@
 
       <section class="doc-secao" id="amostra">
         <h2>2. A amostra desta aula</h2>
-        <p>A aula usa o <code>Adj Close</code> dos 15 ativos da cesta de referência a partir de
-        04/01/2021, primeiro pregão de 2021. A Aula 04 começou em 11/12/2020, data da primeira
-        cotação do GOLD11; aqui o início vai para o primeiro pregão do ano seguinte para que as janelas
-        de treino e de teste caiam em anos e meses civis inteiros, com os 15 ativos presentes desde o
-        primeiro dia.</p>
-        <p>Dentro do período sobra uma única data com ausência, 24/10/2025, em que BOVA11, IVVB11 e
-        GOLD11 ficaram sem cotação (Aula 01). Ela sai da cesta inteira, e o retorno do pregão seguinte
-        cobre os dois dias. Sobram 1.411 pregões de preço e 1.410 retornos diários, até 31/08/2026.</p>
+        <p>A aula usa o tratamento de ausência único do módulo, registrado na ADR-009: lacuna
+        isolada é preenchida com o último preço, nada é preenchido antes da primeira cotação de um
+        ativo, e a análise conjunta usa a janela comum dos ativos envolvidos. Com os 15 ativos da
+        cesta de referência, essa janela começa em 14/12/2020, primeiro retorno depois da primeira
+        cotação do GOLD11, e é a mesma que a Aula 04 usa. Aqui o estudo começa em 04/01/2021,
+        primeiro pregão de 2021, para que as janelas de treino e de teste caiam em anos e meses civis
+        inteiros.</p>
+        <p>Dentro do período há uma lacuna, 24/10/2025, em que BOVA11, IVVB11 e GOLD11 ficaram sem
+        cotação (Aula 01). O preço do dia anterior é repetido: o retorno desses três ETFs é zero
+        nesse dia, e o pregão seguinte leva a variação dos dois dias. O pregão fica na amostra, e
+        são 1.412 retornos diários, de 04/01/2021 a 31/08/2026; o primeiro mede a variação desde o
+        último pregão de 2020.</p>
         <div class="doc-nota">
           <p><strong>Para o ADR do grupo.</strong> A janela de dados é uma decisão com impacto
           numérico, e esta aula mostra quanto: a mesma cesta, otimizada em 2021 e 2022 ou em 2023 e
@@ -142,7 +147,7 @@
             <thead><tr><th>Período</th><th>Datas</th><th>Pregões</th><th>Uso</th></tr></thead>
             <tbody>
               <tr><td>Treino</td><td>02/01/2023 a 30/12/2024</td><td>499</td><td>estimar e otimizar</td></tr>
-              <tr><td>Teste</td><td>02/01/2025 a 30/12/2025</td><td>249</td><td>aplicar os pesos congelados e medir</td></tr>
+              <tr><td>Teste</td><td>02/01/2025 a 30/12/2025</td><td>250</td><td>aplicar os pesos congelados e medir</td></tr>
             </tbody>
           </table>
         </div>
@@ -166,20 +171,20 @@
             <thead><tr><th>Carteira</th><th>Retorno</th><th>Volatilidade</th><th>Sharpe</th><th>Acumulado em 2025</th></tr></thead>
             <tbody>
               <tr><td>Máximo Sharpe, esperado no treino</td><td>32,05%</td><td>9,51%</td><td>2,11</td><td></td></tr>
-              <tr><td>Máximo Sharpe, realizado em 2025</td><td>11,06%</td><td>10,36%</td><td>-0,31</td><td>10,96%</td></tr>
+              <tr><td>Máximo Sharpe, realizado em 2025</td><td>11,02%</td><td>10,35%</td><td>-0,32</td><td>10,96%</td></tr>
               <tr><td>Variância mínima, esperado no treino</td><td>20,77%</td><td>7,46%</td><td>1,17</td><td></td></tr>
-              <tr><td>Variância mínima, realizado em 2025</td><td>21,20%</td><td>8,83%</td><td>0,78</td><td>22,83%</td></tr>
+              <tr><td>Variância mínima, realizado em 2025</td><td>21,12%</td><td>8,81%</td><td>0,77</td><td>22,83%</td></tr>
             </tbody>
           </table>
         </div>
         <p>Três leituras saem da tabela.</p>
         <ol>
           <li><strong>No máximo Sharpe, a volatilidade errou menos que o retorno.</strong> 9,51%
-          prevista contra 10,36% realizada. Na variância mínima a volatilidade subiu de 7,46% para
-          8,83%, mais do que o erro de retorno dela. O retorno de 2025 nesta tabela é a média diária
+          prevista contra 10,35% realizada. Na variância mínima a volatilidade subiu de 7,46% para
+          8,81%, mais do que o erro de retorno dela. O retorno de 2025 nesta tabela é a média diária
           anualizada por 252; o acumulado no ano está na última coluna.</li>
           <li><strong>O retorno previsto do máximo Sharpe erra muito.</strong> 32,05% esperados contra
-          11,06% realizados. O otimizador escolhe os ativos com maior retorno médio no treino, e parte
+          11,02% realizados. O otimizador escolhe os ativos com maior retorno médio no treino, e parte
           desse retorno era acaso daquela janela. Michaud (1989) chamou o otimizador de média e
           variância de "maximizador de erro de estimação" por esse motivo.</li>
           <li><strong>O CDI subiu.</strong> A taxa livre de risco foi de 12,00% ao ano no treino e de
@@ -188,7 +193,7 @@
           por isso tem Sharpe negativo.</li>
         </ol>
         <p>A variância mínima não usa o retorno esperado. Ela prometeu menos e entregou um retorno
-        praticamente igual ao esperado, 21,20% contra 20,77%; o Sharpe caiu de 1,17 para 0,78 pela
+        praticamente igual ao esperado, 21,12% contra 20,77%; o Sharpe caiu de 1,17 para 0,77 pela
         volatilidade um pouco maior e pelo CDI mais alto.</p>
       </section>
 
@@ -236,7 +241,7 @@ data_do_fundo = queda.idxmin()</code></pre>
         ativo a ativo, da diferença absoluta entre dois vetores de pesos. Zero é a mesma carteira e
         100% é trocar tudo; o número é a fração do patrimônio que precisaria mudar de mãos para ir de
         uma versão à outra. Entre a janela de 2021 e 2022 e a de 2023 e 2024, o máximo Sharpe troca
-        82,60% da carteira: a PETR4 cai de 83,27% para 17,40%, e IVVB11 e GOLD11, que tinham peso zero,
+        82,60% da carteira: a PETR4 cai de 76,52% para 17,40%, e IVVB11 e GOLD11, que tinham peso zero,
         passam a 41,51% e 21,06%. A variância mínima troca 33,23%.</p>
         <p>O máximo Sharpe ficou abaixo da promessa em 25 das 33 janelas, e a variância mínima, em 14.
         O que separa as duas é o retorno esperado, que só o máximo Sharpe usa (seção 7).</p>

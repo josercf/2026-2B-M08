@@ -33,8 +33,8 @@ def test_janela_treino_tem_33_janelas_e_marca_a_divisao_principal(janela):
 
 def test_janela_principal_repete_prometido_entregue_e_drawdown(janela):
     o = janela["janelas"][24]["objetivos"]
-    assert (round(o["max_sharpe"]["prometido"], 2), round(o["max_sharpe"]["entregue"], 2)) == (2.11, -0.31)
-    assert (round(o["var_min"]["prometido"], 2), round(o["var_min"]["entregue"], 2)) == (1.17, 0.78)
+    assert (round(o["max_sharpe"]["prometido"], 2), round(o["max_sharpe"]["entregue"], 2)) == (2.11, -0.32)
+    assert (round(o["var_min"]["prometido"], 2), round(o["var_min"]["entregue"], 2)) == (1.17, 0.77)
     assert o["max_sharpe"]["drawdown_max"] == -0.0849
     assert o["max_sharpe"]["data_fundo"] == "08/04/2025"
     assert o["var_min"]["drawdown_max"] == -0.0475
@@ -73,3 +73,10 @@ def test_json_gerado_e_o_mesmo_que_o_versionado():
     """Regerar o JSON a partir de dados/ não muda nada: ninguém editou o arquivo à mão."""
     import dados_widgets_aula05 as d
     assert _json("aula05-sensibilidade.json") == json.loads(json.dumps(d.sensibilidade()))
+    assert _json("aula05-janela-treino.json") == json.loads(json.dumps(d.janela_treino()))
+
+
+def test_janela_treino_inclui_24_10_2025_no_teste_da_divisao_principal(janela):
+    """ADR-009: a lacuna de 24/10/2025 é preenchida, e o teste de 2025 tem 250 pregões."""
+    o = janela["janelas"][24]["objetivos"]
+    assert len(o["max_sharpe"]["drawdown"]) == 250
