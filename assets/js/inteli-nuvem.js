@@ -108,8 +108,27 @@
     return (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
   }
 
+  // Chave de agrupamento: com inteli-nuvem-termos.js carregado, plural,
+  // acento e caixa caem na mesma chave ("Ações" e "ação").
   function chaveDe(texto) {
+    if (window.IntelINuvemTermos) return window.IntelINuvemTermos.chave(texto);
     return texto.normalize('NFC').toLowerCase().replace(/\s+/g, ' ').trim();
+  }
+
+  // Termo já presente que é o mesmo com outra grafia ("bundchen" e "bündchen"),
+  // ou nome próprio que contém a palavra solta ("gisele" dentro de "Gisele Bündchen").
+  function acharParecido(termos, texto) {
+    var T = window.IntelINuvemTermos;
+    if (!T) return null;
+    var k = T.chave(texto);
+    var achado = null;
+    termos.forEach(function (t) {
+      if (achado) return;
+      if (T.parecidos(texto, t.texto)) { achado = t; return; }
+      var palavras = T.chave(t.texto).split(' ');
+      if (k.indexOf(' ') === -1 && T.ehNome(t.texto) && palavras.indexOf(k) !== -1) achado = t;
+    });
+    return achado;
   }
 
   function urlValida(texto) {
@@ -345,12 +364,26 @@
         if (!texto) continue;
         peso = Math.max(1, Math.min(20, Math.round(peso)));
         var chave = chaveDe(texto);
-        var t = termos.get(chave);
+        var t = termos.get(chave) || acharParecido(termos, texto);
         if (t) {
           t.peso += peso;
           t.cresceu = true;
+          // O nome completo vence a palavra solta na hora de mostrar.
+          if (texto.split(' ').length > t.texto.split(' ').length) t.texto = texto;
         } else {
-          termos.set(chave, { texto: texto, peso: peso, ordem: ordem++, novo: true });
+          var novo = { texto: texto, peso: peso, ordem: ordem++, novo: true };
+          // Nome próprio novo absorve as palavras soltas dele que já estavam na nuvem.
+          if (window.IntelINuvemTermos && window.IntelINuvemTermos.ehNome(texto)) {
+            var partes = chave.split(' ');
+            termos.forEach(function (velho, kVelho) {
+              if (kVelho.indexOf(' ') === -1 && partes.indexOf(kVelho) !== -1) {
+                novo.peso += velho.peso;
+                if (velho.el && velho.el.parentNode) velho.el.parentNode.removeChild(velho.el);
+                termos.delete(kVelho);
+              }
+            });
+          }
+          termos.set(chave, novo);
         }
         mudou = true;
       }
@@ -757,7 +790,10 @@
           corpo = corpo || {};
           enviados++;
           if (corpo.transcricao) frase.textContent = '“' + corpo.transcricao + '”';
-          if (Array.isArray(corpo.termos)) adicionar(corpo.termos);
+          // A extração roda aqui, sobre a transcrição (inteli-nuvem-termos.js);
+          // os termos do nó Code do n8n ficam só como reserva.
+          if (corpo.transcricao && window.IntelINuvemTermos) adicionar(window.IntelINuvemTermos.extrair(corpo.transcricao));
+          else if (Array.isArray(corpo.termos)) adicionar(corpo.termos);
           if (gravando) avisar('Ouvindo. ' + enviados + (enviados === 1 ? ' trecho transcrito' : ' trechos transcritos'), false);
         })
         .catch(function (erro) {

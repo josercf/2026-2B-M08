@@ -362,3 +362,13 @@ def test_modo_limpo_do_deck_esconde_os_controles(ambiente):
         assert not page.evaluate(visivel, "#nuvem-projeto .nuvem-controles")
     finally:
         contexto.close()
+
+
+def test_nome_proprio_absorve_a_palavra_solta_nas_duas_ordens(pagina):
+    """Regressão de 20/10/2026: "gisele" e "bündchen" apareciam separados."""
+    page = pagina.ir()
+    page.evaluate("IntelINuvem.adicionar(['bündchen'])")
+    page.evaluate("IntelINuvem.adicionar(['Gisele Bündchen'])")
+    page.evaluate("IntelINuvem.adicionar(['gisele', 'Bundchen'])")
+    termos = page.evaluate("IntelINuvem.estado().termos")
+    assert [(t["texto"], t["peso"]) for t in termos] == [("Gisele Bündchen", 4)]
