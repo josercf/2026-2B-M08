@@ -44,7 +44,8 @@ def test_pratica_tem_obrigatorio_curto_extensao_no_fim_e_checagem(sid):
     secao = _pratica(sid)
     minutos = int(re.search(r'data-minutos="(\d+)"', secao).group(1))
     lista = re.search(r'<ol class="exercise-steps">(.*?)</ol>', secao, re.S).group(1)
-    passos = re.findall(r"<li( class=\"passo-extensao\")?>", lista)
+    # data-marco marca o item do alarme do cronômetro (troca de papel) e não muda o tipo do passo.
+    passos = re.findall(r"<li( class=\"passo-extensao\")?(?: data-marco=\"[^\"]+\")?>", lista)
     obrigatorios = [p for p in passos if not p]
     extensoes = [p for p in passos if p]
     assert 3 <= len(obrigatorios) <= 4, sid

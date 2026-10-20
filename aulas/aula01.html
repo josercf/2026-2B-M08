@@ -15,14 +15,14 @@
          Bloco 3 (30 a 45)            slides 21 a 26 widget B3SA3, quatro perguntas no celular (30 s cada), proventos da PETR4
          Bloco 4 (45 a 60)            slides 27 a 33 o coletor em três visões (fluxo, código linha a linha, revisão), o ADR linha a linha, o ADR para agentes e a dupla no notebook (12 min)
          Bloco 5 (60 a 75)            slides 34 a 36 ausências, animação e widget
-         Bloco 6 (75 a 90)            slides 37 a 39 efeito na volatilidade, ADR, dupla (12 min)
-         Bloco 7 (90 a 105)           slides 40 a 44 quiz, notebook, A1, referências
+         Bloco 6 (75 a 90)            slides 37 e 38 efeito na volatilidade e dupla (12 min)
+         Bloco 7 (90 a 105)           slides 39 a 45 quiz no celular (três perguntas, 30 s cada), notebook, A1, referências
 
        A apresentação do professor e os combinados (slides 2 e 3) entram só nesta aula,
        a primeira do módulo, e consomem a folga da abertura. O Bloco 1 tem onze slides:
        os sete da esteira (7 a 13) são de referência, cerca de um minuto cada, e a nuvem
        (slide 5) fecha em quatro minutos. Se o tempo apertar, passar os slides 9 a 13 só
-       pelo A1, cortar o slide 38 (exemplo de ADR) e reduzir a segunda dupla para 8 minutos. -->
+       pelo A1, passar o slide 32 (ADR para agentes) só pela tabela e reduzir a segunda dupla para 8 minutos. -->
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="../assets/css/inteli-brand.css">
@@ -1357,44 +1357,6 @@ def preco_negociado(fechamento, eventos, ticker):
       </section>
 
       <!-- 38 -->
-      <section class="content-slide" id="adr">
-        <div class="top-bar"></div>
-        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
-        <div class="slide-title-area">
-          <div class="accent-bar"></div>
-          <h2>Exemplo de ADR com o número medido</h2>
-        </div>
-        <div class="side-by-side">
-          <pre class="code-compact" style="max-height: 400px"><code># ADR 0001 (exemplo): datas sem cotação
-
-- Status: aceito
-- Decisores: aluno responsável pelo coletor
-
-## Contexto e problema
-GOLD11 estreia em 11/12/2020 e três ETFs
-ficam sem preço em 24/10/2025.
-
-## Decisão
-Preencher com o último preço por ativo,
-porque descartar apaga março de 2020.
-
-## Consequências
-- Impacto numérico: volatilidade anual da
-  PETR4 fica em 39,25% (33,41% descartando).
-- Ruim: retorno zero artificial em 24/10/2025.</code></pre>
-          <div>
-            <p><strong>Exemplo.</strong> As Aulas 02 a 06 preenchem as lacunas isoladas e usam a janela comum quando juntam ativos. O grupo decide o tratamento dele com os números medidos no próprio coletor, e pode decidir descartar.</p>
-            <p>O ADR é a parte individual da nota: <strong>20% de cada artefato</strong>, avaliado pela autoria dos commits, com o número medido nos dados do grupo.</p>
-            <p><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a> [7], no formato MADR [8].</p>
-          </div>
-        </div>
-        <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">38</p>
-        </div>
-      </section>
-
-      <!-- 39 -->
       <section class="exercise-slide" id="pratica-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1419,60 +1381,52 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">39</p>
+          <p class="footer-page">38</p>
         </div>
       </section>
 
-      <!-- 40 -->
+      <!-- 39 -->
       <section class="quiz-slide" id="quiz-final">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Quiz de verificação</h2>
+          <h2>Quiz de verificação: pergunta 1 de 3</h2>
         </div>
-        <div class="quiz-trio">
-          <div class="quiz-container">
-            <p class="quiz-question">1. Em 17/05/2021 o preço negociado da B3SA3 cai 67%. Por quê?</p>
-            <ul class="quiz-options">
-              <li data-correct="true"
-                  data-correct-msg="Certo: desdobramento de 1 para 3, a mesma empresa dividida em mais ações."
-                  data-incorrect-msg="Não.">Desdobramento</li>
-              <li data-correct="false"
-                  data-correct-msg="Certo."
-                  data-incorrect-msg="O Close caiu só 1,51% no dia: o mercado não derreteu.">Queda de mercado</li>
-              <li data-correct="false"
-                  data-correct-msg="Certo."
-                  data-incorrect-msg="O provedor publicou o dado certo; o salto vem do evento.">Erro do provedor</li>
-            </ul>
+        <div class="quiz-vivo quiz-vivo-curto quiz-vivo-final" data-quiz-vivo data-sessao="m08-aula01-2026-10-20" data-pergunta="final-1"
+             data-correta="0" data-rodadas="1" data-tempo="30" data-enunciado="Em 17/05/2021 o preço negociado da B3SA3 cai 67%. Por quê?">
+          <div class="quiz-vivo-pergunta">
+            <p class="quiz-vivo-enunciado">Em 17/05/2021 o preço negociado da B3SA3 cai 67%. Por quê?</p>
+            <ol class="quiz-vivo-opcoes">
+              <li data-correct="true">Desdobramento</li>
+              <li>Queda de mercado</li>
+              <li>Erro do provedor</li>
+            </ol>
           </div>
-          <div class="quiz-container">
-            <p class="quiz-question">2. Qual tratamento tira março de 2020 da PETR4?</p>
-            <ul class="quiz-options">
-              <li data-correct="true"
-                  data-correct-msg="Certo: dropna na cesta inteira começa a série junto com a GOLD11."
-                  data-incorrect-msg="Não.">dropna na cesta</li>
-              <li data-correct="false"
-                  data-correct-msg="Certo."
-                  data-incorrect-msg="O preenchimento mantém os 1.908 pregões.">Preencher para a frente</li>
-              <li data-correct="false"
-                  data-correct-msg="Certo."
-                  data-incorrect-msg="A PETR4 sozinha não tem ausência em 2020.">dropna só na PETR4</li>
-            </ul>
-          </div>
-          <div class="quiz-container">
-            <p class="quiz-question">3. Qual coluna alimenta a volatilidade do otimizador?</p>
-            <ul class="quiz-options">
-              <li data-correct="false"
-                  data-correct-msg="Certo."
-                  data-incorrect-msg="O negociado tem saltos falsos de desdobramento.">Negociado</li>
-              <li data-correct="false"
-                  data-correct-msg="Certo."
-                  data-incorrect-msg="O Close ignora os proventos e subestima o retorno.">Close</li>
-              <li data-correct="true"
-                  data-correct-msg="Certo: retorno total, sem saltos de evento."
-                  data-incorrect-msg="Não.">Adj Close</li>
-            </ul>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">39</p>
+        </div>
+      </section>
+
+      <!-- 40 -->
+      <section class="quiz-slide" id="quiz-final-2">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Quiz de verificação: pergunta 2 de 3</h2>
+        </div>
+        <div class="quiz-vivo quiz-vivo-curto quiz-vivo-final" data-quiz-vivo data-sessao="m08-aula01-2026-10-20" data-pergunta="final-2"
+             data-correta="0" data-rodadas="1" data-tempo="30" data-enunciado="Qual tratamento tira março de 2020 da PETR4?">
+          <div class="quiz-vivo-pergunta">
+            <p class="quiz-vivo-enunciado">Qual tratamento tira março de 2020 da PETR4?</p>
+            <ol class="quiz-vivo-opcoes">
+              <li data-correct="true">dropna na cesta</li>
+              <li>Preencher para a frente</li>
+              <li>dropna só na PETR4</li>
+            </ol>
           </div>
         </div>
         <div class="slide-footer">
@@ -1482,6 +1436,31 @@ porque descartar apaga março de 2020.
       </section>
 
       <!-- 41 -->
+      <section class="quiz-slide" id="quiz-final-3">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Quiz de verificação: pergunta 3 de 3</h2>
+        </div>
+        <div class="quiz-vivo quiz-vivo-curto quiz-vivo-final" data-quiz-vivo data-sessao="m08-aula01-2026-10-20" data-pergunta="final-3"
+             data-correta="2" data-rodadas="1" data-tempo="30" data-enunciado="Qual coluna alimenta a volatilidade do otimizador?">
+          <div class="quiz-vivo-pergunta">
+            <p class="quiz-vivo-enunciado">Qual coluna alimenta a volatilidade do otimizador?</p>
+            <ol class="quiz-vivo-opcoes">
+              <li>Negociado</li>
+              <li>Close</li>
+              <li data-correct="true">Adj Close</li>
+            </ol>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">41</p>
+        </div>
+      </section>
+
+      <!-- 42 -->
       <section class="exercise-slide" id="notebook">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1501,11 +1480,11 @@ porque descartar apaga março de 2020.
         <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Abrir no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">41</p>
+          <p class="footer-page">42</p>
         </div>
       </section>
 
-      <!-- 42 -->
+      <!-- 43 -->
       <section class="content-slide" id="a1">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1530,11 +1509,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">42</p>
+          <p class="footer-page">43</p>
         </div>
       </section>
 
-      <!-- 43 -->
+      <!-- 44 -->
       <section class="content-slide" id="referencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1554,11 +1533,11 @@ porque descartar apaga março de 2020.
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">43</p>
+          <p class="footer-page">44</p>
         </div>
       </section>
 
-      <!-- 44 -->
+      <!-- 45 -->
       <section class="end-slide">
         <h1>Até 05/11/2026</h1>
         <h3>Aula 02: Dados Financeiros, Do Preço ao Retorno</h3>

@@ -146,10 +146,12 @@ def test_slide_da_mglu3_nao_entrega_a_resposta_da_previsao():
     assert "Antes de tocar" in mglu3
 
 
-def test_adr_de_exemplo_e_marcado_como_exemplo():
-    adr = _texto(_secao("adr"))
-    assert "Exemplo" in adr and "(exemplo)" in adr
-    assert "próprio coletor" in adr
+def test_adr_de_ausencias_saiu_e_o_adr_linha_a_linha_e_marcado_como_exemplo():
+    """Pedido de 20/10/2026: o exemplo de ADR de ausências duplicava o ADR linha
+    a linha do Bloco 4 e saiu do deck."""
+    assert not any('id="adr"' in s for s in _secoes())
+    adr = _texto(_secao("adr-linha"))
+    assert "(exemplo)" in adr and "616,00%" in adr
 
 
 def test_entrega_e_review_do_a1_no_mesmo_dia():
