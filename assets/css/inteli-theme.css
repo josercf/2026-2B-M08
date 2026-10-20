@@ -2327,3 +2327,21 @@ html.print-pdf .fluxo-pacote { animation: none !important; }
 /* A ampulheta da daily fica embaixo do cronômetro grande, sem abrir espaço no texto. */
 .slide-daily .ampulheta { top: 330px; right: 160px; width: 170px; }
 .reveal .slides section.slide-daily.com-ampulheta > * { margin-right: 0; }
+
+/* Três visões em volta de um evento (assets/js/widgets/visoes-evento.js). */
+.widget-visoes-evento { position: relative; margin-top: 10px; }
+.widget-visoes-evento svg { display: block; max-width: 100%; height: auto; }
+.reveal .widget-visoes-evento .visoes-evento-play {
+  position: absolute;
+  right: 0;
+  bottom: 52px;
+  padding: 10px 22px;
+  border: 0;
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+  font: inherit;
+  font-size: var(--escala-texto);
+  font-weight: 700;
+  box-shadow: inset 0 -4px 0 var(--seg-destaque);
+  cursor: pointer;
+}
