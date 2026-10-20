@@ -1,0 +1,132 @@
+/* Quiz ao vivo no slide (assets/js/inteli-quiz-vivo.js): pergunta e
+   alternativas à esquerda, QR code e controles à direita. Durante a votação
+   só a contagem aparece; as barras e os percentuais entram ao encerrar, com a
+   rodada 1 em cinza e a rodada 2 em roxo para comparar antes e depois da
+   discussão. Só tokens e canto reto (GRA-01). */
+
+.quiz-vivo {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 36px;
+  align-items: start;
+}
+
+.reveal .quiz-vivo-enunciado {
+  margin: 0 0 18px;
+  font-size: var(--escala-subtitulo);
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.reveal .quiz-vivo-enunciado code { font-size: 20px; }
+
+.reveal .quiz-vivo-opcoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reveal .quiz-vivo-opcoes li {
+  display: grid;
+  grid-template-columns: 56px 110px 1fr 64px;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  padding: 10px 14px 10px 0;
+  background: var(--seg-superficie);
+  font-size: var(--escala-texto);
+  transition: background-color 0.3s;
+}
+
+.qv-letra {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.quiz-vivo-opcoes li:nth-child(1) .qv-letra { background: var(--seg-primaria); color: var(--inteli-branco); }
+.quiz-vivo-opcoes li:nth-child(2) .qv-letra { background: var(--seg-secundaria); color: var(--seg-texto); }
+.quiz-vivo-opcoes li:nth-child(3) .qv-letra { background: var(--seg-destaque); color: var(--inteli-branco); }
+.quiz-vivo-opcoes li:nth-child(4) .qv-letra { background: var(--seg-borda); color: var(--seg-texto); }
+
+.qv-texto { font-size: 40px; font-weight: 700; line-height: 1; }
+
+.qv-barras { display: flex; flex-direction: column; gap: 4px; opacity: 0; transition: opacity 0.4s; }
+.qv-barra { display: block; height: 14px; background: var(--seg-base); }
+.quiz-vivo:not(.quiz-vivo-com-rodada-2) .qv-barra-2 { display: none; }
+.qv-barra-cheia { display: block; height: 100%; width: 0; transition: width 0.9s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.qv-barra-1 .qv-barra-cheia { background: var(--seg-texto-suave); }
+.qv-barra-2 .qv-barra-cheia { background: var(--seg-primaria); }
+.quiz-vivo-com-rodada-2 .qv-barra-1 .qv-barra-cheia { background: var(--seg-borda); }
+.quiz-vivo:not(.quiz-vivo-com-rodada-2) .qv-barra-1 .qv-barra-cheia { background: var(--seg-primaria); }
+
+.qv-pct { font-size: 22px; font-weight: 700; text-align: right; }
+
+.quiz-vivo[data-fase="encerrada"] .qv-barras,
+.quiz-vivo.quiz-vivo-revelada .qv-barras { opacity: 1; }
+
+/* Revelada: a certa ganha o verde, as demais recuam. Seletor composto para
+   vencer a regra base da alternativa (inteli-deck-design, seção 8.1). */
+.reveal .quiz-vivo.quiz-vivo-revelada .quiz-vivo-opcoes li.qv-certa {
+  background: var(--seg-secundaria);
+  box-shadow: inset 6px 0 0 var(--seg-primaria);
+}
+.reveal .quiz-vivo.quiz-vivo-revelada .quiz-vivo-opcoes li:not(.qv-certa) .qv-texto { font-weight: 300; }
+
+/* Coluna do QR */
+.quiz-vivo-lado {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.quiz-vivo-qr svg { display: block; width: 100%; height: auto; }
+.quiz-vivo-qr .qr-fundo { fill: var(--seg-base); }
+.quiz-vivo-qr .qr-modulo { fill: var(--seg-primaria); }
+.quiz-vivo-qr { border: 3px solid var(--seg-primaria); }
+
+.reveal .quiz-vivo-lado p { margin: 0; line-height: 1.3; }
+.reveal .quiz-vivo-instrucao { font-size: var(--escala-complementar); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.reveal .quiz-vivo-rodada { font-size: var(--escala-complementar); font-weight: 600; }
+.reveal .quiz-vivo-placar { font-size: var(--escala-texto); }
+.reveal .quiz-vivo-placar strong { font-size: 34px; }
+.reveal .quiz-vivo-cronometro { font-size: 34px; font-weight: 700; }
+.reveal .quiz-vivo.quiz-vivo-acabando .quiz-vivo-cronometro { color: var(--seg-destaque); }
+.reveal .quiz-vivo-status { font-size: var(--escala-complementar); }
+
+.quiz-vivo-acoes { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.reveal .quiz-vivo-botao {
+  padding: 6px 10px;
+  border: 1px solid var(--seg-primaria);
+  background: var(--seg-base);
+  color: var(--seg-texto);
+  font: inherit;
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reveal .quiz-vivo-botao:hover { background: var(--seg-superficie); }
+.quiz-vivo-botao[hidden], .quiz-vivo-chave[hidden] { display: none; }
+
+.quiz-vivo-chave { display: flex; gap: 6px; }
+.quiz-vivo-chave input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--seg-borda);
+  font: inherit;
+  font-size: var(--escala-complementar);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qv-barra-cheia, .qv-barras { transition: none; }
+}

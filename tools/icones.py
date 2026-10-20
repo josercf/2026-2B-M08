@@ -33,7 +33,7 @@ SUBSTITUTOS = {"insights": "query_stats"}
 ICONES_JS = ["picture_as_pdf", "play_arrow", "pause", "replay",
               "mic", "stop", "check", "delete_sweep", "settings"]
 
-PAGINAS = ["index.html", "aulas/*.html", "materiais/*.html", "referencias/*.html"]
+PAGINAS = ["index.html", "aulas/*.html", "materiais/*.html", "referencias/*.html", "quiz/*.html"]
 
 SPAN = re.compile(
     r'<span class="material-symbols-outlined"(?: aria-hidden="true")?>([a-z0-9_]+)</span>'

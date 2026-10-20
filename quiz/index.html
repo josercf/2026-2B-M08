@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Quiz da aula - Módulo 08 AdmTech</title>
+  <!-- Tela do aluno do quiz ao vivo. O QR code do slide abre esta página com
+       ?s=<sessão>. O aluno informa nome e avatar uma vez; depois a página
+       mostra a pergunta só enquanto o slide dela está aberto, aceita um voto
+       por rodada e trava a escolha (exemplos/quiz-supabase/quiz.sql). -->
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-quiz-aluno.css">
+</head>
+<body>
+  <main class="aluno" data-estado="carregando">
+    <header class="aluno-topo">
+      <img src="../assets/img/inteli-logo-positiva.svg" alt="Inteli" class="aluno-logo">
+      <p class="aluno-quem" hidden>
+        <svg class="icone aluno-quem-avatar" aria-hidden="true"><use href=""></use></svg>
+        <span class="aluno-quem-nome"></span>
+      </p>
+    </header>
+
+    <!-- 1. Entrar: nome e avatar -->
+    <section class="tela tela-entrar">
+      <h1>Entrar no quiz</h1>
+      <p>O nome completo serve para o professor lançar a participação. Ele não aparece no slide nem para a turma.</p>
+      <form class="entrar">
+        <label class="rotulo" for="nome">Nome completo</label>
+        <input id="nome" name="nome" type="text" maxlength="40" autocomplete="name" required placeholder="Como está na lista de chamada">
+        <p class="rotulo">Escolha um avatar</p>
+        <div class="avatares" role="radiogroup" aria-label="Avatar">
+          <button type="button" class="avatar" data-avatar="rocket_launch" aria-label="Foguete"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#rocket_launch"></use></svg></button>
+          <button type="button" class="avatar" data-avatar="savings" aria-label="Cofrinho"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#savings"></use></svg></button>
+          <button type="button" class="avatar" data-avatar="trending_up" aria-label="Alta"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#trending_up"></use></svg></button>
+          <button type="button" class="avatar" data-avatar="diamond" aria-label="Diamante"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#diamond"></use></svg></button>
+          <button type="button" class="avatar" data-avatar="bolt" aria-label="Raio"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#bolt"></use></svg></button>
+          <button type="button" class="avatar" data-avatar="pets" aria-label="Pata"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#pets"></use></svg></button>
+          <button type="button" class="avatar" data-avatar="eco" aria-label="Folha"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#eco"></use></svg></button>
+          <button type="button" class="avatar" data-avatar="psychology" aria-label="Cabeça"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#psychology"></use></svg></button>
+          <button type="button" class="avatar" data-avatar="sports_esports" aria-label="Controle"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#sports_esports"></use></svg></button>
+          <button type="button" class="avatar" data-avatar="coffee" aria-label="Café"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#coffee"></use></svg></button>
+          <button type="button" class="avatar" data-avatar="music_note" aria-label="Nota musical"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#music_note"></use></svg></button>
+          <button type="button" class="avatar" data-avatar="star" aria-label="Estrela"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#star"></use></svg></button>
+        </div>
+        <button type="submit" class="principal">Entrar</button>
+        <p class="erro" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <!-- 2. Esperando a próxima pergunta -->
+    <section class="tela tela-esperar">
+      <div class="espera-marca" aria-hidden="true"><span></span><span></span><span></span></div>
+      <h1>Você está na aula</h1>
+      <p>A pergunta aparece aqui quando o professor abrir o slide.</p>
+    </section>
+
+    <!-- 3. Pergunta aberta -->
+    <section class="tela tela-votar">
+      <p class="rodada"></p>
+      <h1 class="enunciado"></h1>
+      <div class="opcoes"></div>
+      <p class="erro" aria-live="polite"></p>
+    </section>
+
+    <!-- 4. Voto registrado -->
+    <section class="tela tela-votou">
+      <p class="rodada"></p>
+      <div class="votou-marca"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#check"></use></svg></div>
+      <h1>Voto registrado</h1>
+      <p class="votou-escolha"></p>
+      <p>A escolha fica travada. Espere o professor.</p>
+    </section>
+
+    <!-- Sem sessão no endereço -->
+    <section class="tela tela-sem-sessao">
+      <h1>Abra pelo QR code do slide</h1>
+      <p>Este endereço não traz a sessão da aula.</p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="../assets/js/inteli-quiz-config.js"></script>
+  <script src="../assets/js/inteli-quiz-dados.js"></script>
+  <script src="../assets/js/inteli-quiz-aluno.js"></script>
+</body>
+</html>

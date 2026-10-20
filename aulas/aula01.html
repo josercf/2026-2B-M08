@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="../assets/css/inteli-theme.css">
   <link rel="stylesheet" href="../assets/css/inteli-nuvem.css">
   <link rel="stylesheet" href="../assets/css/inteli-carteira.css">
+  <link rel="stylesheet" href="../assets/css/inteli-quiz-vivo.css">
   <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
 </head>
 <body>
@@ -587,23 +588,17 @@
           <div class="accent-bar"></div>
           <h2>Verificação do preparo</h2>
         </div>
-        <div class="side-by-side">
-          <div class="quiz-container">
-            <p class="quiz-question"><code>yf.download("PETR4.SA", start="2026-08-01", end="2026-08-31")</code>: quantas linhas o DataFrame devolve?</p>
-            <ul class="quiz-options">
-              <li data-correct="false"
-                  data-correct-msg="Certo."
-                  data-incorrect-msg="31 são os dias corridos de agosto. O yfinance devolve uma linha por pregão, sem fim de semana nem feriado.">31</li>
-              <li data-correct="false"
-                  data-correct-msg="Certo."
-                  data-incorrect-msg="30 são os dias corridos até 30/08. O fim exclusivo está certo, mas o DataFrame só tem pregões.">30</li>
-              <li data-correct="false"
-                  data-correct-msg="Certo."
-                  data-incorrect-msg="21 são os pregões de agosto contando 31/08. O end é exclusivo e deixa esse pregão de fora.">21</li>
-              <li data-correct="true"
-                  data-correct-msg="Certo: 20. Agosto de 2026 teve 21 pregões, e o end exclusivo deixa de fora 31/08, uma segunda-feira."
-                  data-incorrect-msg="Não.">20</li>
-            </ul>
+        <div class="quiz-vivo" data-quiz-vivo data-sessao="m08-aula01-2026-10-20" data-pergunta="preparo-end"
+             data-correta="3" data-rodadas="2" data-tempo="0"
+             data-enunciado='yf.download("PETR4.SA", start="2026-08-01", end="2026-08-31"): quantas linhas o DataFrame devolve?'>
+          <div class="quiz-vivo-pergunta">
+            <p class="quiz-vivo-enunciado"><code>yf.download("PETR4.SA", start="2026-08-01", end="2026-08-31")</code>: quantas linhas o DataFrame devolve?</p>
+            <ol class="quiz-vivo-opcoes">
+              <li data-correct="false">31</li>
+              <li data-correct="false">30</li>
+              <li data-correct="false">21</li>
+              <li data-correct="true">20</li>
+            </ol>
           </div>
         </div>
         <div class="slide-footer">
@@ -1489,6 +1484,11 @@ porque descartar apaga março de 2020.
   <script src="../assets/js/inteli-nuvem.js"></script>
   <script src="../assets/js/inteli-calendario.js"></script>
   <script src="../assets/js/inteli-codigo.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="../assets/js/inteli-quiz-config.js"></script>
+  <script src="../assets/js/inteli-quiz-dados.js"></script>
+  <script src="../assets/js/inteli-quiz-vivo.js"></script>
   <script src="../assets/js/inteli-zoom.js"></script>
   <script src="../assets/js/inteli-print.js"></script>
   <script src="../assets/js/inteli-cronometro.js"></script>

@@ -1,0 +1,188 @@
+/* Tela do aluno do quiz ao vivo (quiz/index.html), pensada para celular.
+   Só tokens e canto reto (GRA-01). As quatro alternativas usam os quatro
+   blocos de peso da paleta de Graduação, como os botões coloridos de um
+   Kahoot, com letra grande para quem lê de relance. */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--seg-base);
+  color: var(--seg-texto);
+}
+
+.aluno {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 28px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.aluno-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 4px solid var(--seg-secundaria);
+}
+
+.aluno-logo { height: 28px; }
+
+.aluno-quem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 600;
+  font-size: 15px;
+  min-width: 0;
+}
+
+.aluno-quem-nome { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.icone { width: 1em; height: 1em; fill: currentColor; flex: none; }
+.aluno-quem-avatar { width: 28px; height: 28px; }
+
+/* Uma tela por estado */
+.tela { display: none; flex-direction: column; gap: 14px; padding-top: 22px; flex: 1; }
+.aluno[data-estado="entrar"] .tela-entrar,
+.aluno[data-estado="esperar"] .tela-esperar,
+.aluno[data-estado="votar"] .tela-votar,
+.aluno[data-estado="votou"] .tela-votou,
+.aluno[data-estado="sem-sessao"] .tela-sem-sessao { display: flex; }
+
+h1 { margin: 0; font-size: 28px; line-height: 1.15; }
+p { margin: 0; font-size: 17px; line-height: 1.45; }
+
+.rotulo { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+
+input[type="text"] {
+  width: 100%;
+  padding: 14px;
+  border: 2px solid var(--seg-primaria);
+  background: var(--seg-base);
+  color: var(--seg-texto);
+  font: inherit;
+  font-size: 18px;
+}
+
+input[type="text"]:focus { outline: 3px solid var(--seg-secundaria); outline-offset: 0; }
+
+.entrar { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+
+.avatares { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+
+.avatar {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--seg-borda);
+  background: var(--seg-superficie);
+  color: var(--seg-texto);
+  cursor: pointer;
+}
+
+.avatar .icone { width: 36px; height: 36px; }
+.avatares .avatar.escolhido { background: var(--seg-primaria); border-color: var(--seg-primaria); color: var(--inteli-branco); outline: 4px solid var(--seg-secundaria); }
+
+.principal {
+  margin-top: 8px;
+  padding: 16px;
+  border: 0;
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: inset 0 -5px 0 var(--seg-destaque);
+  cursor: pointer;
+}
+
+.principal:disabled { background: var(--seg-borda); color: var(--seg-texto); box-shadow: none; }
+
+.erro { color: var(--seg-texto); font-weight: 600; min-height: 1.4em; }
+.erro:not(:empty) { border-left: 4px solid var(--seg-destaque); padding-left: 10px; }
+
+/* Esperando: três quadrados que acendem em sequência */
+.tela-esperar { justify-content: center; text-align: center; align-items: center; }
+.espera-marca { display: flex; gap: 10px; margin-bottom: 12px; }
+.espera-marca span { width: 22px; height: 22px; background: var(--seg-secundaria); animation: aluno-pulso 1.2s ease-in-out infinite; }
+.espera-marca span:nth-child(2) { animation-delay: 0.2s; background: var(--seg-primaria); }
+.espera-marca span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes aluno-pulso {
+  0%, 100% { transform: scale(0.7); opacity: 0.5; }
+  50% { transform: scale(1); opacity: 1; }
+}
+
+/* Votar */
+.rodada { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+.enunciado { font-size: 22px; }
+.opcoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 6px; }
+
+.opcao {
+  min-height: 112px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px;
+  border: 0;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  animation: aluno-entra 0.35s ease-out both;
+}
+
+.opcao:nth-child(2) { animation-delay: 0.06s; }
+.opcao:nth-child(3) { animation-delay: 0.12s; }
+.opcao:nth-child(4) { animation-delay: 0.18s; }
+
+@keyframes aluno-entra {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+
+.opcao-letra { font-size: 30px; font-weight: 700; line-height: 1; }
+.opcao-texto { font-size: 22px; font-weight: 700; line-height: 1.2; }
+
+.opcao-0 { background: var(--seg-primaria); color: var(--inteli-branco); }
+.opcao-1 { background: var(--seg-secundaria); color: var(--seg-texto); }
+.opcao-2 { background: var(--seg-destaque); color: var(--inteli-branco); }
+.opcao-3 { background: var(--seg-borda); color: var(--seg-texto); }
+.opcao-4 { background: var(--seg-superficie); color: var(--seg-texto); }
+.opcao-5 { background: var(--seg-texto-suave); color: var(--seg-texto); }
+
+.opcoes .opcao:disabled { opacity: 0.55; }
+
+/* Votou */
+.tela-votou { justify-content: center; text-align: center; align-items: center; }
+.votou-marca {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--seg-secundaria);
+  color: var(--seg-texto);
+  animation: aluno-carimbo 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.3) both;
+}
+.votou-marca .icone { width: 60px; height: 60px; }
+.votou-escolha { font-weight: 700; font-size: 20px; }
+
+@keyframes aluno-carimbo {
+  from { transform: scale(0.3); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.tela-sem-sessao { justify-content: center; text-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .opcao, .votou-marca, .espera-marca span { animation: none; }
+}

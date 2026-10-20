@@ -82,7 +82,7 @@ def test_peer_instruction_de_abertura_usa_as_alternativas_medidas():
     Cada distrator é uma conta errada medida no snapshot ou no calendário."""
     medida = m.linhas_com_fim_exclusivo()
     secoes = _secoes()
-    primeiro_quiz = next(i for i, s in enumerate(secoes) if "quiz-options" in s)
+    primeiro_quiz = next(i for i, s in enumerate(secoes) if "quiz-options" in s or "data-quiz-vivo" in s)
     preparo = secoes[primeiro_quiz]
     # Pedido de 20/10/2026: votar, discutir e votar de novo fica na fala do
     # professor e nas notas, não no slide.
