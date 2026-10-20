@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ensaio do widget carteira-nuvem</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="../../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../../assets/css/inteli-theme.css">
+  <link rel="stylesheet" href="../../assets/css/inteli-carteira.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section class="content-slide" id="antes">
+        <div class="top-bar"></div>
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Slide anterior</h2>
+        </div>
+        <p>Slide de passagem: o widget dispara ao chegar no próximo.</p>
+      </section>
+
+      <section class="content-slide" id="carteira">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Cada ativo da carteira vira um ponto da nuvem</h2>
+        </div>
+        <div class="widget" data-widget="carteira-nuvem" data-fonte="../../assets/data/aula01-carteira.json"
+             data-largura="1160" data-altura="470"></div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">5</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280, height: 720, center: false, margin: 0,
+      hash: true, slideNumber: false, transition: 'fade'
+    });
+  </script>
+  <script src="../../assets/js/inteli-widgets.js"></script>
+  <script src="../../assets/js/widgets/carteira-nuvem.js"></script>
+</body>
+</html>

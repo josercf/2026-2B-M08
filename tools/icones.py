@@ -29,8 +29,9 @@ SPRITE = os.path.join(RAIZ, "assets", "icons", "icones.svg")
 # Nome do Google Icons que não existe no kit e o substituto escolhido.
 SUBSTITUTOS = {"insights": "query_stats"}
 
-# Ícones montados por JavaScript (inteli-print.js e inteli-cronometro.js).
-ICONES_JS = ["picture_as_pdf", "play_arrow", "pause", "replay"]
+# Ícones montados por JavaScript (inteli-print.js, inteli-cronometro.js e inteli-nuvem.js).
+ICONES_JS = ["picture_as_pdf", "play_arrow", "pause", "replay",
+              "mic", "stop", "check", "delete_sweep", "settings"]
 
 PAGINAS = ["index.html", "aulas/*.html", "materiais/*.html", "referencias/*.html"]
 

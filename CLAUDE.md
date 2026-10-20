@@ -103,6 +103,9 @@ dependência.
      por aula. `docs/ANDAMENTO.md` diz o que já existe.
    - `exemplos/aula06-api-carteira/`: o exemplo da Aula 06, com backend FastAPI e frontend React
      (ADR-008). Os testes dele rodam por `tools/tests/test_exemplo_aula06.py`.
+   - `exemplos/aula01-nuvem-n8n/`: o workflow do n8n da nuvem de palavras por voz da Aula 01, com
+     o componente em `assets/js/inteli-nuvem.js` e `assets/css/inteli-nuvem.css` (ADR-012). Testes
+     em `tools/tests/test_nuvem.py` e `tools/tests/test_nuvem_workflow.py`.
    - `dados/`: o snapshot do case (ver seção 4 e `dados/README.md`).
    - `assets/{css,js,js/widgets,img,data}/`: tema, scripts, marca, JSON dos widgets
      e, em `assets/video/`, as animações.

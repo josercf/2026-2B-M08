@@ -1095,3 +1095,988 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
 .escolha-opcoes.escolha-duas {
   grid-template-columns: repeat(2, 1fr);
 }
+
+/* ==========================================================================
+   Abertura da Aula 01, revisada em 20/10/2026: entrada animada, perfil com
+   foto, combinados em linha do tempo, agenda enxuta e esteira dos artefatos.
+   Só tokens e canto reto (GRA-01).
+   ========================================================================== */
+
+/* Entrada animada. O estado de repouso é o visível: a animação só roda no
+   slide presente, então slide fora de cena, validador e PDF veem o estado
+   final. O atraso de cada elemento vem de --atraso no markup. */
+@keyframes inteli-entrada {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes inteli-linha {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes inteli-marco {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+@keyframes inteli-esteira {
+  from { background-position: 0 0; }
+  to { background-position: 48px 0; }
+}
+
+@keyframes inteli-barra {
+  from { flex-basis: 0; }
+}
+
+.reveal .slides section.present .entrada {
+  animation: inteli-entrada 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) var(--atraso, 0s) both;
+}
+
+/* Perfil com foto: a foto ocupa a coluna da esquerda, com a faixa roxa de
+   nome embaixo e o filete verde de base, como o painel anterior. */
+.perfil.perfil-com-foto {
+  grid-template-columns: 440px 1fr;
+  gap: 36px;
+  align-items: start;
+}
+
+.perfil-foto {
+  margin: 0;
+  background: var(--seg-primaria);
+  border-bottom: 8px solid var(--seg-secundaria);
+}
+
+.perfil-foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.perfil-foto figcaption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 20px;
+  color: var(--inteli-branco);
+}
+
+.perfil-foto .perfil-nome { font-size: var(--escala-subtitulo); font-weight: 700; }
+.perfil-foto .perfil-papel { font-size: var(--escala-texto); }
+
+.reveal .perfil-tabela td { padding-top: 8px; padding-bottom: 8px; }
+
+.reveal .perfil-lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reveal .perfil-lista li {
+  position: relative;
+  padding-left: 16px;
+  line-height: 1.4;
+}
+
+.perfil-lista li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 7px;
+  height: 7px;
+  background: var(--seg-secundaria);
+}
+
+/* Combinados como linha do tempo da semana: a linha se desenha, os marcos
+   caem em sequência e cada combinado sobe no seu prazo. */
+.semana {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 44px 0 0;
+  display: grid;
+  grid-template-columns: 1fr 0.8fr 1.35fr;
+  gap: 28px;
+  position: relative;
+}
+
+.semana::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--seg-primaria);
+  transform-origin: left center;
+}
+
+.reveal .slides section.present .semana::before {
+  animation: inteli-linha 1.6s cubic-bezier(0.6, 0, 0.2, 1) 0.1s both;
+}
+
+.reveal .semana-marco {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: var(--escala-texto);
+}
+
+.semana-marco::before {
+  content: "";
+  position: absolute;
+  top: -42px;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  background: var(--seg-secundaria);
+  border: 4px solid var(--seg-primaria);
+}
+
+.reveal .slides section.present .semana-marco::before {
+  animation: inteli-marco 0.45s ease-out var(--atraso, 0s) both;
+}
+
+.reveal .semana-quando {
+  margin: 0;
+  font-size: var(--escala-densa);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.combinado {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 12px;
+  align-items: start;
+  background: var(--seg-superficie);
+  border-left: 5px solid var(--seg-secundaria);
+  padding: 14px 18px 14px 14px;
+}
+
+.combinado .icone { width: 30px; height: 30px; color: var(--seg-primaria); }
+
+.reveal .combinado p { margin: 0; line-height: 1.4; }
+.reveal .combinado .combinado-nome { font-weight: 700; margin-bottom: 4px; }
+
+.faixa-nota.faixa-ia { margin-top: 36px; border-left: 5px solid var(--seg-destaque); }
+
+/* Agenda só com bloco e tema: o número do bloco num quadrado roxo. */
+.reveal .tabela-agenda.tabela-compacta td,
+.reveal .tabela-agenda.tabela-compacta th { padding: 10px 14px; }
+.reveal .tabela-agenda td:first-child { width: 72px; }
+
+.reveal .tabela-agenda tbody td:first-child {
+  text-align: center;
+  font-weight: 700;
+}
+
+.reveal .tabela-agenda tbody tr:not(:first-child) td:first-child {
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+  border-bottom-color: var(--seg-base);
+}
+
+/* Esteira dos artefatos. O selo é o cubo isométrico (deployed_code) com o
+   código do artefato, e a esteira corre por trás dos selos para marcar que
+   cada artefato consome o anterior. */
+.esteira {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 104px 1fr 104px 1fr 104px 1fr 104px 1fr;
+  align-items: start;
+  position: relative;
+}
+
+.esteira::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 30px;
+  height: 12px;
+  background: repeating-linear-gradient(90deg, var(--seg-primaria) 0 24px, var(--seg-borda) 24px 48px);
+}
+
+.reveal .slides section.present .esteira::before {
+  animation: inteli-esteira 1.2s linear infinite;
+}
+
+.reveal .estacao {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  font-size: var(--escala-densa);
+  line-height: 1.35;
+}
+
+.estacao-selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 72px;
+  padding: 0 14px;
+  background: var(--seg-base);
+  border: 3px solid var(--seg-primaria);
+  color: var(--seg-primaria);
+  font-weight: 700;
+  font-size: 26px;
+}
+
+.estacao-selo .icone { width: 36px; height: 36px; }
+
+.estacao-atual .estacao-selo {
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+  outline: 6px solid var(--seg-secundaria);
+}
+
+.reveal .estacao-titulo { margin: 10px 0 0; font-size: var(--escala-densa); font-weight: 700; line-height: 1.35; }
+.reveal .estacao-meta { margin: 0; font-size: var(--escala-complementar); }
+
+.reveal .esteira-passagem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding-top: 24px;
+  text-align: center;
+  font-size: var(--escala-complementar);
+  line-height: 1.3;
+}
+
+.esteira-passagem .icone {
+  width: 24px;
+  height: 24px;
+  background: var(--seg-secundaria);
+  color: var(--seg-primaria);
+  position: relative;
+}
+
+.esteira-grande { margin: auto 0; }
+
+.reveal .estacao-aula {
+  margin: 4px 0 0;
+  padding: 2px 8px;
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  background: var(--seg-superficie);
+}
+
+.esteira-grande .estacao-selo { height: 84px; padding: 0 18px; font-size: 30px; }
+.esteira-grande::before { top: 36px; }
+.esteira-grande .esteira-passagem { padding-top: 30px; }
+
+/* Versão mini, no topo de cada slide de artefato: só selos e nome curto. */
+.esteira-mini {
+  grid-template-columns: 1fr 40px 1fr 40px 1fr 40px 1fr 40px 1fr;
+  margin-bottom: 22px;
+}
+
+.esteira-mini::before { top: 19px; height: 6px; }
+
+.esteira-mini .estacao { flex-direction: row; justify-content: center; gap: 10px; }
+
+.esteira-mini .estacao-selo {
+  height: 44px;
+  padding: 0 10px;
+  font-size: var(--escala-texto);
+  border-width: 2px;
+}
+
+.esteira-mini .estacao-selo .icone { width: 24px; height: 24px; }
+.esteira-mini .estacao-atual .estacao-selo { outline-width: 4px; }
+
+.reveal .esteira-mini .estacao-curto {
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  background: var(--seg-base);
+  padding: 0 6px;
+}
+
+.esteira-mini .esteira-passagem { padding-top: 0; }
+
+/* Barema comum: barra proporcional 65/15/20 que cresce ao entrar. */
+.barema-barra {
+  display: flex;
+  height: 64px;
+  margin: 6px 0 22px;
+}
+
+.barema-barra span {
+  flex: 0 0 calc(var(--peso) * 1%);
+  box-sizing: border-box;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  font-size: var(--escala-texto);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.reveal .slides section.present .barema-barra span {
+  animation: inteli-barra 1s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.reveal .slides section.present .barema-barra .barema-spec { animation-delay: 0.25s; }
+.reveal .slides section.present .barema-barra .barema-adr { animation-delay: 0.5s; }
+
+.barema-barra strong { font-size: var(--escala-subtitulo); }
+.barema-ferramenta { background: var(--seg-primaria); color: var(--inteli-branco); }
+.barema-spec { background: var(--seg-secundaria); color: var(--seg-texto); }
+.barema-adr { background: var(--seg-borda); color: var(--seg-texto); border-top: 6px solid var(--seg-destaque); }
+
+.tabela-leitura.tabela-barema tr.linha-destaque td:not(:first-child) { border-left: 0; }
+
+.barema-barra { height: 84px; margin-top: 18px; }
+
+.reveal .tabela-barema td:nth-child(2),
+.reveal .tabela-barema td:nth-child(3) { white-space: nowrap; }
+
+/* Slide de cada artefato: o fluxo recebe, artefato, entrega à esquerda e os
+   critérios próprios à direita. */
+.artefato-corpo {
+  display: grid;
+  grid-template-columns: 1fr 470px;
+  gap: 36px;
+  align-items: start;
+}
+
+.artefato-fluxo {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  position: relative;
+}
+
+.artefato-fluxo::before {
+  content: "";
+  position: absolute;
+  left: 34px;
+  top: 12px;
+  bottom: 12px;
+  width: 4px;
+  background: var(--seg-borda);
+}
+
+.fluxo-ponta,
+.fluxo-artefato {
+  position: relative;
+  margin-left: 0;
+  padding: 10px 16px 10px 70px;
+}
+
+.fluxo-ponta::before {
+  content: "";
+  position: absolute;
+  left: 26px;
+  top: 16px;
+  width: 20px;
+  height: 20px;
+  background: var(--seg-base);
+  border: 4px solid var(--seg-primaria);
+}
+
+.reveal .fluxo-ponta p,
+.reveal .fluxo-artefato p { margin: 0; line-height: 1.4; }
+
+.reveal .fluxo-rotulo {
+  font-size: var(--escala-densa);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.fluxo-artefato {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 18px;
+  align-items: center;
+  padding-left: 0;
+  background: var(--seg-superficie);
+  border-left: 5px solid var(--seg-secundaria);
+}
+
+.fluxo-artefato .estacao-selo {
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+  margin-left: -4px;
+}
+
+.reveal .tabela-criterios td:last-child,
+.reveal .tabela-criterios th:last-child { text-align: right; white-space: nowrap; }
+.reveal .tabela-criterios td:first-child { white-space: normal; }
+.reveal .tabela-criterios tr.linha-comum td { font-weight: 300; background: var(--seg-superficie); }
+
+/* Três visões do mesmo preço: esquema sem escala, com as linhas se desenhando
+   ao entrar no slide (pathLength="1" no markup) e o salto do negociado por último. */
+@keyframes inteli-traco {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+.visoes-desenho {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 36px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.visoes-grafico { width: 100%; max-height: 380px; overflow: visible; }
+
+.visoes-eixo { stroke: var(--seg-primaria); stroke-width: 2; }
+.visoes-evento { stroke: var(--seg-borda); stroke-width: 2; stroke-dasharray: 6 6; }
+
+.visoes-grafico text {
+  fill: var(--seg-texto);
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+}
+
+.visoes-linha {
+  fill: none;
+  stroke-width: 6;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+}
+
+.linha-close { stroke: var(--seg-primaria); }
+.linha-adj { stroke: var(--seg-secundaria); }
+.linha-negociado { stroke: var(--seg-destaque); stroke-width: 4; }
+
+.visoes-salto rect { fill: var(--seg-base); stroke: var(--seg-destaque); stroke-width: 2; }
+
+.reveal .slides section.present .linha-close { animation: inteli-traco 1.2s ease-out 0.2s both; }
+.reveal .slides section.present .linha-adj { animation: inteli-traco 1.2s ease-out 0.8s both; }
+.reveal .slides section.present .linha-negociado { animation: inteli-traco 1.6s ease-in-out 1.4s both; }
+.reveal .slides section.present .visoes-salto { animation: inteli-entrada 0.6s ease-out 3s both; }
+
+.visoes-legenda {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.reveal .visoes-legenda li { padding-left: 18px; border-left: 8px solid var(--seg-borda); }
+.reveal .visoes-legenda p { margin: 0; line-height: 1.4; }
+.reveal .visoes-legenda .legenda-nome { font-weight: 700; font-size: var(--escala-subtitulo); }
+.reveal .visoes-legenda .legenda-negociado { border-left-color: var(--seg-destaque); }
+.reveal .visoes-legenda .legenda-close { border-left-color: var(--seg-primaria); }
+.reveal .visoes-legenda .legenda-adj { border-left-color: var(--seg-secundaria); }
+
+/* Calendário que conta (assets/js/inteli-calendario.js): o mês à esquerda,
+   as alternativas à direita, cada uma com um trilho onde pousam os dias que
+   ela conta. Estados por seletor composto (inteli-deck-design, seção 8.1). */
+.calendario-contagem {
+  display: grid;
+  grid-template-columns: 456px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.reveal .calendario-mes {
+  margin: 0 0 4px;
+  font-size: var(--escala-subtitulo);
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.reveal .calendario-mes code { font-size: var(--escala-complementar); }
+
+.calendario-grade {
+  display: grid;
+  grid-template-columns: repeat(7, 60px);
+  grid-auto-rows: 44px;
+  gap: 5px;
+}
+
+.reveal .cal-sem {
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  text-transform: uppercase;
+  align-self: end;
+  text-align: center;
+}
+
+.calendario-grade .cal-sem { height: 24px; }
+.calendario-grade { grid-template-rows: 24px; }
+
+.cal-dia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--seg-superficie);
+  color: var(--seg-texto);
+  font-size: var(--escala-texto);
+  font-weight: 700;
+  position: relative;
+  transition: background-color 0.25s, color 0.25s, opacity 0.25s;
+}
+
+.cal-dia[data-pregao="nao"] { font-weight: 300; }
+
+.calendario-grade .cal-dia.cal-contado { background: var(--seg-primaria); color: var(--inteli-branco); }
+.calendario-grade .cal-dia.cal-fora { opacity: 0.35; }
+
+.calendario-grade .cal-dia.cal-excluido {
+  background: var(--seg-base);
+  color: var(--seg-destaque);
+  outline: 4px solid var(--seg-destaque);
+  outline-offset: -4px;
+}
+
+.calendario-grade .cal-dia.cal-excluido::after {
+  content: "end";
+  position: absolute;
+  bottom: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.reveal .calendario-explica {
+  margin: 12px 0 0;
+  min-height: 54px;
+  padding: 10px 14px;
+  border-left: 5px solid var(--seg-borda);
+  background: var(--seg-superficie);
+  line-height: 1.4;
+}
+
+.reveal .calendario-explica.explica-visivel { animation: inteli-entrada 0.5s ease-out both; border-left-color: var(--seg-destaque); }
+.reveal .calendario-explica.explica-visivel.explica-certa { border-left-color: var(--seg-secundaria); }
+
+.contagens {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reveal .contagens li { margin: 0; }
+
+.reveal .contagem {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--seg-base);
+  border: 2px solid var(--seg-borda);
+  border-left: 6px solid var(--seg-borda);
+  color: var(--seg-texto);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.reveal .contagem:hover { border-color: var(--seg-primaria); }
+.reveal .contagem.contagem-ativa { border-color: var(--seg-primaria); background: var(--seg-superficie); }
+.reveal .contagem.contagem-revelada { border-left-color: var(--seg-destaque); }
+.reveal .contagem.contagem-certa.contagem-revelada { border-color: var(--seg-secundaria); border-left-color: var(--seg-secundaria); }
+
+.contagem-valor {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+
+.contagem-corpo { display: flex; flex-direction: column; gap: 8px; }
+.contagem-regra { font-size: var(--escala-texto); font-weight: 600; }
+
+.contagem-trilho {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  min-height: 14px;
+}
+
+.trilho-marca {
+  width: 12px;
+  height: 14px;
+  background: var(--seg-primaria);
+}
+
+.contagem-certa .trilho-marca { background: var(--seg-secundaria); }
+.contagem-trilho .trilho-marca.trilho-marca-espera { visibility: hidden; }
+
+.calendario-voos {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.calendario-voo {
+  position: absolute;
+  background: var(--seg-primaria);
+  transform-origin: 0 0;
+}
+
+.slide-calendario .faixa-nota { margin-top: auto; }
+
+/* Grupamento e desdobramento desenhados: as ações pequenas voam e se fundem
+   na grande, e a grande se divide em três. Distâncias fixas porque a grade
+   tem largura fixa (origem 540px, seta 60px). */
+@keyframes inteli-fundir {
+  0%, 30% { transform: none; opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateX(calc(640px - var(--i) * 54px - 24px)) scale(0.4); opacity: 0; }
+}
+
+@keyframes inteli-surgir {
+  0%, 55% { transform: scale(0); }
+  80% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+@keyframes inteli-dividir {
+  0%, 45% { transform: translateX(calc(-560px - var(--i) * 70px)); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+
+@keyframes inteli-sumir {
+  0%, 40% { opacity: 1; transform: none; }
+  100% { opacity: 0.18; transform: scale(0.9); }
+}
+
+.eventos-desenho { display: flex; flex-direction: column; gap: 26px; margin-top: 8px; }
+
+.evento-linha {
+  display: grid;
+  grid-template-columns: 540px 60px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 0;
+  row-gap: 10px;
+  align-items: center;
+}
+
+.reveal .evento-nome { grid-column: 1 / -1; margin: 0; font-size: var(--escala-subtitulo); font-weight: 600; }
+.reveal .evento-conta {
+  grid-column: 3;
+  grid-row: 2;
+  margin: 0 0 0 24px;
+  font-size: var(--escala-subtitulo);
+  font-weight: 700;
+  align-self: center;
+}
+
+.lote { display: flex; gap: 6px; align-items: center; height: 120px; }
+.lote-destino { grid-column: 3; grid-row: 2; justify-content: flex-start; display: none; }
+.evento-linha .lote-origem { grid-column: 1; grid-row: 2; }
+.evento-seta { grid-column: 2; grid-row: 2; width: 40px; height: 40px; color: var(--seg-primaria); justify-self: center; }
+
+/* A grade de destino divide a coluna 3 com a conta: o lote vem antes dela. */
+.evento-linha { grid-template-columns: 540px 60px auto 1fr; }
+.evento-linha .lote-destino { display: flex; grid-column: 3; }
+.reveal .evento-linha .evento-conta { grid-column: 4; }
+
+.lote-acao {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--seg-secundaria);
+  color: var(--seg-texto);
+  font-size: var(--escala-complementar);
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.lote-acao.lote-media { width: 64px; height: 64px; font-size: var(--escala-densa); }
+.lote-acao.lote-grande { width: 120px; height: 120px; background: var(--seg-primaria); color: var(--inteli-branco); font-size: var(--escala-subtitulo); }
+
+.evento-linha .lote-origem { position: relative; }
+.lote-acao.lote-voo { position: absolute; left: calc(var(--i) * 54px); top: 36px; opacity: 0; }
+
+.reveal .slides section.present .evento-grupamento .lote-origem .lote-acao:not(.lote-voo) { animation: inteli-sumir 1.6s ease-in 0.4s both; }
+
+.reveal .slides section.present .evento-grupamento .lote-origem .lote-voo {
+  animation: inteli-fundir 2.2s cubic-bezier(0.5, 0, 0.3, 1) calc(0.4s + var(--i) * 0.05s) both;
+}
+.reveal .slides section.present .evento-grupamento .lote-destino .lote-acao { animation: inteli-surgir 2.4s ease-out 0.4s both; }
+.reveal .slides section.present .evento-desdobramento .lote-origem .lote-acao { animation: inteli-sumir 2s ease-in 1.4s both; }
+.reveal .slides section.present .evento-desdobramento .lote-destino .lote-acao {
+  animation: inteli-dividir 2s cubic-bezier(0.3, 0, 0.2, 1) calc(1.4s + var(--i) * 0.12s) both;
+}
+
+/* Reconstrução do negociado: código à esquerda, três passos numerados à direita. */
+.reconstruir { display: grid; grid-template-columns: 1fr 360px; gap: 32px; align-items: start; }
+
+.reveal .reconstruir pre.code-compact,
+.reveal .reconstruir pre.code-compact code { font-size: var(--escala-densa); line-height: 1.5; }
+
+.reconstruir-passos { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 18px; }
+
+.reveal .reconstruir-passos li { display: grid; grid-template-columns: 48px 1fr; gap: 14px; align-items: start; }
+.reveal .reconstruir-passos p { margin: 0; line-height: 1.4; }
+.reveal .reconstruir-passos .passo-titulo { font-weight: 700; }
+
+.passo-numero {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+  font-size: var(--escala-subtitulo);
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal .slides section.present .lote-acao { animation: none; }
+  .reveal .slides section.present .evento-grupamento .lote-origem .lote-acao { opacity: 0.18; }
+  .reveal .slides section.present .evento-grupamento .lote-origem .lote-voo { opacity: 0; }
+  .reveal .slides section.present .evento-desdobramento .lote-origem .lote-acao { opacity: 0.18; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal .slides section.present .visoes-linha,
+  .reveal .slides section.present .visoes-salto,
+  .reveal .slides section.present .entrada,
+  .reveal .slides section.present .semana::before,
+  .reveal .slides section.present .semana-marco::before,
+  .reveal .slides section.present .esteira::before,
+  .reveal .slides section.present .barema-barra span { animation: none; }
+}
+
+html.print-pdf .entrada,
+html.print-pdf .lote-acao,
+html.print-pdf .visoes-linha,
+html.print-pdf .visoes-salto,
+html.print-pdf .semana::before,
+html.print-pdf .semana-marco::before,
+html.print-pdf .esteira::before,
+html.print-pdf .barema-barra span { animation: none !important; }
+
+/* ==========================================================================
+   Coletor em três visões (Aula 01, 20/10/2026): fluxo de negócio, código
+   linha a linha (assets/js/inteli-codigo.js) e revisão de código.
+   ========================================================================== */
+
+/* Fluxo de negócio: caixas e vias desenhadas, e dois pacotes percorrendo as
+   duas rotas até a mesma saída. */
+.fluxo-coletor { width: 100%; height: auto; max-height: 420px; overflow: visible; margin-top: 4px; }
+
+.fluxo-caixa rect { fill: var(--seg-superficie); stroke: var(--seg-primaria); stroke-width: 2; }
+.caixa-decisao rect { fill: var(--seg-base); stroke: var(--seg-destaque); stroke-width: 3; }
+.caixa-vivo rect { fill: var(--seg-base); stroke: var(--seg-secundaria); stroke-width: 4; }
+.caixa-snap rect { fill: var(--seg-base); stroke: var(--seg-primaria); stroke-width: 4; }
+.caixa-saida rect { fill: var(--seg-primaria); stroke: var(--seg-primaria); }
+
+.fluxo-coletor text { fill: var(--seg-texto); font-size: var(--escala-densa); }
+.fluxo-coletor .fluxo-titulo { font-size: 22px; font-weight: 700; }
+.caixa-saida text { fill: var(--inteli-branco); }
+.fluxo-coletor .fluxo-rotulo { font-size: var(--escala-complementar); font-weight: 600; }
+.fluxo-coletor .fluxo-rotulo-erro { fill: var(--seg-destaque); }
+
+.fluxo-via { fill: none; stroke: var(--seg-primaria); stroke-width: 3; stroke-dasharray: 1; }
+.via-vivo, .via-saida-vivo { stroke: var(--seg-secundaria); stroke-width: 5; }
+.via-erro { stroke: var(--seg-destaque); }
+
+.fluxo-pacote { fill: var(--seg-destaque); opacity: 0; }
+.pacote-vivo { offset-path: path("M100,210 L262,210 L482,190 L500,190 L500,95 L760,95 L900,95 L900,190 L928,190"); }
+.pacote-snap { offset-path: path("M100,210 L262,210 L482,230 L500,230 L500,325 L760,325 L900,325 L900,230 L928,230"); }
+
+@keyframes inteli-pacote {
+  0% { offset-distance: 0%; opacity: 0; }
+  8% { opacity: 1; }
+  92% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
+
+.reveal .slides section.present .fluxo-caixa { animation: inteli-entrada 0.5s ease-out both; }
+.reveal .slides section.present .caixa-decisao { animation-delay: 0.3s; }
+.reveal .slides section.present .caixa-vivo { animation-delay: 0.9s; }
+.reveal .slides section.present .caixa-snap { animation-delay: 1.3s; }
+.reveal .slides section.present .caixa-saida { animation-delay: 1.9s; }
+.reveal .slides section.present .via-entrada { animation: inteli-traco 0.4s ease-out 0.2s both; }
+.reveal .slides section.present .via-vivo { animation: inteli-traco 0.5s ease-out 0.6s both; }
+.reveal .slides section.present .via-snap { animation: inteli-traco 0.5s ease-out 1s both; }
+.reveal .slides section.present .via-erro { animation: inteli-traco 0.4s ease-out 1.5s both; }
+.reveal .slides section.present .via-saida-vivo,
+.reveal .slides section.present .via-saida-snap { animation: inteli-traco 0.5s ease-out 1.7s both; }
+.reveal .slides section.present .pacote-vivo { animation: inteli-pacote 2.6s ease-in-out 2.4s 2 both; }
+.reveal .slides section.present .pacote-snap { animation: inteli-pacote 2.6s ease-in-out 3.7s 2 both; }
+
+/* Código linha a linha: janela fixa à esquerda, o bloco desliza com
+   transform e o painel à direita troca a explicação a cada passo. */
+.codigo-passos {
+  display: grid;
+  grid-template-columns: 790px 1fr;
+  gap: 28px;
+  align-items: stretch;
+  grid-template-rows: minmax(0, 1fr);
+  height: 480px;
+}
+
+.codigo-janela {
+  overflow: hidden;
+  min-height: 0;
+  background: var(--seg-superficie);
+  border-left: 6px solid var(--seg-primaria);
+  position: relative;
+}
+
+.reveal .codigo-linhas {
+  margin: 0;
+  padding: 12px 0;
+  width: 100%;
+  box-shadow: none;
+  background: transparent;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal .codigo-linhas code {
+  display: block;
+  padding: 0;
+  max-height: none;
+  overflow: visible;
+  background: transparent;
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.cl {
+  display: block;
+  white-space: pre;
+  padding-right: 12px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.cl-n {
+  display: inline-block;
+  width: 38px;
+  margin-right: 14px;
+  text-align: right;
+  color: var(--seg-texto);
+  font-weight: 300;
+}
+
+.tok-kw { font-weight: 700; }
+.tok-str, .tok-doc { color: var(--seg-texto); font-style: normal; }
+.tok-doc { font-weight: 300; }
+
+/* Em passo, as linhas fora do trecho recuam para o cinza da paleta e as do
+   trecho ganham faixa verde. Seletor composto para vencer .cl. */
+.codigo-passos.codigo-em-passo .cl { color: var(--seg-texto-suave); }
+.codigo-passos.codigo-em-passo .cl .cl-n { color: var(--seg-texto-suave); }
+.codigo-passos.codigo-em-passo .cl.cl-destaque { color: var(--seg-texto); background: var(--seg-base); box-shadow: inset 6px 0 0 var(--seg-secundaria); }
+.codigo-passos.codigo-em-passo .cl.cl-destaque .cl-n { color: var(--seg-texto); }
+
+.codigo-explica {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px 24px;
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+}
+
+.reveal .codigo-explica p { margin: 0; color: var(--inteli-branco); line-height: 1.45; }
+.reveal .codigo-explica .codigo-contador {
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--seg-secundaria);
+}
+.reveal .codigo-explica .codigo-titulo { font-size: var(--escala-subtitulo); font-weight: 700; line-height: 1.2; }
+.reveal .codigo-explica.codigo-explica-troca .codigo-titulo,
+.reveal .codigo-explica.codigo-explica-troca .codigo-texto { animation: inteli-entrada 0.45s ease-out both; }
+
+.codigo-passo { display: none; }
+
+/* Revisão de código: duas colunas, manter e revisar, cada item com a linha
+   citada, o trecho e o comentário. */
+.revisao { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: start; }
+
+.reveal .revisao ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+
+.reveal .revisao-rotulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  font-size: var(--escala-texto);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 3px solid var(--seg-secundaria);
+}
+
+.revisao-atencao .revisao-rotulo { border-bottom-color: var(--seg-destaque); }
+.revisao-rotulo .icone { width: 24px; height: 24px; }
+
+.reveal .revisao-item { padding: 0 0 0 14px; border-left: 4px solid var(--seg-secundaria); }
+.reveal .revisao-atencao .revisao-item { border-left-color: var(--seg-destaque); }
+.reveal .revisao-item p { margin: 0; font-size: var(--escala-densa); line-height: 1.35; }
+.reveal .revisao-item .revisao-cabeca { font-weight: 700; }
+.revisao-ref {
+  font-weight: 600;
+  font-size: var(--escala-complementar);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-right: 6px;
+}
+
+.reveal .revisao-trecho {
+  margin: 4px 0;
+  padding: 0;
+  box-shadow: none;
+  width: 100%;
+}
+
+.reveal .revisao-trecho code {
+  display: block;
+  padding: 4px 10px;
+  max-height: none;
+  font-size: var(--escala-complementar);
+  line-height: 1.4;
+  background: var(--seg-superficie);
+  white-space: pre;
+  overflow: hidden;
+}
+
+.reveal .slides section.present .revisao-bom .revisao-item:nth-child(2),
+.reveal .slides section.present .revisao-atencao .revisao-item:nth-child(2) { animation-delay: 0.15s; }
+.reveal .slides section.present .revisao-bom .revisao-item:nth-child(3),
+.reveal .slides section.present .revisao-atencao .revisao-item:nth-child(3) { animation-delay: 0.3s; }
+.reveal .slides section.present .revisao-bom .revisao-item:nth-child(4),
+.reveal .slides section.present .revisao-atencao .revisao-item:nth-child(4) { animation-delay: 0.45s; }
+.reveal .slides section.present .revisao-atencao .revisao-item { animation-delay: 0.8s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal .slides section.present .fluxo-caixa,
+  .reveal .slides section.present .fluxo-via,
+  .reveal .slides section.present .fluxo-pacote { animation: none; }
+  .reveal .codigo-linhas { transition: none; }
+}
+
+html.print-pdf .fluxo-caixa,
+html.print-pdf .fluxo-via,
+html.print-pdf .fluxo-pacote { animation: none !important; }

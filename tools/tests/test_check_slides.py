@@ -150,3 +150,12 @@ def test_main_reprova_quando_aulas_nao_tem_deck_elegivel(tmp_path, monkeypatch):
     monkeypatch.setattr(sys, "argv", ["check_slides.py"])
 
     assert check_slides.main() == 1
+
+
+def test_conteudo_recortado_por_overflow_nao_estoura(servidor):
+    """Regressão de 20/10/2026: a janela de código linha a linha da Aula 01
+    recorta um bloco mais alto que ela, e o validador acusava 320px de estouro
+    que não aparecem na tela. Sem o recorte, o mesmo bloco continua acusado."""
+    slides = _medir(servidor, "tools/tests/fixture_recorte.html")
+    assert slides[0]["pior"] is None
+    assert slides[1]["pior"] is not None and slides[1]["pior"]["abaixo"] > 2

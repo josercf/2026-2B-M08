@@ -1,0 +1,48 @@
+/* Widget carteira-nuvem (assets/js/widgets/carteira-nuvem.js), slide do
+   parceiro da Aula 01. Arquivo à parte do tema para o widget ser incluído só
+   no deck que o usa. Só tokens: nenhuma cor literal, nenhuma família
+   tipográfica e canto reto (GRA-01), conferidos por tools/check_brand.py. */
+
+/* O palco recebe a largura de data-largura pelo JS; max-width impede que ele
+   passe da largura útil do slide, e o SVG escala junto pelo viewBox. */
+.carteira-palco {
+  position: relative;
+  max-width: 100%;
+}
+
+.carteira-palco .carteira-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+/* Botão discreto no canto superior direito, fora da área dos pontos. */
+.carteira-palco .carteira-repetir {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font: inherit;
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  padding: 4px 12px;
+  border: 1px solid var(--seg-borda);
+  background: var(--seg-base);
+  color: var(--seg-texto);
+  cursor: pointer;
+}
+
+.carteira-palco .carteira-repetir:hover,
+.carteira-palco .carteira-repetir:focus-visible {
+  border-color: var(--seg-primaria);
+}
+
+/* No PDF o botão não tem função: o widget já está no estado final. */
+.print-pdf .carteira-palco .carteira-repetir,
+.reveal-print .carteira-palco .carteira-repetir {
+  display: none;
+}
+
+@media print {
+  .carteira-palco .carteira-repetir { display: none; }
+}

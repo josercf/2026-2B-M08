@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fixture de conteúdo recortado</title>
+
+  <!-- Fixture só para tools/tests/test_check_slides.py. A primeira section tem
+       um bloco alto dentro de uma janela com overflow hidden, como a janela de
+       código que desliza na Aula 01: nada aparece fora do slide e o validador
+       não pode acusar. A segunda tem o mesmo bloco sem recorte e precisa
+       estourar. -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="../../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../../assets/css/inteli-theme.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section class="content-slide">
+        <div style="height: 300px; overflow: hidden">
+          <div style="height: 1400px"><p>conteúdo alto recortado pela janela</p></div>
+        </div>
+      </section>
+      <section class="content-slide">
+        <div style="height: 300px">
+          <div style="height: 1400px"><p>conteúdo alto sem recorte</p></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280, height: 720, center: false, margin: 0,
+      hash: true, slideNumber: false, transition: 'fade'
+    });
+  </script>
+</body>
+</html>

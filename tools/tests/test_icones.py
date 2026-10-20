@@ -27,7 +27,7 @@ def test_todo_icone_das_paginas_existe_no_sprite():
 
 def test_icones_montados_por_js_existem_no_sprite_e_estao_declarados():
     usados = set()
-    for nome in ("inteli-print.js", "inteli-cronometro.js"):
+    for nome in ("inteli-print.js", "inteli-cronometro.js", "inteli-nuvem.js"):
         with open(os.path.join(RAIZ, "assets", "js", nome), encoding="utf-8") as fh:
             usados.update(re.findall(r"(?:criarIcone|trocarIcone)\((?:icone, )?'([a-z0-9_]+)'\)", fh.read()))
     assert usados and usados <= set(icones.ICONES_JS) <= _simbolos()

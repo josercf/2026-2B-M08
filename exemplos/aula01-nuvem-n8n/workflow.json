@@ -1,0 +1,223 @@
+{
+  "name": "Nuvem de palavras por voz (Aula 01, M08)",
+  "nodes": [
+    {
+      "id": "a1f0c3d2-0001-4c1e-9b1a-6e0d5c0a0001",
+      "name": "Receber áudio",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "a1f0c3d2-0001-4c1e-9b1a-6e0d5c0a00ff",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "nuvem-m08-TROQUE-POR-UM-CAMINHO-ALEATORIO",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://josercf.github.io,http://localhost:8000,http://127.0.0.1:8000"
+        }
+      }
+    },
+    {
+      "id": "a1f0c3d2-0002-4c1e-9b1a-6e0d5c0a0002",
+      "name": "Conferir token",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a1f0c3d2-0002-4c1e-9b1a-6e0d5c0a0010",
+              "leftValue": "={{ $json.body.token }}",
+              "rightValue": "TROQUE-ESTE-TOKEN",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "a1f0c3d2-0002-4c1e-9b1a-6e0d5c0a0011",
+              "leftValue": "={{ Object.keys($binary || {}).includes('audio') }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      }
+    },
+    {
+      "id": "a1f0c3d2-0003-4c1e-9b1a-6e0d5c0a0003",
+      "name": "ElevenLabs Speech-to-Text",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        460,
+        -100
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/speech-to-text",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "audio"
+            },
+            {
+              "name": "model_id",
+              "value": "scribe_v2"
+            },
+            {
+              "name": "language_code",
+              "value": "por"
+            },
+            {
+              "name": "tag_audio_events",
+              "value": "false"
+            },
+            {
+              "name": "no_verbatim",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SELECIONE-A-CREDENCIAL",
+          "name": "ElevenLabs xi-api-key"
+        }
+      }
+    },
+    {
+      "id": "a1f0c3d2-0004-4c1e-9b1a-6e0d5c0a0004",
+      "name": "Extrair termos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        -100
+      ],
+      "parameters": {
+        "jsCode": "// Extração de termos da transcrição para a nuvem de palavras da Aula 01.\n//\n// Este arquivo é, caractere por caractere, o código do nó Code \"Extrair termos\"\n// do workflow.json ao lado. tools/tests/test_nuvem_workflow.py confere a\n// igualdade e roda as funções abaixo com node. Ao alterar um, alterar o outro\n// (o teste reprova a divergência).\n//\n// Entrada no n8n: a resposta da ElevenLabs Speech-to-Text, com a transcrição\n// em \"text\". Saída: { transcricao, termos: [{ texto, peso }] }.\n\n// Palavras sem conteúdo em pt-BR: artigos, preposições, pronomes, verbos de\n// ligação, muletas da fala (\"tipo\", \"né\", \"aí\") e números por extenso.\nconst STOPWORDS = new Set((\n  'a à às ao aos as o os um uma uns umas de da das do dos dum duma em na nas no nos num numa ' +\n  'por pela pelas pelo pelos para pra pro pras pros com sem sob sobre entre até após ante desde ' +\n  'contra perante e é ou mas nem que se porque pois porém como quando onde quanto enquanto ' +\n  'embora caso então logo assim também já ainda só sim não muito muita muitos muitas pouco ' +\n  'mais menos bem mal tão tanto tanta tantos tantas todo toda todos todas tudo nada algo ' +\n  'alguém ninguém cada outro outra outros outras mesmo mesma mesmos mesmas próprio própria ' +\n  'eu tu ele ela nós vós eles elas você vocês me te lhe nos vos lhes mim ti si comigo conosco ' +\n  'meu minha meus minhas teu tua seu sua seus suas nosso nossa nossos nossas dele dela deles ' +\n  'delas este esta estes estas esse essa esses essas aquele aquela aqueles aquelas isto isso ' +\n  'aquilo aqui ali lá cá aí qual quais quem cujo cuja ser sou és somos são era eram foi foram ' +\n  'fosse sido sendo seja sejam será serão seria estar estou está estamos estão estava estavam ' +\n  'esteve estive estiver estando ter tenho tem temos têm tinha tinham teve tive tido tendo ' +\n  'haver há havia houve fazer faz fazem fez feito fazendo vai vão vou ir indo iam pode podem ' +\n  'poder posso podemos deve devem usar usa usam usando serve servir ajuda ajudar acho acha achamos sei sabe saber gente coisa coisas forma ' +\n  'jeito tipo né aí daí então ok okay hum hã ah eh tá pronto bom boa certo exatamente basicamente ' +\n  'projeto módulo deste desta neste nesta nisso disso nesse nessa desse dessa ' +\n  'zero um dois duas três quatro cinco seis sete oito nove dez cem mil vez vezes'\n).split(/\\s+/));\n\n// Termos compostos do vocabulário do módulo. Casam antes das palavras soltas e\n// saem como um termo só, para \"fronteira eficiente\" não virar duas palavras.\n// A comparação é feita sem acento, então \"analise de risco\" também casa.\nconst COMPOSTOS = [\n  'fronteira eficiente', 'carteira eficiente', 'carteira de investimentos',\n  'excedente de caixa', 'fluxo de caixa', 'taxa livre de risco', 'renda fixa',\n  'renda variável', 'mercado financeiro', 'dados de mercado', 'análise de risco',\n  'gestão de risco', 'retorno esperado', 'retorno real', 'tolerância a risco',\n  'perfil de risco', 'índice de sharpe', 'modelo de markowitz', 'teoria de markowitz',\n  'série histórica', 'preço ajustado', 'tesouro direto', 'banco central',\n  'bolsa de valores', 'inteligência artificial', 'machine learning', 'aprendizado de máquina',\n  'simulação de carteira', 'otimização de carteira', 'alocação de ativos',\n  'tomada de decisão', 'diversificação de risco', 'mínima variância', 'máximo sharpe'\n];\n\n// Siglas curtas que a regra de tamanho mínimo descartaria.\nconst SIGLAS = new Set(['b3', 'ia', 'api', 'cdi', 'ipca', 'etf', 'cdb', 'lci', 'lca', 'bcb', 'xp', 'btg']);\n\nfunction semAcento(texto) {\n  return texto.normalize('NFD').replace(/[̀-ͯ]/g, '');\n}\n\n// Caixa baixa, NFC, só letras, dígitos e espaço. Hífen interno é mantido\n// (\"pré-processamento\"); o resto da pontuação vira espaço.\nfunction normalizar(texto) {\n  return String(texto || '')\n    .normalize('NFC')\n    .toLowerCase()\n    .replace(/\\[[^\\]]*\\]|\\([^)]*\\)/g, ' ')        // eventos de áudio: [risos], (música)\n    .replace(/[^\\p{L}\\p{N}\\s-]/gu, ' ')\n    .replace(/(^|\\s)-+|-+(?=\\s|$)/g, ' ')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\n\nfunction palavraValida(palavra) {\n  if (STOPWORDS.has(palavra)) return false;\n  if (/^\\d+$/.test(palavra)) return false;\n  if (palavra.length < 3) return SIGLAS.has(palavra);\n  return true;\n}\n\n// Conta os termos de uma transcrição. Compostos primeiro, depois palavras\n// soltas. Um par de palavras de conteúdo vizinhas que aparece duas vezes ou\n// mais no mesmo trecho também vira composto (\"simulador financeiro\" dito duas\n// vezes), e as palavras dele deixam de contar sozinhas.\nfunction extrairTermos(textoBruto) {\n  const texto = normalizar(textoBruto);\n  if (!texto) return [];\n  const contagem = new Map();\n  const somar = (termo, n) => contagem.set(termo, (contagem.get(termo) || 0) + n);\n\n  const palavras = texto.split(' ');\n  const chaves = palavras.map(semAcento);\n  const usada = new Array(palavras.length).fill(false);\n\n  for (const composto of COMPOSTOS) {\n    const alvo = semAcento(composto).split(' ');\n    for (let i = 0; i + alvo.length <= chaves.length; i++) {\n      let casa = true;\n      for (let j = 0; j < alvo.length; j++) {\n        if (usada[i + j] || chaves[i + j] !== alvo[j]) { casa = false; break; }\n      }\n      if (casa) {\n        somar(composto, 1);\n        for (let j = 0; j < alvo.length; j++) usada[i + j] = true;\n      }\n    }\n  }\n\n  const pares = new Map();\n  for (let i = 0; i + 1 < palavras.length; i++) {\n    if (usada[i] || usada[i + 1]) continue;\n    if (!palavraValida(palavras[i]) || !palavraValida(palavras[i + 1])) continue;\n    if (chaves[i] === chaves[i + 1]) continue;   // \"carteira carteira\" é repetição\n    const par = palavras[i] + ' ' + palavras[i + 1];\n    pares.set(par, (pares.get(par) || []).concat(i));\n  }\n  for (const [par, posicoes] of pares) {\n    if (posicoes.length < 2) continue;\n    // Só ocorrências que não se sobrepõem, e só marca as palavras como usadas\n    // se o par de fato se repetir.\n    const livres = [];\n    for (const i of posicoes) {\n      const ultima = livres[livres.length - 1];\n      if (usada[i] || usada[i + 1] || (ultima !== undefined && i <= ultima + 1)) continue;\n      livres.push(i);\n    }\n    if (livres.length < 2) continue;\n    for (const i of livres) usada[i] = usada[i + 1] = true;\n    somar(par, livres.length);\n  }\n\n  for (let i = 0; i < palavras.length; i++) {\n    if (!usada[i] && palavraValida(palavras[i])) somar(palavras[i], 1);\n  }\n\n  return [...contagem.entries()]\n    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'pt-BR'))\n    .map(([termo, peso]) => ({ texto: SIGLAS.has(termo) ? termo.toUpperCase() : termo, peso: peso }));\n}\n\n// Fora do n8n (node, testes) o arquivo é um módulo CommonJS.\nif (typeof module !== 'undefined' && module.exports && typeof $input === 'undefined') {\n  module.exports = { extrairTermos, normalizar, STOPWORDS, COMPOSTOS };\n}\n\n// Dentro do nó Code do n8n (\"Run Once for All Items\"): um item por trecho de\n// áudio, com a transcrição da ElevenLabs em \"text\".\nif (typeof $input !== 'undefined') {\n  return $input.all().map((item) => {\n    const transcricao = String((item.json && item.json.text) || '').trim();\n    return { json: { transcricao: transcricao, termos: extrairTermos(transcricao) } };\n  });\n}\n"
+      }
+    },
+    {
+      "id": "a1f0c3d2-0005-4c1e-9b1a-6e0d5c0a0005",
+      "name": "Responder termos",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        940,
+        -100
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "a1f0c3d2-0006-4c1e-9b1a-6e0d5c0a0006",
+      "name": "Recusar",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        120
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"erro\": \"token ausente, token errado ou campo audio vazio\" } }}",
+        "options": {
+          "responseCode": 403
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Receber áudio": {
+      "main": [
+        [
+          {
+            "node": "Conferir token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conferir token": {
+      "main": [
+        [
+          {
+            "node": "ElevenLabs Speech-to-Text",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Recusar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ElevenLabs Speech-to-Text": {
+      "main": [
+        [
+          {
+            "node": "Extrair termos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair termos": {
+      "main": [
+        [
+          {
+            "node": "Responder termos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "active": false
+}

@@ -148,3 +148,15 @@ def linhas_com_fim_exclusivo(inicio="2026-08-01", fim="2026-08-31"):
         "fim_e_pregao": bool(fim_ts in pregoes),
         "dia_da_semana_do_fim": fim_ts.dayofweek,
     }
+
+
+def calendario_do_mes(inicio="2026-08-01", fim="2026-08-31"):
+    """Dias do mês do Peer Instruction, com a marca de pregão, para o calendário do deck.
+
+    Cada dia corrido vira um quadrado do calendário animado do slide do end
+    exclusivo; pregão é a data que existe no snapshot, que é a própria saída do
+    yfinance. Devolve dia, dia da semana (0 é segunda) e se houve pregão.
+    """
+    pregoes = set(carregar_precos("precos_fechamento.csv").index)
+    return [{"dia": d.day, "dia_da_semana": d.dayofweek, "pregao": d in pregoes}
+            for d in pd.date_range(inicio, fim)]

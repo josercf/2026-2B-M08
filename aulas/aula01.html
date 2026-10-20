@@ -8,23 +8,27 @@
   <!-- Aula 01, 20/10/2026, Semana 2, Sprint 1 (Adalove da turma 2026-2B-T19). Roteiro: PLANEJAMENTO_AULA_A_AULA.md, Aula 01.
        Todo número deste deck está travado em tools/tests/test_aula01.py.
 
-       Divisão dos 105 minutos de metodologia ativa (depois da daily de 15 min):
+       Divisão dos 105 minutos de metodologia ativa (depois da daily de 15 min), revisada em 20/10/2026:
          Abertura (antes do Bloco 1)  slides 1 a 4   apresentação do professor, combinados, agenda
-         Bloco 1 (0 a 15)             slides 5 a 8   o parceiro, as cinco entregas, Peer Instruction sobre o end do yfinance
-         Bloco 2 (15 a 30)            slides 9 a 11  três visões, animação MGLU3 com previsão
-         Bloco 3 (30 a 45)            slides 12 a 14 widget B3SA3, escolha coletiva, proventos da PETR4
-         Bloco 4 (45 a 60)            slides 15 a 17 o coletor e a dupla no notebook (12 min)
-         Bloco 5 (60 a 75)            slides 18 a 20 ausências, animação e widget
-         Bloco 6 (75 a 90)            slides 21 a 23 efeito na volatilidade, ADR, dupla (12 min)
-         Bloco 7 (90 a 105)           slides 24 a 28 quiz, notebook, A1, referências
+         Bloco 1 (0 a 15)             slides 5 a 15  nuvem por voz, carteira na fronteira, esteira e os cinco artefatos, Peer Instruction sobre o end do yfinance e o calendário
+         Bloco 2 (15 a 30)            slides 16 a 20 eventos corporativos, três visões, animação MGLU3 com previsão, reconstrução do negociado
+         Bloco 3 (30 a 45)            slides 21 a 23 widget B3SA3, escolha coletiva, proventos da PETR4
+         Bloco 4 (45 a 60)            slides 24 a 28 o coletor em três visões (fluxo, código linha a linha, revisão) e a dupla no notebook (12 min)
+         Bloco 5 (60 a 75)            slides 29 a 31 ausências, animação e widget
+         Bloco 6 (75 a 90)            slides 32 a 34 efeito na volatilidade, ADR, dupla (12 min)
+         Bloco 7 (90 a 105)           slides 35 a 39 quiz, notebook, A1, referências
 
        A apresentação do professor e os combinados (slides 2 e 3) entram só nesta aula,
-       a primeira do módulo, e consomem a folga da abertura: se o tempo apertar, cortar
-       primeiro o slide 22 (exemplo de ADR) e reduzir a segunda dupla para 8 minutos. -->
+       a primeira do módulo, e consomem a folga da abertura. O Bloco 1 tem onze slides:
+       os sete da esteira (7 a 13) são de referência, cerca de um minuto cada, e a nuvem
+       (slide 5) fecha em quatro minutos. Se o tempo apertar, passar os slides 9 a 13 só
+       pelo A1, cortar o slide 33 (exemplo de ADR) e reduzir a segunda dupla para 8 minutos. -->
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="../assets/css/inteli-brand.css">
   <link rel="stylesheet" href="../assets/css/inteli-theme.css">
+  <link rel="stylesheet" href="../assets/css/inteli-nuvem.css">
+  <link rel="stylesheet" href="../assets/css/inteli-carteira.css">
   <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
 </head>
 <body>
@@ -50,34 +54,46 @@
           <div class="accent-bar"></div>
           <h2>Prof. José Romualdo</h2>
         </div>
-        <div class="perfil">
-          <div class="perfil-painel">
-            <p class="perfil-monograma">JR</p>
-            <div>
-              <p class="perfil-nome">José Romualdo Costa Filho</p>
-              <p class="perfil-papel">Professor de Computação do Módulo 08 AdmTech</p>
-            </div>
-          </div>
-          <div class="perfil-conteudo">
-            <table class="tabela-leitura">
-              <tr>
-                <td><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#school"></use></svg>Formação</td>
-                <td>Análise e Desenvolvimento de Sistemas (Uninove), especialização em Governança de TI</td>
-              </tr>
-              <tr>
-                <td><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#work"></use></svg>Trajetória</td>
-                <td>Desenvolvimento e arquitetura de software no Itaú BBA, na Infraero, na Atento e na Liq, com foco em pesquisa e inovação</td>
-              </tr>
-              <tr>
-                <td><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#account_balance"></use></svg>No Inteli</td>
-                <td>Computação: coleta, risco e retorno, simulação, otimização e o produto com LLM</td>
-              </tr>
-              <tr>
-                <td><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#psychology"></use></svg>Como ensino</td>
-                <td>Conceito antes de ferramenta. IA entra como apoio em todas as sprints e como produto na última</td>
-              </tr>
-            </table>
-          </div>
+        <div class="perfil perfil-com-foto">
+          <figure class="perfil-foto entrada">
+            <img src="../assets/img/professor-familia.jpg" alt="José Romualdo com a família, sentados a uma mesa de madeira ao ar livre">
+            <figcaption>
+              <span class="perfil-nome">José Romualdo Costa Filho</span>
+              <span class="perfil-papel">com a família</span>
+            </figcaption>
+          </figure>
+          <table class="tabela-leitura perfil-tabela">
+            <tr class="entrada" style="--atraso: 0.25s">
+              <td><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#school"></use></svg>Formação</td>
+              <td>
+                <ul class="perfil-lista">
+                  <li>Doutorando em Administração, Uninove</li>
+                  <li>Mestrado em Gestão de Projetos, Uninove</li>
+                  <li>MBA em Digital Transformation, MIT</li>
+                  <li>Pós-graduação em Governança de TI, Uninove</li>
+                  <li>Análise de Sistemas, Uninove</li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="entrada" style="--atraso: 0.45s">
+              <td><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#work"></use></svg>Trajetória</td>
+              <td>
+                <ul class="perfil-lista">
+                  <li>Desenvolvimento e arquitetura de software no Itaú BBA, na Infraero, na Atento e na Liq, com foco em pesquisa e inovação</li>
+                  <li>Professor de graduação, pós e MBA na FIAP, na Uninove e no Mackenzie</li>
+                </ul>
+              </td>
+            </tr>
+            <tr class="entrada" style="--atraso: 0.65s">
+              <td><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#account_balance"></use></svg>No Inteli</td>
+              <td>
+                <ul class="perfil-lista">
+                  <li>Professor orientador e instrutor de Computação na Graduação</li>
+                  <li>Aulas sobre adoção de IA nas organizações no Inteli Exec, e aulas na Pós e no MBA</li>
+                </ul>
+              </td>
+            </tr>
+          </table>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
@@ -93,38 +109,49 @@
           <div class="accent-bar"></div>
           <h2>Combinados de participação e entregas</h2>
         </div>
-        <table class="tabela-leitura">
-          <thead>
-            <tr><th>Item</th><th>Regra</th><th>Prazo</th></tr>
-          </thead>
-          <tbody>
-            <tr class="linha-destaque">
-              <td><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#forum"></use></svg>Participação</td>
-              <td>Nota concedida pelo professor a contribuições relevantes, aderentes ao módulo e ao problema do parceiro: contestar um número com dado, propor um tratamento, explicar o código do grupo</td>
-              <td>em cada encontro</td>
-            </tr>
-            <tr>
-              <td><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#edit_note"></use></svg>Autoestudo em sala</td>
-              <td>Entregue na Adalove</td>
-              <td>até o fim da instrução</td>
-            </tr>
-            <tr>
-              <td><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#home_work"></use></svg>Autoestudo para casa</td>
-              <td>Entregue na Adalove</td>
-              <td>sexta, 23h59</td>
-            </tr>
-            <tr>
-              <td><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#inventory_2"></use></svg>Artefatos</td>
-              <td>Repositório do grupo com SPEC.md, README e ADRs; o notebook roda do zero sem editar código</td>
-              <td>sexta, 23h59</td>
-            </tr>
-            <tr>
-              <td><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#smart_toy"></use></svg>Uso de IA</td>
-              <td>Permitido. O ADR individual, com o número medido nos dados do grupo e commits ao longo da sprint, mostra a autoria</td>
-              <td>ADRs: 20% de cada artefato</td>
-            </tr>
-          </tbody>
-        </table>
+        <ol class="semana">
+          <li class="semana-marco" style="--atraso: 0.3s">
+            <p class="semana-quando">Durante o encontro</p>
+            <div class="combinado entrada" style="--atraso: 0.6s">
+              <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#forum"></use></svg>
+              <div>
+                <p class="combinado-nome">Participação</p>
+                <p>Vale nota quando a contribuição é relevante para o módulo e para o parceiro: contestar um número com dado, propor um tratamento, explicar o código do grupo.</p>
+              </div>
+            </div>
+          </li>
+          <li class="semana-marco" style="--atraso: 0.9s">
+            <p class="semana-quando">Ao fim da instrução</p>
+            <div class="combinado entrada" style="--atraso: 1.2s">
+              <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#edit_note"></use></svg>
+              <div>
+                <p class="combinado-nome">Autoestudo em sala</p>
+                <p>Entregue na Adalove até o fim da instrução.</p>
+              </div>
+            </div>
+          </li>
+          <li class="semana-marco" style="--atraso: 1.5s">
+            <p class="semana-quando">Sexta-feira</p>
+            <div class="combinado entrada" style="--atraso: 1.8s">
+              <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#home_work"></use></svg>
+              <div>
+                <p class="combinado-nome">Autoestudo para casa</p>
+                <p>Entregue na Adalove até sexta, 23h59.</p>
+              </div>
+            </div>
+            <div class="combinado entrada" style="--atraso: 2.05s">
+              <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg>
+              <div>
+                <p class="combinado-nome">Artefato da sprint</p>
+                <p>No repositório do grupo até sexta, 23h59, com SPEC.md, README e ADRs. O notebook roda do zero sem editar código.</p>
+              </div>
+            </div>
+          </li>
+        </ol>
+        <div class="faixa-nota faixa-ia entrada" style="--atraso: 2.5s">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#smart_toy"></use></svg>
+          <p><strong>IA liberada em todas as sprints.</strong> A autoria aparece no ADR individual, com o número medido nos dados do grupo, e nos commits ao longo da sprint. Os ADRs valem 20% de cada artefato.</p>
+        </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
           <p class="footer-page">3</p>
@@ -139,25 +166,21 @@
           <div class="accent-bar"></div>
           <h2>Agenda do encontro</h2>
         </div>
-        <table class="tabela-leitura tabela-compacta">
+        <table class="tabela-leitura tabela-compacta tabela-agenda">
           <thead>
-            <tr><th>Bloco</th><th>Minutos</th><th>Tema</th><th>Interação que fecha o bloco</th></tr>
+            <tr><th>Bloco</th><th>Tema</th></tr>
           </thead>
           <tbody>
-            <tr><td>Daily</td><td>15</td><td>O que fiz, o que vou fazer, impedimentos</td><td>acesso ao Colab, ao repositório e a <code>dados/</code></td></tr>
-            <tr><td>1</td><td>0 a 15</td><td>O parceiro, a ferramenta e as cinco entregas</td><td>Peer Instruction sobre o <code>end</code> do yfinance</td></tr>
-            <tr><td>2</td><td>15 a 30</td><td>Três visões do mesmo preço</td><td>previsão antes da animação da MGLU3</td></tr>
-            <tr><td>3</td><td>30 a 45</td><td>Desdobramento da B3SA3 e proventos da PETR4</td><td>escolha coletiva de quatro perguntas</td></tr>
-            <tr><td>4</td><td>45 a 60</td><td>Um coletor que outra pessoa consegue rodar</td><td>dupla no notebook, seções 1 e 2</td></tr>
-            <tr><td>5</td><td>60 a 75</td><td>Ausências reais do provedor</td><td>que número o grupo registra no ADR</td></tr>
-            <tr><td>6</td><td>75 a 90</td><td>Descartar ou preencher, e o primeiro ADR</td><td>dupla no notebook, seções 3 e 4</td></tr>
-            <tr><td>7</td><td>90 a 105</td><td>Quiz e amarração com a Sprint 1</td><td>quiz de três perguntas</td></tr>
+            <tr><td>Daily</td><td>O que fiz, o que vou fazer, impedimentos</td></tr>
+            <tr><td>1</td><td>O parceiro, a ferramenta e as cinco entregas</td></tr>
+            <tr><td>2</td><td>Três visões do mesmo preço</td></tr>
+            <tr><td>3</td><td>Desdobramento da B3SA3 e proventos da PETR4</td></tr>
+            <tr><td>4</td><td>Um coletor que outra pessoa consegue rodar</td></tr>
+            <tr><td>5</td><td>Ausências reais do provedor</td></tr>
+            <tr><td>6</td><td>Descartar ou preencher, e o primeiro ADR</td></tr>
+            <tr><td>7</td><td>Quiz e amarração com a Sprint 1</td></tr>
           </tbody>
         </table>
-        <div class="faixa-nota">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
-          <p>Horários de relógio a confirmar na Adalove; os blocos contam do fim da daily.</p>
-        </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
           <p class="footer-page">4</p>
@@ -165,88 +188,398 @@
       </section>
 
       <!-- 5 -->
-      <section class="content-slide" id="parceiro">
+      <section class="content-slide nuvem-slide" id="o-que-e-o-projeto">
         <div class="top-bar"></div>
-        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-negativa.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Onde alocar o excedente de caixa do parceiro</h2>
+          <h2>O que é o projeto deste módulo?</h2>
+          <p class="nuvem-instrucao">Cada pessoa responde em uma frase, em voz alta. As palavras entram na nuvem enquanto a turma fala.</p>
         </div>
-        <div class="side-by-side">
-          <div>
-            <p>O módulo constrói uma <strong>ferramenta de simulação de carteira eficiente</strong>: o gestor informa os ativos, a ferramenta calcula a Fronteira Eficiente de Markowitz e explica o resultado em português.</p>
-            <p>A análise se sustenta em dados públicos e verificáveis, coletados pelo próprio grupo, com cada decisão de tratamento documentada.</p>
-          </div>
-          <table class="tabela-leitura">
-            <tr><td>Base</td><td>histórico de preços convertido em retornos diários</td></tr>
-            <tr><td>Referências</td><td>CDI como taxa livre de risco, Selic como ciclo, IPCA como régua de retorno real</td></tr>
-            <tr><td>Decisão</td><td>os gestores definem a tolerância a risco e o otimizador devolve a carteira</td></tr>
-          </table>
-        </div>
-        <div class="faixa-nota">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#database"></use></svg>
-          <p>Nenhuma análise das próximas sprints é melhor do que os dados que o A1 coletar hoje.</p>
-        </div>
+        <div class="nuvem" id="nuvem-projeto" data-largura="880" data-altura="464"></div>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [6]</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
           <p class="footer-page">5</p>
         </div>
       </section>
 
       <!-- 6 -->
-      <section class="content-slide" id="entregas">
+      <section class="content-slide" id="parceiro">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Entregas de Computação por sprint</h2>
+          <h2>Cada ativo da carteira vira um ponto da nuvem</h2>
         </div>
-        <ol class="trilha">
-          <li class="trilha-atual">
-            <span class="trilha-numero">A1</span>
-            <p class="trilha-titulo">Coletor e Processador de Dados de Mercado</p>
-            <p>Sprint 1 &middot; peso 3</p>
-          </li>
-          <li>
-            <span class="trilha-numero">A2</span>
-            <p class="trilha-titulo">Módulo de Análise de Risco e Retorno Individual</p>
-            <p>Sprint 2 &middot; peso 3</p>
-          </li>
-          <li>
-            <span class="trilha-numero">A3</span>
-            <p class="trilha-titulo">Motor de Simulação de Monte Carlo</p>
-            <p>Sprint 3 &middot; peso 3</p>
-          </li>
-          <li>
-            <span class="trilha-numero">A4</span>
-            <p class="trilha-titulo">Otimizador de Carteira com Fronteira Eficiente</p>
-            <p>Sprints 3 e 4 &middot; peso 3</p>
-          </li>
-          <li>
-            <span class="trilha-numero">A5</span>
-            <p class="trilha-titulo">Simulador Interativo integrado à interface e Interpretação por LLM</p>
-            <p>Sprint 5 &middot; peso 2</p>
-          </li>
-        </ol>
-        <table class="tabela-leitura">
-          <thead><tr><th>Em todo artefato</th><th>Peso no barema</th><th>Nota</th></tr></thead>
-          <tbody>
-            <tr><td>A ferramenta funcionando, com os critérios de cada sprint</td><td>65%</td><td>grupo</td></tr>
-            <tr><td>Especificação e documentação: SPEC.md antes de codar, README, docstrings</td><td>15%</td><td>grupo</td></tr>
-            <tr><td>ADRs com o impacto numérico da decisão, por autoria de commit</td><td>20%</td><td>individual</td></tr>
-          </tbody>
-        </table>
-        <div class="faixa-nota">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#info"></use></svg>
-          <p>Pesos da Adalove. Ponderadas individuais de 3 pontos nos autoestudos das Aulas 03 (10/11) e 05 (01/12).</p>
-        </div>
+        <div class="widget" data-widget="carteira-nuvem" data-fonte="../assets/data/aula01-carteira.json"
+             data-largura="1160" data-altura="470"></div>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [6]</p>
           <p class="footer-page">6</p>
         </div>
       </section>
 
       <!-- 7 -->
+      <section class="content-slide" id="entregas">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Esteira dos cinco artefatos de Computação</h2>
+        </div>
+        <ol class="esteira esteira-grande">
+          <li class="estacao entrada estacao-atual" style="--atraso: 0.30s">
+            <span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A1</span></span>
+            <p class="estacao-titulo">Coletor e Processador de Dados de Mercado</p>
+            <p class="estacao-meta">Sprint 1 &middot; peso 3</p>
+            <p class="estacao-aula">Aula 01 &middot; review 23/10</p>
+          </li>
+          <li class="esteira-passagem entrada" style="--atraso: 0.75s"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#arrow_forward"></use></svg><span>retornos diários</span></li>
+          <li class="estacao entrada" style="--atraso: 0.75s">
+            <span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A2</span></span>
+            <p class="estacao-titulo">Módulo de Análise de Risco e Retorno Individual</p>
+            <p class="estacao-meta">Sprint 2 &middot; peso 3</p>
+            <p class="estacao-aula">Aula 02 &middot; review 06/11</p>
+          </li>
+          <li class="esteira-passagem entrada" style="--atraso: 1.20s"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#arrow_forward"></use></svg><span>covariância anualizada</span></li>
+          <li class="estacao entrada" style="--atraso: 1.20s">
+            <span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A3</span></span>
+            <p class="estacao-titulo">Motor de Simulação de Monte Carlo</p>
+            <p class="estacao-meta">Sprint 3 &middot; peso 3</p>
+            <p class="estacao-aula">Aulas 03 e 04 &middot; review 19/11</p>
+          </li>
+          <li class="esteira-passagem entrada" style="--atraso: 1.65s"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#arrow_forward"></use></svg><span>10.000 carteiras</span></li>
+          <li class="estacao entrada" style="--atraso: 1.65s">
+            <span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A4</span></span>
+            <p class="estacao-titulo">Otimizador de Carteira com Fronteira Eficiente</p>
+            <p class="estacao-meta">Sprints 3 e 4 &middot; peso 3</p>
+            <p class="estacao-aula">Aulas 04 e 05 &middot; review 04/12</p>
+          </li>
+          <li class="esteira-passagem entrada" style="--atraso: 2.10s"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#arrow_forward"></use></svg><span>carteiras ótimas</span></li>
+          <li class="estacao entrada" style="--atraso: 2.10s">
+            <span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A5</span></span>
+            <p class="estacao-titulo">Simulador Interativo integrado à interface e Interpretação por LLM</p>
+            <p class="estacao-meta">Sprint 5 &middot; peso 2</p>
+            <p class="estacao-aula">Aula 06 &middot; review 18/12</p>
+          </li>
+        </ol>
+        <div class="faixa-nota entrada" style="--atraso: 2.6s">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#conveyor_belt"></use></svg>
+          <p>Cada artefato importa o anterior em vez de reescrevê-lo, e o A5 roda o pipeline dos quatro primeiros por uma API. Pesos da Adalove; Ponderadas individuais de 3 pontos nos autoestudos das Aulas 03 (10/11) e 05 (01/12).</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">7</p>
+        </div>
+      </section>
+
+      <!-- 8 -->
+      <section class="content-slide" id="entregas-comum">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Barema comum aos cinco artefatos</h2>
+        </div>
+        <div class="barema-barra entrada" role="img" aria-label="Barema: ferramenta 65%, especificação e documentação 15%, ADRs 20%">
+          <span class="barema-ferramenta" style="--peso: 65"><strong>65%</strong> ferramenta</span>
+          <span class="barema-spec" style="--peso: 15"><strong>15%</strong> SPEC</span>
+          <span class="barema-adr" style="--peso: 20"><strong>20%</strong> ADRs</span>
+        </div>
+        <table class="tabela-leitura tabela-barema">
+          <thead><tr><th>Dimensão</th><th>Peso</th><th>Nota</th><th>O que se entrega em todo artefato</th></tr></thead>
+          <tbody>
+            <tr class="entrada" style="--atraso: 0.5s"><td>Ferramenta funcionando</td><td>65%</td><td>grupo</td><td>os critérios próprios de cada artefato, nos próximos slides</td></tr>
+            <tr class="entrada" style="--atraso: 0.8s"><td>Especificação e documentação</td><td>15%</td><td>grupo</td><td>SPEC.md escrito antes de codar, com objetivo, escopo, interfaces e plano de testes com casos-limite e um caso com os dados do grupo; README com instruções de execução; docstrings nas funções principais</td></tr>
+            <tr class="entrada linha-destaque" style="--atraso: 1.1s"><td>ADRs</td><td>20%</td><td>individual</td><td>as decisões da sprint em <code>/docs/adr/</code>, no modelo do curso, avaliadas aluno a aluno pela autoria dos commits</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota entrada" style="--atraso: 1.4s">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#person"></use></svg>
+          <p>Os 20% de ADRs são nota individual, lida pela autoria dos commits: dois integrantes do mesmo grupo podem ter notas diferentes no mesmo artefato.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">8</p>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="content-slide slide-artefato" id="artefato-a1">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A1 &middot; Coletor e Processador de Dados de Mercado</h2>
+        </div>
+        <ol class="esteira esteira-mini" aria-label="Esteira dos cinco artefatos">
+            <li class="estacao estacao-atual"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A1</span></span><span class="estacao-curto">Coletor de dados</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A2</span></span><span class="estacao-curto">Risco e retorno</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A3</span></span><span class="estacao-curto">Monte Carlo</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A4</span></span><span class="estacao-curto">Otimizador</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A5</span></span><span class="estacao-curto">Simulador com LLM</span></li>
+        </ol>
+        <div class="artefato-corpo">
+          <div class="artefato-fluxo">
+            <div class="fluxo-ponta entrada" style="--atraso: 0.2s">
+              <p class="fluxo-rotulo">Recebe</p>
+              <p>Lista de tickers e intervalo de datas, com os preços do Yahoo Finance via yfinance</p>
+            </div>
+            <div class="fluxo-artefato entrada" style="--atraso: 0.5s">
+              <span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A1</span></span>
+              <p>Script ou notebook que busca os preços históricos da cesta, trata as falhas do provedor e devolve um DataFrame padronizado de retornos diários.</p>
+            </div>
+            <div class="fluxo-ponta entrada" style="--atraso: 0.8s">
+              <p class="fluxo-rotulo">Entrega</p>
+              <p>DataFrame de retornos diários sem nulos, com índice de datas consistente</p>
+            </div>
+          </div>
+          <table class="tabela-leitura tabela-criterios entrada" style="--atraso: 1.0s">
+            <thead><tr><th>Critério do barema</th><th>Peso</th></tr></thead>
+            <tbody>
+            <tr><td>Pipeline funcional</td><td>25%</td></tr>
+            <tr><td>Tratamento de dados</td><td>20%</td></tr>
+            <tr><td>Relatório descritivo</td><td>10%</td></tr>
+            <tr><td>Reprodutibilidade</td><td>10%</td></tr>
+            <tr class="linha-comum"><td>Especificação e documentação, e ADRs</td><td>35%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#event"></use></svg>
+          <p><strong>Sprint 1, peso 3.</strong> Review e entrega na sexta, 23/10/2026, até 23h59. Fora do escopo: interface gráfica, modelo de previsão de preços e cobertura de dezenas de ativos.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">9</p>
+        </div>
+      </section>
+
+      <!-- 10 -->
+      <section class="content-slide slide-artefato" id="artefato-a2">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A2 &middot; Módulo de Análise de Risco e Retorno Individual</h2>
+        </div>
+        <ol class="esteira esteira-mini" aria-label="Esteira dos cinco artefatos">
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A1</span></span><span class="estacao-curto">Coletor de dados</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao estacao-atual"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A2</span></span><span class="estacao-curto">Risco e retorno</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A3</span></span><span class="estacao-curto">Monte Carlo</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A4</span></span><span class="estacao-curto">Otimizador</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A5</span></span><span class="estacao-curto">Simulador com LLM</span></li>
+        </ol>
+        <div class="artefato-corpo">
+          <div class="artefato-fluxo">
+            <div class="fluxo-ponta entrada" style="--atraso: 0.2s">
+              <p class="fluxo-rotulo">Recebe</p>
+              <p>O DataFrame de retornos diários do A1</p>
+            </div>
+            <div class="fluxo-artefato entrada" style="--atraso: 0.5s">
+              <span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A2</span></span>
+              <p>Funções Python que calculam as métricas de cada ativo isoladamente e geram as visualizações que tornam essas métricas interpretáveis.</p>
+            </div>
+            <div class="fluxo-ponta entrada" style="--atraso: 0.8s">
+              <p class="fluxo-rotulo">Entrega</p>
+              <p>Retorno e volatilidade anualizados por 252, correlação e matriz de covariância anualizada</p>
+            </div>
+          </div>
+          <table class="tabela-leitura tabela-criterios entrada" style="--atraso: 1.0s">
+            <thead><tr><th>Critério do barema</th><th>Peso</th></tr></thead>
+            <tbody>
+            <tr><td>Corretude das métricas</td><td>30%</td></tr>
+            <tr><td>Visualizações interpretáveis</td><td>15%</td></tr>
+            <tr><td>Leitura analítica</td><td>15%</td></tr>
+            <tr><td>Reutilização</td><td>5%</td></tr>
+            <tr class="linha-comum"><td>Especificação e documentação, e ADRs</td><td>35%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#event"></use></svg>
+          <p><strong>Sprint 2, peso 3.</strong> Review e entrega na sexta, 06/11/2026, até 23h59. Fora do escopo: otimização de carteira, simulação de carteiras e análise fundamentalista.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">10</p>
+        </div>
+      </section>
+
+      <!-- 11 -->
+      <section class="content-slide slide-artefato" id="artefato-a3">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A3 &middot; Motor de Simulação de Monte Carlo</h2>
+        </div>
+        <ol class="esteira esteira-mini" aria-label="Esteira dos cinco artefatos">
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A1</span></span><span class="estacao-curto">Coletor de dados</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A2</span></span><span class="estacao-curto">Risco e retorno</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao estacao-atual"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A3</span></span><span class="estacao-curto">Monte Carlo</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A4</span></span><span class="estacao-curto">Otimizador</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A5</span></span><span class="estacao-curto">Simulador com LLM</span></li>
+        </ol>
+        <div class="artefato-corpo">
+          <div class="artefato-fluxo">
+            <div class="fluxo-ponta entrada" style="--atraso: 0.2s">
+              <p class="fluxo-rotulo">Recebe</p>
+              <p>Retornos esperados e matriz de covariância do A2</p>
+            </div>
+            <div class="fluxo-artefato entrada" style="--atraso: 0.5s">
+              <span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A3</span></span>
+              <p>Script vetorizado com NumPy que gera 10.000 carteiras com pesos aleatórios e mapeia o espaço risco-retorno resultante.</p>
+            </div>
+            <div class="fluxo-ponta entrada" style="--atraso: 0.8s">
+              <p class="fluxo-rotulo">Entrega</p>
+              <p>10.000 carteiras com retorno, volatilidade e Sharpe, na nuvem colorida por Sharpe</p>
+            </div>
+          </div>
+          <table class="tabela-leitura tabela-criterios entrada" style="--atraso: 1.0s">
+            <thead><tr><th>Critério do barema</th><th>Peso</th></tr></thead>
+            <tbody>
+            <tr><td>Corretude da simulação</td><td>30%</td></tr>
+            <tr><td>Desempenho: 2 a 20 ativos em menos de 10 s</td><td>10%</td></tr>
+            <tr><td>Qualidade do gráfico</td><td>10%</td></tr>
+            <tr><td>Leitura analítica</td><td>15%</td></tr>
+            <tr class="linha-comum"><td>Especificação e documentação, e ADRs</td><td>35%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#event"></use></svg>
+          <p><strong>Sprint 3, peso 3.</strong> Review na quinta, 19/11/2026; entrega na sexta, 20/11/2026, até 23h59. Fora do escopo: otimização formal e tratar a melhor carteira sorteada como a carteira ótima.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">11</p>
+        </div>
+      </section>
+
+      <!-- 12 -->
+      <section class="content-slide slide-artefato" id="artefato-a4">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A4 &middot; Otimizador de Carteira com Fronteira Eficiente</h2>
+        </div>
+        <ol class="esteira esteira-mini" aria-label="Esteira dos cinco artefatos">
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A1</span></span><span class="estacao-curto">Coletor de dados</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A2</span></span><span class="estacao-curto">Risco e retorno</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A3</span></span><span class="estacao-curto">Monte Carlo</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao estacao-atual"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A4</span></span><span class="estacao-curto">Otimizador</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A5</span></span><span class="estacao-curto">Simulador com LLM</span></li>
+        </ol>
+        <div class="artefato-corpo">
+          <div class="artefato-fluxo">
+            <div class="fluxo-ponta entrada" style="--atraso: 0.2s">
+              <p class="fluxo-rotulo">Recebe</p>
+              <p>A matriz de covariância do A2 e a nuvem de carteiras do A3</p>
+            </div>
+            <div class="fluxo-artefato entrada" style="--atraso: 0.5s">
+              <span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A4</span></span>
+              <p>Módulo que encontra as carteiras ótimas com SLSQP, sem venda a descoberto, e traça a fronteira eficiente sobre a nuvem do A3.</p>
+            </div>
+            <div class="fluxo-ponta entrada" style="--atraso: 0.8s">
+              <p class="fluxo-rotulo">Entrega</p>
+              <p>Carteiras de variância mínima e de máximo Sharpe e a fronteira de 50 pontos</p>
+            </div>
+          </div>
+          <table class="tabela-leitura tabela-criterios entrada" style="--atraso: 1.0s">
+            <thead><tr><th>Critério do barema</th><th>Peso</th></tr></thead>
+            <tbody>
+            <tr><td>Corretude da otimização: até 15 ativos em menos de 5 s</td><td>30%</td></tr>
+            <tr><td>Fronteira completa</td><td>15%</td></tr>
+            <tr><td>Leitura analítica</td><td>10%</td></tr>
+            <tr><td>Integração</td><td>10%</td></tr>
+            <tr class="linha-comum"><td>Especificação e documentação, e ADRs</td><td>35%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#event"></use></svg>
+          <p><strong>Sprints 3 e 4, peso 3.</strong> Review e entrega na sexta, 04/12/2026, até 23h59. Fora do escopo: short selling, alavancagem, custos de transação e modelos além de média-variância.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">12</p>
+        </div>
+      </section>
+
+      <!-- 13 -->
+      <section class="content-slide slide-artefato" id="artefato-a5">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A5 &middot; Simulador com Interpretação por LLM</h2>
+        </div>
+        <ol class="esteira esteira-mini" aria-label="Esteira dos cinco artefatos">
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A1</span></span><span class="estacao-curto">Coletor de dados</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A2</span></span><span class="estacao-curto">Risco e retorno</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A3</span></span><span class="estacao-curto">Monte Carlo</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A4</span></span><span class="estacao-curto">Otimizador</span></li>
+            <li class="esteira-passagem" aria-hidden="true"></li>
+            <li class="estacao estacao-atual"><span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A5</span></span><span class="estacao-curto">Simulador com LLM</span></li>
+        </ol>
+        <div class="artefato-corpo">
+          <div class="artefato-fluxo">
+            <div class="fluxo-ponta entrada" style="--atraso: 0.2s">
+              <p class="fluxo-rotulo">Recebe</p>
+              <p>Os módulos do A1 ao A4, importados pela API sem reescrita</p>
+            </div>
+            <div class="fluxo-artefato entrada" style="--atraso: 0.5s">
+              <span class="estacao-selo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg><span>A5</span></span>
+              <p>Aplicação em duas camadas: API em FastAPI que expõe os quatro artefatos anteriores e interface em React que o gestor opera sem programar.</p>
+            </div>
+            <div class="fluxo-ponta entrada" style="--atraso: 0.8s">
+              <p class="fluxo-rotulo">Entrega</p>
+              <p>O simulador que o gestor do parceiro opera sozinho, com interpretação em português e exportação em CSV</p>
+            </div>
+          </div>
+          <table class="tabela-leitura tabela-criterios entrada" style="--atraso: 1.0s">
+            <thead><tr><th>Critério do barema</th><th>Peso</th></tr></thead>
+            <tbody>
+            <tr><td>Operabilidade por não programador</td><td>25%</td></tr>
+            <tr><td>Integração do pipeline</td><td>10%</td></tr>
+            <tr><td>Qualidade da interpretação por LLM</td><td>25%</td></tr>
+            <tr><td>Exportação e estabilidade</td><td>5%</td></tr>
+            <tr class="linha-comum"><td>Especificação e documentação, e ADRs</td><td>35%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#event"></use></svg>
+          <p><strong>Sprint 5, peso 2.</strong> Review na sexta, 18/12/2026, que fecha o módulo. Fora do escopo: deploy com autenticação, design visual elaborado e recomendação de investimento sem ressalvas.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">13</p>
+        </div>
+      </section>
+
+      <!-- 14 -->
       <section class="quiz-slide" id="preparo">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -280,47 +613,244 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; autoestudos [2] [3]</p>
-          <p class="footer-page">7</p>
+          <p class="footer-page">14</p>
         </div>
       </section>
 
-      <!-- 8 -->
-      <section class="content-slide" id="fim-exclusivo">
+      <!-- 15 -->
+      <section class="content-slide slide-calendario" id="fim-exclusivo">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
           <h2>O end exclusivo devolve 20 dos 21 pregões</h2>
         </div>
-        <div class="numero-destaque">
-          <p class="numero-destaque-valor">20</p>
-          <div class="numero-destaque-texto">
-            <p>Agosto de 2026 teve 21 pregões no snapshot. O <code>end</code> do yfinance é exclusivo: com <code>end="2026-08-31"</code>, o pregão de segunda-feira, 31/08, fica de fora.</p>
-            <p>O coletor do Bloco 4 soma um dia ao fim pedido para incluir o último pregão.</p>
+        <div class="calendario-contagem" data-calendario>
+          <div class="calendario">
+            <p class="calendario-mes">Agosto de 2026 <code>end="2026-08-31"</code></p>
+            <div class="calendario-grade">
+            <span class="cal-sem">seg</span>
+            <span class="cal-sem">ter</span>
+            <span class="cal-sem">qua</span>
+            <span class="cal-sem">qui</span>
+            <span class="cal-sem">sex</span>
+            <span class="cal-sem">sáb</span>
+            <span class="cal-sem">dom</span>
+            <span class="cal-vazio"></span>
+            <span class="cal-vazio"></span>
+            <span class="cal-vazio"></span>
+            <span class="cal-vazio"></span>
+            <span class="cal-vazio"></span>
+            <span class="cal-dia" data-dia="1" data-pregao="nao">1</span>
+            <span class="cal-dia" data-dia="2" data-pregao="nao">2</span>
+            <span class="cal-dia" data-dia="3" data-pregao="sim">3</span>
+            <span class="cal-dia" data-dia="4" data-pregao="sim">4</span>
+            <span class="cal-dia" data-dia="5" data-pregao="sim">5</span>
+            <span class="cal-dia" data-dia="6" data-pregao="sim">6</span>
+            <span class="cal-dia" data-dia="7" data-pregao="sim">7</span>
+            <span class="cal-dia" data-dia="8" data-pregao="nao">8</span>
+            <span class="cal-dia" data-dia="9" data-pregao="nao">9</span>
+            <span class="cal-dia" data-dia="10" data-pregao="sim">10</span>
+            <span class="cal-dia" data-dia="11" data-pregao="sim">11</span>
+            <span class="cal-dia" data-dia="12" data-pregao="sim">12</span>
+            <span class="cal-dia" data-dia="13" data-pregao="sim">13</span>
+            <span class="cal-dia" data-dia="14" data-pregao="sim">14</span>
+            <span class="cal-dia" data-dia="15" data-pregao="nao">15</span>
+            <span class="cal-dia" data-dia="16" data-pregao="nao">16</span>
+            <span class="cal-dia" data-dia="17" data-pregao="sim">17</span>
+            <span class="cal-dia" data-dia="18" data-pregao="sim">18</span>
+            <span class="cal-dia" data-dia="19" data-pregao="sim">19</span>
+            <span class="cal-dia" data-dia="20" data-pregao="sim">20</span>
+            <span class="cal-dia" data-dia="21" data-pregao="sim">21</span>
+            <span class="cal-dia" data-dia="22" data-pregao="nao">22</span>
+            <span class="cal-dia" data-dia="23" data-pregao="nao">23</span>
+            <span class="cal-dia" data-dia="24" data-pregao="sim">24</span>
+            <span class="cal-dia" data-dia="25" data-pregao="sim">25</span>
+            <span class="cal-dia" data-dia="26" data-pregao="sim">26</span>
+            <span class="cal-dia" data-dia="27" data-pregao="sim">27</span>
+            <span class="cal-dia" data-dia="28" data-pregao="sim">28</span>
+            <span class="cal-dia" data-dia="29" data-pregao="nao">29</span>
+            <span class="cal-dia" data-dia="30" data-pregao="nao">30</span>
+            <span class="cal-dia cal-end" data-dia="31" data-pregao="sim">31</span>
+            </div>
+            <p class="calendario-explica" aria-live="polite">Clique em cada alternativa para contar no calendário.</p>
           </div>
+          <ol class="contagens">
+          <li>
+            <button class="contagem" type="button" data-dias="todos" data-exclui-end="nao"
+                    data-explica="Conta todos os dias do mês. O DataFrame tem uma linha por pregão, e fim de semana não tem pregão.">
+              <span class="contagem-valor" data-final="31">31</span>
+              <span class="contagem-corpo">
+                <span class="contagem-regra">dias corridos de agosto</span>
+                <span class="contagem-trilho" aria-hidden="true"></span>
+              </span>
+            </button>
+          </li>
+          <li>
+            <button class="contagem" type="button" data-dias="todos" data-exclui-end="sim"
+                    data-explica="Acerta o end exclusivo e erra a unidade: sábado e domingo não viram linha.">
+              <span class="contagem-valor" data-final="30">30</span>
+              <span class="contagem-corpo">
+                <span class="contagem-regra">dias corridos até a véspera do end</span>
+                <span class="contagem-trilho" aria-hidden="true"></span>
+              </span>
+            </button>
+          </li>
+          <li>
+            <button class="contagem" type="button" data-dias="pregoes" data-exclui-end="nao"
+                    data-explica="Conta os pregões certos e esquece que o end deixa o último dia de fora.">
+              <span class="contagem-valor" data-final="21">21</span>
+              <span class="contagem-corpo">
+                <span class="contagem-regra">pregões, contando o dia do end</span>
+                <span class="contagem-trilho" aria-hidden="true"></span>
+              </span>
+            </button>
+          </li>
+          <li>
+            <button class="contagem contagem-certa" type="button" data-dias="pregoes" data-exclui-end="sim"
+                    data-explica="Uma linha por pregão, de 03/08 a 28/08. A segunda-feira, 31/08, teve pregão e fica de fora sem aviso.">
+              <span class="contagem-valor" data-final="20">20</span>
+              <span class="contagem-corpo">
+                <span class="contagem-regra">pregões antes do end</span>
+                <span class="contagem-trilho" aria-hidden="true"></span>
+              </span>
+            </button>
+          </li>
+          </ol>
         </div>
-        <table class="tabela-leitura">
-          <thead><tr><th>Alternativa errada</th><th>Conta que a produz</th></tr></thead>
-          <tbody>
-            <tr><td>31</td><td>contar os dias corridos de agosto</td></tr>
-            <tr><td>30</td><td>contar os dias corridos até a véspera do <code>end</code></td></tr>
-            <tr><td>21</td><td>contar os pregões e tratar o <code>end</code> como inclusivo</td></tr>
-          </tbody>
-        </table>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#build"></use></svg>
+          <p>O yfinance não avisa que deixou 31/08 de fora. O coletor do Bloco 4 soma um dia ao fim pedido para incluir o último pregão.</p>
+        </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1] [4]</p>
-          <p class="footer-page">8</p>
+          <p class="footer-page">15</p>
         </div>
       </section>
 
-      <!-- 9 -->
+      <!-- 16 -->
       <section class="section-slide">
         <div class="accent-bar"></div>
         <h2>Visões do mesmo preço</h2>
         <h3>Negociado, Close e Adj Close respondem a perguntas diferentes</h3>
       </section>
 
-      <!-- 10 -->
+      <!-- 17 -->
+      <section class="content-slide" id="eventos">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Eventos corporativos mudam o número de ações</h2>
+        </div>
+        <div class="eventos-desenho">
+          <div class="evento-linha evento-grupamento">
+            <p class="evento-nome">Grupamento de 10 para 1</p>
+            <div class="lote lote-origem">
+              <span class="lote-acao" style="--i: 0"><span>R$ 2</span></span>
+              <span class="lote-acao" style="--i: 1"><span>R$ 2</span></span>
+              <span class="lote-acao" style="--i: 2"><span>R$ 2</span></span>
+              <span class="lote-acao" style="--i: 3"><span>R$ 2</span></span>
+              <span class="lote-acao" style="--i: 4"><span>R$ 2</span></span>
+              <span class="lote-acao" style="--i: 5"><span>R$ 2</span></span>
+              <span class="lote-acao" style="--i: 6"><span>R$ 2</span></span>
+              <span class="lote-acao" style="--i: 7"><span>R$ 2</span></span>
+              <span class="lote-acao" style="--i: 8"><span>R$ 2</span></span>
+              <span class="lote-acao" style="--i: 9"><span>R$ 2</span></span>
+              <span class="lote-acao lote-voo" style="--i: 0"><span>R$ 2</span></span>
+              <span class="lote-acao lote-voo" style="--i: 1"><span>R$ 2</span></span>
+              <span class="lote-acao lote-voo" style="--i: 2"><span>R$ 2</span></span>
+              <span class="lote-acao lote-voo" style="--i: 3"><span>R$ 2</span></span>
+              <span class="lote-acao lote-voo" style="--i: 4"><span>R$ 2</span></span>
+              <span class="lote-acao lote-voo" style="--i: 5"><span>R$ 2</span></span>
+              <span class="lote-acao lote-voo" style="--i: 6"><span>R$ 2</span></span>
+              <span class="lote-acao lote-voo" style="--i: 7"><span>R$ 2</span></span>
+              <span class="lote-acao lote-voo" style="--i: 8"><span>R$ 2</span></span>
+              <span class="lote-acao lote-voo" style="--i: 9"><span>R$ 2</span></span>
+            </div>
+            <svg class="icone evento-seta" aria-hidden="true"><use href="../assets/icons/icones.svg#arrow_forward"></use></svg>
+            <div class="lote lote-destino">
+              <span class="lote-acao lote-grande"><span>R$ 20</span></span>
+            </div>
+            <p class="evento-conta">10 &times; R$ 2 = 1 &times; R$ 20</p>
+          </div>
+          <div class="evento-linha evento-desdobramento">
+            <p class="evento-nome">Desdobramento de 1 para 3</p>
+            <div class="lote lote-origem">
+              <span class="lote-acao lote-grande lote-grande-30"><span>R$ 30</span></span>
+            </div>
+            <svg class="icone evento-seta" aria-hidden="true"><use href="../assets/icons/icones.svg#arrow_forward"></use></svg>
+            <div class="lote lote-destino">
+              <span class="lote-acao lote-media" style="--i: 0"><span>R$ 10</span></span>
+              <span class="lote-acao lote-media" style="--i: 1"><span>R$ 10</span></span>
+              <span class="lote-acao lote-media" style="--i: 2"><span>R$ 10</span></span>
+            </div>
+            <p class="evento-conta">1 &times; R$ 30 = 3 &times; R$ 10</p>
+          </div>
+        </div>
+        <div class="faixa-nota entrada" style="--atraso: 2.4s">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#balance"></use></svg>
+          <p>O valor do lote fica igual nos dois eventos. Muda o número de ações e, por isso, o preço que aparece na tela.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">17</p>
+        </div>
+      </section>
+
+      <!-- 18 -->
+      <section class="content-slide" id="visoes">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Três visões do mesmo preço</h2>
+        </div>
+        <div class="visoes-desenho">
+          <svg class="visoes-grafico" viewBox="0 0 700 380" role="img"
+               aria-label="Esquema: no grupamento, o preço negociado salta dez vezes; o Close e o Adj Close seguem contínuos">
+            <line class="visoes-eixo" x1="40" y1="350" x2="680" y2="350"></line>
+            <line class="visoes-evento" x1="430" y1="40" x2="430" y2="350"></line>
+            <text class="visoes-evento-rotulo" x="440" y="58">grupamento de 10 para 1</text>
+            <text class="visoes-eixo-rotulo" x="40" y="374">tempo</text>
+            <path class="visoes-linha linha-adj" pathLength="1"
+                  d="M40,225 C120,205 180,235 260,200 S380,170 430,180 S560,150 680,114"></path>
+            <path class="visoes-linha linha-close" pathLength="1"
+                  d="M40,130 C120,110 180,150 260,120 S380,100 430,125 C480,150 560,140 680,110"></path>
+            <path class="visoes-linha linha-negociado" pathLength="1"
+                  d="M40,312 C120,306 180,316 260,308 S380,302 430,310 L430,125 C480,150 560,140 680,110"></path>
+            <g class="visoes-salto">
+              <rect x="446" y="232" width="250" height="62"></rect>
+              <text x="458" y="258">a tela mostra um salto de 10 vezes</text>
+              <text x="458" y="282">e a empresa vale o mesmo</text>
+            </g>
+          </svg>
+          <ol class="visoes-legenda">
+            <li class="legenda-negociado entrada" style="--atraso: 1.6s">
+              <p class="legenda-nome">Negociado</p>
+              <p>O preço que apareceu na tela do pregão naquele dia. Salta em todo desdobramento e grupamento.</p>
+            </li>
+            <li class="legenda-close entrada" style="--atraso: 0.4s">
+              <p class="legenda-nome">Close</p>
+              <p>Corrigido por desdobramento e grupamento. Mostra quanto rendeu quem comprou e segurou.</p>
+            </li>
+            <li class="legenda-adj entrada" style="--atraso: 1.0s">
+              <p class="legenda-nome">Adj Close</p>
+              <p>Corrige também os proventos, como se cada um fosse reinvestido. É a base do otimizador.</p>
+            </li>
+          </ol>
+        </div>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#quiz"></use></svg>
+          <p>Qual das três visões responde quanto R$ 1.000 aplicados em 2019 viraram?</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">18</p>
+        </div>
+      </section>
+
+      <!-- 19 -->
       <section class="content-slide" id="mglu3">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -338,37 +868,58 @@
         </video>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
-          <p class="footer-page">10</p>
+          <p class="footer-page">19</p>
         </div>
       </section>
 
-      <!-- 11 -->
-      <section class="content-slide" id="visoes">
+      <!-- 20 -->
+      <section class="content-slide" id="reconstruir">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Pergunta de negócio de cada visão de preço</h2>
+          <h2>O preço negociado sai do Close e dos eventos</h2>
         </div>
-        <table class="tabela-leitura">
-          <thead><tr><th>Visão</th><th>Como é obtida</th><th>Pergunta de negócio que responde</th></tr></thead>
-          <tbody>
-            <tr><td>Negociado</td><td>Close multiplicado pelos fatores dos eventos posteriores à data</td><td>Que preço apareceu na tela do pregão naquele dia?</td></tr>
-            <tr><td>Close</td><td>Fechamento já dividido por desdobramento, grupamento e bonificação</td><td>Quanto rendeu quem comprou e segurou, sem reinvestir proventos?</td></tr>
-            <tr class="linha-destaque"><td>Adj Close</td><td>Close com os proventos posteriores também descontados</td><td>Quanto rendeu quem reinvestiu cada provento? Base do risco e do retorno do otimizador</td></tr>
-          </tbody>
-        </table>
+        <div class="reconstruir">
+          <pre class="code-compact"><code>eventos = ler_csv("eventos_desdobramento.csv", parse_dates=["data"])
+
+def preco_negociado(fechamento, eventos, ticker):
+    """Close multiplicado pelos fatores dos eventos posteriores a cada data."""
+    serie = fechamento[ticker].dropna()
+    fator = np.ones(len(serie))
+    do_ticker = eventos[eventos["ticker"] == ticker]
+    for data, f in zip(do_ticker["data"], do_ticker["fator"]):
+        fator = fator * np.where(serie.index &lt; data, f, 1.0)
+    return serie * fator</code></pre>
+          <ol class="reconstruir-passos">
+            <li class="entrada" style="--atraso: 0.3s">
+              <span class="passo-numero">1</span>
+              <div><p class="passo-titulo">O evento é uma linha do CSV</p>
+              <p><code>B3SA3, 2021-05-17, 3.0</code></p></div>
+            </li>
+            <li class="entrada" style="--atraso: 0.8s">
+              <span class="passo-numero">2</span>
+              <div><p class="passo-titulo">Antes da data, o Close vezes o fator</p>
+              <p>cada ação de antes valia o preço de 3 ações de depois</p></div>
+            </li>
+            <li class="entrada" style="--atraso: 1.3s">
+              <span class="passo-numero">3</span>
+              <div><p class="passo-titulo">O widget compara as duas séries no dia</p>
+              <p>o negociado cai no desdobramento, o Close segue a variação do mercado</p></div>
+            </li>
+          </ol>
+        </div>
         <div class="faixa-nota">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#quiz"></use></svg>
-          <p>Qual das três visões responde quanto R$ 1.000 aplicados em 2019 viraram?</p>
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#code"></use></svg>
+          <p>Mesma função da seção 3 do notebook. O A1 calcula retornos sobre o Adj Close; o negociado serve para conferir onde houve evento.</p>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">11</p>
+          <p class="footer-page">20</p>
         </div>
       </section>
 
-      <!-- 12 -->
+      <!-- 21 -->
       <section class="content-slide" id="widget-visoes">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -381,11 +932,11 @@
         <p><strong>E a WEGE3 em 28/04/2021?</strong> Cada dupla prevê a queda do negociado e a do Close antes do clique.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
-          <p class="footer-page">12</p>
+          <p class="footer-page">21</p>
         </div>
       </section>
 
-      <!-- 13 -->
+      <!-- 22 -->
       <section class="content-slide" id="escolha-visoes">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -433,11 +984,11 @@
         <p>Cada dupla decide antes do clique. A sala vota em cada item.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
-          <p class="footer-page">13</p>
+          <p class="footer-page">22</p>
         </div>
       </section>
 
-      <!-- 14 -->
+      <!-- 23 -->
       <section class="content-slide" id="proventos">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -463,18 +1014,18 @@
         </table>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; janela 02/01/2019 a 31/08/2026 [1]</p>
-          <p class="footer-page">14</p>
+          <p class="footer-page">23</p>
         </div>
       </section>
 
-      <!-- 15 -->
+      <!-- 24 -->
       <section class="section-slide">
         <div class="accent-bar"></div>
         <h2>Um coletor que outra pessoa consegue rodar</h2>
         <h3>Parâmetros, queda para o snapshot e fim exclusivo</h3>
       </section>
 
-      <!-- 16 -->
+      <!-- 25 -->
       <section class="content-slide" id="coletar">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -482,39 +1033,140 @@
           <div class="accent-bar"></div>
           <h2>A função coletar cai para o snapshot sem rede</h2>
         </div>
-        <div class="side-by-side">
-          <pre class="code-compact" style="max-height: 380px"><code>def coletar(tickers, inicio, fim):
-    if os.environ.get("M08_OFFLINE") != "1":
-        try:
-            import yfinance as yf
-            fim_exclusivo = (pd.Timestamp(fim)
-                             + pd.Timedelta(days=1))
-            bruto = yf.download(
-                [t + ".SA" for t in tickers],
-                start=inicio, end=fim_exclusivo,
-                auto_adjust=False, timeout=20)
-            if not bruto.empty:
-                return (bruto["Close"], bruto["Adj Close"],
-                        "yfinance, ao vivo")
-        except Exception as erro:
-            print("seguindo com o snapshot:", erro)
-    fech = ler_csv("precos_fechamento.csv")
-    ajus = ler_csv("precos_ajustados.csv")
-    return (fech.loc[inicio:fim, tickers],
-            ajus.loc[inicio:fim, tickers], "snapshot de dados/")</code></pre>
-          <table class="tabela-leitura">
-            <tr><td>Parâmetros</td><td>tickers e datas entram como argumento: a mesma função serve a cesta de qualquer grupo</td></tr>
-            <tr><td>Queda</td><td>sem rede ou com <code>M08_OFFLINE=1</code>, lê o snapshot versionado e termina</td></tr>
-            <tr><td>Fim exclusivo</td><td>o <code>end</code> do yfinance não inclui o dia: soma-se um dia para pegar o último pregão</td></tr>
-          </table>
+        <svg class="fluxo-coletor" viewBox="0 0 1168 420" role="img"
+             aria-label="Fluxo do coletar: com rede, yfinance ao vivo; sem rede, com M08_OFFLINE=1 ou com erro, snapshot de dados/; as duas saídas devolvem a mesma tabela e a origem">
+          <path class="fluxo-via via-entrada" pathLength="1" d="M200,210 L262,210"></path>
+          <path class="fluxo-via via-vivo" pathLength="1" d="M482,190 L500,190 L500,95 L640,95"></path>
+          <path class="fluxo-via via-snap" pathLength="1" d="M482,230 L500,230 L500,325 L640,325"></path>
+          <path class="fluxo-via via-erro" pathLength="1" d="M760,150 L760,270"></path>
+          <path class="fluxo-via via-saida-vivo" pathLength="1" d="M880,95 L900,95 L900,190 L920,190"></path>
+          <path class="fluxo-via via-saida-snap" pathLength="1" d="M880,325 L900,325 L900,230 L920,230"></path>
+          <text class="fluxo-rotulo" x="512" y="82">rede liberada</text>
+          <text class="fluxo-rotulo" x="512" y="352">M08_OFFLINE=1</text>
+          <text class="fluxo-rotulo fluxo-rotulo-erro" x="772" y="216">erro ou vazio</text>
+          <g class="fluxo-caixa caixa-entrada"><rect x="0" y="160" width="200" height="100"></rect>
+            <text class="fluxo-titulo" x="20" y="200">Entrada</text><text x="20" y="232">tickers, início, fim</text></g>
+          <g class="fluxo-caixa caixa-decisao"><rect x="262" y="160" width="220" height="100"></rect>
+            <text class="fluxo-titulo" x="282" y="200">Pode ir à rede?</text><text x="282" y="232">variável M08_OFFLINE</text></g>
+          <g class="fluxo-caixa caixa-vivo"><rect x="640" y="40" width="240" height="110"></rect>
+            <text class="fluxo-titulo" x="660" y="80">yfinance ao vivo</text><text x="660" y="110">Close e Adj Close</text><text x="660" y="134">fim + 1 dia</text></g>
+          <g class="fluxo-caixa caixa-snap"><rect x="640" y="270" width="240" height="110"></rect>
+            <text class="fluxo-titulo" x="660" y="310">snapshot de dados/</text><text x="660" y="340">CSV versionado</text><text x="660" y="364">no repositório</text></g>
+          <g class="fluxo-caixa caixa-saida"><rect x="920" y="150" width="248" height="120"></rect>
+            <text class="fluxo-titulo" x="940" y="190">Mesma tabela</text><text x="940" y="222">fechamento, ajustado</text><text x="940" y="250">e a origem dos dados</text></g>
+          <rect class="fluxo-pacote pacote-vivo" width="16" height="16" x="-8" y="-8"></rect>
+          <rect class="fluxo-pacote pacote-snap" width="16" height="16" x="-8" y="-8"></rect>
+        </svg>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#sync"></use></svg>
+          <p>A mesma chamada roda no Colab, no computador do avaliador e no CI. Muda só a origem impressa, e os números do snapshot são sempre os mesmos.</p>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [4]</p>
-          <p class="footer-page">16</p>
+          <p class="footer-page">25</p>
         </div>
       </section>
 
-      <!-- 17 -->
+      <!-- 26 -->
+      <section class="content-slide" id="coletar-codigo">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A função coletar, linha a linha</h2>
+        </div>
+        <div class="codigo-passos" data-codigo-passos data-intro-titulo="A função inteira, em 37 linhas"
+             data-intro="Avance com a seta: cada passo destaca um trecho, e o código desliza até ele. É a função da seção 2 do notebook.">
+          <div class="codigo-janela"><pre class="codigo-linhas"><code><span class="cl" data-n="1"><span class="cl-n">1</span><span class="tok-kw">def</span> coletar(tickers, inicio, fim):</span><span class="cl" data-n="2"><span class="cl-n">2</span><span class="tok-doc">    """Close e Adj Close dos tickers entre inicio e fim, inclusive.</span></span><span class="cl" data-n="3"><span class="cl-n">3</span><span class="tok-doc"> </span></span><span class="cl" data-n="4"><span class="cl-n">4</span><span class="tok-doc">    Tenta o yfinance ao vivo; sem rede, sem yfinance ou com M08_OFFLINE=1,</span></span><span class="cl" data-n="5"><span class="cl-n">5</span><span class="tok-doc">    lê o snapshot versionado em dados/. Devolve (fechamento, ajustado, origem).</span></span><span class="cl" data-n="6"><span class="cl-n">6</span><span class="tok-doc">    """</span></span><span class="cl" data-n="7"><span class="cl-n">7</span>    <span class="tok-kw">if</span> os.environ.get(<span class="tok-str">"M08_OFFLINE"</span>) != <span class="tok-str">"1"</span>:</span><span class="cl" data-n="8"><span class="cl-n">8</span>        <span class="tok-kw">try</span>:</span><span class="cl" data-n="9"><span class="cl-n">9</span>            <span class="tok-kw">import</span> yfinance <span class="tok-kw">as</span> yf</span><span class="cl" data-n="10"><span class="cl-n">10</span> </span><span class="cl" data-n="11"><span class="cl-n">11</span>            fim_exclusivo = pd.Timestamp(fim) + pd.Timedelta(days=1)</span><span class="cl" data-n="12"><span class="cl-n">12</span>            bruto = yf.download(</span><span class="cl" data-n="13"><span class="cl-n">13</span>                [t + <span class="tok-str">".SA"</span> <span class="tok-kw">for</span> t <span class="tok-kw">in</span> tickers],</span><span class="cl" data-n="14"><span class="cl-n">14</span>                start=inicio,</span><span class="cl" data-n="15"><span class="cl-n">15</span>                end=fim_exclusivo.strftime(<span class="tok-str">"%Y-%m-%d"</span>),</span><span class="cl" data-n="16"><span class="cl-n">16</span>                auto_adjust=<span class="tok-kw">False</span>,</span><span class="cl" data-n="17"><span class="cl-n">17</span>                progress=<span class="tok-kw">False</span>,</span><span class="cl" data-n="18"><span class="cl-n">18</span>                group_by=<span class="tok-str">"column"</span>,</span><span class="cl" data-n="19"><span class="cl-n">19</span>                threads=<span class="tok-kw">False</span>,</span><span class="cl" data-n="20"><span class="cl-n">20</span>                timeout=20,</span><span class="cl" data-n="21"><span class="cl-n">21</span>            )</span><span class="cl" data-n="22"><span class="cl-n">22</span>            <span class="tok-kw">if</span> <span class="tok-kw">not</span> bruto.empty:</span><span class="cl" data-n="23"><span class="cl-n">23</span>                renomear = <span class="tok-kw">lambda</span> coluna: coluna.removesuffix(<span class="tok-str">".SA"</span>)</span><span class="cl" data-n="24"><span class="cl-n">24</span>                fechamento = bruto[<span class="tok-str">"Close"</span>].rename(columns=renomear)[tickers]</span><span class="cl" data-n="25"><span class="cl-n">25</span>                ajustado = bruto[<span class="tok-str">"Adj Close"</span>].rename(columns=renomear)[tickers]</span><span class="cl" data-n="26"><span class="cl-n">26</span>                <span class="tok-kw">return</span> fechamento, ajustado, <span class="tok-str">"yfinance, ao vivo"</span></span><span class="cl" data-n="27"><span class="cl-n">27</span>        <span class="tok-kw">except</span> Exception <span class="tok-kw">as</span> erro:</span><span class="cl" data-n="28"><span class="cl-n">28</span>            print(<span class="tok-str">"coleta ao vivo falhou, seguindo com o snapshot:"</span>,</span><span class="cl" data-n="29"><span class="cl-n">29</span>                  type(erro).__name__)</span><span class="cl" data-n="30"><span class="cl-n">30</span>    fechamento = ler_csv(<span class="tok-str">"precos_fechamento.csv"</span>,</span><span class="cl" data-n="31"><span class="cl-n">31</span>                         index_col=<span class="tok-str">"data"</span>, parse_dates=[<span class="tok-str">"data"</span>])</span><span class="cl" data-n="32"><span class="cl-n">32</span>    ajustado = ler_csv(<span class="tok-str">"precos_ajustados.csv"</span>,</span><span class="cl" data-n="33"><span class="cl-n">33</span>                       index_col=<span class="tok-str">"data"</span>, parse_dates=[<span class="tok-str">"data"</span>])</span><span class="cl" data-n="34"><span class="cl-n">34</span>    periodo = slice(inicio, fim)</span><span class="cl" data-n="35"><span class="cl-n">35</span>    <span class="tok-kw">return</span> (fechamento.loc[periodo, tickers],</span><span class="cl" data-n="36"><span class="cl-n">36</span>            ajustado.loc[periodo, tickers],</span><span class="cl" data-n="37"><span class="cl-n">37</span>            <span class="tok-str">"snapshot de dados/"</span>)</span></code></pre></div>
+          <aside class="codigo-explica">
+            <p class="codigo-contador"></p>
+            <p class="codigo-titulo"></p>
+            <p class="codigo-texto"></p>
+          </aside>
+          <span class="fragment codigo-passo" data-linhas="1" data-titulo="Assinatura" data-texto="tickers, inicio e fim entram como argumento. A mesma função serve a cesta e a janela de qualquer grupo, sem editar código."></span>
+          <span class="fragment codigo-passo" data-linhas="2-6" data-titulo="Docstring" data-texto="O contrato da função em português: o que entra, de onde os dados vêm e o que sai. Docstring nas funções principais é critério do barema."></span>
+          <span class="fragment codigo-passo" data-linhas="7" data-titulo="Interruptor de rede" data-texto="Com M08_OFFLINE=1 a função nem tenta a rede. É assim que o avaliador roda o notebook do zero e recebe sempre os mesmos 1.908 pregões."></span>
+          <span class="fragment codigo-passo" data-linhas="8-9" data-titulo="Import dentro do try" data-texto="Sem o yfinance instalado, o ImportError cai no except e a função segue com o snapshot."></span>
+          <span class="fragment codigo-passo" data-linhas="11" data-titulo="Fim exclusivo" data-texto="O end do yfinance exclui o dia pedido. Somar um dia traz de volta o pregão de 31/08, o mesmo do calendário."></span>
+          <span class="fragment codigo-passo" data-linhas="12-21" data-titulo="Download" data-texto="auto_adjust=False mantém o Close e o Adj Close em colunas separadas. timeout=20 limita a espera quando o provedor não responde."></span>
+          <span class="fragment codigo-passo" data-linhas="22-26" data-titulo="Mesma tabela nas duas origens" data-texto="Tira o .SA e reordena as colunas na ordem pedida: quem chama recebe a mesma tabela, venha da rede ou do snapshot."></span>
+          <span class="fragment codigo-passo" data-linhas="27-29" data-titulo="Queda para o snapshot" data-texto="Qualquer erro na coleta ao vivo vira uma linha impressa, e a execução continua pelo snapshot."></span>
+          <span class="fragment codigo-passo" data-linhas="30-33" data-titulo="Snapshot versionado" data-texto="ler_csv lê do disco quando o repositório está clonado e da URL bruta do GitHub quando o notebook roda no Colab."></span>
+          <span class="fragment codigo-passo" data-linhas="34-37" data-titulo="Período inclusivo" data-texto="O .loc com slice inclui a data final, ao contrário do end do yfinance. A origem volta junto com os dados."></span>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [4]</p>
+          <p class="footer-page">26</p>
+        </div>
+      </section>
+
+      <!-- 27 -->
+      <section class="content-slide" id="coletar-revisao">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Revisão de código do coletar</h2>
+        </div>
+        <div class="revisao">
+          <div class="revisao-coluna revisao-bom">
+            <p class="revisao-rotulo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#check"></use></svg>Manter</p>
+            <ol>
+            <li class="revisao-item entrada">
+              <p class="revisao-cabeca"><span class="revisao-ref">linha 1</span> Parametrizada</p>
+              <pre class="revisao-trecho"><code>def coletar(tickers, inicio, fim):</code></pre>
+              <p>Tickers e datas entram como argumento; a cesta do grupo não exige editar a função.</p>
+            </li>
+            <li class="revisao-item entrada">
+              <p class="revisao-cabeca"><span class="revisao-ref">linha 11</span> Corrige o fim exclusivo</p>
+              <pre class="revisao-trecho"><code>fim_exclusivo = pd.Timestamp(fim) + pd.Timedelta(days=1)</code></pre>
+              <p>O último pregão pedido vem na tabela, e o motivo está no nome da variável.</p>
+            </li>
+            <li class="revisao-item entrada">
+              <p class="revisao-cabeca"><span class="revisao-ref">linha 16</span> Escolha de preço explícita</p>
+              <pre class="revisao-trecho"><code>auto_adjust=False,</code></pre>
+              <p>Close e Adj Close chegam separados; quem chama decide qual usar.</p>
+            </li>
+            <li class="revisao-item entrada">
+              <p class="revisao-cabeca"><span class="revisao-ref">linha 26</span> Origem devolvida</p>
+              <pre class="revisao-trecho"><code>return fechamento, ajustado, "yfinance, ao vivo"</code></pre>
+              <p>Quem chama sabe se os números vieram da rede ou do snapshot.</p>
+            </li>
+            </ol>
+          </div>
+          <div class="revisao-coluna revisao-atencao">
+            <p class="revisao-rotulo"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#warning"></use></svg>Revisar antes do A1</p>
+            <ol>
+            <li class="revisao-item entrada">
+              <p class="revisao-cabeca"><span class="revisao-ref">linha 27</span> Captura ampla demais</p>
+              <pre class="revisao-trecho"><code>except Exception as erro:</code></pre>
+              <p>Pega também erro de programação, como uma mudança no formato do yfinance, e cai no snapshot sem aviso. Capturar só erros de rede.</p>
+            </li>
+            <li class="revisao-item entrada">
+              <p class="revisao-cabeca"><span class="revisao-ref">linha 22</span> Falha parcial passa</p>
+              <pre class="revisao-trecho"><code>if not bruto.empty:</code></pre>
+              <p>Ticker sem dado vira coluna vazia, e a tabela não fica vazia. Conferir colunas inteiras sem dado.</p>
+            </li>
+            <li class="revisao-item entrada">
+              <p class="revisao-cabeca"><span class="revisao-ref">linha 28</span> Mensagem curta</p>
+              <pre class="revisao-trecho"><code>print("coleta ao vivo falhou, seguindo com o snapshot:",</code></pre>
+              <p>Só o tipo do erro aparece. Usar warnings com a mensagem completa.</p>
+            </li>
+            <li class="revisao-item entrada">
+              <p class="revisao-cabeca"><span class="revisao-ref">linha 16</span> Adj Close muda com o tempo</p>
+              <pre class="revisao-trecho"><code>auto_adjust=False,</code></pre>
+              <p>Cada provento novo reajusta o passado: a mesma chamada, em outro dia, devolve outros números. Registrar a data da coleta em ADR.</p>
+            </li>
+            </ol>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [4]</p>
+          <p class="footer-page">27</p>
+        </div>
+      </section>
+
+      <!-- 28 -->
       <section class="exercise-slide" id="pratica-coletor">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -539,18 +1191,18 @@
         <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 01 no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">17</p>
+          <p class="footer-page">28</p>
         </div>
       </section>
 
-      <!-- 18 -->
+      <!-- 29 -->
       <section class="section-slide">
         <div class="accent-bar"></div>
         <h2>Ausências reais do provedor</h2>
         <h3>Descartar ou preencher muda o risco medido</h3>
       </section>
 
-      <!-- 19 -->
+      <!-- 30 -->
       <section class="content-slide" id="mapa-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -565,11 +1217,11 @@
         <p>BOVA11, IVVB11 e GOLD11 sem preço num pregão normal da B3. A GOLD11 tem ainda 484 pregões vazios antes da primeira cotação, em 11/12/2020.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
-          <p class="footer-page">19</p>
+          <p class="footer-page">30</p>
         </div>
       </section>
 
-      <!-- 20 -->
+      <!-- 31 -->
       <section class="content-slide" id="widget-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -585,11 +1237,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">20</p>
+          <p class="footer-page">31</p>
         </div>
       </section>
 
-      <!-- 21 -->
+      <!-- 32 -->
       <section class="content-slide" id="volatilidade">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -616,11 +1268,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1] [5]</p>
-          <p class="footer-page">21</p>
+          <p class="footer-page">32</p>
         </div>
       </section>
 
-      <!-- 22 -->
+      <!-- 33 -->
       <section class="content-slide" id="adr">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -654,11 +1306,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">22</p>
+          <p class="footer-page">33</p>
         </div>
       </section>
 
-      <!-- 23 -->
+      <!-- 34 -->
       <section class="exercise-slide" id="pratica-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -682,11 +1334,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">23</p>
+          <p class="footer-page">34</p>
         </div>
       </section>
 
-      <!-- 24 -->
+      <!-- 35 -->
       <section class="quiz-slide" id="quiz-final">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -740,11 +1392,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">24</p>
+          <p class="footer-page">35</p>
         </div>
       </section>
 
-      <!-- 25 -->
+      <!-- 36 -->
       <section class="exercise-slide" id="notebook">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -764,11 +1416,11 @@ porque descartar apaga março de 2020.
         <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Abrir no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">25</p>
+          <p class="footer-page">36</p>
         </div>
       </section>
 
-      <!-- 26 -->
+      <!-- 37 -->
       <section class="content-slide" id="a1">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -793,11 +1445,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">26</p>
+          <p class="footer-page">37</p>
         </div>
       </section>
 
-      <!-- 27 -->
+      <!-- 38 -->
       <section class="content-slide" id="referencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -817,11 +1469,11 @@ porque descartar apaga março de 2020.
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">27</p>
+          <p class="footer-page">38</p>
         </div>
       </section>
 
-      <!-- 28 -->
+      <!-- 39 -->
       <section class="end-slide">
         <h1>Até 05/11/2026</h1>
         <h3>Aula 02: Dados Financeiros, Do Preço ao Retorno</h3>
@@ -839,6 +1491,9 @@ porque descartar apaga março de 2020.
     });
   </script>
   <script src="../assets/js/inteli-quiz.js"></script>
+  <script src="../assets/js/inteli-nuvem.js"></script>
+  <script src="../assets/js/inteli-calendario.js"></script>
+  <script src="../assets/js/inteli-codigo.js"></script>
   <script src="../assets/js/inteli-zoom.js"></script>
   <script src="../assets/js/inteli-print.js"></script>
   <script src="../assets/js/inteli-cronometro.js"></script>
@@ -846,5 +1501,6 @@ porque descartar apaga março de 2020.
   <script src="../assets/js/inteli-widgets.js"></script>
   <script src="../assets/js/widgets/tres-visoes.js"></script>
   <script src="../assets/js/widgets/ausencias.js"></script>
+  <script src="../assets/js/widgets/carteira-nuvem.js"></script>
 </body>
 </html>

@@ -1,0 +1,358 @@
+/* Nuvem de palavras ao vivo por voz (ADR-012, assets/js/inteli-nuvem.js).
+   Só tokens: nenhuma cor literal, nenhuma família de fonte e nenhum raio
+   (GRA-01). A família de título dos termos maiores vem da classe .nuvem-t1,
+   declarada em inteli-brand.css, que é o único arquivo autorizado a declarar
+   família. Verificado por tools/check_brand.py.
+
+   Os seletores de texto começam por .nuvem porque ".reveal p" do tema fixa
+   18px e margem em todo parágrafo, e perde só para especificidade maior. */
+
+/* ---------------------------------------------------------------- slide */
+
+.reveal .slides section.nuvem-slide {
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+}
+
+.nuvem-slide .slide-title-area { margin-bottom: 20px; }
+.nuvem-slide .slide-title-area h2 { color: var(--inteli-branco); }
+.reveal .nuvem-slide .nuvem-instrucao {
+  margin: 6px 0 0;
+  color: var(--inteli-cinza-medio);
+}
+.nuvem-slide .slide-footer { color: var(--inteli-cinza-medio); }
+
+/* ------------------------------------------------------------ componente */
+
+.nuvem {
+  display: grid;
+  grid-template-columns: 232px var(--nuvem-largura, 880px);
+  gap: 32px;
+  height: var(--nuvem-altura, 440px);
+}
+
+.nuvem-controles {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* Botão do microfone: bloco verde de peso, canto reto, filete coral na base
+   (coral só como filete no segmento Graduação, p.68). */
+.nuvem-mic {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 168px;
+  flex: none;
+  padding: 0;
+  border: none;
+  background: var(--seg-secundaria);
+  color: var(--seg-primaria);
+  box-shadow: inset 0 -6px 0 var(--seg-destaque);
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.nuvem-mic .icone { font-size: 64px; }
+
+.nuvem-mic-rotulo {
+  font-size: var(--escala-texto);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+.nuvem-mic:hover { background: var(--inteli-branco); }
+.nuvem-mic:focus-visible { outline: 3px solid var(--inteli-branco); outline-offset: 4px; }
+
+/* Gravando: fundo branco e dois anéis quadrados que se expandem em sequência. */
+.nuvem-gravando .nuvem-mic { background: var(--inteli-branco); }
+.nuvem-gravando .nuvem-mic-rotulo { font-size: var(--escala-subtitulo); }
+
+.nuvem-mic::before,
+.nuvem-mic::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--seg-secundaria);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nuvem-gravando .nuvem-mic::before { animation: nuvem-anel 1.8s ease-out infinite; }
+.nuvem-gravando .nuvem-mic::after { animation: nuvem-anel 1.8s ease-out 0.9s infinite; }
+
+@keyframes nuvem-anel {
+  0%   { transform: scale(1, 1); opacity: 0.9; }
+  100% { transform: scale(1.09, 1.12); opacity: 0; }
+}
+
+.nuvem .nuvem-status {
+  margin: 0;
+  min-height: 40px;
+  max-height: 40px;
+  overflow: hidden;
+  font-size: var(--escala-complementar);
+  line-height: 1.4;
+  color: var(--inteli-cinza-medio);
+}
+
+.nuvem .nuvem-status.nuvem-aviso {
+  color: var(--inteli-branco);
+  border-left: 3px solid var(--seg-destaque);
+  padding-left: 8px;
+}
+
+/* Medidor de nível: catorze barras que acendem em verde com a voz. */
+.nuvem-medidor {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+  flex: none;
+}
+
+.nuvem-barra {
+  flex: 1;
+  height: 100%;
+  background: color-mix(in srgb, var(--inteli-branco) 14%, transparent);
+  transition: background-color 0.08s linear;
+}
+
+.nuvem-barra.acesa { background: var(--seg-secundaria); }
+
+.nuvem-campo {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border: none;
+  border-bottom: 2px solid var(--seg-secundaria);
+  background: color-mix(in srgb, var(--inteli-branco) 9%, transparent);
+  color: var(--inteli-branco);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+.nuvem-campo::placeholder { color: var(--inteli-cinza-escuro); }
+.nuvem-campo:focus { outline: 2px solid var(--inteli-branco); outline-offset: 0; }
+
+.nuvem-acoes {
+  display: flex;
+  gap: 8px;
+}
+
+.nuvem-botao {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 6px;
+  border: 1px solid color-mix(in srgb, var(--inteli-branco) 35%, transparent);
+  background: transparent;
+  color: var(--inteli-branco);
+  font: inherit;
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nuvem-botao .icone { font-size: 20px; }
+.nuvem-botao:hover { background: color-mix(in srgb, var(--inteli-branco) 12%, transparent); }
+
+/* Configuração do webhook: ocupa o lugar do medidor, do campo e das ações. */
+.nuvem-config {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nuvem-configurando .nuvem-config { display: flex; }
+.nuvem-configurando .nuvem-medidor,
+.nuvem-configurando .nuvem-entrada,
+.nuvem-configurando .nuvem-acoes { display: none; }
+
+.nuvem-rotulo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  color: var(--inteli-cinza-medio);
+}
+
+.nuvem-salvar {
+  background: var(--seg-secundaria);
+  color: var(--seg-primaria);
+  border-color: var(--seg-secundaria);
+}
+
+.nuvem-salvar:hover { background: var(--inteli-branco); }
+
+/* ----------------------------------------------------------------- palco */
+
+.nuvem-palco {
+  display: flex;
+  flex-direction: column;
+  width: var(--nuvem-largura, 880px);
+  height: var(--nuvem-altura, 440px);
+  min-width: 0;
+}
+
+.nuvem-area {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Marcas de corte nos cantos: delimitam o palco sem desenhar uma caixa. */
+.nuvem-area::before,
+.nuvem-area::after {
+  content: "";
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  pointer-events: none;
+}
+
+.nuvem-area::before {
+  top: 0;
+  left: 0;
+  border-top: 3px solid var(--seg-secundaria);
+  border-left: 3px solid var(--seg-secundaria);
+}
+
+.nuvem-area::after {
+  right: 0;
+  bottom: 0;
+  border-right: 3px solid var(--seg-secundaria);
+  border-bottom: 3px solid var(--seg-secundaria);
+}
+
+.nuvem .nuvem-vazio {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  margin: 0;
+  transform: translateY(-50%);
+  text-align: center;
+  font-size: var(--escala-subtitulo);
+  font-weight: 300;
+  color: var(--inteli-cinza-escuro);
+  transition: opacity 0.4s ease;
+}
+
+.nuvem-com-termos .nuvem-vazio { opacity: 0; }
+
+.nuvem-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: 40px;
+  flex: none;
+  border-top: 1px solid color-mix(in srgb, var(--inteli-branco) 22%, transparent);
+}
+
+.nuvem .nuvem-frase {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.3;
+  color: var(--inteli-cinza-medio);
+}
+
+.nuvem .nuvem-contagem {
+  flex: none;
+  margin: 0;
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--seg-secundaria);
+}
+
+/* ---------------------------------------------------------------- termos */
+
+/* O JS posiciona o centro de cada termo por transform e muda o font-size;
+   as duas transições fazem a nuvem se reorganizar sem salto. */
+.nuvem-termo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 0.15em;
+  white-space: nowrap;
+  line-height: 1.12;
+  transition:
+    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
+    font-size 0.9s cubic-bezier(0.2, 0.8, 0.2, 1),
+    color 0.5s ease;
+  will-change: transform;
+}
+
+.nuvem-termo-texto {
+  position: relative;
+  display: inline-block;
+}
+
+.nuvem-t1 { color: var(--inteli-branco); font-weight: 700; }
+.nuvem-t2 { font-weight: 700; }
+.nuvem-t2.nuvem-cor0 { color: var(--seg-secundaria); }
+.nuvem-t2.nuvem-cor1 { color: var(--inteli-branco); }
+.nuvem-t3 { font-weight: 600; }
+.nuvem-t3.nuvem-cor0 { color: var(--inteli-cinza-medio); }
+.nuvem-t3.nuvem-cor1 { color: var(--seg-secundaria); }
+
+/* Termo mais citado: sublinhado por um filete coral. */
+.nuvem-lider .nuvem-termo-texto::after {
+  content: "";
+  position: absolute;
+  left: 0.04em;
+  right: 0.04em;
+  bottom: 0.02em;
+  height: 0.07em;
+  min-height: 4px;
+  background: var(--seg-destaque);
+}
+
+.nuvem-entra { animation: nuvem-entra 0.75s cubic-bezier(0.2, 0.9, 0.3, 1.25) both; }
+.nuvem-cresce { animation: nuvem-cresce 0.7s ease-out; }
+
+@keyframes nuvem-entra {
+  0%   { opacity: 0; transform: scale(0.25); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes nuvem-cresce {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.16); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nuvem-termo { transition: none; }
+  .nuvem-entra,
+  .nuvem-cresce,
+  .nuvem-gravando .nuvem-mic::before,
+  .nuvem-gravando .nuvem-mic::after { animation: none; }
+}
+
+/* Impressão e ?print-pdf: o palco fica estático e o anel some. */
+html.print-pdf .nuvem-termo { transition: none; }
+html.print-pdf .nuvem-mic::before,
+html.print-pdf .nuvem-mic::after { display: none; }

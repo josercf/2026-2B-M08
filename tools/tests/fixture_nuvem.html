@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fixture da nuvem de palavras por voz</title>
+  <!-- Deck mínimo do componente inteli-nuvem (ADR-012), usado por
+       tools/tests/test_nuvem.py. O slide do meio é o mesmo markup que entra na
+       Aula 01 antes do slide "parceiro", com os caminhos de assets um nível
+       mais fundo. -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="../../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../../assets/css/inteli-theme.css">
+  <link rel="stylesheet" href="../../assets/css/inteli-nuvem.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <section class="content-slide" id="antes">
+        <div class="top-bar"></div>
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Slide anterior</h2>
+        </div>
+      </section>
+
+      <section class="content-slide nuvem-slide" id="o-que-e-o-projeto">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../../assets/img/inteli-logo-negativa.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O que é o projeto deste módulo?</h2>
+          <p class="nuvem-instrucao">Cada pessoa responde em uma frase, em voz alta. As palavras entram na nuvem enquanto a turma fala.</p>
+        </div>
+        <div class="nuvem" id="nuvem-projeto" data-largura="880" data-altura="464"></div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
+          <p class="footer-page">5</p>
+        </div>
+      </section>
+
+      <section class="content-slide" id="parceiro">
+        <div class="top-bar"></div>
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Slide seguinte</h2>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280, height: 720, center: false, margin: 0,
+      hash: true, slideNumber: false, transition: 'none'
+    });
+  </script>
+  <script src="../../assets/js/inteli-nuvem.js"></script>
+</body>
+</html>

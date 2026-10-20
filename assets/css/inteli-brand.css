@@ -110,7 +110,8 @@ code, pre, kbd, samp, .mono {
    fora deste arquivo. O tamanho fica no tema. */
 .numero-destaque-valor,
 .perfil-monograma,
-.trilha-numero {
+.trilha-numero,
+.nuvem-t1 {  /* termos maiores da nuvem de palavras (ADR-012) */
   font-family: var(--fonte-titulo);
   font-weight: 700;
 }

@@ -65,12 +65,15 @@ def test_peso_do_a5_e_review_vem_do_plano_de_ensino():
     assert review in a5
 
 
-def test_sete_blocos_da_agenda_com_as_interacoes_do_roteiro():
-    agenda = _texto([s for s in _secoes() if 'id="agenda"' in s][0])
-    for trecho in ("Peer Instruction", "previsão do status no montador",
-                   "que erro para um ticker que não existe", "dupla no notebook",
-                   "escolha coletiva", "que número conferir por código", "quiz de três perguntas"):
-        assert trecho in agenda, trecho
+def test_agenda_tem_daily_e_sete_blocos_so_com_o_tema():
+    """Pedido do professor em 20/10/2026: a agenda mostra bloco e tema. Minutos,
+    interação de fechamento e nota de horário ficam no roteiro, não no slide."""
+    agenda = [s for s in _secoes() if 'id="agenda"' in s][0]
+    linhas = re.findall(r"<tr><td>([^<]+)</td><td>", agenda)
+    assert linhas == ["Daily", "1", "2", "3", "4", "5", "6", "7"]
+    texto = _texto(agenda)
+    for removido in ("Minutos", "Interação que fecha", "Horários de relógio"):
+        assert removido not in texto, removido
 
 
 @pytest.fixture(scope="module")

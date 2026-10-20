@@ -93,7 +93,8 @@ def test_peer_instruction_de_abertura_usa_as_alternativas_medidas():
                       ("true", str(medida["pregoes_fim_exclusivo"]))]
     resposta = _texto(_secao("fim-exclusivo"))
     assert "devolve %d dos %d pregões" % (medida["pregoes_fim_exclusivo"], medida["pregoes_inclusivo"]) in resposta
-    assert "segunda-feira, 31/08" in resposta and medida["dia_da_semana_do_fim"] == 0
+    # A explicação da alternativa certa mora no data-explica do calendário animado.
+    assert "segunda-feira, 31/08" in _secao("fim-exclusivo") and medida["dia_da_semana_do_fim"] == 0
 
 
 def test_peer_instruction_do_planejamento_e_o_do_deck():

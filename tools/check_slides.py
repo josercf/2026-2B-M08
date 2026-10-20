@@ -105,8 +105,17 @@ JS_MEDIR = """
       if (ecs.display === 'none' || ecs.visibility === 'hidden') continue;
       // Rodape e barras sao posicionados de proposito na borda
       if (el.closest('.slide-footer, .top-bar, [class*="logo-header"]')) continue;
-      const r = el.getBoundingClientRect();
-      if (r.width === 0 && r.height === 0) continue;
+      // Um ancestral com overflow diferente de visible recorta o elemento:
+      // o que passa da borda dele não aparece na tela (janela de código que
+      // desliza, por exemplo). Mede-se só a parte visível.
+      const caixa = el.getBoundingClientRect();
+      if (caixa.width === 0 && caixa.height === 0) continue;
+      const r = { bottom: caixa.bottom, right: caixa.right };
+      for (let a = el.parentElement; a && a !== sec; a = a.parentElement) {
+        const acs = getComputedStyle(a);
+        if (acs.overflowY !== 'visible') r.bottom = Math.min(r.bottom, a.getBoundingClientRect().bottom);
+        if (acs.overflowX !== 'visible') r.right = Math.min(r.right, a.getBoundingClientRect().right);
+      }
 
       const excessoBaixo = r.bottom - limiteBaixo;
       const excessoDireita = r.right - limiteDireita;
