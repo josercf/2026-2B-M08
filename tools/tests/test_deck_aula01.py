@@ -84,7 +84,10 @@ def test_peer_instruction_de_abertura_usa_as_alternativas_medidas():
     secoes = _secoes()
     primeiro_quiz = next(i for i, s in enumerate(secoes) if "quiz-options" in s)
     preparo = secoes[primeiro_quiz]
-    assert 'id="preparo"' in preparo and "Votar de novo" in preparo
+    # Pedido de 20/10/2026: votar, discutir e votar de novo fica na fala do
+    # professor e nas notas, não no slide.
+    assert 'id="preparo"' in preparo and "Votar de novo" not in preparo
+    assert "Votar de novo" in _ler(NOTAS)
     assert 'start="2026-08-01", end="2026-08-31"' in preparo
     opcoes = re.findall(r'data-correct="(true|false)".*?>([^<]+)</li>', preparo, re.S)
     assert opcoes == [("false", str(medida["dias_corridos"])),
