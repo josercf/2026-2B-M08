@@ -2345,3 +2345,98 @@ html.print-pdf .fluxo-pacote { animation: none !important; }
   box-shadow: inset 0 -4px 0 var(--seg-destaque);
   cursor: pointer;
 }
+
+/* Framework de cada artefato: cinco etapas em sequência ligadas por um
+   filete, e a via de retorno do teste funcional para o SPEC. */
+.framework {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 18px;
+  position: relative;
+}
+
+.framework::before {
+  content: "";
+  position: absolute;
+  left: 30px;
+  right: 30px;
+  top: 30px;
+  height: 4px;
+  background: var(--seg-primaria);
+  transform-origin: left center;
+}
+
+.reveal .slides section.present .framework::before { animation: inteli-linha 1.8s cubic-bezier(0.6, 0, 0.2, 1) 0.3s both; }
+
+.reveal .fw-etapa {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0 0 22px;
+  min-height: 330px;
+  background: var(--seg-superficie);
+  border-top: 0;
+}
+
+.fw-numero {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+  font-size: 32px;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+.fw-etapa:nth-child(4) .fw-numero,
+.fw-etapa:nth-child(5) .fw-numero { background: var(--seg-secundaria); color: var(--seg-texto); }
+
+.fw-icone { position: absolute; top: 16px; right: 14px; }
+.fw-icone .icone { width: 32px; height: 32px; color: var(--seg-primaria); }
+
+.reveal .fw-etapa p { margin: 0; padding: 0 14px; line-height: 1.35; }
+.reveal .fw-nome { font-size: 22px; font-weight: 700; margin-top: 6px; }
+.reveal .fw-artefato {
+  font-size: var(--escala-complementar);
+  font-weight: 700;
+}
+.reveal .fw-pergunta { font-size: var(--escala-texto); line-height: 1.45; }
+
+.fw-retorno { margin-top: 6px; position: relative; }
+.fw-retorno svg { display: block; width: 100%; height: 44px; }
+.fw-retorno-via { fill: none; stroke: var(--seg-destaque); stroke-width: 3; stroke-dasharray: 1; }
+.fw-retorno-seta { fill: var(--seg-destaque); }
+.reveal .slides section.present .fw-retorno-via { animation: inteli-traco 1.2s ease-in-out 2.4s both; }
+.reveal .fw-retorno p {
+  position: absolute;
+  left: 50%;
+  top: 18px;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0 12px;
+  background: var(--seg-base);
+  font-size: var(--escala-densa);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.fw-barema { margin-top: 16px; }
+.reveal .fw-barema td { font-size: var(--escala-densa); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal .slides section.present .framework::before,
+  .reveal .slides section.present .fw-retorno-via { animation: none; }
+}
+
+html.print-pdf .framework::before,
+html.print-pdf .fw-retorno-via { animation: none !important; }

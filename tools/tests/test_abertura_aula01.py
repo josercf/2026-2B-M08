@@ -362,3 +362,16 @@ def test_codigo_linha_a_linha_destaca_e_desliza_no_navegador(servidor):
         }""")
         navegador.close()
     assert dentro and erros == []
+
+
+def test_framework_do_modulo_em_cinco_etapas_depois_do_barema():
+    """Pedido de 20/10/2026: especificar, ADR, plano de testes, implementar e
+    testes funcionais, nessa ordem, para usar com ADRs e spec-driven development."""
+    ids = _ids()
+    assert ids.index("framework") == ids.index("entregas-comum") + 1
+    secao = _secao("framework")
+    nomes = re.findall(r'<p class="fw-nome">([^<]+)</p>', secao)
+    assert nomes == ["Especificar", "Decidir", "Planejar os testes", "Implementar", "Validar"]
+    artefatos = re.findall(r'<p class="fw-artefato">([^<]+)</p>', secao)
+    assert artefatos[0] == "SPEC.md" and "/docs/adr/" in artefatos[1] and "testes" in artefatos[2]
+    assert "testes funcionais" in artefatos[4]
