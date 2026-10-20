@@ -272,6 +272,20 @@ def test_falha_do_webhook_vira_aviso_e_a_gravacao_continua(pagina):
     page.click("#nuvem-projeto .nuvem-mic")
 
 
+def test_token_recusado_aponta_o_botao_webhook(pagina):
+    """Regressão de 20/10/2026: na primeira aula de teste o navegador mandou um
+    token diferente do nó "Conferir token", o n8n respondeu 403 e o aviso só
+    dizia "sem resposta". O aviso agora diz que o token foi recusado."""
+    pedidos = []
+    _simular_webhook(pagina, pedidos, status=403, corpo={"erro": "token ausente, token errado ou campo audio vazio"})
+    page = pagina.ir("?nuvem=%s" % WEBHOOK)
+    page.click("#nuvem-projeto .nuvem-mic")
+    page.wait_for_selector("#nuvem-projeto .nuvem-status.nuvem-aviso", timeout=20000)
+    aviso = page.inner_text("#nuvem-projeto .nuvem-status")
+    assert "HTTP 403" in aviso and "recusou o token" in aviso and "Webhook" in aviso
+    page.click("#nuvem-projeto .nuvem-mic")
+
+
 def test_sair_do_slide_desliga_o_microfone(pagina):
     pedidos = []
     _simular_webhook(pagina, pedidos)

@@ -683,8 +683,12 @@
         .catch(function (erro) {
           falhas++;
           var motivo = erro && erro.name === 'AbortError' ? 'tempo esgotado' : (erro && erro.message) || 'rede';
-          avisar('Trecho ' + pedido.numero + ' sem resposta (' + motivo + ').' +
-            (gravando ? ' A gravação continua.' : ''), true);
+          // 403 é o ramo "Recusar" do workflow: token diferente do nó "Conferir
+          // token". O aviso aponta o botão onde o token se corrige.
+          var dica = motivo === 'HTTP 403'
+            ? ' O n8n recusou o token: confira em Webhook.'
+            : (gravando ? ' A gravação continua.' : '');
+          avisar('Trecho ' + pedido.numero + ' sem resposta (' + motivo + ').' + dica, true);
           if (window.console) console.warn('[nuvem] envio falhou:', motivo);
         })
         .then(function () {
