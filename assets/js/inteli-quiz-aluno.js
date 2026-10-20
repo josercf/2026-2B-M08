@@ -108,6 +108,17 @@
     dados.votar(rodada.id, eu.id, opcao).then(function (aceito) {
       mostrarVotou(rodada, aceito ? opcao : null);
     }).catch(function (e) {
+      // O registro do aluno foi apagado no banco (sessão limpa depois de um
+      // teste): entra de novo com o nome guardado e repete o voto.
+      if (/participante/.test(e.message)) {
+        return dados.entrar(sessao, eu.nome, eu.avatar).then(function (id) {
+          eu.id = id;
+          try { localStorage.setItem(chaveEu, JSON.stringify(eu)); } catch (x) { /* aba privada */ }
+          return dados.votar(rodada.id, eu.id, opcao);
+        }).then(function (aceito) { mostrarVotou(rodada, aceito ? opcao : null); });
+      }
+      throw e;
+    }).catch(function (e) {
       raiz.querySelector('.tela-votar .erro').textContent = /fechada/.test(e.message)
         ? 'A votação já fechou.' : 'Não deu para votar (' + e.message + ').';
       raiz.querySelectorAll('.opcao').forEach(function (b) { b.disabled = false; });
