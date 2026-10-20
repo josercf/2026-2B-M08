@@ -70,6 +70,29 @@
     var linhas = atual ? intervalo(atual.dataset.linhas) : [];
 
     raiz.classList.toggle('codigo-em-passo', Boolean(atual));
+    // Modo foco: o resto do slide esmaece enquanto um trecho está em destaque.
+    var secao = raiz.closest('section');
+    if (secao) secao.classList.toggle('codigo-foco', Boolean(atual));
+    var progresso = raiz.querySelector('.codigo-progresso');
+    if (!progresso) {
+      progresso = document.createElement('div');
+      progresso.className = 'codigo-progresso';
+      passos.forEach(function () { progresso.appendChild(document.createElement('span')); });
+      raiz.querySelector('.codigo-explica').appendChild(progresso);
+    }
+    Array.prototype.forEach.call(progresso.children, function (marca, i) {
+      marca.classList.toggle('feito', i <= passos.indexOf(atual));
+    });
+    var referencia = raiz.querySelector('.codigo-referencia');
+    if (!referencia) {
+      referencia = document.createElement('p');
+      referencia.className = 'codigo-referencia';
+      var painel = raiz.querySelector('.codigo-explica');
+      painel.insertBefore(referencia, painel.querySelector('.codigo-titulo'));
+    }
+    referencia.textContent = atual
+      ? (linhas.length > 1 ? 'linhas ' + linhas[0] + ' a ' + linhas[linhas.length - 1] : 'linha ' + linhas[0])
+      : '';
     raiz.querySelectorAll('.cl').forEach(function (linha) {
       linha.classList.toggle('cl-destaque', linhas.indexOf(Number(linha.dataset.n)) !== -1);
     });

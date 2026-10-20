@@ -288,7 +288,8 @@ def _funcao_coletar_do_notebook():
 def test_coletor_tem_tres_visoes_em_sequencia():
     ids = _ids()
     i = ids.index("coletar")
-    assert ids[i:i + 4] == ["coletar", "coletar-codigo", "coletar-revisao", "pratica-coletor"]
+    assert ids[i:i + 6] == ["coletar", "coletar-codigo", "coletar-revisao",
+                            "adr-linha", "adr-agentes", "pratica-coletor"]
 
 
 def test_funcao_do_notebook_cabe_em_79_colunas():

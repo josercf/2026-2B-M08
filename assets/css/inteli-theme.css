@@ -2213,3 +2213,76 @@ html.print-pdf .fluxo-pacote { animation: none !important; }
 .reveal .codigo-passos-texto .codigo-linhas code { font-size: 16px; line-height: 24px; }
 .reveal .tabela-agentes td:first-child { white-space: normal; width: 26%; }
 .reveal .tabela-agentes td:nth-child(3) { background: var(--seg-superficie); }
+
+/* Código linha a linha em modo foco (20/10/2026): o trecho em destaque cresce,
+   as outras linhas e o resto do slide recuam, e o painel ganha número de passo,
+   linhas citadas e barra de progresso. */
+.codigo-passos { grid-template-columns: 860px 1fr; }
+
+.reveal .slides section.codigo-foco > *:not(.codigo-passos):not(.inteli-logo-header) {
+  opacity: 0.25;
+  transition: opacity 0.5s ease;
+}
+
+.reveal .slides section > * { transition: opacity 0.5s ease; }
+
+.codigo-passos.codigo-em-passo .codigo-janela { border-left-color: var(--seg-destaque); }
+
+.codigo-passos.codigo-em-passo .cl { transition: font-size 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.3s, background-color 0.3s; }
+
+.reveal .codigo-passos.codigo-em-passo .cl.cl-destaque {
+  font-size: 17px;
+  line-height: 28px;
+  font-weight: 700;
+}
+
+.reveal .codigo-passos.codigo-em-passo .cl:not(.cl-destaque) { opacity: 0.45; }
+
+.codigo-explica {
+  position: relative;
+  padding: 26px 24px 22px;
+  box-shadow: inset 0 6px 0 var(--seg-destaque);
+}
+
+.reveal .codigo-explica .codigo-contador {
+  font-size: 54px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--seg-secundaria);
+}
+
+.reveal .codigo-explica .codigo-referencia {
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--seg-secundaria);
+  min-height: 1.2em;
+}
+
+.reveal .codigo-explica .codigo-titulo { font-size: 28px; }
+.reveal .codigo-explica .codigo-texto { font-size: var(--escala-texto); line-height: 1.5; }
+
+.reveal .codigo-explica.codigo-explica-troca .codigo-contador { animation: inteli-passo 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+.reveal .codigo-explica.codigo-explica-troca .codigo-titulo { animation: inteli-entrada-lado 0.45s ease-out 0.05s both; }
+.reveal .codigo-explica.codigo-explica-troca .codigo-texto { animation: inteli-entrada-lado 0.45s ease-out 0.15s both; }
+
+@keyframes inteli-passo {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes inteli-entrada-lado {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: none; }
+}
+
+.codigo-progresso { display: flex; gap: 4px; margin-top: auto; padding-top: 14px; }
+.codigo-progresso span { flex: 1; height: 6px; background: var(--seg-texto-suave); transition: background-color 0.3s; }
+.codigo-progresso span.feito { background: var(--seg-secundaria); }
+
+@media (prefers-reduced-motion: reduce) {
+  .codigo-passos.codigo-em-passo .cl { transition: none; }
+}
