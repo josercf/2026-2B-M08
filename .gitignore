@@ -25,3 +25,6 @@ saida/
 # Dependências e build do frontend React do exemplo da Aula 06.
 node_modules/
 dist/
+
+# CLI do Supabase (estado local)
+supabase/.temp/
