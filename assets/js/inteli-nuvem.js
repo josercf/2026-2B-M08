@@ -15,11 +15,17 @@
 // O conteúdo interno é construído aqui. data-largura e data-altura fixam o
 // palco, porque slide fora de cena mede zero (CLAUDE.md, seção 7).
 //
-// Configuração, que nunca fica no repositório (ele é público):
-//   localStorage "inteli-nuvem-webhook"  URL do webhook do n8n
-//   localStorage "inteli-nuvem-token"    token opcional, enviado no campo "token"
-// O parâmetro ?nuvem=<url>&nuvem-token=<token> grava as duas chaves. Sem URL, o
-// primeiro clique no microfone abre o campo de configuração no próprio slide.
+// Configuração, em ordem de prioridade:
+//   localStorage "inteli-nuvem-webhook" / "inteli-nuvem-token", gravados pelo
+//   parâmetro ?nuvem=<url>&nuvem-token=<token> ou pelo botão Webhook;
+//   data-webhook / data-token no markup, fixados no deck a pedido do professor
+//   (20/10/2026). Sem nenhum dos dois, o primeiro clique no microfone abre o
+//   campo de configuração no próprio slide.
+//
+// Modo limpo (data-modo="limpo"): a nuvem ocupa a largura toda, os controles
+// ficam escondidos e um botão discreto no rodapé liga o microfone. No slide
+// presente, a tecla M liga e desliga o microfone e a tecla C mostra ou esconde
+// os controles (campo de texto, Limpar, Webhook).
 //
 // API para teste e para contingência em aula:
 //   IntelINuvem.adicionar(['carteira', {texto: 'risco', peso: 2}])
@@ -307,8 +313,24 @@
     palco.appendChild(area);
     palco.appendChild(rodape);
 
+    // Botão discreto do modo limpo: ícone e cronômetro no rodapé da nuvem.
+    var chip = el('button', 'nuvem-chip');
+    chip.type = 'button';
+    chip.setAttribute('aria-label', 'Ouvir a turma (tecla M)');
+    var chipIcone = criarIcone('mic');
+    var chipTexto = el('span', 'nuvem-chip-texto', 'M');
+    chip.appendChild(chipIcone);
+    chip.appendChild(chipTexto);
+    rodape.insertBefore(chip, frase);
+
+    var limpo = raiz.dataset.modo === 'limpo';
+    raiz.classList.toggle('nuvem-limpa', limpo);
+
     raiz.appendChild(controles);
     raiz.appendChild(palco);
+
+    function urlAtual() { return ler(CHAVE_URL) || raiz.dataset.webhook || ''; }
+    function tokenAtual() { return ler(CHAVE_TOKEN) || raiz.dataset.token || ''; }
 
     // ----- estado da nuvem
 
@@ -468,9 +490,9 @@
     } catch (e) { /* sem URLSearchParams: segue com o que estiver salvo */ }
 
     function abrirConfig(mensagem) {
-      raiz.classList.add('nuvem-configurando');
-      campoUrl.value = ler(CHAVE_URL);
-      campoToken.value = ler(CHAVE_TOKEN);
+      raiz.classList.add('nuvem-configurando', 'nuvem-mostra-controles');
+      campoUrl.value = urlAtual();
+      campoToken.value = tokenAtual();
       avisar(mensagem || 'Informe a URL do webhook do n8n', false);
       setTimeout(function () { campoUrl.focus(); }, 0);
     }
@@ -496,6 +518,7 @@
     // ----- gravação
 
     var gravando = false;
+    var abrindo = false;          // pedido de microfone em andamento
     var stream = null;
     var contexto = null;
     var analisador = null;
@@ -516,6 +539,8 @@
     function avisar(texto, erro) {
       status.textContent = texto;
       status.classList.toggle('nuvem-aviso', !!erro);
+      chip.classList.toggle('nuvem-chip-aviso', !!erro);
+      chip.title = texto;
     }
 
     function pintarBotao() {
@@ -524,10 +549,21 @@
       botao.setAttribute('aria-label', gravando ? 'Parar de ouvir' : 'Ouvir a turma');
       trocarIcone(icone, gravando ? 'stop' : 'mic');
       rotulo.textContent = gravando ? formatar(Date.now() - inicio) : 'Ouvir a turma';
+      trocarIcone(chipIcone, gravando ? 'stop' : 'mic');
+      chipTexto.textContent = gravando ? formatar(Date.now() - inicio) : 'M';
+    }
+
+    // O microfone só abre com o slide da nuvem na tela.
+    function slideAtivo() {
+      var secao = raiz.closest('section');
+      return !secao || !window.Reveal || secao.classList.contains('present');
     }
 
     function iniciar() {
-      lidoUrl = ler(CHAVE_URL);
+      // Clique e tecla M seguidos pediriam dois microfones, e só o último
+      // seria fechado: um pedido por vez.
+      if (gravando || abrindo) return;
+      lidoUrl = urlAtual();
       if (!lidoUrl || !urlValida(lidoUrl)) {
         abrirConfig();
         return;
@@ -537,9 +573,17 @@
         return;
       }
       avisar('Pedindo acesso ao microfone', false);
+      abrindo = true;
       navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
       }).then(function (s) {
+        abrindo = false;
+        // A permissão pode chegar depois que o professor já trocou de slide.
+        if (!slideAtivo()) {
+          s.getTracks().forEach(function (trilha) { trilha.stop(); });
+          avisar('Microfone fechado: o slide mudou antes da permissão', false);
+          return;
+        }
         stream = s;
         try {
           var Ctx = window.AudioContext || window.webkitAudioContext;
@@ -560,6 +604,7 @@
         relogio = setInterval(vigiar, 50);
         pintarBotao();
       }).catch(function (erro) {
+        abrindo = false;
         avisar('Microfone indisponível (' + (erro && erro.name || 'erro') + '). Use o campo de texto.', true);
       });
     }
@@ -658,10 +703,10 @@
 
     function enviar(pedido) {
       ativos++;
-      var url = ler(CHAVE_URL) || lidoUrl;
+      var url = urlAtual() || lidoUrl;
       var dados = new FormData();
       dados.append('audio', pedido.blob, 'trecho-' + pedido.numero + extensao(pedido.blob.type));
-      var tk = ler(CHAVE_TOKEN);
+      var tk = tokenAtual();
       if (tk) dados.append('token', tk);
       var controle = window.AbortController ? new AbortController() : null;
       var limite = controle ? setTimeout(function () { controle.abort(); }, TEMPO_LIMITE_ENVIO) : null;
@@ -717,6 +762,32 @@
 
     limpar.addEventListener('click', limparTudo);
 
+    chip.addEventListener('click', function () {
+      if (gravando) parar();
+      else iniciar();
+    });
+
+    // Atalhos do modo limpo, só com o slide da nuvem presente e fora dos
+    // campos de texto. Captura antes do Reveal para M e C não virarem outra
+    // ação do deck.
+    document.addEventListener('keydown', function (evento) {
+      var secao = raiz.closest('section');
+      if (!secao || !secao.classList.contains('present')) return;
+      var alvo = evento.target;
+      if (alvo && (alvo.tagName === 'INPUT' || alvo.tagName === 'TEXTAREA')) return;
+      if (evento.ctrlKey || evento.metaKey || evento.altKey) return;
+      var tecla = (evento.key || '').toLowerCase();
+      if (tecla === 'm') {
+        evento.preventDefault();
+        evento.stopPropagation();
+        if (gravando) parar(); else iniciar();
+      } else if (tecla === 'c') {
+        evento.preventDefault();
+        evento.stopPropagation();
+        raiz.classList.toggle('nuvem-mostra-controles');
+      }
+    }, true);
+
     entrada.addEventListener('keydown', function (evento) {
       // As teclas do Reveal (setas, espaço, N, P) não podem andar o deck
       // enquanto o professor digita.
@@ -741,7 +812,9 @@
     // a aula inteira e gasta transcrição à toa.
     if (window.Reveal && typeof window.Reveal.on === 'function') {
       window.Reveal.on('slidechanged', function (e) {
-        if (gravando && e.currentSlide && !e.currentSlide.contains(raiz)) parar();
+        if (e.currentSlide && e.currentSlide.contains(raiz)) return;
+        if (gravando) parar();
+        else soltarMicrofone();
       });
     }
 
@@ -756,6 +829,12 @@
       ]).then(agendar, function () {});
     }
 
+    // Fechar ou esconder a aba também solta o microfone.
+    window.addEventListener('pagehide', function () { if (gravando) parar(); else soltarMicrofone(); });
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden' && gravando) parar();
+    });
+
     pintarBotao();
     raiz.dataset.pronto = 'sim';
 
@@ -768,7 +847,8 @@
         var lista = [];
         termos.forEach(function (t) { lista.push({ texto: t.texto, peso: t.peso, visivel: !!t.el }); });
         lista.sort(function (a, b) { return b.peso - a.peso; });
-        return { termos: lista, escala: escalaAtual, gravando: gravando, enviados: enviados, falhas: falhas, fila: fila.length + ativos };
+        return { termos: lista, escala: escalaAtual, gravando: gravando,
+          microfone: !!(stream && stream.getTracks().some(function (trilha) { return trilha.readyState === 'live'; })), enviados: enviados, falhas: falhas, fila: fila.length + ativos };
       }
     };
     return api;

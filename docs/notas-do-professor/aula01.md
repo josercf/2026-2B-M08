@@ -32,6 +32,8 @@ entregas.
 
 - **Slide 5, nuvem.** Pergunta aberta antes de qualquer explicação do case. Cada pessoa responde
   em uma frase; a nuvem mostra o vocabulário que a turma já traz. Quatro minutos.
+  Tecla M liga e desliga o microfone (ou o botão discreto no rodapé da nuvem); tecla C mostra os
+  controles para digitar um termo, limpar ou trocar o webhook. Sair do slide fecha o microfone.
 - **Slide 6, carteira.** A lista é a carteira de peso igual da cesta; cada ativo vira um ponto, a
   nuvem de carteiras surge e a fronteira é traçada. Fala: "o módulo constrói a ferramenta que
   desenha esta curva para o parceiro, e ela começa pelos dados que o A1 coleta".

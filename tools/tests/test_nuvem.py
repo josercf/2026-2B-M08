@@ -294,3 +294,71 @@ def test_sair_do_slide_desliga_o_microfone(pagina):
     page.wait_for_function("IntelINuvem.estado().gravando === true", timeout=5000)
     page.evaluate("Reveal.next()")
     page.wait_for_function("IntelINuvem.estado().gravando === false", timeout=5000)
+    # Regressão de 20/10/2026: além de parar a gravação, a trilha do microfone
+    # precisa terminar, senão o navegador mantém o indicador de microfone aceso.
+    page.wait_for_function("IntelINuvem.estado().microfone === false", timeout=5000)
+
+
+# Pedido de 20/10/2026: ao sair do slide da nuvem o microfone tem de fechar.
+ATRASO_PERMISSAO = """
+(() => {
+  const original = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
+  window.__trilhasAbertas = [];
+  navigator.mediaDevices.getUserMedia = (c) => new Promise((ok, erro) => setTimeout(() => {
+    original(c).then((s) => { window.__trilhasAbertas.push(...s.getTracks()); ok(s); }, erro);
+  }, 1200));
+})();
+"""
+
+
+def test_permissao_que_chega_depois_de_sair_do_slide_fecha_o_microfone(pagina):
+    pedidos = []
+    _simular_webhook(pagina, pedidos)
+    pagina.add_init_script(ATRASO_PERMISSAO)
+    page = pagina.ir("?nuvem=%s" % WEBHOOK)
+    page.click("#nuvem-projeto .nuvem-mic")
+    page.evaluate("Reveal.next()")
+    page.wait_for_function("window.__trilhasAbertas.length > 0", timeout=6000)
+    page.wait_for_timeout(200)
+    vivas = page.evaluate("window.__trilhasAbertas.filter(t => t.readyState === 'live').length")
+    assert vivas == 0
+    assert page.evaluate("IntelINuvem.estado().gravando") is False
+
+
+def test_clique_e_tecla_m_seguidos_pedem_um_microfone_so(pagina):
+    pedidos = []
+    _simular_webhook(pagina, pedidos)
+    page = pagina.ir("?nuvem=%s" % WEBHOOK)
+    page.click("#nuvem-projeto .nuvem-mic")
+    page.keyboard.press("m")
+    page.wait_for_function("IntelINuvem.estado().gravando === true", timeout=5000)
+    page.wait_for_timeout(300)
+    assert page.evaluate("window.__pedidosMicrofone") == 1
+    page.keyboard.press("m")
+    page.wait_for_function("IntelINuvem.estado().microfone === false", timeout=5000)
+
+
+def test_modo_limpo_do_deck_esconde_os_controles(ambiente):
+    """No deck da Aula 01 a nuvem ocupa a largura toda; a tecla C mostra os
+    controles e o botão discreto do rodapé liga o microfone."""
+    navegador, url = ambiente
+    deck = url.replace("tools/tests/fixture_nuvem.html", "aulas/aula01.html")
+    contexto = navegador.new_context(viewport={"width": 1280, "height": 720}, reduced_motion="reduce")
+    page = contexto.new_page()
+    try:
+        page.goto("%s#/%s" % (deck, SLIDE), wait_until="load")
+        page.wait_for_selector("section#%s.present .nuvem[data-pronto='sim']" % SLIDE)
+        assert page.eval_on_selector("#nuvem-projeto", "e => e.classList.contains('nuvem-limpa')")
+        visivel = "s => getComputedStyle(document.querySelector(s)).display !== 'none'"
+        assert not page.evaluate(visivel, "#nuvem-projeto .nuvem-controles")
+        assert page.evaluate(visivel, "#nuvem-projeto .nuvem-chip")
+        largura = page.eval_on_selector("#nuvem-projeto .nuvem-palco", "e => e.getBoundingClientRect().width")
+        assert largura > 1100
+        fundo = page.eval_on_selector("section#%s" % SLIDE, "e => getComputedStyle(e).backgroundColor")
+        assert fundo == "rgb(255, 255, 255)"
+        page.keyboard.press("c")
+        assert page.evaluate(visivel, "#nuvem-projeto .nuvem-controles")
+        page.keyboard.press("c")
+        assert not page.evaluate(visivel, "#nuvem-projeto .nuvem-controles")
+    finally:
+        contexto.close()

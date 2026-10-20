@@ -9,18 +9,11 @@
 
 /* ---------------------------------------------------------------- slide */
 
-.reveal .slides section.nuvem-slide {
-  background: var(--seg-primaria);
-  color: var(--inteli-branco);
-}
-
-.nuvem-slide .slide-title-area { margin-bottom: 20px; }
-.nuvem-slide .slide-title-area h2 { color: var(--inteli-branco); }
-.reveal .nuvem-slide .nuvem-instrucao {
-  margin: 6px 0 0;
-  color: var(--inteli-cinza-medio);
-}
-.nuvem-slide .slide-footer { color: var(--inteli-cinza-medio); }
+/* Fundo claro (pedido de 20/10/2026): o slide usa a base do tema, e a nuvem
+   fala em roxo, com o verde como marca-texto e o coral só no filete do termo
+   mais citado. */
+.nuvem-slide .slide-title-area { margin-bottom: 14px; }
+.reveal .nuvem-slide .nuvem-instrucao { margin: 6px 0 0; }
 
 /* ------------------------------------------------------------ componente */
 
@@ -52,8 +45,8 @@
   flex: none;
   padding: 0;
   border: none;
-  background: var(--seg-secundaria);
-  color: var(--seg-primaria);
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
   box-shadow: inset 0 -6px 0 var(--seg-destaque);
   font: inherit;
   cursor: pointer;
@@ -69,11 +62,11 @@
   letter-spacing: 0.02em;
 }
 
-.nuvem-mic:hover { background: var(--inteli-branco); }
-.nuvem-mic:focus-visible { outline: 3px solid var(--inteli-branco); outline-offset: 4px; }
+.nuvem-mic:hover { background: var(--seg-texto); }
+.nuvem-mic:focus-visible { outline: 3px solid var(--seg-secundaria); outline-offset: 4px; }
 
 /* Gravando: fundo branco e dois anéis quadrados que se expandem em sequência. */
-.nuvem-gravando .nuvem-mic { background: var(--inteli-branco); }
+.nuvem-gravando .nuvem-mic { background: var(--seg-primaria); }
 .nuvem-gravando .nuvem-mic-rotulo { font-size: var(--escala-subtitulo); }
 
 .nuvem-mic::before,
@@ -101,11 +94,11 @@
   overflow: hidden;
   font-size: var(--escala-complementar);
   line-height: 1.4;
-  color: var(--inteli-cinza-medio);
+  color: var(--seg-texto);
 }
 
 .nuvem .nuvem-status.nuvem-aviso {
-  color: var(--inteli-branco);
+  color: var(--seg-texto);
   border-left: 3px solid var(--seg-destaque);
   padding-left: 8px;
 }
@@ -122,7 +115,7 @@
 .nuvem-barra {
   flex: 1;
   height: 100%;
-  background: color-mix(in srgb, var(--inteli-branco) 14%, transparent);
+  background: var(--seg-borda);
   transition: background-color 0.08s linear;
 }
 
@@ -134,15 +127,15 @@
   padding: 8px 10px;
   border: none;
   border-bottom: 2px solid var(--seg-secundaria);
-  background: color-mix(in srgb, var(--inteli-branco) 9%, transparent);
-  color: var(--inteli-branco);
+  background: var(--seg-base);
+  color: var(--seg-texto);
   font: inherit;
   font-size: 16px;
   font-weight: 300;
 }
 
 .nuvem-campo::placeholder { color: var(--inteli-cinza-escuro); }
-.nuvem-campo:focus { outline: 2px solid var(--inteli-branco); outline-offset: 0; }
+.nuvem-campo:focus { outline: 2px solid var(--seg-primaria); outline-offset: 0; }
 
 .nuvem-acoes {
   display: flex;
@@ -156,9 +149,9 @@
   justify-content: center;
   gap: 6px;
   padding: 8px 6px;
-  border: 1px solid color-mix(in srgb, var(--inteli-branco) 35%, transparent);
-  background: transparent;
-  color: var(--inteli-branco);
+  border: 1px solid var(--seg-primaria);
+  background: var(--seg-base);
+  color: var(--seg-texto);
   font: inherit;
   font-size: var(--escala-complementar);
   font-weight: 600;
@@ -166,7 +159,7 @@
 }
 
 .nuvem-botao .icone { font-size: 20px; }
-.nuvem-botao:hover { background: color-mix(in srgb, var(--inteli-branco) 12%, transparent); }
+.nuvem-botao:hover { background: var(--seg-superficie); }
 
 /* Configuração do webhook: ocupa o lugar do medidor, do campo e das ações. */
 .nuvem-config {
@@ -186,7 +179,7 @@
   gap: 4px;
   font-size: var(--escala-complementar);
   font-weight: 600;
-  color: var(--inteli-cinza-medio);
+  color: var(--seg-texto);
 }
 
 .nuvem-salvar {
@@ -195,7 +188,7 @@
   border-color: var(--seg-secundaria);
 }
 
-.nuvem-salvar:hover { background: var(--inteli-branco); }
+.nuvem-salvar:hover { background: var(--seg-superficie); }
 
 /* ----------------------------------------------------------------- palco */
 
@@ -247,7 +240,7 @@
   text-align: center;
   font-size: var(--escala-subtitulo);
   font-weight: 300;
-  color: var(--inteli-cinza-escuro);
+  color: var(--seg-texto);
   transition: opacity 0.4s ease;
 }
 
@@ -260,7 +253,7 @@
   gap: 24px;
   height: 40px;
   flex: none;
-  border-top: 1px solid color-mix(in srgb, var(--inteli-branco) 22%, transparent);
+  border-top: 1px solid var(--seg-borda);
 }
 
 .nuvem .nuvem-frase {
@@ -273,7 +266,7 @@
   font-size: 16px;
   font-weight: 300;
   line-height: 1.3;
-  color: var(--inteli-cinza-medio);
+  color: var(--seg-texto);
 }
 
 .nuvem .nuvem-contagem {
@@ -284,7 +277,7 @@
   line-height: 1.3;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--seg-secundaria);
+  color: var(--seg-texto);
 }
 
 /* ---------------------------------------------------------------- termos */
@@ -310,13 +303,14 @@
   display: inline-block;
 }
 
-.nuvem-t1 { color: var(--inteli-branco); font-weight: 700; }
+.nuvem-termo { color: var(--seg-texto); }
+.nuvem-t1 { font-weight: 700; }
 .nuvem-t2 { font-weight: 700; }
-.nuvem-t2.nuvem-cor0 { color: var(--seg-secundaria); }
-.nuvem-t2.nuvem-cor1 { color: var(--inteli-branco); }
+/* Verde como marca-texto atrás da palavra: verde em texto sobre branco mede
+   menos de 2:1 e não se lê do fundo da sala. */
+.nuvem-t2.nuvem-cor0 .nuvem-termo-texto { box-shadow: inset 0 -0.32em 0 var(--seg-secundaria); }
 .nuvem-t3 { font-weight: 600; }
-.nuvem-t3.nuvem-cor0 { color: var(--inteli-cinza-medio); }
-.nuvem-t3.nuvem-cor1 { color: var(--seg-secundaria); }
+.nuvem-t3.nuvem-cor1 { font-weight: 300; }
 
 /* Termo mais citado: sublinhado por um filete coral. */
 .nuvem-lider .nuvem-termo-texto::after {
@@ -356,3 +350,73 @@
 html.print-pdf .nuvem-termo { transition: none; }
 html.print-pdf .nuvem-mic::before,
 html.print-pdf .nuvem-mic::after { display: none; }
+
+/* ------------------------------------------------------------ modo limpo */
+
+/* data-modo="limpo": a nuvem ocupa a largura toda e os controles só aparecem
+   com a tecla C (ou quando falta configurar o webhook), por cima do canto
+   esquerdo do palco. */
+.nuvem.nuvem-limpa {
+  grid-template-columns: var(--nuvem-largura, 1168px);
+  position: relative;
+}
+
+.nuvem-limpa .nuvem-controles {
+  display: none;
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  width: 260px;
+  padding: 16px;
+  background: var(--seg-superficie);
+  border-left: 6px solid var(--seg-primaria);
+}
+
+.nuvem-limpa.nuvem-mostra-controles .nuvem-controles { display: flex; }
+.nuvem-limpa .nuvem-mic { height: 120px; }
+
+/* Botão discreto do rodapé: ícone e cronômetro. Escondido fora do modo limpo,
+   onde o botão grande já cumpre o papel. */
+.nuvem-chip {
+  display: none;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--seg-borda);
+  background: var(--seg-base);
+  color: var(--seg-texto);
+  font: inherit;
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  position: relative;
+}
+
+.nuvem-limpa .nuvem-chip { display: inline-flex; }
+.nuvem-chip .icone { width: 18px; height: 18px; }
+.nuvem-chip:hover { border-color: var(--seg-primaria); }
+
+.nuvem-gravando .nuvem-chip {
+  background: var(--seg-primaria);
+  border-color: var(--seg-primaria);
+  color: var(--inteli-branco);
+}
+
+.nuvem-gravando .nuvem-chip::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border: 2px solid var(--seg-secundaria);
+  animation: nuvem-anel 1.8s ease-out infinite;
+  pointer-events: none;
+}
+
+.nuvem-chip.nuvem-chip-aviso { border-color: var(--seg-destaque); box-shadow: inset 4px 0 0 var(--seg-destaque); }
+
+@media (prefers-reduced-motion: reduce) {
+  .nuvem-gravando .nuvem-chip::after { animation: none; }
+}
