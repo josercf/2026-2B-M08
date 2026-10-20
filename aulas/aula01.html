@@ -12,17 +12,17 @@
          Abertura (antes do Bloco 1)  slides 1 a 4   apresentação do professor, combinados, agenda
          Bloco 1 (0 a 15)             slides 5 a 15  nuvem por voz, carteira na fronteira, esteira e os cinco artefatos, Peer Instruction sobre o end do yfinance e o calendário
          Bloco 2 (15 a 30)            slides 16 a 20 eventos corporativos, três visões, animação MGLU3 com previsão, reconstrução do negociado
-         Bloco 3 (30 a 45)            slides 21 a 23 widget B3SA3, escolha coletiva, proventos da PETR4
-         Bloco 4 (45 a 60)            slides 24 a 28 o coletor em três visões (fluxo, código linha a linha, revisão) e a dupla no notebook (12 min)
-         Bloco 5 (60 a 75)            slides 29 a 31 ausências, animação e widget
-         Bloco 6 (75 a 90)            slides 32 a 34 efeito na volatilidade, ADR, dupla (12 min)
-         Bloco 7 (90 a 105)           slides 35 a 39 quiz, notebook, A1, referências
+         Bloco 3 (30 a 45)            slides 21 a 26 widget B3SA3, quatro perguntas no celular (30 s cada), proventos da PETR4
+         Bloco 4 (45 a 60)            slides 27 a 31 o coletor em três visões (fluxo, código linha a linha, revisão) e a dupla no notebook (12 min)
+         Bloco 5 (60 a 75)            slides 32 a 34 ausências, animação e widget
+         Bloco 6 (75 a 90)            slides 35 a 37 efeito na volatilidade, ADR, dupla (12 min)
+         Bloco 7 (90 a 105)           slides 38 a 42 quiz, notebook, A1, referências
 
        A apresentação do professor e os combinados (slides 2 e 3) entram só nesta aula,
        a primeira do módulo, e consomem a folga da abertura. O Bloco 1 tem onze slides:
        os sete da esteira (7 a 13) são de referência, cerca de um minuto cada, e a nuvem
        (slide 5) fecha em quatro minutos. Se o tempo apertar, passar os slides 9 a 13 só
-       pelo A1, cortar o slide 33 (exemplo de ADR) e reduzir a segunda dupla para 8 minutos. -->
+       pelo A1, cortar o slide 36 (exemplo de ADR) e reduzir a segunda dupla para 8 minutos. -->
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="../assets/css/inteli-brand.css">
@@ -915,51 +915,24 @@ def preco_negociado(fechamento, eventos, ticker):
       </section>
 
       <!-- 22 -->
-      <section class="content-slide" id="escolha-visoes">
+      <section class="quiz-slide" id="escolha-visoes">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
-        <div class="slide-title-area slide-title-area-cronometro">
-          <div>
-            <div class="accent-bar"></div>
-            <h2>Qual visão responde a cada pergunta</h2>
-          </div>
-          <div class="cronometro" id="cronometro-escolha" data-minutos="4"></div>
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Qual visão responde: pergunta 1 de 4</h2>
         </div>
-        <div class="escolha-grid">
-          <div class="escolha" id="escolha-1">
-            <p class="escolha-item">1. Quanto R$ 1.000 em PETR4 em 2019 viraram, com proventos</p>
-            <ul class="escolha-opcoes">
+        <div class="quiz-vivo quiz-vivo-curto" data-quiz-vivo data-sessao="m08-aula01-2026-10-20" data-pergunta="visoes-1"
+             data-correta="2" data-rodadas="1" data-tempo="30" data-enunciado="Quanto R$ 1.000 em PETR4 em 2019 viraram, com proventos?">
+          <div class="quiz-vivo-pergunta">
+            <p class="quiz-vivo-enunciado">Quanto R$ 1.000 em PETR4 em 2019 viraram, com proventos?</p>
+            <ol class="quiz-vivo-opcoes">
               <li>Negociado</li>
               <li>Close</li>
               <li data-correct="true">Adj Close</li>
-            </ul>
-          </div>
-          <div class="escolha" id="escolha-2">
-            <p class="escolha-item">2. Preço da B3SA3 na tela do home broker em 14/05/2021</p>
-            <ul class="escolha-opcoes">
-              <li data-correct="true">Negociado</li>
-              <li>Close</li>
-              <li>Adj Close</li>
-            </ul>
-          </div>
-          <div class="escolha" id="escolha-3">
-            <p class="escolha-item">3. Volatilidade anual para o otimizador</p>
-            <ul class="escolha-opcoes">
-              <li>Negociado</li>
-              <li>Close</li>
-              <li data-correct="true">Adj Close</li>
-            </ul>
-          </div>
-          <div class="escolha" id="escolha-4">
-            <p class="escolha-item">4. Valor de mercado da empresa naquele dia</p>
-            <ul class="escolha-opcoes">
-              <li data-correct="true">Negociado</li>
-              <li>Close</li>
-              <li>Adj Close</li>
-            </ul>
+            </ol>
           </div>
         </div>
-        <p>Cada dupla decide antes do clique. A sala vota em cada item.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
           <p class="footer-page">22</p>
@@ -967,6 +940,82 @@ def preco_negociado(fechamento, eventos, ticker):
       </section>
 
       <!-- 23 -->
+      <section class="quiz-slide" id="escolha-visoes-2">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Qual visão responde: pergunta 2 de 4</h2>
+        </div>
+        <div class="quiz-vivo quiz-vivo-curto" data-quiz-vivo data-sessao="m08-aula01-2026-10-20" data-pergunta="visoes-2"
+             data-correta="0" data-rodadas="1" data-tempo="30" data-enunciado="Qual era o preço da B3SA3 na tela do home broker em 14/05/2021?">
+          <div class="quiz-vivo-pergunta">
+            <p class="quiz-vivo-enunciado">Qual era o preço da B3SA3 na tela do home broker em 14/05/2021?</p>
+            <ol class="quiz-vivo-opcoes">
+              <li data-correct="true">Negociado</li>
+              <li>Close</li>
+              <li>Adj Close</li>
+            </ol>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
+          <p class="footer-page">23</p>
+        </div>
+      </section>
+
+      <!-- 24 -->
+      <section class="quiz-slide" id="escolha-visoes-3">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Qual visão responde: pergunta 3 de 4</h2>
+        </div>
+        <div class="quiz-vivo quiz-vivo-curto" data-quiz-vivo data-sessao="m08-aula01-2026-10-20" data-pergunta="visoes-3"
+             data-correta="2" data-rodadas="1" data-tempo="30" data-enunciado="Qual série entra na volatilidade anual que vai para o otimizador?">
+          <div class="quiz-vivo-pergunta">
+            <p class="quiz-vivo-enunciado">Qual série entra na volatilidade anual que vai para o otimizador?</p>
+            <ol class="quiz-vivo-opcoes">
+              <li>Negociado</li>
+              <li>Close</li>
+              <li data-correct="true">Adj Close</li>
+            </ol>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
+          <p class="footer-page">24</p>
+        </div>
+      </section>
+
+      <!-- 25 -->
+      <section class="quiz-slide" id="escolha-visoes-4">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Qual visão responde: pergunta 4 de 4</h2>
+        </div>
+        <div class="quiz-vivo quiz-vivo-curto" data-quiz-vivo data-sessao="m08-aula01-2026-10-20" data-pergunta="visoes-4"
+             data-correta="0" data-rodadas="1" data-tempo="30" data-enunciado="Qual série dá o valor de mercado da empresa naquele dia?">
+          <div class="quiz-vivo-pergunta">
+            <p class="quiz-vivo-enunciado">Qual série dá o valor de mercado da empresa naquele dia?</p>
+            <ol class="quiz-vivo-opcoes">
+              <li data-correct="true">Negociado</li>
+              <li>Close</li>
+              <li>Adj Close</li>
+            </ol>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
+          <p class="footer-page">25</p>
+        </div>
+      </section>
+
+
+      <!-- 26 -->
       <section class="content-slide" id="proventos">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -992,18 +1041,18 @@ def preco_negociado(fechamento, eventos, ticker):
         </table>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; janela 02/01/2019 a 31/08/2026 [1]</p>
-          <p class="footer-page">23</p>
+          <p class="footer-page">26</p>
         </div>
       </section>
 
-      <!-- 24 -->
+      <!-- 27 -->
       <section class="section-slide">
         <div class="accent-bar"></div>
         <h2>Um coletor que outra pessoa consegue rodar</h2>
         <h3>Parâmetros, queda para o snapshot e fim exclusivo</h3>
       </section>
 
-      <!-- 25 -->
+      <!-- 28 -->
       <section class="content-slide" id="coletar">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1041,11 +1090,11 @@ def preco_negociado(fechamento, eventos, ticker):
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [4]</p>
-          <p class="footer-page">25</p>
+          <p class="footer-page">28</p>
         </div>
       </section>
 
-      <!-- 26 -->
+      <!-- 29 -->
       <section class="content-slide" id="coletar-codigo">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1074,11 +1123,11 @@ def preco_negociado(fechamento, eventos, ticker):
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [4]</p>
-          <p class="footer-page">26</p>
+          <p class="footer-page">29</p>
         </div>
       </section>
 
-      <!-- 27 -->
+      <!-- 30 -->
       <section class="content-slide" id="coletar-revisao">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1140,11 +1189,11 @@ def preco_negociado(fechamento, eventos, ticker):
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [4]</p>
-          <p class="footer-page">27</p>
+          <p class="footer-page">30</p>
         </div>
       </section>
 
-      <!-- 28 -->
+      <!-- 31 -->
       <section class="exercise-slide" id="pratica-coletor">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1169,18 +1218,18 @@ def preco_negociado(fechamento, eventos, ticker):
         <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 01 no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">28</p>
+          <p class="footer-page">31</p>
         </div>
       </section>
 
-      <!-- 29 -->
+      <!-- 32 -->
       <section class="section-slide">
         <div class="accent-bar"></div>
         <h2>Ausências reais do provedor</h2>
         <h3>Descartar ou preencher muda o risco medido</h3>
       </section>
 
-      <!-- 30 -->
+      <!-- 33 -->
       <section class="content-slide" id="mapa-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1195,11 +1244,11 @@ def preco_negociado(fechamento, eventos, ticker):
         <p>BOVA11, IVVB11 e GOLD11 sem preço num pregão normal da B3. A GOLD11 tem ainda 484 pregões vazios antes da primeira cotação, em 11/12/2020.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
-          <p class="footer-page">30</p>
+          <p class="footer-page">33</p>
         </div>
       </section>
 
-      <!-- 31 -->
+      <!-- 34 -->
       <section class="content-slide" id="widget-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1215,11 +1264,11 @@ def preco_negociado(fechamento, eventos, ticker):
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">31</p>
+          <p class="footer-page">34</p>
         </div>
       </section>
 
-      <!-- 32 -->
+      <!-- 35 -->
       <section class="content-slide" id="volatilidade">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1246,11 +1295,11 @@ def preco_negociado(fechamento, eventos, ticker):
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1] [5]</p>
-          <p class="footer-page">32</p>
+          <p class="footer-page">35</p>
         </div>
       </section>
 
-      <!-- 33 -->
+      <!-- 36 -->
       <section class="content-slide" id="adr">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1284,11 +1333,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">33</p>
+          <p class="footer-page">36</p>
         </div>
       </section>
 
-      <!-- 34 -->
+      <!-- 37 -->
       <section class="exercise-slide" id="pratica-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1312,11 +1361,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">34</p>
+          <p class="footer-page">37</p>
         </div>
       </section>
 
-      <!-- 35 -->
+      <!-- 38 -->
       <section class="quiz-slide" id="quiz-final">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1370,11 +1419,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">35</p>
+          <p class="footer-page">38</p>
         </div>
       </section>
 
-      <!-- 36 -->
+      <!-- 39 -->
       <section class="exercise-slide" id="notebook">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1394,11 +1443,11 @@ porque descartar apaga março de 2020.
         <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Abrir no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">36</p>
+          <p class="footer-page">39</p>
         </div>
       </section>
 
-      <!-- 37 -->
+      <!-- 40 -->
       <section class="content-slide" id="a1">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1423,11 +1472,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">37</p>
+          <p class="footer-page">40</p>
         </div>
       </section>
 
-      <!-- 38 -->
+      <!-- 41 -->
       <section class="content-slide" id="referencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1447,11 +1496,11 @@ porque descartar apaga março de 2020.
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">38</p>
+          <p class="footer-page">41</p>
         </div>
       </section>
 
-      <!-- 39 -->
+      <!-- 42 -->
       <section class="end-slide">
         <h1>Até 05/11/2026</h1>
         <h3>Aula 02: Dados Financeiros, Do Preço ao Retorno</h3>

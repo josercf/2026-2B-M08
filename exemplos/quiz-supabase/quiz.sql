@@ -175,3 +175,30 @@ end $$;
 insert into quiz_config (id, chave_professor_hash)
 values (true, crypt('TROQUE-PELA-SUA-CHAVE', gen_salt('bf')))
 on conflict (id) do nothing;
+
+-- Configuração das ferramentas da aula (URL e token do webhook da nuvem de
+-- palavras), guardada fora do repositório público. Sem política de leitura:
+-- só as duas funções abaixo, com a chave do professor, leem ou gravam.
+create table if not exists quiz_segredos (
+  nome text primary key,
+  valor text not null
+);
+alter table quiz_segredos enable row level security;
+
+create or replace function quiz_segredo(p_chave text, p_nome text)
+returns text language plpgsql security definer set search_path = public, extensions as $$
+begin
+  if not quiz_chave_ok(p_chave) then raise exception 'chave do professor inválida'; end if;
+  return (select valor from quiz_segredos where nome = p_nome);
+end $$;
+
+create or replace function quiz_guardar_segredo(p_chave text, p_nome text, p_valor text)
+returns void language plpgsql security definer set search_path = public, extensions as $$
+begin
+  if not quiz_chave_ok(p_chave) then raise exception 'chave do professor inválida'; end if;
+  insert into quiz_segredos (nome, valor) values (p_nome, p_valor)
+  on conflict (nome) do update set valor = excluded.valor;
+end $$;
+
+grant execute on function quiz_segredo(text, text) to anon, authenticated;
+grant execute on function quiz_guardar_segredo(text, text, text) to anon, authenticated;

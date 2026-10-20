@@ -489,6 +489,39 @@
       if (params.get('nuvem-token')) gravar(CHAVE_TOKEN, params.get('nuvem-token'));
     } catch (e) { /* sem URLSearchParams: segue com o que estiver salvo */ }
 
+    // URL e token também ficam no Supabase do quiz (quiz_segredos), lidos e
+    // gravados com a chave do professor que o quiz já guarda neste navegador.
+    // Assim um navegador novo se configura sozinho, e nada vai para o repositório.
+    function clienteQuiz() {
+      var cfg = window.IntelIQuizConfig;
+      var chave = '';
+      try { chave = localStorage.getItem('inteli-quiz-chave') || ''; } catch (e) { chave = ''; }
+      if (!cfg || !window.supabase || !chave) return null;
+      return { cliente: window.supabase.createClient(cfg.url, cfg.chave, { auth: { persistSession: false } }), chave: chave };
+    }
+
+    function guardarNaNuvem(url, tk) {
+      var q = clienteQuiz();
+      if (!q) return;
+      q.cliente.rpc('quiz_guardar_segredo', { p_chave: q.chave, p_nome: 'nuvem-webhook', p_valor: url });
+      if (tk) q.cliente.rpc('quiz_guardar_segredo', { p_chave: q.chave, p_nome: 'nuvem-token', p_valor: tk });
+    }
+
+    function buscarNaNuvem() {
+      if (ler(CHAVE_URL) && ler(CHAVE_TOKEN)) return;
+      var q = clienteQuiz();
+      if (!q) return;
+      ['nuvem-webhook', 'nuvem-token'].forEach(function (nome) {
+        q.cliente.rpc('quiz_segredo', { p_chave: q.chave, p_nome: nome }).then(function (r) {
+          if (r.error || !r.data) return;
+          gravar(nome === 'nuvem-webhook' ? CHAVE_URL : CHAVE_TOKEN, r.data);
+        });
+      });
+    }
+    // Depois do load: o supabase-js e a configuração do quiz vêm depois deste script.
+    if (document.readyState === 'complete') buscarNaNuvem();
+    else window.addEventListener('load', buscarNaNuvem);
+
     function abrirConfig(mensagem) {
       raiz.classList.add('nuvem-configurando', 'nuvem-mostra-controles');
       campoUrl.value = urlAtual();
@@ -511,7 +544,9 @@
       }
       gravar(CHAVE_URL, url);
       gravar(CHAVE_TOKEN, campoToken.value.trim());
+      guardarNaNuvem(url, campoToken.value.trim());
       fecharConfig();
+      raiz.classList.remove('nuvem-mostra-controles');
       iniciar();
     });
 
