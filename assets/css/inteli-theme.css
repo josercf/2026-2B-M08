@@ -2286,3 +2286,7 @@ html.print-pdf .fluxo-pacote { animation: none !important; }
 @media (prefers-reduced-motion: reduce) {
   .codigo-passos.codigo-em-passo .cl { transition: none; }
 }
+
+/* Código curto (dez linhas): a janela cabe inteira, sem deslizar. */
+.reveal .codigo-passos-curto { height: 440px; }
+.reveal .codigo-passos-curto .codigo-linhas code { font-size: 16px; line-height: 30px; }

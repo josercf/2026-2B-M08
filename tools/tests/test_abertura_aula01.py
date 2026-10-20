@@ -198,10 +198,12 @@ def test_codigo_da_reconstrucao_e_o_do_notebook():
     nb = json.load(open(os.path.join(RAIZ, "notebooks", "aula01.ipynb"), encoding="utf-8"))
     celula = next("".join(c["source"]) for c in nb["cells"] if "def preco_negociado" in "".join(c["source"]))
     funcao_nb = celula[celula.index("def preco_negociado"):celula.index("return serie * fator")]
-    codigo = html_mod.unescape(re.search(r"<code>(.*?)</code>", _secao("reconstruir"), re.S).group(1))
+    linhas = re.findall(r'<span class="cl" data-n="\d+"><span class="cl-n">\d+</span>(.*?)</span>(?=<span class="cl"|</code>)',
+                        _secao("reconstruir"), re.S)
+    codigo = "\n".join(html_mod.unescape(re.sub(r"<[^>]+>", "", l)).rstrip() for l in linhas)
     assert funcao_nb in codigo
     assert 'ler_csv("eventos_desdobramento.csv", parse_dates=["data"])' in codigo
-    assert "B3SA3, 2021-05-17, 3.0" in _texto(_secao("reconstruir"))
+    assert "2021-05-17, fator 3.0" in _secao("reconstruir")
     assert "B3SA3,2021-05-17,3.0" in _ler(os.path.join(RAIZ, "dados", "eventos_desdobramento.csv"))
 
 

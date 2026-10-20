@@ -858,34 +858,18 @@
           <div class="accent-bar"></div>
           <h2>O preço negociado sai do Close e dos eventos</h2>
         </div>
-        <div class="reconstruir">
-          <pre class="code-compact"><code>eventos = ler_csv("eventos_desdobramento.csv", parse_dates=["data"])
-
-def preco_negociado(fechamento, eventos, ticker):
-    """Close multiplicado pelos fatores dos eventos posteriores a cada data."""
-    serie = fechamento[ticker].dropna()
-    fator = np.ones(len(serie))
-    do_ticker = eventos[eventos["ticker"] == ticker]
-    for data, f in zip(do_ticker["data"], do_ticker["fator"]):
-        fator = fator * np.where(serie.index &lt; data, f, 1.0)
-    return serie * fator</code></pre>
-          <ol class="reconstruir-passos">
-            <li class="entrada" style="--atraso: 0.3s">
-              <span class="passo-numero">1</span>
-              <div><p class="passo-titulo">O evento é uma linha do CSV</p>
-              <p><code>B3SA3, 2021-05-17, 3.0</code></p></div>
-            </li>
-            <li class="entrada" style="--atraso: 0.8s">
-              <span class="passo-numero">2</span>
-              <div><p class="passo-titulo">Antes da data, o Close vezes o fator</p>
-              <p>cada ação de antes valia o preço de 3 ações de depois</p></div>
-            </li>
-            <li class="entrada" style="--atraso: 1.3s">
-              <span class="passo-numero">3</span>
-              <div><p class="passo-titulo">O widget compara as duas séries no dia</p>
-              <p>o negociado cai no desdobramento, o Close segue a variação do mercado</p></div>
-            </li>
-          </ol>
+        <div class="codigo-passos codigo-passos-curto" data-codigo-passos data-intro-titulo="O negociado em quatro passos"
+             data-intro="Mesma função da seção 3 do notebook. Avance com a seta para ler trecho a trecho.">
+          <div class="codigo-janela"><pre class="codigo-linhas"><code><span class="cl" data-n="1"><span class="cl-n">1</span>eventos = ler_csv("eventos_desdobramento.csv", parse_dates=["data"])</span><span class="cl" data-n="2"><span class="cl-n">2</span> </span><span class="cl" data-n="3"><span class="cl-n">3</span><span class="tok-kw">def</span> preco_negociado(fechamento, eventos, ticker):</span><span class="cl" data-n="4"><span class="cl-n">4</span>    """Close multiplicado pelos fatores dos eventos posteriores a cada data."""</span><span class="cl" data-n="5"><span class="cl-n">5</span>    serie = fechamento[ticker].dropna()</span><span class="cl" data-n="6"><span class="cl-n">6</span>    fator = np.ones(len(serie))</span><span class="cl" data-n="7"><span class="cl-n">7</span>    do_ticker = eventos[eventos["ticker"] == ticker]</span><span class="cl" data-n="8"><span class="cl-n">8</span>    <span class="tok-kw">for</span> data, f <span class="tok-kw">in</span> zip(do_ticker["data"], do_ticker["fator"]):</span><span class="cl" data-n="9"><span class="cl-n">9</span>        fator = fator * np.where(serie.index &lt; data, f, 1.0)</span><span class="cl" data-n="10"><span class="cl-n">10</span>    <span class="tok-kw">return</span> serie * fator</span></code></pre></div>
+          <aside class="codigo-explica">
+            <p class="codigo-contador"></p>
+            <p class="codigo-titulo"></p>
+            <p class="codigo-texto"></p>
+          </aside>
+          <span class="fragment codigo-passo" data-linhas="1" data-titulo="O evento é uma linha do CSV" data-texto="eventos_desdobramento.csv traz ticker, data e fator. Para a B3SA3: 2021-05-17, fator 3.0, um desdobramento de 1 para 3."></span>
+          <span class="fragment codigo-passo" data-linhas="5-6" data-titulo="Começa sem ajuste" data-texto="A série é o Close do ticker, e o fator começa em 1 para todo pregão."></span>
+          <span class="fragment codigo-passo" data-linhas="7-9" data-titulo="Antes da data, vezes o fator" data-texto="Para cada evento do ticker, todo pregão anterior à data é multiplicado pelo fator: cada ação de antes valia o preço de 3 ações de depois."></span>
+          <span class="fragment codigo-passo" data-linhas="10" data-titulo="A série negociada" data-texto="O Close vezes o fator acumulado devolve o preço que apareceu na tela. É a série que o widget a seguir compara com o Close no dia do evento."></span>
         </div>
         <div class="faixa-nota">
           <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#code"></use></svg>
@@ -1363,7 +1347,7 @@ def preco_negociado(fechamento, eventos, ticker):
         <div class="slide-title-area slide-title-area-cronometro">
           <div>
             <div class="accent-bar"></div>
-            <h2>Prática em dupla: ausências e o primeiro ADR</h2>
+            <h2>Prática em dupla: ausências e ADR</h2>
           </div>
           <div class="cronometro" id="cronometro-ausencias" data-minutos="12" data-ampulheta
                data-marcos="6" data-marco-texto="6 minutos: troquem de papel"></div>
@@ -1379,6 +1363,7 @@ def preco_negociado(fechamento, eventos, ticker):
           <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
           <p><strong>Checagem aos 6 min:</strong> os dois valores da PETR4 estão anotados. <strong>Debrief:</strong> duas duplas com decisões opostas leem a frase, e a turma confere se o número aparece.</p>
         </div>
+        <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 01 no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
           <p class="footer-page">38</p>
