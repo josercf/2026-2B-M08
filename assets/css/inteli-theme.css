@@ -2290,3 +2290,40 @@ html.print-pdf .fluxo-pacote { animation: none !important; }
 /* Código curto (dez linhas): a janela cabe inteira, sem deslizar. */
 .reveal .codigo-passos-curto { height: 440px; }
 .reveal .codigo-passos-curto .codigo-linhas code { font-size: 16px; line-height: 30px; }
+
+/* Daily dos grupos: as três perguntas à esquerda e o cronômetro grande, com a
+   ampulheta, à direita. */
+.daily { display: grid; grid-template-columns: 1fr 420px; gap: 40px; align-items: start; flex: 1; }
+
+.daily-perguntas { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 18px; }
+
+.reveal .daily-perguntas li {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 20px;
+  align-items: center;
+  margin: 0;
+  padding: 18px 22px 18px 0;
+  background: var(--seg-superficie);
+}
+
+.daily-numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.reveal .daily-perguntas p { margin: 0; font-size: var(--escala-subtitulo); font-weight: 600; }
+
+.daily-relogio { display: flex; justify-content: center; }
+
+.reveal .cronometro.cronometro-grande { transform: scale(2.1); transform-origin: top center; margin-top: 10px; }
+
+/* A ampulheta da daily fica embaixo do cronômetro grande, sem abrir espaço no texto. */
+.slide-daily .ampulheta { top: 330px; right: 160px; width: 170px; }
+.reveal .slides section.slide-daily.com-ampulheta > * { margin-right: 0; }

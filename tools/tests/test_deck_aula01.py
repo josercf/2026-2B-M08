@@ -24,12 +24,14 @@ def _texto(secao):
 def test_apresentacao_e_combinados_vem_logo_depois_da_capa():
     secoes = _secoes()
     assert 'class="cover-slide"' in secoes[0]
-    assert 'id="professor"' in secoes[1]
-    assert 'id="combinados"' in secoes[2]
+    # Pedido de 20/10/2026: a daily dos grupos, com cronômetro, vem logo depois da capa.
+    assert 'id="daily"' in secoes[1] and 'data-minutos="15"' in secoes[1]
+    assert 'id="professor"' in secoes[2]
+    assert 'id="combinados"' in secoes[3]
 
 
 def test_combinados_trazem_os_prazos_definidos_pelo_professor():
-    texto = _texto(_secoes()[2])
+    texto = _texto(_secoes()[3])
     assert "Participação" in texto
     assert "até o fim da instrução" in texto
     assert texto.count("sexta, 23h59") == 2
