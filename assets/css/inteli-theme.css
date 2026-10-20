@@ -1189,6 +1189,42 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   background: var(--seg-secundaria);
 }
 
+/* Perfil em grade 2 x 2: a foto e a trajetória na primeira linha, a formação
+   e o Inteli na segunda. As caixas esticam até a altura da linha, então as
+   bordas de cima e de baixo se alinham entre as duas colunas. */
+.perfil-grade {
+  display: grid;
+  grid-template-columns: 560px 1fr;
+  grid-template-rows: 268px auto;
+  gap: 16px 24px;
+  align-items: stretch;
+}
+
+.perfil-grade .perfil-foto { margin: 0; height: 100%; border-bottom: 6px solid var(--seg-secundaria); }
+.perfil-grade .perfil-foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.perfil-bloco {
+  background: var(--seg-superficie);
+  border-left: 5px solid var(--seg-primaria);
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reveal .perfil-rotulo {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--escala-densa);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.perfil-rotulo .icone { width: 22px; height: 22px; }
+
 /* Combinados como linha do tempo da semana: a linha se desenha, os marcos
    caem em sequência e cada combinado sobe no seu prazo. */
 .semana {
@@ -1196,8 +1232,9 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   margin: 8px 0 0;
   padding: 44px 0 0;
   display: grid;
-  grid-template-columns: 1fr 0.8fr 1.35fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 28px;
+  align-items: stretch;
   position: relative;
 }
 
@@ -1246,6 +1283,8 @@ html.print-pdf.reveal-print .reveal .slides section.cover-slide[class] {
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
+
+.semana .combinado { flex: 1; }
 
 .combinado {
   display: grid;
