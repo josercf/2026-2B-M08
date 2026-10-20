@@ -11,13 +11,13 @@ entregas.
 ## Antes de entrar na sala
 
 - Abrir o deck por HTTP (`python3 -m http.server 8000` na raiz) e conferir que os dois widgets
-  montam: `tres-visoes` no slide 21 e `ausencias` no slide 34.
+  montam: `tres-visoes` no slide 21 e `ausencias` no slide 36.
 - O widget do slide 21 abre na B3SA3. A pergunta da WEGE3 é feita antes do clique no botão WEGE3.
 - O pôster do vídeo do slide 19 para antes de 27/05/2024: a turma anota a previsão olhando o
   pôster, e só então o vídeo toca. O Chromium dos validadores não decodifica H.264; no navegador
   da sala, testar o play antes.
 - Os slides 2 e 3 (apresentação e combinados) só existem nesta aula e consomem a folga da
-  abertura. Se o tempo apertar, cortar primeiro o slide 36 (exemplo de ADR) e reduzir a segunda
+  abertura. Se o tempo apertar, cortar primeiro o slide 38 (exemplo de ADR) e reduzir a segunda
   dupla para 8 minutos.
 - A review da Sprint 1 e a entrega do A1 são três dias depois, na sexta, 23/10/2026. Dizer isso
   na daily e de novo no Bloco 7.
@@ -48,6 +48,9 @@ entregas.
   mesma tabela. O 29 é o código linha a linha: cada seta destaca um trecho e o painel explica; dez
   passos, cerca de cinco minutos. O 30 é a revisão de código: quatro pontos a manter e quatro a
   revisar antes do A1, que viram itens do SPEC.md e do ADR do grupo.
+- **Slides 31 e 32, ADR.** O 31 lê um ADR linha a linha, com a decisão do Adj Close que a turma
+  acabou de ver; o 32 mostra o ADR como instrução para o agente de codificação. O exemplo de
+  ausências do Bloco 6 (slide 38) retoma o formato com o número medido na dupla.
 - **Slide 20, reconstrução.** A mesma função `preco_negociado` da seção 3 do notebook. É a ponte
   para o widget do slide 21 e para o coletor do Bloco 4.
 
@@ -126,7 +129,7 @@ na janela?" Resposta: no preço, -14,65%; com proventos, +42,09%.
 
 ## Bloco 4 (45 a 60): dupla no notebook, seções 1 e 2
 
-Cronômetro de 12 minutos, troca de condutor aos 6 (slide 31). A prática está em camadas:
+Cronômetro de 12 minutos, troca de condutor aos 6 (slide 33). A prática está em camadas:
 
 - **Obrigatório:** abrir o notebook, conferir a cesta e a janela da seção 1, rodar `coletar` e
   anotar a origem impressa; depois da troca, o novo condutor roda de novo com `M08_OFFLINE=1` e
@@ -157,14 +160,14 @@ Animação `aula01-mapa-ausencias` e widget `ausencias`. Números: BOVA11, IVVB1
 cotação em 24/10/2025; GOLD11 com 485 ausências, 484 antes da primeira cotação, em 11/12/2020.
 Descartar mantém 1.423 dos 1.908 pregões e começa a cesta em 11/12/2020.
 
-**Pergunta disparada (slide 34): que número o grupo registra no ADR?** Resposta esperada: a
+**Pergunta disparada (slide 36): que número o grupo registra no ADR?** Resposta esperada: a
 volatilidade anual sob cada tratamento, com o número antes e depois (PETR4 39,25% preenchendo e
 33,41% descartando). Erro comum: registrar só "1.423 pregões", que mede o tamanho da amostra e não
 o efeito no risco.
 
 ## Bloco 6 (75 a 90): descartar ou preencher e o primeiro ADR
 
-**Slide 35.** Volatilidade anual, descartar contra preencher: PETR4 33,41% e 39,25%; VALE3 29,77%
+**Slide 37.** Volatilidade anual, descartar contra preencher: PETR4 33,41% e 39,25%; VALE3 29,77%
 e 35,49%; BOVA11 18,51% e 23,41%; IVVB11 17,67% e 20,15%; MGLU3 67,75% e 65,41%. Preencher cria
 retorno zero em 24/10/2025 e acumula no pregão seguinte: 0,93% no BOVA11, 1,72% no IVVB11 e
 -3,37% na GOLD11.
@@ -173,12 +176,12 @@ Pergunta socrática: "por que a MGLU3 fica mais volátil quando descartamos data
 pregões de 2019 e 2020 que saem eram, para ela, menos dispersos que os seguintes. Quem acertar
 com a explicação merece nota de participação.
 
-**Slide 36, exemplo de ADR.** Dizer em voz alta que é um exemplo. Ele decide preencher, que é o
+**Slide 38, exemplo de ADR.** Dizer em voz alta que é um exemplo. Ele decide preencher, que é o
 tratamento das Aulas 02 a 06 (ADR-009 do acervo); o grupo decide o dele com os números do próprio
 coletor, e um ADR que decide descartar é válido quando cita o custo. Não induzir a turma a copiar
 o exemplo.
 
-**Dupla (slide 37).** Cronômetro de 12 minutos, troca de condutor aos 6. A prática está em
+**Dupla (slide 39).** Cronômetro de 12 minutos, troca de condutor aos 6. A prática está em
 camadas, e o ADR completo sai da aula como tarefa do A1:
 
 - **Obrigatório:** rodar o relatório de ausências da seção 4, rodar a comparação dos tratamentos e
@@ -192,11 +195,11 @@ camadas, e o ADR completo sai da aula como tarefa do A1:
 - **Debrief, nos minutos finais do bloco:** duas duplas com decisões opostas leem a frase em voz
   alta. Critério: a frase cita um número medido? Se não cita, a dupla reescreve antes de sair.
 - **Contingência:** se o notebook não rodar, a dupla escreve a frase com os números da PETR4 do
-  slide 35, que são os mesmos da célula.
+  slide 37, que são os mesmos da célula.
 
 ## Bloco 7 (90 a 105): quiz e amarração
 
-Quiz de três perguntas (slide 38), gabarito: desdobramento (o Close cai só 1,51%); `dropna` na
+Quiz de três perguntas (slide 40), gabarito: desdobramento (o Close cai só 1,51%); `dropna` na
 cesta; Adj Close.
 
 Amarração, em voz alta:

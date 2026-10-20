@@ -13,16 +13,16 @@
          Bloco 1 (0 a 15)             slides 5 a 15  nuvem por voz, carteira na fronteira, esteira e os cinco artefatos, Peer Instruction sobre o end do yfinance e o calendário
          Bloco 2 (15 a 30)            slides 16 a 20 eventos corporativos, três visões, animação MGLU3 com previsão, reconstrução do negociado
          Bloco 3 (30 a 45)            slides 21 a 26 widget B3SA3, quatro perguntas no celular (30 s cada), proventos da PETR4
-         Bloco 4 (45 a 60)            slides 27 a 31 o coletor em três visões (fluxo, código linha a linha, revisão) e a dupla no notebook (12 min)
-         Bloco 5 (60 a 75)            slides 32 a 34 ausências, animação e widget
-         Bloco 6 (75 a 90)            slides 35 a 37 efeito na volatilidade, ADR, dupla (12 min)
-         Bloco 7 (90 a 105)           slides 38 a 42 quiz, notebook, A1, referências
+         Bloco 4 (45 a 60)            slides 27 a 33 o coletor em três visões (fluxo, código linha a linha, revisão), o ADR linha a linha, o ADR para agentes e a dupla no notebook (12 min)
+         Bloco 5 (60 a 75)            slides 34 a 36 ausências, animação e widget
+         Bloco 6 (75 a 90)            slides 37 a 39 efeito na volatilidade, ADR, dupla (12 min)
+         Bloco 7 (90 a 105)           slides 40 a 44 quiz, notebook, A1, referências
 
        A apresentação do professor e os combinados (slides 2 e 3) entram só nesta aula,
        a primeira do módulo, e consomem a folga da abertura. O Bloco 1 tem onze slides:
        os sete da esteira (7 a 13) são de referência, cerca de um minuto cada, e a nuvem
        (slide 5) fecha em quatro minutos. Se o tempo apertar, passar os slides 9 a 13 só
-       pelo A1, cortar o slide 36 (exemplo de ADR) e reduzir a segunda dupla para 8 minutos. -->
+       pelo A1, cortar o slide 38 (exemplo de ADR) e reduzir a segunda dupla para 8 minutos. -->
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="../assets/css/inteli-brand.css">
@@ -1194,6 +1194,62 @@ def preco_negociado(fechamento, eventos, ticker):
       </section>
 
       <!-- 31 -->
+      <section class="content-slide" id="adr-linha">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Como se escreve um ADR, linha a linha</h2>
+        </div>
+        <div class="codigo-passos codigo-passos-texto" data-codigo-passos data-intro-titulo="Um ADR em sete partes"
+             data-intro="Avance com a seta. O exemplo registra a decisão que a turma acabou de ver: qual preço o coletor entrega ao A2.">
+          <div class="codigo-janela"><pre class="codigo-linhas"><code><span class="cl" data-n="1"><span class="cl-n">1</span><span class="tok-kw"># ADR 0001 (exemplo): preço ajustado no coletor</span></span><span class="cl" data-n="2"><span class="cl-n">2</span> </span><span class="cl" data-n="3"><span class="cl-n">3</span>- <span class="tok-kw">Status:</span> aceito</span><span class="cl" data-n="4"><span class="cl-n">4</span>- <span class="tok-kw">Data:</span> 20/10/2026</span><span class="cl" data-n="5"><span class="cl-n">5</span>- <span class="tok-kw">Decisores:</span> aluno responsável pelo coletor</span><span class="cl" data-n="6"><span class="cl-n">6</span> </span><span class="cl" data-n="7"><span class="cl-n">7</span><span class="tok-kw">## Contexto e problema</span></span><span class="cl" data-n="8"><span class="cl-n">8</span>O yfinance devolve Close e Adj Close. O A2 calcula</span><span class="cl" data-n="9"><span class="cl-n">9</span>retorno e risco, e o parceiro decide com esses números.</span><span class="cl" data-n="10"><span class="cl-n">10</span> </span><span class="cl" data-n="11"><span class="cl-n">11</span><span class="tok-kw">## Alternativas consideradas</span></span><span class="cl" data-n="12"><span class="cl-n">12</span>- <span class="tok-kw">Close:</span> corrige desdobramento e grupamento</span><span class="cl" data-n="13"><span class="cl-n">13</span>- <span class="tok-kw">Adj Close:</span> corrige também os proventos</span><span class="cl" data-n="14"><span class="cl-n">14</span> </span><span class="cl" data-n="15"><span class="cl-n">15</span><span class="tok-kw">## Decisão</span></span><span class="cl" data-n="16"><span class="cl-n">16</span>Usar o Adj Close em todo retorno do módulo.</span><span class="cl" data-n="17"><span class="cl-n">17</span> </span><span class="cl" data-n="18"><span class="cl-n">18</span><span class="tok-kw">## Consequências</span></span><span class="cl" data-n="19"><span class="cl-n">19</span>- <span class="tok-kw">Impacto numérico:</span> a PETR4 rende 616,00% na janela</span><span class="cl" data-n="20"><span class="cl-n">20</span>  com proventos, contra 87,12% só no preço.</span><span class="cl" data-n="21"><span class="cl-n">21</span>- <span class="tok-kw">Custo:</span> o Adj Close muda quando sai um provento novo;</span><span class="cl" data-n="22"><span class="cl-n">22</span>  a data da coleta fica registrada no README.</span></code></pre></div>
+          <aside class="codigo-explica">
+            <p class="codigo-contador"></p>
+            <p class="codigo-titulo"></p>
+            <p class="codigo-texto"></p>
+          </aside>
+          <span class="fragment codigo-passo" data-linhas="1" data-titulo="Título" data-texto="Número em sequência e a decisão em poucas palavras. O arquivo vai em /docs/adr/ do repositório do grupo."></span>
+          <span class="fragment codigo-passo" data-linhas="3-5" data-titulo="Status, data e decisores" data-texto="Quem decidiu é quem assina o commit do ADR. É a parte individual da nota: 20% de cada artefato."></span>
+          <span class="fragment codigo-passo" data-linhas="7-9" data-titulo="Contexto e problema" data-texto="O problema em duas linhas, antes de qualquer solução: o que está em jogo para o parceiro."></span>
+          <span class="fragment codigo-passo" data-linhas="11-13" data-titulo="Alternativas" data-texto="O que foi considerado e por que ficou de fora. Sem alternativa, não há decisão a registrar."></span>
+          <span class="fragment codigo-passo" data-linhas="15-16" data-titulo="Decisão" data-texto="Uma frase, no imperativo. É a linha que um colega, ou um agente de codificação, vai seguir."></span>
+          <span class="fragment codigo-passo" data-linhas="18-20" data-titulo="Impacto numérico" data-texto="O número medido nos dados do grupo, antes e depois. Sem número, o ADR não sustenta a decisão."></span>
+          <span class="fragment codigo-passo" data-linhas="21-22" data-titulo="Custo da decisão" data-texto="O que piora com a escolha e como o grupo mitiga."></span>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [7] [8]</p>
+          <p class="footer-page">31</p>
+        </div>
+      </section>
+
+      <!-- 32 -->
+      <section class="content-slide" id="adr-agentes">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O ADR vira instrução para o agente de codificação</h2>
+        </div>
+        <table class="tabela-leitura tabela-agentes">
+          <thead><tr><th>Pedido ao agente</th><th>Sem ADR no repositório</th><th>Com o ADR em /docs/adr/</th></tr></thead>
+          <tbody>
+            <tr class="entrada" style="--atraso: 0.2s"><td>"Calcule o retorno diário da cesta"</td><td>usa o Close, o padrão dos tutoriais, e perde os proventos</td><td>lê o ADR 0001 e usa o Adj Close, citando a decisão no código</td></tr>
+            <tr class="entrada" style="--atraso: 0.6s"><td>"Trate os valores ausentes"</td><td>aplica <code>dropna()</code> e apaga datas da cesta inteira</td><td>segue o tratamento registrado e confere o número do impacto</td></tr>
+            <tr class="entrada" style="--atraso: 1.0s"><td>"Revise este pull request"</td><td>aprova porque o código roda</td><td>aponta que o PR troca o preço contra o ADR 0001 e pede um ADR novo</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota entrada" style="--atraso: 1.4s">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#smart_toy"></use></svg>
+          <p>O agente só segue a decisão que está escrita. Apontem para <code>/docs/adr/</code> no README ou no arquivo de instruções do agente (<code>CLAUDE.md</code>, <code>AGENTS.md</code>), com a decisão em uma frase.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [7] [8]</p>
+          <p class="footer-page">32</p>
+        </div>
+      </section>
+
+      <!-- 33 -->
       <section class="exercise-slide" id="pratica-coletor">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1202,13 +1258,14 @@ def preco_negociado(fechamento, eventos, ticker):
             <div class="accent-bar"></div>
             <h2>Prática em dupla: o coletor</h2>
           </div>
-          <div class="cronometro" id="cronometro-coletor" data-minutos="12"></div>
+          <div class="cronometro" id="cronometro-coletor" data-minutos="12" data-ampulheta
+               data-marcos="6" data-marco-texto="6 minutos: troquem de papel"></div>
         </div>
         <ol class="exercise-steps">
           <li>Abram o notebook no Colab. Quem está no teclado é o <strong>condutor</strong>; o outro é o <strong>navegador</strong>, que lê e confere.</li>
           <li>Seção 1: confirmem a cesta de 15 ativos e a janela de 01/01/2019 a 31/08/2026.</li>
           <li>Seção 2: rodem <code>coletar</code> e anotem a origem impressa (ao vivo ou snapshot).</li>
-          <li>Aos 6 minutos, troquem de papel. O novo condutor roda de novo com <code>M08_OFFLINE=1</code> e compara.</li>
+          <li data-marco="6">Aos 6 minutos, troquem de papel. O novo condutor roda de novo com <code>M08_OFFLINE=1</code> e compara.</li>
           <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Registrem em uma linha o que mudaria no coletor para a cesta do grupo.</li>
         </ol>
         <div class="faixa-nota checagem-pratica">
@@ -1218,18 +1275,18 @@ def preco_negociado(fechamento, eventos, ticker):
         <p><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Abrir o notebook da Aula 01 no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">31</p>
+          <p class="footer-page">33</p>
         </div>
       </section>
 
-      <!-- 32 -->
+      <!-- 34 -->
       <section class="section-slide">
         <div class="accent-bar"></div>
         <h2>Ausências reais do provedor</h2>
         <h3>Descartar ou preencher muda o risco medido</h3>
       </section>
 
-      <!-- 33 -->
+      <!-- 35 -->
       <section class="content-slide" id="mapa-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1244,11 +1301,11 @@ def preco_negociado(fechamento, eventos, ticker):
         <p>BOVA11, IVVB11 e GOLD11 sem preço num pregão normal da B3. A GOLD11 tem ainda 484 pregões vazios antes da primeira cotação, em 11/12/2020.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1]</p>
-          <p class="footer-page">33</p>
+          <p class="footer-page">35</p>
         </div>
       </section>
 
-      <!-- 34 -->
+      <!-- 36 -->
       <section class="content-slide" id="widget-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1264,11 +1321,11 @@ def preco_negociado(fechamento, eventos, ticker):
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">34</p>
+          <p class="footer-page">36</p>
         </div>
       </section>
 
-      <!-- 35 -->
+      <!-- 37 -->
       <section class="content-slide" id="volatilidade">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1295,11 +1352,11 @@ def preco_negociado(fechamento, eventos, ticker):
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1 &middot; [1] [5]</p>
-          <p class="footer-page">35</p>
+          <p class="footer-page">37</p>
         </div>
       </section>
 
-      <!-- 36 -->
+      <!-- 38 -->
       <section class="content-slide" id="adr">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1333,11 +1390,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">36</p>
+          <p class="footer-page">38</p>
         </div>
       </section>
 
-      <!-- 37 -->
+      <!-- 39 -->
       <section class="exercise-slide" id="pratica-ausencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1346,12 +1403,13 @@ porque descartar apaga março de 2020.
             <div class="accent-bar"></div>
             <h2>Prática em dupla: ausências e o primeiro ADR</h2>
           </div>
-          <div class="cronometro" id="cronometro-ausencias" data-minutos="12"></div>
+          <div class="cronometro" id="cronometro-ausencias" data-minutos="12" data-ampulheta
+               data-marcos="6" data-marco-texto="6 minutos: troquem de papel"></div>
         </div>
         <ol class="exercise-steps">
           <li>Seção 4: rodem o relatório de ausências e anotem os ativos com lacuna.</li>
           <li>Rodem a comparação dos tratamentos e anotem a volatilidade anual da PETR4 sob cada um.</li>
-          <li>Aos 6 minutos, troquem de papel. O novo condutor escreve a decisão da dupla em uma frase, com o número antes e depois.</li>
+          <li data-marco="6">Aos 6 minutos, troquem de papel. O novo condutor escreve a decisão da dupla em uma frase, com o número antes e depois.</li>
           <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Seção 3: comparem as três visões de preço de um ativo com evento corporativo.</li>
           <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Completem o ADR com contexto e alternativa rejeitada, depois da aula, para o A1.</li>
         </ol>
@@ -1361,11 +1419,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">37</p>
+          <p class="footer-page">39</p>
         </div>
       </section>
 
-      <!-- 38 -->
+      <!-- 40 -->
       <section class="quiz-slide" id="quiz-final">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1419,11 +1477,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">38</p>
+          <p class="footer-page">40</p>
         </div>
       </section>
 
-      <!-- 39 -->
+      <!-- 41 -->
       <section class="exercise-slide" id="notebook">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1443,11 +1501,11 @@ porque descartar apaga março de 2020.
         <p><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Notebook no GitHub</a> &middot; <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula01.ipynb" target="_blank" rel="noopener">Abrir no Colab</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">39</p>
+          <p class="footer-page">41</p>
         </div>
       </section>
 
-      <!-- 40 -->
+      <!-- 42 -->
       <section class="content-slide" id="a1">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1472,11 +1530,11 @@ porque descartar apaga março de 2020.
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">40</p>
+          <p class="footer-page">42</p>
         </div>
       </section>
 
-      <!-- 41 -->
+      <!-- 43 -->
       <section class="content-slide" id="referencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -1496,11 +1554,11 @@ porque descartar apaga março de 2020.
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 01 &middot; Sprint 1</p>
-          <p class="footer-page">41</p>
+          <p class="footer-page">43</p>
         </div>
       </section>
 
-      <!-- 42 -->
+      <!-- 44 -->
       <section class="end-slide">
         <h1>Até 05/11/2026</h1>
         <h3>Aula 02: Dados Financeiros, Do Preço ao Retorno</h3>

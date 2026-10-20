@@ -2119,3 +2119,97 @@ html.print-pdf .barema-barra span { animation: none !important; }
 html.print-pdf .fluxo-caixa,
 html.print-pdf .fluxo-via,
 html.print-pdf .fluxo-pacote { animation: none !important; }
+
+/* Ampulheta do cronometro (data-ampulheta, assets/js/inteli-cronometro.js):
+   nasce no lugar do cronometro e cresce ate cerca de 1/6 da largura do slide,
+   a direita. O slide abre espaco a ela com .com-ampulheta. */
+.ampulheta {
+  position: absolute;
+  right: 56px;
+  top: 150px;
+  width: 213px;
+  opacity: 0;
+  transform: translate(var(--de-x, 0), var(--de-y, 0)) scale(0.12);
+  transition: transform 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.1), opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.ampulheta.ampulheta-visivel { opacity: 1; transform: none; }
+.ampulheta svg { display: block; width: 100%; height: auto; overflow: visible; }
+.ampulheta-vidro { fill: var(--seg-superficie); stroke: var(--seg-primaria); stroke-width: 3; }
+.ampulheta-moldura { fill: var(--seg-primaria); }
+.ampulheta-areia { fill: var(--seg-secundaria); transition: y 1s linear, height 1s linear; }
+.ampulheta-filete {
+  stroke: var(--seg-secundaria);
+  stroke-width: 3;
+  stroke-dasharray: 4 5;
+  animation: ampulheta-cai 0.5s linear infinite;
+}
+
+.ampulheta-parada .ampulheta-filete { animation-play-state: paused; opacity: 0; }
+.ampulheta.ampulheta-virada { transform: rotate(180deg); transition: transform 0.8s cubic-bezier(0.5, 0, 0.3, 1.3); }
+.ampulheta-virada .ampulheta-filete { opacity: 0; }
+.ampulheta-virada .ampulheta-moldura { fill: var(--seg-destaque); }
+
+@keyframes ampulheta-cai {
+  from { stroke-dashoffset: 9; }
+  to { stroke-dashoffset: 0; }
+}
+
+.reveal .slides section.com-ampulheta > .exercise-steps,
+.reveal .slides section.com-ampulheta > .faixa-nota,
+.reveal .slides section.com-ampulheta > p { margin-right: 250px; transition: margin-right 0.6s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ampulheta, .ampulheta-areia { transition: none; }
+  .ampulheta-filete { animation: none; }
+}
+
+/* Marco do cronometro (data-marcos): faixa que atravessa o slide e destaque
+   do item marcado com data-marco. */
+.cronometro-marco {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 46%;
+  z-index: 6;
+  padding: 22px 56px;
+  background: var(--seg-destaque);
+  color: var(--inteli-branco);
+  font-size: var(--escala-titulo);
+  font-weight: 700;
+  text-align: center;
+  opacity: 0;
+  transform: scaleX(0);
+  pointer-events: none;
+}
+
+.cronometro-marco.cronometro-marco-ativo { animation: cronometro-marco 4.5s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+@keyframes cronometro-marco {
+  0% { opacity: 1; transform: scaleX(0); }
+  12% { opacity: 1; transform: scaleX(1); }
+  80% { opacity: 1; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(1); }
+}
+
+.reveal .exercise-steps li.marco-alcancado {
+  background: var(--seg-secundaria);
+  box-shadow: inset 6px 0 0 var(--seg-destaque);
+  animation: marco-pisca 0.5s ease-in-out 4;
+}
+
+@keyframes marco-pisca {
+  50% { background: var(--seg-base); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cronometro-marco.cronometro-marco-ativo { animation: none; opacity: 1; transform: none; }
+  .reveal .exercise-steps li.marco-alcancado { animation: none; }
+}
+
+/* ADR linha a linha: o mesmo componente do código, com texto em vez de
+   Python. Agentes: tabela de três colunas com o pedido em destaque. */
+.reveal .codigo-passos-texto .codigo-linhas code { font-size: 16px; line-height: 24px; }
+.reveal .tabela-agentes td:first-child { white-space: normal; width: 26%; }
+.reveal .tabela-agentes td:nth-child(3) { background: var(--seg-superficie); }
