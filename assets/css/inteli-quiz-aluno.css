@@ -1,7 +1,6 @@
 /* Tela do aluno do quiz ao vivo (quiz/index.html), pensada para celular.
-   Só tokens e canto reto (GRA-01). As quatro alternativas usam os quatro
-   blocos de peso da paleta de Graduação, como os botões coloridos de um
-   Kahoot, com letra grande para quem lê de relance. */
+   Só tokens e canto reto (GRA-01). As alternativas são blocos iguais, com
+   letra grande para quem lê de relance. */
 
 * { box-sizing: border-box; }
 
@@ -152,12 +151,10 @@ input[type="text"]:focus { outline: 3px solid var(--seg-secundaria); outline-off
 .opcao-letra { font-size: 30px; font-weight: 700; line-height: 1; }
 .opcao-texto { font-size: 22px; font-weight: 700; line-height: 1.2; }
 
-.opcao-0 { background: var(--seg-primaria); color: var(--inteli-branco); }
-.opcao-1 { background: var(--seg-secundaria); color: var(--seg-texto); }
-.opcao-2 { background: var(--seg-destaque); color: var(--inteli-branco); }
-.opcao-3 { background: var(--seg-borda); color: var(--seg-texto); }
-.opcao-4 { background: var(--seg-superficie); color: var(--seg-texto); }
-.opcao-5 { background: var(--seg-texto-suave); color: var(--seg-texto); }
+/* Todas as alternativas iguais: cor diferente por opção sugere certo e
+   errado (verde e coral) e induz o voto. A letra distingue as opções. */
+.opcao { background: var(--seg-primaria); color: var(--inteli-branco); }
+.opcao:active { background: var(--seg-texto); }
 
 .opcoes .opcao:disabled { opacity: 0.55; }
 

@@ -50,10 +50,9 @@
   font-weight: 700;
 }
 
-.quiz-vivo-opcoes li:nth-child(1) .qv-letra { background: var(--seg-primaria); color: var(--inteli-branco); }
-.quiz-vivo-opcoes li:nth-child(2) .qv-letra { background: var(--seg-secundaria); color: var(--seg-texto); }
-.quiz-vivo-opcoes li:nth-child(3) .qv-letra { background: var(--seg-destaque); color: var(--inteli-branco); }
-.quiz-vivo-opcoes li:nth-child(4) .qv-letra { background: var(--seg-borda); color: var(--seg-texto); }
+/* Alternativas neutras (20/10/2026): verde e coral sugerem certo e errado e
+   induzem o voto. Toda letra usa o mesmo roxo; a cor só aparece ao revelar. */
+.quiz-vivo-opcoes .qv-letra { background: var(--seg-primaria); color: var(--inteli-branco); }
 
 .qv-texto { font-size: 40px; font-weight: 700; line-height: 1; }
 
