@@ -87,9 +87,9 @@ def _pesos_do_plano():
 def test_esteira_vem_logo_depois_do_parceiro_e_abre_um_slide_por_artefato():
     ids = [re.search(r'id="([^"]+)"', s).group(1) if 'id="' in s else None for s in _secoes()]
     i = ids.index("parceiro")
-    assert ids[i + 1:i + 8] == ["entregas", "entregas-comum", "artefato-a1", "artefato-a2",
+    assert ids[i + 1:i + 9] == ["entregas", "entregas-comum", "framework", "artefato-a1", "artefato-a2",
                                 "artefato-a3", "artefato-a4", "artefato-a5"]
-    assert ids[i + 8] == "preparo"
+    assert ids[i + 9] == "preparo"
 
 
 def test_estacoes_da_esteira_citam_sprint_e_peso_do_plano():
