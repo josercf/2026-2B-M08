@@ -28,10 +28,17 @@ ela; o `aulas/aula02.html` original permanece intacto como reserva.
 
 ## Riscos conhecidos
 
-- Diferenças de fidelidade entre o original e o importado. Mitigação: o quiz final (três perguntas) perde as
-  barras de votação e o QR, o bloco de escolha da prática de risco vira quatro colunas de texto e o
-  retorno por opção do quiz fica nas notas do apresentador. O Palco tem a votação ao vivo de uma pergunta por
-  slide, e o deck original só dava retorno local.
+- Diferenças de fidelidade entre o original e o importado. O quiz final do original tinha três perguntas num
+  slide, com retorno local por clique. Na versão exportada cada pergunta é um slide próprio com o quiz ao vivo
+  do Palco (QR para `aluno.html`, placar, abrir e encerrar rodada, revelar), sobre o mesmo projeto Supabase da
+  Aula 01 e a sessão `m08-aula02-2026-11-05`; o Palco mantém uma rodada aberta por slide, o que impede três
+  quizzes juntos. A apresentação passa de 28 para 30 slides. O retorno por opção do original fica nas notas do
+  apresentador. O quiz de preparo (slide 5) já era ao vivo no original e segue assim. O bloco de escolha de
+  risco (slide 22) segue clicável (Sustentada e Não sustentada marcam certa ou errada e mostram a certa), em
+  uma versão 2 do slide; a versão 1 guarda o resultado da importação.
+- Quatro slides (histograma, raiz do tempo, cesta e preparo) usam a variante `compacta` do formato do Palco:
+  tabela, vídeo e QR menores só neles, sem alterar o padrão dos demais decks do catálogo.
+- A chave do professor é digitada em sala e gravada só no navegador; nenhum arquivo do repositório a contém.
 - `check_brand.py` não varre `palco/`, porque a pasta guarda CSS e JS minificados do player. Mitigação: a marca é
   validada pelas regras do Palco na exportação.
 - A exportação é regerada no repositório `palco`; editar `palco/aula02/` à mão é perdido na próxima exportação.
