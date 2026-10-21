@@ -1,0 +1,28 @@
+{
+  "id": "neutro",
+  "nome": "Neutro",
+  "tokens": {
+    "cor-primaria": "#1f2933",
+    "cor-secundaria": "#52606d",
+    "cor-destaque": "#0b6bcb",
+    "cor-base": "#ffffff",
+    "cor-superficie": "#f5f7fa",
+    "cor-borda": "#cbd2d9",
+    "cor-texto": "#1f2933",
+    "fonte-titulo": "'Inter', sans-serif",
+    "fonte-texto": "'Inter', sans-serif",
+    "fonte-codigo": "'JetBrains Mono', monospace"
+  },
+  "logo": {
+    "positiva": "arquivos/neutro/logo-positiva.svg",
+    "negativa": "arquivos/neutro/logo-negativa.svg"
+  },
+  "fontes": [
+    "arquivos/fontes/neutro.css"
+  ],
+  "regras": {
+    "cores": ["#1f2933", "#52606d", "#0b6bcb", "#ffffff", "#f5f7fa", "#cbd2d9"],
+    "pesos": [300, 600, 700],
+    "raioMaximo": 0
+  }
+}

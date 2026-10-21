@@ -97,6 +97,17 @@ def test_copia_do_brand_dentro_de_worktree_nao_e_acusada(tmp_path):
     assert varrer(str(tmp_path)) == []
 
 
+def test_saida_do_palco_nao_e_varrida(tmp_path):
+    """palco/ guarda a exportacao estatica do Palco (ADR-015), com CSS e JS minificados do player.
+
+    A fidelidade de marca dela e validada pelas regras do proprio Palco (palco validar
+    na exportacao), entao este validador nao a varre.
+    """
+    _brand_valido(tmp_path)
+    _escrever(tmp_path, "palco/aula02/assets/index.css", ".x { border-radius: .25em; color: #123456; font-family: Y; }")
+    assert varrer(str(tmp_path)) == []
+
+
 # Regras do inteli-brand-kit (12/08/2026), acrescentadas depois da auditoria
 # de 13/10/2026: o validador aprovava um acervo arredondado, com ícone
 # Outlined por CDN e título em peso 500.

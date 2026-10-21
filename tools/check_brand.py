@@ -38,7 +38,9 @@ EXTENSOES = (".html", ".css", ".js")
 # dentro nao casa com o caminho canonico do arquivo de tokens, e o validador
 # acusa cada cor e cada font-family dela como violacao. Sao 12 falsos positivos
 # por worktree, e ruido treina quem le a ignorar o validador.
-IGNORAR = {".git", ".claude", ".venv", "node_modules", "__pycache__", ".ipynb_checkpoints"}
+# palco/ e a exportacao estatica do Palco (ADR-015): a marca dela e validada pelas regras do proprio
+# Palco (`palco validar` roda na exportacao, em tools/exportar do repositorio palco).
+IGNORAR = {".git", ".claude", ".venv", "node_modules", "__pycache__", ".ipynb_checkpoints", "palco"}
 
 # Valor de declaracao CSS: tudo entre o ":" e o ";" ou o fim do bloco.
 # Escanear hex solto daria falso positivo em href="#dados", cujas letras sao

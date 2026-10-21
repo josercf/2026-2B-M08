@@ -1,0 +1,28 @@
+{
+  "id": "inteli-graduacao",
+  "nome": "Inteli Graduação",
+  "tokens": {
+    "cor-primaria": "#2e2640",
+    "cor-secundaria": "#89cea5",
+    "cor-destaque": "#ff4545",
+    "cor-base": "#ffffff",
+    "cor-superficie": "#e6eaeb",
+    "cor-borda": "#caced6",
+    "cor-texto": "#2e2640",
+    "fonte-titulo": "\"Platypi\", Georgia, serif",
+    "fonte-texto": "\"Manrope\", system-ui, sans-serif",
+    "fonte-codigo": "\"Space Mono\", monospace"
+  },
+  "logo": {
+    "positiva": "arquivos/inteli/logo-positiva.svg",
+    "negativa": "arquivos/inteli/logo-negativa.svg"
+  },
+  "fontes": [
+    "arquivos/fontes/inteli-graduacao.css"
+  ],
+  "regras": {
+    "cores": ["#2e2640", "#ff4545", "#89cea5", "#b2b6bf", "#caced6", "#e6eaeb", "#ffffff"],
+    "pesos": [300, 600, 700],
+    "raioMaximo": 0
+  }
+}
