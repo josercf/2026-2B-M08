@@ -267,8 +267,11 @@ def moeda_teorica(rodadas=10):
 
 
 def reais(valor):
-    """162.889 -> "R$ 162,89", no formato do deck."""
-    return "R$ " + ("%.2f" % valor).replace(".", ",")
+    """162.889 -> "R$ 162,89" e 1028.265 -> "R$ 1.028,27", no formato do deck (meio para cima)."""
+    from decimal import ROUND_HALF_UP, Decimal
+    q = Decimal(repr(float(valor))).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    inteiro, centavos = ("%.2f" % q).split(".")
+    return "R$ " + "{:,}".format(int(inteiro)).replace(",", ".") + "," + centavos
 
 
 def ponte_bbdc4(ticker="BBDC4", anos=range(2020, 2026)):
@@ -299,3 +302,74 @@ def afirmacoes_grupos():
         "mglu3_queda": "%d%%" % int(abs(mglu3.iloc[-1] / mglu3.iloc[0] - 1) * 100),
         "petr4_vol": "%d%%" % int(vol_petr4 * 100),
     }
+
+
+def caso_suzb3(ticker="SUZB3", dia1="2022-07-19", dia2="2022-07-20", aporte=1000):
+    """Caso real para o slide da lousa: SUZB3 sobe 5,00% num pregão e cai 2,07% no seguinte."""
+    # A turma calcula com as taxas como aparecem na tela, em duas casas.
+    r = retornos_simples()[ticker]
+    r1, r2 = round(float(r.loc[dia1]), 4), round(float(r.loc[dia2]), 4)
+    fmt = lambda d: pd.Timestamp(d).strftime("%d/%m/%Y")
+    return {
+        "dia1": fmt(dia1), "dia2": fmt(dia2), "r1": r1, "r2": r2,
+        "soma": r1 + r2, "composto": (1 + r1) * (1 + r2) - 1,
+        "depois1": round(aporte * (1 + r1), 6), "depois2": round(aporte * (1 + r1) * (1 + r2), 6),
+    }
+
+
+def bodie_comparacao(altas=(0.10, 0.30, 0.50), media=0.05, rodadas=10):
+    """Três moedas com a mesma média aritmética de 5% por rodada e oscilações diferentes.
+
+    Cara rende `alta`, coroa rende 2 x media - alta. A média geométrica e a
+    aproximação do capítulo 5 (aritmética menos metade da variância) caem quanto
+    mais a moeda oscila; saldo10 é o que o jogador típico (5 caras e 5 coroas)
+    tem depois de 10 rodadas, começando com R$ 100.
+    """
+    linhas = []
+    for alta in altas:
+        baixa = 2 * media - alta
+        variancia = ((alta - media) ** 2 + (baixa - media) ** 2) / 2
+        geometrica = ((1 + alta) * (1 + baixa)) ** 0.5 - 1
+        linhas.append({
+            "alta": alta, "baixa": baixa, "aritmetica": (alta + baixa) / 2,
+            "variancia": variancia, "geometrica": geometrica,
+            "aproximacao": media - variancia / 2,
+            "saldo10": 100 * (1 + geometrica) ** rodadas,
+        })
+    return linhas
+
+
+def ponte_profunda(ticker="BBDC4", anos=range(2020, 2026), aporte=100):
+    """O BBDC4 de 2020 a 2025 em três leituras para o slide da ponte.
+
+    promessa: R$ 100 crescendo pela média aritmética; vivido: R$ 100 comprados no
+    fim de 2019 e mantidos; imposto: metade da variância anual (ddof=0) contra a
+    distância medida entre as duas médias; aportes: R$ 100 no início de cada ano,
+    com o saldo de fim de ano e a taxa interna de retorno (retorno ponderado pelo
+    dinheiro, capítulo 5).
+    """
+    base = ponte_bbdc4(ticker, anos)
+    r = pd.Series(base["anuais"])
+    n = len(r)
+    promessa = [100 * (1 + base["aritmetica"]) ** k for k in range(n + 1)]
+    vivido = [100.0] + list(100 * (1 + r).cumprod())
+    saldo, aportes = 0.0, []
+    for i, ano in enumerate(r.index):
+        saldo = (saldo + aporte) * (1 + r[ano])
+        aportes.append({"ano": int(ano), "aportado": aporte * (i + 1), "saldo": saldo})
+    fluxo = [-aporte] * n + [saldo]
+
+    def vpl(taxa):
+        return sum(c / (1 + taxa) ** k for k, c in enumerate(fluxo))
+
+    baixo, alto = -0.9, 1.0
+    for _ in range(200):
+        meio = (baixo + alto) / 2
+        if vpl(meio) > 0:
+            baixo = meio
+        else:
+            alto = meio
+    return dict(base, promessa=promessa, vivido=vivido,
+                imposto_regra=float(r.var(ddof=0) / 2),
+                imposto_medido=base["aritmetica"] - base["geometrica"],
+                aportes=aportes, tir=meio)

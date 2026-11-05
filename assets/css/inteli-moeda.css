@@ -215,3 +215,24 @@
 }
 .moeda-aba + .moeda-aba { border-left: 0; }
 .moeda-aba[aria-pressed="true"] { background: var(--seg-primaria); color: var(--inteli-branco); }
+
+/* Voto contra resultado (slide depois da moeda). */
+[data-moeda-cruzamento] { display: flex; flex-direction: column; gap: 22px; }
+.reveal .mc-placar { margin: 0; font-size: 30px; font-weight: 600; }
+.reveal .mc-placar strong { font-size: 64px; font-weight: 700; color: var(--seg-primaria); }
+.reveal .mc-linhas { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.reveal .mc-linha { display: grid; grid-template-columns: 430px 1fr; align-items: center; gap: 20px; margin: 0; }
+.reveal .mc-texto { font-size: 24px; font-weight: 600; }
+.mc-barra { display: flex; height: 52px; background: var(--seg-superficie); }
+.mc-abaixo, .mc-acima {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700; color: var(--inteli-branco);
+  transition: width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mc-abaixo { background: var(--inteli-coral); }
+.mc-acima { background: var(--inteli-verde); }
+.reveal .mc-legenda { margin: 0; display: flex; gap: 28px; font-size: 18px; font-weight: 600; }
+.mc-l-abaixo::before, .mc-l-acima::before { content: ""; display: inline-block; width: 16px; height: 16px; margin-right: 8px; vertical-align: -2px; }
+.mc-l-abaixo::before { background: var(--inteli-coral); }
+.mc-l-acima::before { background: var(--inteli-verde); }
+@media (prefers-reduced-motion: reduce) { .mc-abaixo, .mc-acima { transition: none; } }

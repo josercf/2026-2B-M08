@@ -262,3 +262,31 @@ def test_notebook_aula02_tem_secao_por_grupo_sem_veredito():
     assert "(1 + r).cumprod()" in texto
     assert "default_rng(2026)" in texto
     assert "enganosa" not in texto.lower() and "sustentada" not in texto.lower()
+
+
+def test_caso_suzb3_alta_e_queda_seguidas():
+    c = m.caso_suzb3()
+    assert (c["dia1"], c["dia2"]) == ("19/07/2022", "20/07/2022")
+    assert m.pct(c["r1"]) == "5,00%" and m.pct(c["r2"]) == "-2,07%"
+    assert m.pct(c["soma"]) == "2,93%"
+    assert m.pct(c["composto"]) == "2,83%"
+    assert m.reais(c["depois1"]) == "R$ 1.050,00" and m.reais(c["depois2"]) == "R$ 1.028,27"
+
+
+def test_bodie_mesma_media_tres_oscilacoes():
+    linhas = m.bodie_comparacao()
+    assert [l["alta"] for l in linhas] == [0.10, 0.30, 0.50]
+    assert all(abs(l["aritmetica"] - 0.05) < 1e-12 for l in linhas)
+    assert [m.pct(l["geometrica"], 1) for l in linhas] == ["4,9%", "2,0%", "-5,1%"]
+    assert [m.pct(l["aproximacao"], 1) for l in linhas] == ["4,9%", "1,9%", "-5,1%"]
+    assert [m.reais(l["saldo10"]) for l in linhas] == ["R$ 161,05", "R$ 121,67", "R$ 59,05"]
+
+
+def test_ponte_profunda_promessa_vivido_imposto_e_aportes():
+    p = m.ponte_profunda()
+    assert m.reais(p["promessa"][-1]) == "R$ 132,57"
+    assert m.reais(p["vivido"][-1]) == "R$ 97,51"
+    assert m.pct(p["imposto_regra"], 1) == "6,6%" and m.pct(p["imposto_medido"], 1) == "5,2%"
+    assert [a["aportado"] for a in p["aportes"]] == [100, 200, 300, 400, 500, 600]
+    assert m.reais(p["aportes"][-1]["saldo"]) == "R$ 816,78"
+    assert m.pct(p["tir"]) == "8,88%"

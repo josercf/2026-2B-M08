@@ -145,7 +145,7 @@
       enviado[nome] = texto;
       emVoo[nome] = (emVoo[nome] || 0) + 1;
       var fim = function () { emVoo[nome] -= 1; };
-      return dados.adrSalvar(sessao, grupo, token, nome, texto, null).then(function () {
+      return dados.adrSalvar(sessao, grupo, token, nome, texto, autor).then(function () {
         fim();
         mensagem('Salvo às ' + new Date().toLocaleTimeString('pt-BR'), 'ok');
       }, function (err) {
@@ -209,12 +209,52 @@
     });
     form.addEventListener('submit', function (ev) { ev.preventDefault(); });
 
+    // Quem está escrevendo: o nome do quiz da aula, se o aluno entrou nele neste
+    // navegador; senão, o nome que ele digita uma vez aqui (fica para o quiz também).
+    var autor = (function () {
+      var achado = null;
+      ['inteli-quiz-eu-' + sessao, 'inteli-quiz-perfil'].some(function (k) {
+        try { var v = JSON.parse(localStorage.getItem(k)); if (v && v.nome) { achado = v.nome; return true; } } catch (e) { /* nada */ }
+        return false;
+      });
+      return achado;
+    })();
+
+    function liberar() {
+      dados.adrEntrar(sessao, grupo, token, autor).catch(function (err) { console.error('[adr]', err); });
+      somenteLeitura(false);
+      mensagem('Editando como ' + autor + ', grupo ' + grupo + '. Cada campo salva sozinho.', 'ok');
+    }
+
+    function pedirNome() {
+      var caixa = el('div', 'adr-quem');
+      var campo = el('input', 'adr-quem-nome');
+      campo.type = 'text';
+      campo.maxLength = 60;
+      campo.placeholder = 'Seu nome completo, como na chamada';
+      var ok = el('button', 'adr-quem-ok', 'Entrar na ADR');
+      ok.type = 'button';
+      caixa.appendChild(campo);
+      caixa.appendChild(ok);
+      estadoEl.parentNode.insertBefore(caixa, estadoEl);
+      mensagem('Digite seu nome para editar: ele vai para a participação da aula.', 'ok');
+      function confirmar() {
+        var nome = campo.value.trim();
+        if (nome.split(/\s+/).length < 2) { mensagem('Escreva o nome completo, com sobrenome.', 'erro'); return; }
+        autor = nome;
+        try { localStorage.setItem('inteli-quiz-perfil', JSON.stringify({ nome: nome, avatar: 'person' })); } catch (e) { /* aba privada */ }
+        caixa.remove();
+        liberar();
+      }
+      ok.addEventListener('click', confirmar);
+      campo.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') { ev.preventDefault(); confirmar(); } });
+    }
+
     somenteLeitura(true);
     Promise.all([dados.adrTokenOk(sessao, grupo, token), relogioServidor.atualizar(), carregar()]).then(function (r) {
       podeEditar = r[0];
       if (podeEditar) {
-        somenteLeitura(false);
-        mensagem('Editando como grupo ' + grupo + '. Cada campo salva sozinho.', 'ok');
+        if (autor) liberar(); else pedirNome();
       } else {
         form.classList.add('adr-leitura');
         mensagem('Este link está sem permissão de edição. Peça ao professor o link do grupo no Slack.', 'erro');
@@ -244,28 +284,37 @@
     var copiar = el('button', 'adr-copiar-todos', 'Copiar os quatro para o Slack');
     copiar.type = 'button';
     copiar.hidden = true;
+    var participacao = el('button', 'adr-participacao', 'Copiar participação');
+    participacao.type = 'button';
     var minutos = el('input', 'adr-minutos');
     minutos.type = 'number';
     minutos.min = '0';
     minutos.max = '120';
     minutos.value = raiz.dataset.minutos || '25';
-    var iniciar = el('button', 'adr-iniciar', 'Iniciar prazo');
+    var iniciar = el('button', 'adr-iniciar', 'Iniciar ' + minutos.value + ' minutos');
     iniciar.type = 'button';
+    var mais = el('button', 'adr-mais', '+5 minutos');
+    mais.type = 'button';
     var restante = el('span', 'adr-restante', 'Prazo ainda não iniciado');
+    var marco = el('p', 'adr-marco');
+    var marcoMin = Number(raiz.dataset.marco || 0);
     var aviso = el('p', 'adr-aviso-professor');
 
     var barra = el('div', 'adr-links-controles');
     barra.appendChild(gerar);
     barra.appendChild(copiar);
+    barra.appendChild(participacao);
     var barraPrazo = el('div', 'adr-links-prazo');
     var rotulo = el('label', '', 'Minutos');
     rotulo.appendChild(minutos);
     barraPrazo.appendChild(rotulo);
     barraPrazo.appendChild(iniciar);
-    barraPrazo.appendChild(restante);
+    barraPrazo.appendChild(mais);
     raiz.appendChild(barra);
     raiz.appendChild(lista);
     raiz.appendChild(barraPrazo);
+    raiz.appendChild(restante);
+    raiz.appendChild(marco);
     raiz.appendChild(aviso);
 
     var extras = [];
@@ -279,7 +328,7 @@
     }
 
     var textos = [];
-    gerar.addEventListener('click', function () {
+    function gerarLinks() {
       if (!chave()) { aviso.textContent = 'Falta a chave do professor neste navegador (?quiz-chave=).'; return; }
       dados.adrLinks(chave(), sessao).then(function (links) {
         lista.textContent = '';
@@ -294,7 +343,21 @@
           textos.push(l.grupo + ': ' + u);
         });
         copiar.hidden = false;
+        gerar.hidden = true;
         aviso.textContent = '';
+      }, function (err) { aviso.textContent = err.message; });
+    }
+    gerar.addEventListener('click', gerarLinks);
+    // Os tokens são fixos por sessão: com a chave no navegador, os links já
+    // aparecem quando o slide abre.
+    if (chave()) gerarLinks();
+    participacao.addEventListener('click', function () {
+      dados.adrParticipacao(chave(), sessao).then(function (linhas) {
+        var t = ['grupo\tnome\tedições'].concat(linhas.map(function (l) { return l.grupo + '\t' + l.nome + '\t' + l.edicoes; })).join('\n');
+        participacao.dataset.linhas = String(linhas.length);
+        return (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject())
+          .then(function () { aviso.textContent = linhas.length + ' nomes copiados (cole na planilha de participação).'; },
+                function () { aviso.textContent = t; });
       }, function (err) { aviso.textContent = err.message; });
     });
     copiar.addEventListener('click', function () {
@@ -302,15 +365,27 @@
       (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject())
         .then(function () { aviso.textContent = 'Copiado.'; }, function () { aviso.textContent = t; });
     });
-    iniciar.addEventListener('click', function () {
-      dados.adrPrazo(chave(), sessao, Number(minutos.value)).then(function () {
+    var totalMin = Number(minutos.value);
+    function definir(min) {
+      dados.adrPrazo(chave(), sessao, min).then(function () {
         return relogioServidor.atualizar();
       }).then(tique, function (err) { aviso.textContent = err.message; });
+    }
+    iniciar.addEventListener('click', function () { totalMin = Number(minutos.value); definir(totalMin); });
+    mais.addEventListener('click', function () {
+      var r = relogioServidor.restante();
+      var falta = r && r > 0 ? Math.ceil(r / 60000) : 0;
+      totalMin += 5;
+      definir(falta + 5);
     });
 
     function tique() {
       var r = relogioServidor.restante();
-      restante.textContent = r === null ? 'Prazo ainda não iniciado' : (r > 0 ? 'Faltam ' + relogio(r) : 'Prazo encerrado');
+      restante.textContent = r === null ? 'Prazo ainda não iniciado' : (r > 0 ? relogio(r) : 'Prazo encerrado');
+      restante.dataset.fase = r === null ? 'espera' : (r > 0 ? (r < 120000 ? 'final' : 'correndo') : 'fim');
+      var passou = r === null ? 0 : totalMin * 60000 - r;
+      marco.textContent = marcoMin && r !== null && r > 0 && passou >= marcoMin * 60000
+        ? marcoMin + ' minutos: o número do veredito já está calculado. Hora da ADR.' : '';
     }
     relogioServidor.atualizar().then(tique);
     setInterval(tique, 1000);

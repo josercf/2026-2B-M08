@@ -21,13 +21,16 @@ só a logística. Veredito, número decisivo e erro comum de cada grupo ficam no
 |---|---|---|
 | 1 a 4 | abertura | agenda, resgate da Aula 01 e daily com cronômetro de 15 min |
 | 5 | 1 | voto "vale jogar?" em duas rodadas, sem revelar nada |
-| 6 | 1 | os celulares do quiz trocam sozinhos para a moeda; liberar uma rodada por vez e esperar a maioria jogar; aba Trajetórias no fim |
-| 7 a 9 | 2 | o artigo em Python, a simulação (a turma anota o palpite da mediana antes) e a tabela do Bodie |
-| 10 e 11 | 3 | BBDC4 e as quatro frases do comitê |
-| 12 | 3 | gerar os links, copiar para o Slack, iniciar o prazo de 25 min |
-| 13 | 4 e 5 | cronômetro da sala; checagem aos 12 min |
-| 14 a 17 | 6 | ADR do grupo ao vivo e voto da sala; o veredito sai da fala do professor |
-| 18 a 20 | 7 | o que vai para o A2, referências, encerramento |
+| 6 | 1 | os celulares do quiz trocam sozinhos para a moeda; liberar uma rodada por vez; aba Trajetórias no fim |
+| 7 | 1 | voto de cada aluno contra o saldo dele, sem nomes |
+| 8 | 2 | case da SUZB3 projetado na lousa: um aluno por área, resposta só depois da discussão |
+| 9 e 10 | 2 | o artigo em Python e a simulação com a cena dos 12 jogadores (palpite da mediana antes) |
+| 11 | 2 | mesma média, três moedas: revelar uma linha por vez e só então a regra do capítulo 5 |
+| 12 e 13 | 3 | BBDC4: promessa contra vivido, imposto da volatilidade e o retorno de quem aporta todo ano |
+| 14 | 3 | o que cada grupo faz e entrega, com tempo |
+| 15 | 4 e 5 | links do Slack e os 25 minutos do servidor, com marco aos 12 |
+| 16 a 19 | 6 | ADR do grupo ao vivo e voto da sala; o veredito sai da fala do professor |
+| 20 a 22 | 7 | o que vai para o A2, referências, encerramento |
 
 ## Moeda
 
@@ -43,10 +46,10 @@ só a logística. Veredito, número decisivo e erro comum de cada grupo ficam no
 
 ## Links e prazo
 
-- "Gerar os links dos grupos" cria um token por grupo e devolve sempre os mesmos, então gerar de
-  novo não invalida o link já enviado.
-- Os endereços aparecem borrados no projetor; passar o mouse para ler, ou usar "Copiar os quatro
-  para o Slack".
+- Com a chave no navegador, os quatro links aparecem sozinhos no slide 15. O token de cada grupo é
+  fixo na sessão: abrir o slide de novo devolve os mesmos links.
+- "Iniciar 25 minutos" grava o prazo no servidor; o relógio grande do slide é esse mesmo prazo, e o
+  marco dos 12 minutos aparece nele. "+5 minutos" estende para todos.
 - O prazo é do servidor e trava a ADR dos quatro grupos ao mesmo tempo. Para estender, digitar os
   minutos que faltam e clicar de novo em "Iniciar prazo".
 - Plano B: se às 13h15 o banco ao vivo falhar no ensaio, a ADR vai para um documento

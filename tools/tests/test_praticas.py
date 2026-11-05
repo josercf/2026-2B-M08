@@ -40,7 +40,7 @@ PRATICAS = list(_praticas())
 
 def test_ha_praticas_cronometradas():
     # 11 até 05/11/2026; a Aula 02 redesenhada (ADR-016) troca duas práticas em dupla por uma em grupo.
-    assert len(PRATICAS) == 10
+    assert len(PRATICAS) == 9
 
 
 @pytest.mark.parametrize("deck,pid,minutos,corpo", PRATICAS, ids=[p[0] + "#" + p[1] for p in PRATICAS])

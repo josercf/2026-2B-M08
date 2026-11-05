@@ -131,7 +131,7 @@
   function mostrarMoeda() {
     if (!moedaMontada && window.IntelIMoeda) {
       moedaMontada = true;
-      window.IntelIMoeda.montarAluno(raiz.querySelector('.tela-moeda .moeda-aluno'), { apelido: eu.nome.slice(0, 30) });
+      window.IntelIMoeda.montarAluno(raiz.querySelector('.tela-moeda .moeda-aluno'), { apelido: eu.nome.slice(0, 30), participante: eu.id });
     }
     estado('moeda');
   }

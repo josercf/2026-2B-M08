@@ -61,6 +61,18 @@ create table if not exists moeda_jogadas (
   primary key (jogador, rodada)
 );
 
+-- Quem escreveu na ADR de cada grupo, para o professor lançar a participação.
+create table if not exists adr_presencas (
+  sessao text not null,
+  grupo text not null,
+  nome text not null,
+  edicoes int not null default 0,
+  primeiro_em timestamptz not null default now(),
+  ultimo_em timestamptz not null default now(),
+  primary key (sessao, grupo, nome)
+);
+
+alter table adr_presencas enable row level security;
 alter table adr_tokens enable row level security;
 alter table adr_prazos enable row level security;
 alter table adr_campos enable row level security;
@@ -136,11 +148,41 @@ begin
   if char_length(coalesce(p_texto, '')) > 4000 then raise exception 'texto acima de 4000 caracteres'; end if;
   select p.fim into v_fim from adr_prazos p where p.sessao = p_sessao;
   if v_fim is not null and now() > v_fim then raise exception 'prazo encerrado'; end if;
+  if coalesce(trim(p_autor), '') <> '' then
+    insert into adr_presencas (sessao, grupo, nome, edicoes)
+    values (p_sessao, p_grupo, left(trim(p_autor), 60), 1)
+    on conflict on constraint adr_presencas_pkey
+    do update set edicoes = adr_presencas.edicoes + 1, ultimo_em = now();
+  end if;
   insert into adr_campos (sessao, grupo, campo, texto, autor, atualizado_em)
   values (p_sessao, p_grupo, p_campo, coalesce(p_texto, ''), left(p_autor, 40), v_quando)
   on conflict (sessao, grupo, campo)
   do update set texto = excluded.texto, autor = excluded.autor, atualizado_em = excluded.atualizado_em;
   return v_quando;
+end $$;
+
+-- Grupo: registra quem abriu o deck com o link do grupo, mesmo antes de escrever.
+create or replace function adr_entrar(p_sessao text, p_grupo text, p_token text, p_nome text)
+returns boolean
+language plpgsql security definer set search_path = public, extensions as $$
+begin
+  if not exists (select 1 from adr_tokens t where t.sessao = p_sessao and t.grupo = p_grupo and t.token = p_token) then
+    return false;
+  end if;
+  if coalesce(trim(p_nome), '') = '' then return false; end if;
+  insert into adr_presencas (sessao, grupo, nome) values (p_sessao, p_grupo, left(trim(p_nome), 60))
+  on conflict on constraint adr_presencas_pkey do update set ultimo_em = now();
+  return true;
+end $$;
+
+-- Professor: participação por grupo (nome e quantas gravações fez na ADR).
+create or replace function adr_participacao(p_chave text, p_sessao text)
+returns table (grupo text, nome text, edicoes int)
+language plpgsql security definer set search_path = public, extensions as $$
+begin
+  if not quiz_chave_ok(p_chave) then raise exception 'chave do professor inválida'; end if;
+  return query select p.grupo, p.nome, p.edicoes from adr_presencas p
+   where p.sessao = p_sessao order by p.grupo, p.nome;
 end $$;
 
 -- Professor: libera até a rodada informada (0 volta ao começo sem apagar nada).
@@ -166,15 +208,41 @@ begin
   on conflict (sessao) do update set rodada = 0;
 end $$;
 
-create or replace function moeda_entrar(p_sessao text, p_apelido text)
+-- Quem veio do quiz guarda o id de participante, para o slide cruzar voto e saldo.
+alter table moeda_jogadores add column if not exists participante uuid;
+drop function if exists moeda_entrar(text, text);
+
+create or replace function moeda_entrar(p_sessao text, p_apelido text, p_participante uuid default null)
 returns uuid
 language plpgsql security definer set search_path = public, extensions as $$
 declare v_id uuid;
 begin
-  insert into moeda_jogadores (sessao, apelido) values (p_sessao, left(trim(p_apelido), 30))
+  insert into moeda_jogadores (sessao, apelido, participante)
+  values (p_sessao, left(trim(p_apelido), 30), p_participante)
   returning id into v_id;
   return v_id;
 end $$;
+
+-- Slide: o último voto de cada aluno numa pergunta do quiz contra o saldo final
+-- dele na moeda. Devolve só contagens por alternativa, sem nomes.
+create or replace function moeda_cruzamento(p_sessao text, p_pergunta text)
+returns table (opcao int, abaixo int, acima int)
+language sql security definer set search_path = public, extensions as $$
+  with votos as (
+    select distinct on (v.participante_id) v.participante_id, v.opcao
+      from quiz_votos v join quiz_rodadas r on r.id = v.rodada_id
+     where r.sessao = p_sessao and r.pergunta = p_pergunta
+     order by v.participante_id, r.rodada desc
+  ), finais as (
+    select distinct on (mj.participante) mj.participante, j.saldo
+      from moeda_jogadas j join moeda_jogadores mj on mj.id = j.jogador
+     where mj.sessao = p_sessao and mj.participante is not null
+     order by mj.participante, j.rodada desc, mj.criado_em desc
+  )
+  select v.opcao, (count(*) filter (where f.saldo < 100))::int, (count(*) filter (where f.saldo >= 100))::int
+    from votos v join finais f on f.participante = v.participante_id
+   group by v.opcao order by v.opcao;
+$$;
 
 -- Slide: quantas pessoas entraram no jogo, sem expor apelidos.
 create or replace function moeda_sala(p_sessao text)
@@ -216,10 +284,13 @@ grant execute on function adr_links(text, text) to anon, authenticated;
 grant execute on function adr_prazo(text, text, int) to anon, authenticated;
 grant execute on function adr_agora(text) to anon, authenticated;
 grant execute on function adr_token_ok(text, text, text) to anon, authenticated;
+grant execute on function adr_entrar(text, text, text, text) to anon, authenticated;
+grant execute on function adr_participacao(text, text) to anon, authenticated;
 grant execute on function adr_salvar(text, text, text, text, text, text) to anon, authenticated;
 grant execute on function moeda_liberar(text, text, int) to anon, authenticated;
 grant execute on function moeda_zerar(text, text) to anon, authenticated;
-grant execute on function moeda_entrar(text, text) to anon, authenticated;
+grant execute on function moeda_entrar(text, text, uuid) to anon, authenticated;
+grant execute on function moeda_cruzamento(text, text) to anon, authenticated;
 grant execute on function moeda_sala(text) to anon, authenticated;
 grant execute on function moeda_jogar(text, uuid, int) to anon, authenticated;
 

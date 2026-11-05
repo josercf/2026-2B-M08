@@ -27,7 +27,7 @@ def _funcoes():
 def test_funcoes_de_escrita_sao_security_definer_e_tabelas_tem_rls():
     sql = _sql()
     tabelas = re.findall(r"create table if not exists (\w+)", sql, re.I)
-    assert len(tabelas) == 6, tabelas
+    assert len(tabelas) == 7, tabelas
     for t in tabelas:
         assert re.search(r"alter table %s enable row level security" % t, sql, re.I), t
     funcoes = _funcoes()
@@ -38,7 +38,7 @@ def test_funcoes_de_escrita_sao_security_definer_e_tabelas_tem_rls():
 
 def test_funcoes_de_professor_checam_a_chave():
     funcoes = _funcoes()
-    for nome in ("adr_links", "adr_prazo", "moeda_liberar", "moeda_zerar"):
+    for nome in ("adr_links", "adr_prazo", "moeda_liberar", "moeda_zerar", "adr_participacao"):
         assert "quiz_chave_ok(p_chave)" in funcoes[nome], nome
     for nome in ("adr_salvar", "moeda_jogar", "moeda_entrar", "adr_agora"):
         assert "quiz_chave_ok" not in funcoes[nome], nome

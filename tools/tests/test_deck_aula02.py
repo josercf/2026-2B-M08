@@ -13,8 +13,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import medidas_aula02 as m  # noqa: E402
 
 DECK = os.path.join(m.RAIZ, "aulas", "aula02.html")
-SEQUENCIA = ["capa", "agenda", "resgate", "daily", "vale-jogar", "moeda", "artigo", "simulacao", "bodie",
-             "ponte", "comite", "links", "investigacao", "comite-g01", "comite-g02", "comite-g03",
+SEQUENCIA = ["capa", "agenda", "resgate", "daily", "vale-jogar", "moeda", "acertos", "lousa", "artigo", "simulacao",
+             "bodie", "ponte", "aportes", "comite", "links", "comite-g01", "comite-g02", "comite-g03",
              "comite-g04", "a2", "referencias", "encerramento"]
 
 
@@ -47,25 +47,35 @@ def test_ponte_e_moeda_saem_das_medicoes():
     ponte = _secao("ponte")
     assert m.pct(p["aritmetica"]) in ponte and m.pct(p["geometrica"]) in ponte
     for ano, valor in p["anuais"].items():
-        assert m.pct(valor) in ponte, ano
+        assert str(round(valor, 4)) in ponte, ano
     notas = _secao("moeda")
     t10 = m.moeda_teorica(10)
     assert m.reais(t10["media"]) in notas and m.reais(t10["mediana"]) in notas
     assert 'data-rodadas="10"' in notas
     simulacao = _secao("simulacao")
     assert m.reais(m.moeda_teorica()["mediana"]) in simulacao
-    t = m.moeda_teorica()
     bodie = _secao("bodie")
-    for chave in ("aritmetica", "geometrica", "aproximacao"):
-        assert m.pct(t[chave], 1) in bodie, chave
-    assert m.pct(t["variancia"]) in bodie
+    for linha in m.bodie_comparacao():
+        assert m.pct(linha["geometrica"], 1) in bodie and m.reais(linha["saldo10"]) in bodie
+    caso = m.caso_suzb3()
+    lousa = _secao("lousa")
+    for numero in (m.pct(caso["r1"]), m.pct(caso["r2"]), m.pct(caso["soma"]), m.pct(caso["composto"]),
+                   m.reais(caso["depois1"]), m.reais(caso["depois2"]), caso["dia1"]):
+        assert numero in lousa, numero
+    p = m.ponte_profunda()
+    for sid, numeros in (("ponte", (m.reais(p["promessa"][-1]), m.reais(p["vivido"][-1]),
+                                    m.pct(p["imposto_regra"], 1), m.pct(p["imposto_medido"], 1))),
+                         ("aportes", (m.pct(p["tir"]), m.reais(p["aportes"][-1]["saldo"])))):
+        for numero in numeros:
+            assert numero in _secao(sid), (sid, numero)
 
 
-def test_afirmacoes_do_comite_saem_das_medicoes():
+def test_comite_explica_o_roteiro_sem_antecipar_veredito():
     comite = _secao("comite")
-    a = m.afirmacoes_grupos()
-    for numero in (a["bbas3_close"], a["mglu3_queda"], a["petr4_vol"]):
-        assert numero in comite, numero
+    texto = re.sub(r"<aside.*?</aside>", "", comite, flags=re.S)
+    for tempo in ("até 12 min", "até 25 min", "3 min", "O que o grupo entrega"):
+        assert tempo in texto, tempo
+    assert "pode estar certa" not in texto
 
 
 def test_votos_do_comite_nao_tem_correta():

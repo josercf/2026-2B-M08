@@ -157,7 +157,7 @@
 
 .reveal .adr-link-url { font-size: 15px; word-break: break-all; }
 
-.adr-links-prazo label { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; }
+.adr-links-prazo label { display: none; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; }
 
 .adr-links-prazo input {
   font: inherit;
@@ -168,7 +168,10 @@
   border-radius: 0;
 }
 
-.reveal .adr-restante { font-size: 24px; font-weight: 700; color: var(--seg-primaria); font-variant-numeric: tabular-nums; }
+.reveal .adr-restante { display: block; font-size: 72px; line-height: 1; font-weight: 700; color: var(--seg-primaria); font-variant-numeric: tabular-nums; }
+.reveal .adr-restante[data-fase="espera"] { font-size: 28px; color: var(--seg-texto-suave); }
+.reveal .adr-restante[data-fase="final"], .reveal .adr-restante[data-fase="fim"] { color: var(--inteli-coral); }
+.reveal .adr-marco { margin: 0; min-height: 30px; font-size: 24px; font-weight: 700; color: var(--inteli-coral); }
 .reveal .adr-aviso-professor { margin: 0; font-size: 16px; color: var(--inteli-coral); white-space: pre-line; }
 
 /* ADR do grupo no projetor. */
@@ -271,5 +274,8 @@
 
 /* O slide de links vai ao projetor: o endereço com token fica borrado até o
    professor passar o mouse, para a sala não ver o token dos outros grupos. */
-.reveal .adr-link-url { filter: blur(7px); transition: filter 0.2s; }
-.reveal .adr-links-lista li:hover .adr-link-url { filter: none; }
+
+
+/* Nome de quem edita a ADR (participação). */
+.adr-quem { grid-column: 1 / -1; display: flex; gap: 10px; }
+.adr-quem input { font: inherit; font-size: 20px; flex: 1; padding: 8px 10px; border: 2px solid var(--seg-primaria); border-radius: 0; }

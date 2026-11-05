@@ -407,7 +407,7 @@
     }
 
     function entrar(apelido) {
-      return dados.moedaEntrar(sessao, apelido).then(function (id) {
+      return dados.moedaEntrar(sessao, apelido, opcoes.participante).then(function (id) {
         eu = { id: id, apelido: apelido };
         try { sessionStorage.setItem(CHAVE, JSON.stringify(eu)); } catch (e) { /* aba privada */ }
         comecar();
@@ -474,6 +474,74 @@
 
   window.IntelIMoeda = { montarAluno: montarAluno };
 
+  // ------------------------------------------------- voto contra resultado
+
+  // <div data-moeda-cruzamento data-sessao="..." data-pergunta="vale-jogar"
+  //      data-opcoes='["Jogo...", "Não jogo...", "Tanto faz..."]'
+  //      data-acerto='["acima", "abaixo", null]'></div>
+  // Cada aluno é contado uma vez: o último voto dele na pergunta e o saldo final
+  // na moeda. Acerta quem previu o lado de R$ 100 em que terminou.
+  function montarCruzamento(raiz) {
+    var dados = IntelIAula02Dados.criar();
+    var sessao = IntelIAula02Dados.sessao(raiz.dataset.sessao);
+    var opcoes = JSON.parse(raiz.dataset.opcoes || '[]');
+    var acerto = JSON.parse(raiz.dataset.acerto || '[]');
+
+    var placar = el('p', 'mc-placar');
+    var lista = el('ol', 'mc-linhas');
+    var legenda = el('p', 'mc-legenda');
+    legenda.appendChild(el('span', 'mc-l-abaixo', 'terminou abaixo de R$ 100'));
+    legenda.appendChild(el('span', 'mc-l-acima', 'terminou com R$ 100 ou mais'));
+    raiz.appendChild(placar);
+    raiz.appendChild(lista);
+    raiz.appendChild(legenda);
+
+    function atualizar() {
+      return dados.moedaCruzamento(sessao, raiz.dataset.pergunta).then(function (linhas) {
+        var por = {};
+        linhas.forEach(function (l) { por[l.opcao] = l; });
+        var total = 0, certos = 0, maior = 1;
+        opcoes.forEach(function (_, i) {
+          var l = por[i] || { abaixo: 0, acima: 0 };
+          total += l.abaixo + l.acima;
+          if (acerto[i] === 'abaixo') certos += l.abaixo;
+          if (acerto[i] === 'acima') certos += l.acima;
+          maior = Math.max(maior, l.abaixo + l.acima);
+        });
+        placar.textContent = '';
+        placar.appendChild(el('strong', '', certos + ' de ' + total));
+        placar.appendChild(el('span', '', ' acertaram o lado de R$ 100 em que terminaram'));
+        raiz.dataset.acertos = String(certos);
+        raiz.dataset.total = String(total);
+        lista.textContent = '';
+        opcoes.forEach(function (texto, i) {
+          var l = por[i] || { abaixo: 0, acima: 0 };
+          var li = el('li', 'mc-linha');
+          li.dataset.opcao = String(i);
+          li.appendChild(el('span', 'mc-texto', texto));
+          var barra = el('span', 'mc-barra');
+          var a = el('span', 'mc-abaixo', l.abaixo ? String(l.abaixo) : '');
+          a.style.width = (l.abaixo / maior * 100) + '%';
+          var b = el('span', 'mc-acima', l.acima ? String(l.acima) : '');
+          b.style.width = (l.acima / maior * 100) + '%';
+          barra.appendChild(a);
+          barra.appendChild(b);
+          li.appendChild(barra);
+          lista.appendChild(li);
+        });
+      });
+    }
+    atualizar().then(function () { raiz.dataset.pronto = 'sim'; }, function (err) {
+      raiz.dataset.pronto = 'erro';
+      console.error('[moeda-cruzamento]', err);
+    });
+    dados.ouvir(sessao, atualizar, ['moeda_jogadas']);
+    var secao = raiz.closest('section');
+    if (window.Reveal && window.Reveal.on && secao) {
+      window.Reveal.on('slidechanged', function (e) { if (e.currentSlide === secao) atualizar(); });
+    }
+  }
+
 
   // Dentro de um deck Reveal, o componente só conecta ao banco quando o slide
   // dele aparece pela primeira vez (como o quiz ao vivo). Fora do deck, na hora.
@@ -489,6 +557,7 @@
 
   function iniciar() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-moeda]'), function (r) { quandoPresente(r, montarSlide); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-moeda-cruzamento]'), function (r) { quandoPresente(r, montarCruzamento); });
     Array.prototype.forEach.call(document.querySelectorAll('[data-moeda-aluno]:not([data-moeda-auto="nao"])'),
       function (r) { montarAluno(r); });
   }

@@ -25,6 +25,7 @@
   <link rel="stylesheet" href="../assets/css/inteli-quiz-vivo.css">
   <link rel="stylesheet" href="../assets/css/inteli-moeda.css">
   <link rel="stylesheet" href="../assets/css/inteli-adr.css">
+  <link rel="stylesheet" href="../assets/css/inteli-aula02.css">
   <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
 </head>
 <body>
@@ -166,33 +167,88 @@
       </section>
 
       <!-- 7 -->
-      <section class="content-slide" id="artigo">
+      <section class="content-slide" id="acertos">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Uma alta de 5% seguida de queda de 2% rende 2,90%</h2>
+          <h2>Seu voto contra o seu saldo</h2>
         </div>
-        <div class="codigo-passos codigo-passos-curto" data-codigo-passos data-intro-titulo="O exemplo do artigo em três linhas"
-             data-intro="Seção 1 do notebook. Avance com a seta.">
-          <div class="codigo-janela"><pre class="codigo-linhas"><code><span class="cl" data-n="1"><span class="cl-n">1</span>r = pd.Series([0.05, -0.02])</span><span class="cl" data-n="2"><span class="cl-n">2</span>r.sum()                    <span class="tok-com"># 0.03</span></span><span class="cl" data-n="3"><span class="cl-n">3</span>(1 + r).cumprod() - 1      <span class="tok-com"># 0.05, depois 0.029</span></span></code></pre></div>
-          <aside class="codigo-explica">
-            <p class="codigo-contador"></p>
-            <p class="codigo-titulo"></p>
-            <p class="codigo-texto"></p>
-          </aside>
-          <span class="fragment codigo-passo" data-linhas="1" data-titulo="Dois pregões" data-texto="Sobe 5% num dia e cai 2% no dia seguinte, como no autoestudo do Turing Talks."></span>
-          <span class="fragment codigo-passo" data-linhas="2" data-titulo="Somar dá 3%" data-texto="A soma trata a queda de 2% como se ela incidisse sobre o preço de partida. Ela incide sobre um preço que já tinha subido."></span>
-          <span class="fragment codigo-passo" data-linhas="3" data-titulo="Compor dá 2,90%" data-texto="1,05 vezes 0,98 é 1,029. Retornos se compõem multiplicando (1 + r), e cumprod faz isso para a série inteira."></span>
-        </div>
-        <aside class="notes">Na moeda, uma cara e uma coroa dão 1,5 &times; 0,6 = 0,9.</aside>
+        <div data-moeda-cruzamento data-sessao="m08-aula02-2026-11-05" data-pergunta="vale-jogar"
+             data-opcoes='["Jogo: ganho 5% por rodada, em média", "Não jogo: vou perder dinheiro", "Tanto faz: na média empata"]'
+             data-acerto='["acima", "abaixo", null]'></div>
+        <aside class="notes">Cada aluno conta uma vez: o último voto dele no slide 5 e o saldo final dele na moeda, sem nome. Acertou quem previu o lado de R$ 100 em que terminou; "tanto faz" não acerta nenhum dos lados. Pergunta para a sala: quem votou "jogo" pensou na média de 5%; o que a média escondeu?</aside>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; autoestudo [3]</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
           <p class="footer-page">7</p>
         </div>
       </section>
 
       <!-- 8 -->
+      <section class="content-slide slide-lousa" id="lousa">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>A SUZB3 subiu 5,00% em 19/07/2022 e caiu 2,07% no pregão seguinte</h2>
+        </div>
+        <p class="lousa-caso">Você aplicou <strong>R$ 1.000</strong> em SUZB3 no fechamento de 18/07/2022. Quem vem à lousa calcula e explica.</p>
+        <div class="lousa-campos">
+          <div class="lousa-campo">
+            <p class="lousa-pergunta"><span>1</span>Fechamento de 19/07: <strong>+5,00%</strong>. Quanto você tem?</p>
+            <div class="lousa-area"><p class="fragment lousa-resposta" data-fragment-index="1">R$ 1.000 &times; 1,05 = <strong>R$ 1.050,00</strong></p></div>
+          </div>
+          <div class="lousa-campo">
+            <p class="lousa-pergunta"><span>2</span>Fechamento de 20/07: <strong>-2,07%</strong>. E agora?</p>
+            <div class="lousa-area"><p class="fragment lousa-resposta" data-fragment-index="2">R$ 1.050,00 &times; 0,9793 = <strong>R$ 1.028,27</strong></p></div>
+          </div>
+          <div class="lousa-campo">
+            <p class="lousa-pergunta"><span>3</span>Quanto rendeu nos dois dias? Por que não 2,93%?</p>
+            <div class="lousa-area"><p class="fragment lousa-resposta" data-fragment-index="3"><strong>2,83%</strong>. Os -2,07% incidem sobre R$ 1.050, não sobre R$ 1.000.</p></div>
+          </div>
+        </div>
+        <svg class="lousa-trilha" viewBox="0 0 1160 90" aria-hidden="true">
+          <line class="lt-base" x1="40" y1="60" x2="1120" y2="60"></line>
+          <circle class="lt-ponto" cx="80" cy="60" r="10"></circle>
+          <text class="lt-rotulo" x="80" y="30" text-anchor="middle">R$ 1.000,00</text>
+          <g class="fragment" data-fragment-index="1"><line class="lt-sobe" x1="80" y1="60" x2="580" y2="38"></line><circle class="lt-ponto" cx="580" cy="38" r="10"></circle><text class="lt-rotulo" x="580" y="18" text-anchor="middle">R$ 1.050,00</text></g>
+          <g class="fragment" data-fragment-index="2"><line class="lt-desce" x1="580" y1="38" x2="1080" y2="48"></line><circle class="lt-ponto" cx="1080" cy="48" r="10"></circle><text class="lt-rotulo" x="1080" y="85" text-anchor="middle">R$ 1.028,27</text></g>
+        </svg>
+        <aside class="notes">Projetado sobre a lousa: as três áreas tracejadas ficam vazias para o canetão. Chamar um aluno por pergunta, deixar a sala discutir e só então avançar: cada seta revela a resposta da área. Quem somar dá 2,93% e erra por 0,10 ponto em dois dias; no jogo da moeda, o mesmo erro virou a diferença entre média e mediana. Caso real do snapshot (Adj Close da SUZB3).</aside>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [1]</p>
+          <p class="footer-page">8</p>
+        </div>
+      </section>
+
+      <!-- 9 -->
+      <section class="content-slide" id="artigo">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Em Python, a composição é (1 + r).cumprod()</h2>
+        </div>
+        <div class="codigo-passos codigo-passos-curto codigo-grande" data-codigo-passos data-intro-titulo="O exemplo do artigo em três linhas"
+             data-intro="Seção 1 do notebook. Avance com a seta.">
+          <div class="codigo-janela"><pre class="codigo-linhas"><code><span class="cl" data-n="1"><span class="cl-n">1</span>r = pd.Series([0.05, -0.02])</span><span class="cl" data-n="2"><span class="cl-n">2</span>r.sum()                <span class="tok-com"># 0.03</span></span><span class="cl" data-n="3"><span class="cl-n">3</span>(1 + r).cumprod() - 1  <span class="tok-com"># 0.05, 0.029</span></span></code></pre></div>
+          <aside class="codigo-explica">
+            <p class="codigo-contador"></p>
+            <p class="codigo-titulo"></p>
+            <p class="codigo-texto"></p>
+          </aside>
+          <span class="fragment codigo-passo" data-linhas="1" data-titulo="Dois pregões" data-texto="Sobe 5% num dia e cai 2% no dia seguinte, como no autoestudo do Turing Talks e como a SUZB3 na lousa."></span>
+          <span class="fragment codigo-passo" data-linhas="2" data-titulo="Somar dá 3%" data-texto="A soma trata a queda como se ela incidisse sobre o preço de partida."></span>
+          <span class="fragment codigo-passo" data-linhas="3" data-titulo="Compor dá 2,90%" data-texto="1,05 vezes 0,98 é 1,029. O cumprod multiplica os (1 + r) em sequência, para a série inteira."></span>
+        </div>
+        <aside class="notes">Na moeda, uma cara e uma coroa dão 1,5 &times; 0,6 = 0,9.</aside>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; autoestudo [3]</p>
+          <p class="footer-page">9</p>
+        </div>
+      </section>
+
+      <!-- 10 -->
       <section class="content-slide" id="simulacao">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -200,53 +256,55 @@
           <div class="accent-bar"></div>
           <h2>Com 10.000 jogadores, a mediana termina em R$ 59,05</h2>
         </div>
-        <div class="codigo-passos codigo-passos-curto" data-codigo-passos data-intro-titulo="Antes de avançar"
+        <div class="codigo-passos codigo-passos-curto codigo-grande codigo-com-cena" data-codigo-passos data-intro-titulo="Antes de avançar"
              data-intro="Cada um escreve no caderno um palpite para a mediana do saldo depois de 10 rodadas.">
-          <div class="codigo-janela"><pre class="codigo-linhas"><code><span class="cl" data-n="1"><span class="cl-n">1</span>rng = np.random.default_rng(2026)</span><span class="cl" data-n="2"><span class="cl-n">2</span>caras = rng.random((10_000, 10)) &lt; 0.5</span><span class="cl" data-n="3"><span class="cl-n">3</span>fatores = np.where(caras, 1.5, 0.6)</span><span class="cl" data-n="4"><span class="cl-n">4</span>saldo = 100 * fatores.prod(axis=1)</span><span class="cl" data-n="5"><span class="cl-n">5</span> </span><span class="cl" data-n="6"><span class="cl-n">6</span>saldo.mean()        <span class="tok-com"># perto de 163</span></span><span class="cl" data-n="7"><span class="cl-n">7</span>np.median(saldo)    <span class="tok-com"># 59.05</span></span></code></pre></div>
+          <div class="codigo-janela"><pre class="codigo-linhas"><code><span class="cl" data-n="1"><span class="cl-n">1</span>rng = np.random.default_rng(2026)</span><span class="cl" data-n="2"><span class="cl-n">2</span>caras = rng.random((10_000, 10)) &lt; 0.5</span><span class="cl" data-n="3"><span class="cl-n">3</span>fatores = np.where(caras, 1.5, 0.6)</span><span class="cl" data-n="4"><span class="cl-n">4</span>saldo = 100 * fatores.prod(axis=1)</span><span class="cl" data-n="5"><span class="cl-n">5</span>saldo.mean(), np.median(saldo)</span></code></pre>
+            <div class="sim-cena" data-sim-cena data-caras="1101001110,0110100011,1000101011,1000010001,0001010111,0100100011,1101101110,0000000100,1100111011,0111110111,1101001100,1110000100"></div>
+          </div>
           <aside class="codigo-explica">
             <p class="codigo-contador"></p>
             <p class="codigo-titulo"></p>
             <p class="codigo-texto"></p>
           </aside>
-          <span class="fragment codigo-passo" data-linhas="1-2" data-titulo="Uma tabela de moedas" data-texto="10.000 linhas, uma por jogador, e 10 colunas, uma por rodada. A semente fixa faz todo mundo ver o mesmo resultado."></span>
-          <span class="fragment codigo-passo" data-linhas="3-4" data-titulo="Saldo é produto" data-texto="Cada cara vira 1,5 e cada coroa vira 0,6. O saldo final é 100 vezes o produto da linha, a mesma composição do slide anterior."></span>
-          <span class="fragment codigo-passo" data-linhas="6-7" data-titulo="Média e mediana se separam" data-texto="Poucos jogadores com muitas caras puxam a média para cima. O jogador do meio, com 5 caras e 5 coroas, termina com R$ 59,05."></span>
+          <span class="fragment codigo-passo" data-linhas="1-2" data-titulo="Uma tabela de moedas" data-texto="Uma linha por jogador, uma coluna por rodada. Ao lado, 12 jogadores de exemplo: verde é cara, coral é coroa."></span>
+          <span class="fragment codigo-passo" data-linhas="3-4" data-titulo="Saldo é produto" data-texto="Cara vira 1,5 e coroa vira 0,6. O saldo é 100 vezes o produto da linha: a barra de cada jogador cresce ou encolhe."></span>
+          <span class="fragment codigo-passo" data-linhas="5" data-titulo="Média e mediana se separam" data-texto="Ordenados pelo saldo, poucos jogadores com muitas caras puxam a média para cima. O jogador do meio, com 5 caras e 5 coroas, fica com R$ 59,05."></span>
         </div>
-        <aside class="notes">Seção 2 do notebook. Comparem com o palpite do caderno.</aside>
+        <aside class="notes">Seção 2 do notebook. Comparem com o palpite do caderno. A cena usa 12 jogadores de exemplo; a média e a mediana dos 10.000 saem do notebook (perto de R$ 163 e R$ 59,05).</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">8</p>
+          <p class="footer-page">10</p>
         </div>
       </section>
 
-      <!-- 9 -->
+      <!-- 11 -->
       <section class="content-slide" id="bodie">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>A média aritmética de 5,0% por rodada vira -5,1% para quem joga</h2>
+          <h2>A mesma média de 5% por rodada vira de +4,9% a -5,1% conforme a moeda oscila</h2>
         </div>
-        <table class="tabela-leitura">
-          <thead><tr><th>Medida</th><th>Conta</th><th>Por rodada</th></tr></thead>
+        <table class="tabela-leitura tabela-bodie">
+          <thead><tr><th>Moeda</th><th>Média por rodada</th><th>Desconto: variância &divide; 2</th><th>Taxa que o jogador vive</th><th>R$ 100 em 10 rodadas</th></tr></thead>
           <tbody>
-            <tr><td>Média aritmética</td><td>0,5 &times; 50% + 0,5 &times; (-40%)</td><td>5,0%</td></tr>
-            <tr class="linha-destaque"><td>Média geométrica</td><td>(1,5 &times; 0,6)<sup>1/2</sup> - 1</td><td>-5,1%</td></tr>
-            <tr><td>Aproximação do Bodie</td><td>aritmética - variância / 2, com variância de 20,25%</td><td>-5,1%</td></tr>
+            <tr class="fragment" data-fragment-index="1"><td>+10% ou 0%</td><td>5,0%</td><td>0,1%</td><td>4,9%</td><td><span class="bodie-barra" style="--v: 161.05"></span>R$ 161,05</td></tr>
+            <tr class="fragment" data-fragment-index="2"><td>+30% ou -20%</td><td>5,0%</td><td>3,1%</td><td>2,0%</td><td><span class="bodie-barra" style="--v: 121.67"></span>R$ 121,67</td></tr>
+            <tr class="fragment linha-destaque" data-fragment-index="3"><td>+50% ou -40% (a da sala)</td><td>5,0%</td><td>10,1%</td><td>-5,1%</td><td><span class="bodie-barra bodie-barra-perde" style="--v: 59.05"></span>R$ 59,05</td></tr>
           </tbody>
         </table>
-        <div class="faixa-nota">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#menu_book"></use></svg>
-          <p>No capítulo 5, a média geométrica fica abaixo da aritmética em cerca de metade da variância. Quanto mais volátil o ativo, maior a distância entre o retorno médio e o que o investidor vive.</p>
+        <div class="bodie-regra fragment" data-fragment-index="4">
+          <p class="bodie-formula">taxa vivida &asymp; média &minus; variância &divide; 2</p>
+          <p>Uma queda pesa mais que uma alta do mesmo tamanho, porque a alta seguinte incide sobre uma base menor. Quanto mais o ativo oscila, maior o desconto sobre a média que aparece no relatório.</p>
         </div>
-        <aside class="notes">Pergunta disparada: qual das duas médias o assessor costuma mostrar ao cliente, e por quê?</aside>
+        <aside class="notes">Pergunta antes de revelar cada linha: a média é a mesma nas três moedas; quanto o jogador típico tem depois de 10 rodadas? A regra é do capítulo 5 de Bodie, Kane e Marcus (média geométrica abaixo da aritmética em cerca de metade da variância). Na linha de 30%, a regra dá 1,9% e a conta exata dá 2,0%: é uma aproximação. Ligação com o A2: reportar a média geométrica ao lado da aritmética.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; autoestudo [2]</p>
-          <p class="footer-page">9</p>
+          <p class="footer-page">11</p>
         </div>
       </section>
 
-      <!-- 10 -->
+      <!-- 12 -->
       <section class="content-slide" id="ponte">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -254,30 +312,59 @@
           <div class="accent-bar"></div>
           <h2>O BBDC4 rendeu 4,81% ao ano na média e quem segurou perdeu 0,42% ao ano</h2>
         </div>
-        <table class="tabela-leitura tabela-anos">
-          <thead><tr><th>Ano</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th></tr></thead>
-          <tbody>
-            <tr><td>Retorno</td><td>-15,22%</td><td>-18,66%</td><td>-11,30%</td><td>25,62%</td><td>-28,12%</td><td>76,54%</td></tr>
-          </tbody>
-        </table>
-        <table class="tabela-leitura">
-          <thead><tr><th>Medida</th><th>Valor</th><th>Quem usa</th></tr></thead>
-          <tbody>
-            <tr><td>Média aritmética</td><td>4,81% ao ano</td><td>a frase de vitrine</td></tr>
-            <tr class="linha-destaque"><td>Média geométrica</td><td>-0,42% ao ano</td><td>o cliente que comprou em 2019 e segurou</td></tr>
-          </tbody>
-        </table>
-        <div class="faixa-nota">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#query_stats"></use></svg>
-          <p>É o jogo da moeda com dado real: o 76,54% de 2025 puxa a média para cima e não devolve o que os anos de queda tiraram. Seção 4 do notebook.</p>
+        <div class="codigo-passos codigo-passos-curto codigo-com-cena codigo-ponte" data-codigo-passos data-intro-titulo="A ponte para o dado real"
+             data-intro="Seção 4 do notebook. O gráfico se monta a cada passo do código.">
+          <div class="codigo-janela"><pre class="codigo-linhas"><code><span class="cl" data-n="1"><span class="cl-n">1</span>fins = precos["BBDC4"].groupby(precos.index.year).last()</span><span class="cl" data-n="2"><span class="cl-n">2</span>r = fins.pct_change().loc[2020:2025]</span><span class="cl" data-n="3"><span class="cl-n">3</span>r.mean()                            <span class="tok-com"># 0.0481</span></span><span class="cl" data-n="4"><span class="cl-n">4</span>(1 + r).prod() ** (1 / len(r)) - 1  <span class="tok-com"># -0.0042</span></span><span class="cl" data-n="5"><span class="cl-n">5</span>r.var(ddof=0) / 2                   <span class="tok-com"># 0.0656</span></span><span class="cl" data-n="6"><span class="cl-n">6</span>(100 * (1 + r).cumprod()).plot()</span></code></pre>
+            <div class="ponte-cena" data-ponte-cena data-modo="caminho" data-largura="820" data-altura="225"
+                 data-serie='{"anos": [2019, 2020, 2021, 2022, 2023, 2024, 2025], "anuais": [-0.1522, -0.1866, -0.113, 0.2562, -0.2812, 0.7654], "promessa": [100.0, 104.81, 109.85, 115.14, 120.68, 126.48, 132.57], "vivido": [100.0, 84.78, 68.96, 61.17, 76.84, 55.23, 97.51], "aportado": [100, 200, 300, 400, 500, 600], "saldo": [84.78, 150.3, 222.02, 404.53, 362.65, 816.78]}' data-rotulos='{"promessa": "R$ 132,57 pela média", "vivido": "R$ 97,51 vividos", "imposto": "Imposto da volatilidade: regra 6,6%, medido 5,2% por ano"}'></div>
+          </div>
+          <aside class="codigo-explica">
+            <p class="codigo-contador"></p>
+            <p class="codigo-titulo"></p>
+            <p class="codigo-texto"></p>
+          </aside>
+          <span class="fragment codigo-passo" data-linhas="1-2" data-titulo="Um retorno por ano" data-texto="Seis anos de BBDC4, do fim de 2019 ao fim de 2025: quatro de queda e dois de alta. Os retornos aparecem embaixo do gráfico."></span>
+          <span class="fragment codigo-passo" data-linhas="3" data-titulo="A média de vitrine" data-texto="4,81% ao ano. R$ 100 crescendo nessa taxa virariam R$ 132,57."></span>
+          <span class="fragment codigo-passo" data-linhas="4" data-titulo="O que o cliente viveu" data-texto="-0,42% ao ano. Quem comprou no fim de 2019 e segurou tem R$ 97,51."></span>
+          <span class="fragment codigo-passo" data-linhas="5-6" data-titulo="O imposto da volatilidade" data-texto="A regra do capítulo 5 prevê 6,6% de distância entre as duas médias; a conta exata dá 5,2%. Com um ano de 76,54%, a regra vira aproximação: por isso o código calcula o exato."></span>
         </div>
+        <aside class="notes">Pergunta antes do passo 4: se a média é positiva, o cliente ganhou dinheiro? Depois do passo 5: qual dos dois números a função do A2 deve mostrar primeiro, e por quê?</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [1]</p>
-          <p class="footer-page">10</p>
+          <p class="footer-page">12</p>
         </div>
       </section>
 
-      <!-- 11 -->
+      <section class="content-slide" id="aportes">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Quem aportou R$ 100 todo ano no mesmo BBDC4 teve 8,88% ao ano</h2>
+        </div>
+        <div class="codigo-passos codigo-passos-curto codigo-com-cena codigo-ponte" data-codigo-passos data-intro-titulo="O retorno do investidor"
+             data-intro="Mesmo ativo, mesma janela, outro cliente: um que aporta R$ 100 no início de cada ano.">
+          <div class="codigo-janela"><pre class="codigo-linhas"><code><span class="cl" data-n="1"><span class="cl-n">1</span>saldo = 0</span><span class="cl" data-n="2"><span class="cl-n">2</span><span class="tok-kw">for</span> ret <span class="tok-kw">in</span> r:</span><span class="cl" data-n="3"><span class="cl-n">3</span>    saldo = (saldo + 100) * (1 + ret)</span><span class="cl" data-n="4"><span class="cl-n">4</span>fluxo = [-100] * len(r) + [saldo]</span><span class="cl" data-n="5"><span class="cl-n">5</span>vpl = <span class="tok-kw">lambda</span> t: sum(c / (1 + t) ** k <span class="tok-kw">for</span> k, c <span class="tok-kw">in</span> enumerate(fluxo))</span><span class="cl" data-n="6"><span class="cl-n">6</span>brentq(vpl, -0.9, 1.0)              <span class="tok-com"># 0.0888</span></span></code></pre>
+            <div class="ponte-cena" data-ponte-cena data-modo="aportes" data-largura="820" data-altura="225"
+                 data-serie='{"anos": [2019, 2020, 2021, 2022, 2023, 2024, 2025], "anuais": [-0.1522, -0.1866, -0.113, 0.2562, -0.2812, 0.7654], "promessa": [100.0, 104.81, 109.85, 115.14, 120.68, 126.48, 132.57], "vivido": [100.0, 84.78, 68.96, 61.17, 76.84, 55.23, 97.51], "aportado": [100, 200, 300, 400, 500, 600], "saldo": [84.78, 150.3, 222.02, 404.53, 362.65, 816.78]}' data-rotulos='{"saldo": "R$ 816,78", "tir": "TIR dos aportes: 8,88% ao ano. Quem comprou e segurou: -0,42%"}'></div>
+          </div>
+          <aside class="codigo-explica">
+            <p class="codigo-contador"></p>
+            <p class="codigo-titulo"></p>
+            <p class="codigo-texto"></p>
+          </aside>
+          <span class="fragment codigo-passo" data-linhas="1-3" data-titulo="Um aporte por ano" data-texto="R$ 100 no início de cada ano, de 2020 a 2025. A barra clara é o que entrou; a cheia é o saldo no fim do ano."></span>
+          <span class="fragment codigo-passo" data-linhas="4" data-titulo="Seis entradas e uma saída" data-texto="R$ 600 aportados viraram R$ 816,78, porque boa parte do dinheiro entrou antes do 76,54% de 2025."></span>
+          <span class="fragment codigo-passo" data-linhas="5-6" data-titulo="A taxa do dinheiro" data-texto="A taxa interna de retorno, que o capítulo 5 chama de retorno ponderado pelo dinheiro, dá 8,88% ao ano. Quem comprou em 2019 e segurou teve -0,42%."></span>
+        </div>
+        <aside class="notes">Mesmo ativo, mesma janela, dois números verdadeiros: -0,42% para quem comprou e segurou, 8,88% para quem aportou todo ano. O retorno do ativo não é o retorno do investidor; depende de quando o dinheiro entrou. Pergunta para o comitê: um assessor mostra 8,88% ao cliente que vai investir tudo de uma vez. Ele mentiu? E para o A2: qual dos dois números a função de vocês entrega, e para qual cliente?</aside>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [1]</p>
+          <p class="footer-page">13</p>
+        </div>
+      </section>
+
+      <!-- 13 -->
       <section class="content-slide" id="comite">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -285,72 +372,40 @@
           <div class="accent-bar"></div>
           <h2>Comitê de investimentos do BTG</h2>
         </div>
-        <p>Um assessor mandou quatro frases para clientes. Antes que elas circulem de novo, o comitê quer saber se cada uma se sustenta no dado de 2019 a 2026.</p>
-        <table class="tabela-leitura">
-          <thead><tr><th>Grupo</th><th>Frase do assessor</th></tr></thead>
+        <p class="comite-papel">Cada grupo recebe a frase que um assessor mandou a clientes e decide, com código, se ela pode circular.</p>
+        <table class="tabela-leitura tabela-tarefa">
+          <thead><tr><th>Etapa</th><th>Onde</th><th>Tempo</th><th>O que o grupo entrega</th></tr></thead>
           <tbody>
-            <tr><td>G01</td><td>O BBAS3 deu prejuízo de 14,7% entre 2019 e 2026.</td></tr>
-            <tr><td>G02</td><td>A MGLU3 caiu 90% desde 2019. Uma alta de 90% devolve o cliente ao zero a zero.</td></tr>
-            <tr><td>G03</td><td>A PETR4 tem volatilidade de 39% ao ano, então o pior que acontece em um ano é perder 39%.</td></tr>
-            <tr><td>G04</td><td>A WEGE3 ganhou da renda fixa no período.</td></tr>
+            <tr><td>Checar a frase</td><td>notebook, seção do grupo</td><td>até 12 min</td><td>o número que confirma ou derruba a frase, calculado em uma célula</td></tr>
+            <tr><td>Registrar a decisão</td><td>ADR no deck do grupo</td><td>até 25 min</td><td>contexto, critérios, opções, decisão com veredito e o número que muda a decisão do cliente</td></tr>
+            <tr><td>Defender</td><td>projetor, no comitê</td><td>3 min</td><td>a frase, o número, o veredito e a frase que o cliente deveria ter ouvido</td></tr>
           </tbody>
         </table>
-        <div class="faixa-nota">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#gavel"></use></svg>
-          <p>Cada grupo checa a sua frase no notebook, registra a decisão numa ADR e defende o veredito em 3 minutos. Uma frase pode estar certa.</p>
-        </div>
+        <p class="comite-grupos">G01 BBAS3 &middot; G02 MGLU3 &middot; G03 PETR4 &middot; G04 WEGE3. O link do deck do grupo chega no Slack no próximo slide.</p>
+        <aside class="notes">As frases ficam nos decks dos grupos. Não antecipar o veredito de nenhuma: o grupo precisa chegar a ele pela conta. Se um grupo trouxer veredito sem número, perguntar qual célula do notebook sustenta a decisão. A ADR baixada em Markdown vale como ADR do A2.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">11</p>
+          <p class="footer-page">14</p>
         </div>
       </section>
 
-      <!-- 12 -->
+      <!-- 14 -->
       <section class="content-slide" id="links">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Links dos grupos</h2>
+          <h2>Checagem em grupo: 25 minutos</h2>
         </div>
-        <div data-adr-links data-sessao="m08-aula02-2026-11-05" data-base="" data-minutos="25"></div>
-        <aside class="notes">Gerar os links, copiar para o Slack de cada grupo e iniciar o prazo de 25 minutos quando todos tiverem aberto. O prazo é do servidor: a ADR de todos os grupos trava junto. Para estender, digitar os minutos que faltam e clicar de novo em Iniciar prazo.</aside>
+        <div data-adr-links data-sessao="m08-aula02-2026-11-05" data-base="" data-minutos="25" data-marco="12"></div>
+        <aside class="notes">Os links aparecem sozinhos com a chave do professor no navegador; copiar para o Slack. Iniciar os 25 minutos quando os quatro grupos tiverem aberto o deck: o relógio é o mesmo prazo que trava a ADR. Aos 12 minutos o marco aparece: cada grupo diz em uma frase qual número calculou. +5 minutos estende o prazo de todos.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">12</p>
+          <p class="footer-page">15</p>
         </div>
       </section>
 
-      <!-- 13 -->
-      <section class="exercise-slide" id="investigacao">
-        <div class="top-bar"></div>
-        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
-        <div class="slide-title-area slide-title-area-cronometro">
-          <div>
-            <div class="accent-bar"></div>
-            <h2>Checagem em grupo: a frase do assessor</h2>
-          </div>
-          <div class="cronometro" id="cronometro-investigacao" data-minutos="25" data-ampulheta
-               data-marcos="12" data-marco-texto="12 minutos: o número do veredito precisa estar calculado"></div>
-        </div>
-        <ol class="exercise-steps">
-          <li>Abram o deck do grupo pelo link do Slack. A frase e o ponto de partida estão nele.</li>
-          <li>No notebook, seção do grupo: calculem o número que decide o veredito.</li>
-          <li data-marco="12">Aos 12 minutos, passem para a ADR do deck. Todos podem escrever ao mesmo tempo.</li>
-          <li>Escolham quem defende o veredito no comitê.</li>
-          <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Verifiquem se o veredito muda quando a data de compra muda.</li>
-        </ol>
-        <div class="faixa-nota checagem-pratica">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
-          <p><strong>Checagem aos 12 min:</strong> cada grupo diz em uma frase qual número calculou. <strong>Debrief:</strong> é a defesa no comitê, nos slides seguintes.</p>
-        </div>
-        <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">13</p>
-        </div>
-      </section>
-
-      <!-- 14 -->
+      <!-- 15 -->
       <section class="content-slide slide-comite" id="comite-g01">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -374,11 +429,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">14</p>
+          <p class="footer-page">16</p>
         </div>
       </section>
 
-      <!-- 15 -->
+      <!-- 16 -->
       <section class="content-slide slide-comite" id="comite-g02">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -402,11 +457,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">15</p>
+          <p class="footer-page">17</p>
         </div>
       </section>
 
-      <!-- 16 -->
+      <!-- 17 -->
       <section class="content-slide slide-comite" id="comite-g03">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -430,11 +485,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">16</p>
+          <p class="footer-page">18</p>
         </div>
       </section>
 
-      <!-- 17 -->
+      <!-- 18 -->
       <section class="content-slide slide-comite" id="comite-g04">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -458,11 +513,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">17</p>
+          <p class="footer-page">19</p>
         </div>
       </section>
 
-      <!-- 18 -->
+      <!-- 19 -->
       <section class="content-slide" id="a2">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -486,11 +541,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">18</p>
+          <p class="footer-page">20</p>
         </div>
       </section>
 
-      <!-- 19 -->
+      <!-- 20 -->
       <section class="content-slide" id="referencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -506,11 +561,11 @@
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">19</p>
+          <p class="footer-page">21</p>
         </div>
       </section>
 
-      <!-- 20 -->
+      <!-- 21 -->
       <section class="end-slide" id="encerramento">
         <h1>Até 10/11/2026</h1>
         <h3>Aula 03: Correlação, Covariância e o Argumento Matemático da Diversificação</h3>
@@ -536,6 +591,8 @@
   <script src="../assets/js/inteli-aula02-dados.js"></script>
   <script src="../assets/js/inteli-moeda.js"></script>
   <script src="../assets/js/inteli-adr.js"></script>
+  <script src="../assets/js/inteli-sim-cena.js"></script>
+  <script src="../assets/js/inteli-ponte-cena.js"></script>
   <script src="../assets/js/inteli-zoom.js"></script>
   <script src="../assets/js/inteli-print.js"></script>
   <script src="../assets/js/inteli-cronometro.js"></script>

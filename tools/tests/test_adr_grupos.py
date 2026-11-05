@@ -89,7 +89,7 @@ def _professor(contexto, base):
     page.evaluate("localStorage.removeItem('inteli-aula02-demo')")
     page.reload(wait_until="load")
     page.wait_for_selector("[data-adr-links][data-pronto='sim']")
-    page.click("[data-adr-links] .adr-gerar")
+    # Com a chave no navegador, os links aparecem sozinhos.
     page.wait_for_selector("[data-adr-links] .adr-link-url")
     return page
 
@@ -100,10 +100,13 @@ def _link(professor, grupo):
     return url
 
 
-def _grupo(contexto, url):
+def _grupo(contexto, url, nome="Aluna Teste"):
     page = contexto.new_page()
     page.goto(url + "#/adr", wait_until="load")
     page.wait_for_selector("form[data-adr][data-pronto='sim']")
+    if page.locator(".adr-quem-nome").count():
+        page.fill(".adr-quem-nome", nome)
+        page.click(".adr-quem-ok")
     return page
 
 
@@ -141,7 +144,7 @@ def test_prazo_encerrado_trava_formulario_e_backend_recusa(sala):
     g = _grupo(contexto, url)
     g.fill("form[data-adr] [name=titulo]", "antes do prazo")
     g.wait_for_timeout(1200)
-    prof.fill("[data-adr-links] .adr-minutos", "0")
+    prof.eval_on_selector("[data-adr-links] .adr-minutos", "e => { e.value = '0'; }")
     prof.click("[data-adr-links] .adr-iniciar")
     g.wait_for_selector("form[data-adr].adr-travado", timeout=5000)
     assert g.locator("form[data-adr] [name=titulo]").get_attribute("readonly") is not None
@@ -184,3 +187,18 @@ def test_painel_comite_mostra_o_texto_ao_vivo(sala):
     prof.wait_for_function(
         "document.querySelector('[data-adr-comite][data-grupo=G04] .adr-comite-decisao').textContent"
         ".includes('Veredito do G04 ao vivo')", timeout=5000)
+
+
+def test_participacao_registra_quem_editou_e_reaproveita_o_nome_do_quiz(sala):
+    contexto, base, _ = sala
+    prof = _professor(contexto, base)
+    url = _link(prof, "G03")
+    a = _grupo(contexto, url, nome="Ana Souza")
+    assert "Ana Souza" in a.locator("form[data-adr] .adr-estado").inner_text()
+    a.fill("form[data-adr] [name=contexto]", "texto da Ana")
+    a.wait_for_timeout(1200)
+    # O mesmo navegador já tem o nome guardado: o segundo deck não pergunta de novo.
+    b = _grupo(contexto, url)
+    assert b.locator(".adr-quem-nome").count() == 0
+    linhas = prof.evaluate("IntelIAula02Dados.criar().adrParticipacao('teste', 'm08-aula02-2026-11-05')")
+    assert any(l["grupo"] == "G03" and l["nome"] == "Ana Souza" and l["edicoes"] >= 1 for l in linhas)

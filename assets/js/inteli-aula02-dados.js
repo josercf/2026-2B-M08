@@ -13,6 +13,7 @@
 //     moedaLiberar(chave, sessao, rodada)              -> Promise<rodada>
 //     moedaRodada(sessao)                              -> Promise<int>
 //     moedaEntrar(sessao, apelido)                     -> Promise<id>
+//     moedaCruzamento(sessao, pergunta)                -> Promise<[{opcao, abaixo, acima}]> (último voto x saldo final)
 //     moedaSala(sessao)                                -> Promise<quantos entraram>
 //     moedaJogar(sessao, jogador, rodada)              -> Promise<{cara, saldo}>
 //     moedaJogadas(sessao, jogador?)                   -> Promise<[{jogador, rodada, cara, saldo}]>
@@ -67,6 +68,10 @@
         return rpc('adr_prazo', { p_chave: chave, p_sessao: sessao, p_minutos: minutos });
       },
       adrAgora: function (sessao) { return rpc('adr_agora', { p_sessao: sessao }).then(primeira); },
+      adrEntrar: function (sessao, grupo, token, nome) {
+        return rpc('adr_entrar', { p_sessao: sessao, p_grupo: grupo, p_token: token || '', p_nome: nome || '' });
+      },
+      adrParticipacao: function (chave, sessao) { return rpc('adr_participacao', { p_chave: chave, p_sessao: sessao }); },
       adrTokenOk: function (sessao, grupo, token) {
         return rpc('adr_token_ok', { p_sessao: sessao, p_grupo: grupo, p_token: token || '' });
       },
@@ -88,7 +93,14 @@
           .then(function (l) { return l.length ? l[0].rodada : 0; });
       },
       moedaSala: function (sessao) { return rpc('moeda_sala', { p_sessao: sessao }); },
-      moedaEntrar: function (sessao, apelido) { return rpc('moeda_entrar', { p_sessao: sessao, p_apelido: apelido }); },
+      moedaEntrar: function (sessao, apelido, participante) {
+        // Banco anterior à migração da participação: entra sem o vínculo com o quiz.
+        return rpc('moeda_entrar', { p_sessao: sessao, p_apelido: apelido, p_participante: participante || null })
+          .catch(function () { return rpc('moeda_entrar', { p_sessao: sessao, p_apelido: apelido }); });
+      },
+      moedaCruzamento: function (sessao, pergunta) {
+        return rpc('moeda_cruzamento', { p_sessao: sessao, p_pergunta: pergunta });
+      },
       moedaJogar: function (sessao, jogador, rodada) {
         return rpc('moeda_jogar', { p_sessao: sessao, p_jogador: jogador, p_rodada: rodada }).then(function (l) {
           var j = primeira(l);
@@ -163,6 +175,21 @@
       adrAgora: function (sessao) {
         return Promise.resolve({ agora: new Date().toISOString(), fim: ler().prazos[sessao] || null });
       },
+      adrEntrar: function (sessao, grupo, token, nome) {
+        var e = ler();
+        var ok = e.tokens.some(function (t) { return t.sessao === sessao && t.grupo === grupo && t.token === token; });
+        if (!ok || !nome) return Promise.resolve(false);
+        e.presencas = e.presencas || [];
+        if (!e.presencas.some(function (p) { return p.sessao === sessao && p.grupo === grupo && p.nome === nome; })) {
+          e.presencas.push({ sessao: sessao, grupo: grupo, nome: nome, edicoes: 0 });
+        }
+        gravar(e);
+        return Promise.resolve(true);
+      },
+      adrParticipacao: function (chave, sessao) {
+        try { professor(chave); } catch (err) { return Promise.reject(err); }
+        return Promise.resolve((ler().presencas || []).filter(function (p) { return p.sessao === sessao; }));
+      },
       adrTokenOk: function (sessao, grupo, token) {
         return Promise.resolve(ler().tokens.some(function (t) {
           return t.sessao === sessao && t.grupo === grupo && t.token === token;
@@ -181,6 +208,12 @@
         if (!c) { c = { sessao: sessao, grupo: grupo, campo: campo }; e.campos.push(c); }
         c.texto = texto || '';
         c.autor = autor || null;
+        if (autor) {
+          e.presencas = e.presencas || [];
+          var pr = e.presencas.filter(function (p) { return p.sessao === sessao && p.grupo === grupo && p.nome === autor; })[0];
+          if (!pr) { pr = { sessao: sessao, grupo: grupo, nome: autor, edicoes: 0 }; e.presencas.push(pr); }
+          pr.edicoes += 1;
+        }
         c.atualizado_em = quando;
         gravar(e);
         return Promise.resolve(quando);
@@ -202,9 +235,37 @@
       moedaSala: function (sessao) {
         return Promise.resolve(ler().jogadores.filter(function (j) { return j.sessao === sessao; }).length);
       },
-      moedaEntrar: function (sessao, apelido) {
+      moedaCruzamento: function (sessao, pergunta) {
+        // Mesmo cruzamento do SQL, lendo o quiz em memória (inteli-quiz-dados.js).
+        var quiz = {};
+        try { quiz = JSON.parse(localStorage.getItem('inteli-quiz-demo')) || {}; } catch (err) { quiz = {}; }
+        var rodadas = {};
+        (quiz.rodadas || []).forEach(function (r) { if (r.sessao === sessao && r.pergunta === pergunta) rodadas[r.id] = r.rodada; });
+        var voto = {};
+        (quiz.votos || []).forEach(function (v) {
+          if (!(v.rodada_id in rodadas)) return;
+          var atual = voto[v.participante_id];
+          if (!atual || rodadas[v.rodada_id] > atual.rodada) voto[v.participante_id] = { opcao: v.opcao, rodada: rodadas[v.rodada_id] };
+        });
         var e = ler();
-        var j = { id: id(), sessao: sessao, apelido: String(apelido).trim().slice(0, 30) };
+        var final = {};
+        e.jogadores.forEach(function (j) {
+          if (j.sessao !== sessao || !j.participante) return;
+          var minhas = e.jogadas.filter(function (x) { return x.jogador === j.id; }).sort(function (a, b) { return b.rodada - a.rodada; });
+          if (minhas.length) final[j.participante] = minhas[0].saldo;
+        });
+        var porOpcao = {};
+        Object.keys(voto).forEach(function (p) {
+          if (!(p in final)) return;
+          var o = voto[p].opcao;
+          porOpcao[o] = porOpcao[o] || { opcao: o, abaixo: 0, acima: 0 };
+          if (final[p] < 100) porOpcao[o].abaixo += 1; else porOpcao[o].acima += 1;
+        });
+        return Promise.resolve(Object.keys(porOpcao).sort().map(function (k) { return porOpcao[k]; }));
+      },
+      moedaEntrar: function (sessao, apelido, participante) {
+        var e = ler();
+        var j = { id: id(), sessao: sessao, apelido: String(apelido).trim().slice(0, 30), participante: participante || null };
         e.jogadores.push(j);
         gravar(e);
         return Promise.resolve(j.id);
