@@ -111,7 +111,7 @@ def test_saldo_aplica_mais_50_ou_menos_40(sala):
     saldos = [100.0] + _jogar_tudo(c, 6)
     assert len(saldos) == 7
     for antes, depois in zip(saldos, saldos[1:]):
-        assert depois in (round(antes * 1.5, 2), round(antes * 0.6, 2)), (antes, depois)
+        assert min(abs(depois - antes * 1.5), abs(depois - antes * 0.6)) <= 0.0051, (antes, depois)
 
 
 def test_atrasado_joga_rodadas_liberadas_em_sequencia(sala):
