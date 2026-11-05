@@ -76,6 +76,7 @@ CAMPOS = [
     ("opcoes", "Opções consideradas", "o que o comitê pode fazer com a frase", "textarea"),
     ("decisao", "Decisão", "a afirmação é sustentada ou enganosa, e por quê", "textarea"),
     ("impacto", "Consequências", "o número que muda a decisão do cliente", "textarea"),
+    ("codigo", "Confirmação no código", "o código que rodaram e a saída", "textarea"),
 ]
 
 
@@ -146,7 +147,7 @@ def deck(grupo, dados):
         <blockquote class="grupo-afirmacao">{afirmacao}</blockquote>
         <div class="grupo-papel">
           <p>Vocês são analistas do comitê de investimentos do BTG. O comitê quer saber se essa frase se sustenta nos dados de 2019 a 2026 antes de deixá-la chegar a outro cliente.</p>
-          <p>Na reunião, o grupo tem 3 minutos para defender o veredito, com o número na tela.</p>
+          <p>Na reunião, o grupo tem 5 minutos para defender o veredito, com o número e o código na tela.</p>
         </div>
 {rodape1}
       </section>
@@ -158,7 +159,7 @@ def deck(grupo, dados):
         </ol>
         <div class="faixa-nota">
           <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
-          <p><strong>Aos 12 minutos</strong> o número que decide o veredito precisa estar calculado. O tempo que sobra vai para a ADR.</p>
+          <p><strong>Aos 20 minutos</strong> o número que decide o veredito precisa estar calculado, com o código rodando. Os 20 minutos seguintes vão para a ADR.</p>
         </div>
         <p class="grupo-notebook"><a href="{notebook}" target="_blank" rel="noopener">Abrir o notebook da Aula 02</a> e ir para a seção do grupo {grupo}, que já carrega os dados. O próximo slide diz o que a ADR precisa mostrar.</p>
 {rodape2}
@@ -173,12 +174,13 @@ def deck(grupo, dados):
             <tr><td>Critérios</td><td>o que o cliente perde se a frase estiver errada e contra o que o número precisa ser comparado</td></tr>
             <tr><td>Opções</td><td>manter a frase, corrigir a frase com outro número ou retirar a frase de circulação</td></tr>
             <tr><td>Decisão</td><td>o veredito em uma frase e a frase que o cliente deveria ter ouvido no lugar</td></tr>
-            <tr><td>Consequências</td><td>o número que muda a decisão do cliente, a célula do notebook que chega nele e o que a função do A2 precisa calcular para não repetir o erro</td></tr>
+            <tr><td>Consequências</td><td>o número que muda a decisão do cliente e o que ele faria de diferente com a frase corrigida</td></tr>
+            <tr><td>Confirmação no código</td><td>o trecho de código que o grupo escreveu e executou, a saída que ele imprimiu e a função do A2 que nasce dele (nome, entrada e saída)</td></tr>
           </tbody>
         </table>
         <div class="faixa-nota">
           <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#gavel"></use></svg>
-          <p>O comitê só aceita a decisão que traz o número e aponta a célula do notebook que chega nele.</p>
+          <p>O comitê só aceita a decisão que traz o número, o código que o grupo executou para chegar nele e a saída impressa.</p>
         </div>
 {rodape_guia}
       </section>
@@ -193,7 +195,7 @@ def deck(grupo, dados):
 {topo4}
         <ol class="grupo-passos">
           <li>Leiam a frase do assessor em voz alta.</li>
-          <li>Mostrem o número que decide e a célula do notebook que chega nele.</li>
+          <li>Mostrem o número que decide e rodem, na frente do comitê, a célula do notebook que chega nele.</li>
           <li>Digam o veredito e a frase que o cliente deveria ter ouvido no lugar.</li>
         </ol>
         <p class="grupo-depois">Depois da aula, a ADR baixada em Markdown entra no repositório do grupo como uma ADR do A2, com a autoria de quem fez o commit.</p>

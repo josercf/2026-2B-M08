@@ -48,7 +48,7 @@ def test_adr_salvar_recusa_prazo_token_e_campo():
     corpo = _funcoes()["adr_salvar"]
     assert "now() >" in corpo
     assert "adr_tokens" in corpo
-    for campo in ("titulo", "contexto", "criterios", "opcoes", "decisao", "impacto"):
+    for campo in ("titulo", "contexto", "criterios", "opcoes", "decisao", "impacto", "codigo"):
         assert "'%s'" % campo in corpo, campo
     assert "4000" in corpo
 

@@ -28,9 +28,9 @@ só a logística. Veredito, número decisivo e erro comum de cada grupo ficam no
 | 11 | 2 | mesma média, três moedas: revelar uma linha por vez e só então a regra do capítulo 5 |
 | 12 e 13 | 3 | BBDC4: promessa contra vivido, imposto da volatilidade e o retorno de quem aporta todo ano |
 | 14 | 3 | o que cada grupo faz e entrega, com tempo |
-| 15 | 4 e 5 | links do Slack e os 25 minutos do servidor, com marco aos 12 |
-| 16 a 19 | 6 | ADR do grupo ao vivo e voto da sala; o veredito sai da fala do professor |
-| 20 a 22 | 7 | o que vai para o A2, referências, encerramento |
+| 15 | 4 e 5 | links do Slack e os 40 minutos do servidor, com marco aos 20 |
+| 16 a 19 | 6 e 7 | 5 minutos por grupo no cronômetro; o QR da votação só aparece quando a seta avança, depois da defesa; o veredito sai da fala do professor |
+| 20 a 22 | 7 | o que vai para o A2 em 2 a 3 minutos, referências, encerramento |
 
 ## Moeda
 
@@ -48,8 +48,8 @@ só a logística. Veredito, número decisivo e erro comum de cada grupo ficam no
 
 - Com a chave no navegador, os quatro links aparecem sozinhos no slide 15. O token de cada grupo é
   fixo na sessão: abrir o slide de novo devolve os mesmos links.
-- "Iniciar 25 minutos" grava o prazo no servidor; o relógio grande do slide é esse mesmo prazo, e o
-  marco dos 12 minutos aparece nele. "+5 minutos" estende para todos.
+- "Iniciar 40 minutos" grava o prazo no servidor; o relógio grande do slide é esse mesmo prazo, e o
+  marco dos 20 minutos aparece nele. "+5 minutos" estende para todos.
 - O prazo é do servidor e trava a ADR dos quatro grupos ao mesmo tempo. Para estender, digitar os
   minutos que faltam e clicar de novo em "Iniciar prazo".
 - Plano B: se às 13h15 o banco ao vivo falhar no ensaio, a ADR vai para um documento

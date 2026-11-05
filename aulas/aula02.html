@@ -51,21 +51,15 @@
           <div class="accent-bar"></div>
           <h2>Agenda do encontro</h2>
         </div>
-        <table class="tabela-leitura tabela-compacta tabela-agenda">
-          <thead>
-            <tr><th>Bloco</th><th>Tema</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Daily</td><td>O que fiz, o que vou fazer, impedimentos</td></tr>
-            <tr><td>1</td><td>Jogo da moeda no celular</td></tr>
-            <tr><td>2</td><td>A moeda em Python, com o artigo e o capítulo do Bodie</td></tr>
-            <tr><td>3</td><td>BBDC4 de verdade e as frases do assessor</td></tr>
-            <tr><td>4</td><td>Checagem em grupo no notebook</td></tr>
-            <tr><td>5</td><td>ADR online do grupo</td></tr>
-            <tr><td>6</td><td>Comitê: cada grupo defende o veredito</td></tr>
-            <tr><td>7</td><td>O que vai para o A2</td></tr>
-          </tbody>
-        </table>
+        <ol class="agenda-linha">
+            <li class="ag-daily" style="--min: 15"><span class="ag-hora">14h00</span><span class="ag-faixa">15 min</span><span class="ag-tema">Daily</span></li>
+            <li class="ag-b1" style="--min: 15"><span class="ag-hora">14h15</span><span class="ag-faixa">15 min</span><span class="ag-tema">Jogo da moeda e o seu voto</span></li>
+            <li class="ag-b2" style="--min: 15"><span class="ag-hora">14h30</span><span class="ag-faixa">15 min</span><span class="ag-tema">A conta na lousa e em Python</span></li>
+            <li class="ag-b3" style="--min: 15"><span class="ag-hora">14h45</span><span class="ag-faixa">15 min</span><span class="ag-tema">BBDC4: média, vivido e aportes</span></li>
+            <li class="ag-b4" style="--min: 40"><span class="ag-hora">15h00</span><span class="ag-faixa">40 min</span><span class="ag-tema">Comitê: checagem com código e ADR do grupo</span></li>
+            <li class="ag-b5" style="--min: 20"><span class="ag-hora">15h40</span><span class="ag-faixa">20 min</span><span class="ag-tema">Defesas, 5 min por grupo, e o A2</span></li>
+        </ol>
+        <p class="agenda-nota">Metade do encontro é do comitê: 40 minutos para checar a frase com código e escrever a ADR, e 20 para as defesas. O encontro termina às 16h00.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
           <p class="footer-page">2</p>
@@ -78,19 +72,15 @@
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>A Aula 01 deixou o coletor pronto com Adj Close e a ADR de ausências</h2>
+          <h2>A Aula 01 entregou um coletor que devolve Adj Close sem lacunas</h2>
         </div>
-        <table class="tabela-leitura">
-          <thead><tr><th>Herança da Sprint 1</th><th>Decisão</th><th>Onde aparece hoje</th></tr></thead>
-          <tbody>
-            <tr><td>Visão de preço</td><td>Adj Close</td><td>todo retorno calculado na aula</td></tr>
-            <tr><td>Ausências</td><td>preencher para a frente, ativo por ativo</td><td>a primeira célula do notebook</td></tr>
-          </tbody>
-        </table>
-        <div class="faixa-nota">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#history"></use></svg>
-          <p>Com o preço certo na mão, a pergunta de hoje é outra: qual número de retorno mostrar a quem vai decidir.</p>
-        </div>
+        <ol class="resgate-fluxo">
+          <li><span class="rf-n">1</span><strong>Coletar</strong><span>yfinance ao vivo ou o snapshot de <code>dados/</code>, a mesma tabela nos dois casos</span></li>
+          <li><span class="rf-n">2</span><strong>Adj Close</strong><span>o preço que já inclui proventos e desdobramentos</span></li>
+          <li><span class="rf-n">3</span><strong>Ausências</strong><span>preenchidas para a frente, com a decisão escrita na ADR do grupo</span></li>
+        </ol>
+        <p class="resgate-pergunta">Com o preço certo na mão, qual número de retorno vocês mostram para quem vai decidir?</p>
+        <aside class="notes">Pedir duas ou três respostas antes de seguir. As respostas comuns (retorno total, média dos retornos) são os pontos cegos que a aula vai abrir.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [1]</p>
           <p class="footer-page">3</p>
@@ -376,9 +366,9 @@
         <table class="tabela-leitura tabela-tarefa">
           <thead><tr><th>Etapa</th><th>Onde</th><th>Tempo</th><th>O que o grupo entrega</th></tr></thead>
           <tbody>
-            <tr><td>Checar a frase</td><td>notebook, seção do grupo</td><td>até 12 min</td><td>o número que confirma ou derruba a frase, calculado em uma célula</td></tr>
-            <tr><td>Registrar a decisão</td><td>ADR no deck do grupo</td><td>até 25 min</td><td>contexto, critérios, opções, decisão com veredito e o número que muda a decisão do cliente</td></tr>
-            <tr><td>Defender</td><td>projetor, no comitê</td><td>3 min</td><td>a frase, o número, o veredito e a frase que o cliente deveria ter ouvido</td></tr>
+            <tr><td>Checar a frase</td><td>notebook, seção do grupo</td><td>até 20 min</td><td>o número que confirma ou derruba a frase, calculado por código que o grupo escreveu e executou</td></tr>
+            <tr><td>Registrar a decisão</td><td>ADR no deck do grupo</td><td>até 40 min</td><td>contexto, critérios, opções, veredito, o número que muda a decisão do cliente e o código com a saída</td></tr>
+            <tr><td>Defender</td><td>projetor, no comitê</td><td>5 min</td><td>a frase, o número rodando no notebook, o veredito e a frase que o cliente deveria ter ouvido</td></tr>
           </tbody>
         </table>
         <p class="comite-grupos">G01 BBAS3 &middot; G02 MGLU3 &middot; G03 PETR4 &middot; G04 WEGE3. O link do deck do grupo chega no Slack no próximo slide.</p>
@@ -395,10 +385,10 @@
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Checagem em grupo: 25 minutos</h2>
+          <h2>Checagem em grupo: 40 minutos</h2>
         </div>
-        <div data-adr-links data-sessao="m08-aula02-2026-11-05" data-base="" data-minutos="25" data-marco="12"></div>
-        <aside class="notes">Os links aparecem sozinhos com a chave do professor no navegador; copiar para o Slack. Iniciar os 25 minutos quando os quatro grupos tiverem aberto o deck: o relógio é o mesmo prazo que trava a ADR. Aos 12 minutos o marco aparece: cada grupo diz em uma frase qual número calculou. +5 minutos estende o prazo de todos.</aside>
+        <div data-adr-links data-sessao="m08-aula02-2026-11-05" data-base="" data-minutos="40" data-marco="20"></div>
+        <aside class="notes">Os links aparecem sozinhos com a chave do professor no navegador; copiar para o Slack. Iniciar os 40 minutos quando os quatro grupos tiverem aberto o deck: o relógio é o mesmo prazo que trava a ADR. Aos 20 minutos o marco aparece: cada grupo diz em uma frase qual número calculou e mostra o código rodando. +5 minutos estende o prazo de todos.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
           <p class="footer-page">15</p>
@@ -414,11 +404,12 @@
             <div class="accent-bar"></div>
             <h2>G01 defende o veredito sobre o BBAS3</h2>
           </div>
-          <div class="cronometro" id="cronometro-defesa-g01" data-minutos="3" data-ampulheta
-               data-marcos="2" data-marco-texto="Falta 1 minuto: veredito e frase para o cliente"></div>
+          <div class="cronometro" id="cronometro-defesa-g01" data-minutos="5" data-ampulheta
+               data-marcos="4" data-marco-texto="Falta 1 minuto: veredito e frase para o cliente"></div>
         </div>
         <div class="comite-grade">
           <div data-adr-comite data-sessao="m08-aula02-2026-11-05" data-grupo="G01"></div>
+          <div class="fragment comite-voto">
           <div class="quiz-vivo quiz-vivo-curto quiz-vivo-comite" data-quiz-vivo data-sessao="m08-aula02-2026-11-05"
                data-pergunta="comite-g01" data-rodadas="1" data-tempo="0"
                data-enunciado="A frase do assessor sobre o BBAS3 se sustenta?">
@@ -429,6 +420,7 @@
                 <li>Enganosa</li>
               </ol>
             </div>
+          </div>
           </div>
         </div>
         <div class="slide-footer">
@@ -446,11 +438,12 @@
             <div class="accent-bar"></div>
             <h2>G02 defende o veredito sobre a MGLU3</h2>
           </div>
-          <div class="cronometro" id="cronometro-defesa-g02" data-minutos="3" data-ampulheta
-               data-marcos="2" data-marco-texto="Falta 1 minuto: veredito e frase para o cliente"></div>
+          <div class="cronometro" id="cronometro-defesa-g02" data-minutos="5" data-ampulheta
+               data-marcos="4" data-marco-texto="Falta 1 minuto: veredito e frase para o cliente"></div>
         </div>
         <div class="comite-grade">
           <div data-adr-comite data-sessao="m08-aula02-2026-11-05" data-grupo="G02"></div>
+          <div class="fragment comite-voto">
           <div class="quiz-vivo quiz-vivo-curto quiz-vivo-comite" data-quiz-vivo data-sessao="m08-aula02-2026-11-05"
                data-pergunta="comite-g02" data-rodadas="1" data-tempo="0"
                data-enunciado="A frase do assessor sobre a MGLU3 se sustenta?">
@@ -461,6 +454,7 @@
                 <li>Enganosa</li>
               </ol>
             </div>
+          </div>
           </div>
         </div>
         <div class="slide-footer">
@@ -478,11 +472,12 @@
             <div class="accent-bar"></div>
             <h2>G03 defende o veredito sobre a PETR4</h2>
           </div>
-          <div class="cronometro" id="cronometro-defesa-g03" data-minutos="3" data-ampulheta
-               data-marcos="2" data-marco-texto="Falta 1 minuto: veredito e frase para o cliente"></div>
+          <div class="cronometro" id="cronometro-defesa-g03" data-minutos="5" data-ampulheta
+               data-marcos="4" data-marco-texto="Falta 1 minuto: veredito e frase para o cliente"></div>
         </div>
         <div class="comite-grade">
           <div data-adr-comite data-sessao="m08-aula02-2026-11-05" data-grupo="G03"></div>
+          <div class="fragment comite-voto">
           <div class="quiz-vivo quiz-vivo-curto quiz-vivo-comite" data-quiz-vivo data-sessao="m08-aula02-2026-11-05"
                data-pergunta="comite-g03" data-rodadas="1" data-tempo="0"
                data-enunciado="A frase do assessor sobre a PETR4 se sustenta?">
@@ -493,6 +488,7 @@
                 <li>Enganosa</li>
               </ol>
             </div>
+          </div>
           </div>
         </div>
         <div class="slide-footer">
@@ -510,11 +506,12 @@
             <div class="accent-bar"></div>
             <h2>G04 defende o veredito sobre a WEGE3</h2>
           </div>
-          <div class="cronometro" id="cronometro-defesa-g04" data-minutos="3" data-ampulheta
-               data-marcos="2" data-marco-texto="Falta 1 minuto: veredito e frase para o cliente"></div>
+          <div class="cronometro" id="cronometro-defesa-g04" data-minutos="5" data-ampulheta
+               data-marcos="4" data-marco-texto="Falta 1 minuto: veredito e frase para o cliente"></div>
         </div>
         <div class="comite-grade">
           <div data-adr-comite data-sessao="m08-aula02-2026-11-05" data-grupo="G04"></div>
+          <div class="fragment comite-voto">
           <div class="quiz-vivo quiz-vivo-curto quiz-vivo-comite" data-quiz-vivo data-sessao="m08-aula02-2026-11-05"
                data-pergunta="comite-g04" data-rodadas="1" data-tempo="0"
                data-enunciado="A frase do assessor sobre a WEGE3 se sustenta?">
@@ -525,6 +522,7 @@
                 <li>Enganosa</li>
               </ol>
             </div>
+          </div>
           </div>
         </div>
         <div class="slide-footer">

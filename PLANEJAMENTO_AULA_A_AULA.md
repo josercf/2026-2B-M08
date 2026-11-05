@@ -113,16 +113,17 @@ Metodologia ativa (105 min)
     4,81% ao ano e geométrica de -0,42% ao ano. Apresentação do comitê de investimentos do BTG e das
     quatro frases do assessor; links dos grupos no Slack. Pergunta disparada: qual das duas médias
     o assessor costuma mostrar.
-  Bloco 4 (45 a 60 min)  Checagem em grupo no notebook, seção do grupo, com o prazo do servidor
-    correndo. Aos 12 minutos, pergunta disparada a cada grupo: qual número decide o veredito.
-  Bloco 5 (60 a 75 min)  ADR online no deck do grupo, escrita por todos ao mesmo tempo, que trava
-    quando o prazo acaba. O grupo faz pensar e compartilhar para fechar a decisão e escolhe quem
-    defende.
-  Bloco 6 (75 a 90 min)  Comitê: cada grupo defende o veredito em 3 minutos com a ADR projetada ao
-    vivo, e a sala faz a escolha coletiva entre sustentada e enganosa no quiz ao vivo.
-  Bloco 7 (90 a 105 min)  Amarração com a Sprint 2: cada veredito vira uma decisão da função de
-    risco e retorno do A2 (peso 3, review em 06/11/2026). Pergunta disparada: qual dessas decisões
-    o A2 do grupo ainda não tem.
+  Bloco 4 (45 a 60 min)  Comitê: cada grupo checa a frase do assessor no notebook, com código que
+    escreve e executa, dentro dos 40 minutos do servidor. Aos 20 minutos, pergunta disparada a cada
+    grupo: qual número decide o veredito.
+  Bloco 5 (60 a 75 min)  ADR online no deck do grupo, escrita por todos os integrantes, com a
+    confirmação no código (trecho executado e saída). O grupo faz pensar e compartilhar para fechar a
+    decisão e escolhe quem defende.
+  Bloco 6 (75 a 90 min)  Fim dos 40 minutos às 85 e início das defesas: 5 minutos por grupo com a ADR
+    projetada ao vivo; só depois a sala faz a escolha coletiva entre sustentada e enganosa no quiz.
+  Bloco 7 (90 a 105 min)  Defesas restantes e amarração com a Sprint 2 em 2 a 3 minutos: cada
+    veredito vira uma decisão da função do A2 (peso 3, review em 06/11/2026). Pergunta disparada:
+    qual dessas decisões o A2 do grupo ainda não tem.
 
 Depois do encontro
   Avanço do A2: a ADR baixada do deck do grupo entra no repositório como ADR do A2; a função de

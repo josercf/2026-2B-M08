@@ -104,7 +104,7 @@ def _grupo(contexto, url, nome="Aluna Teste"):
     page = contexto.new_page()
     page.goto(url + "#/adr", wait_until="load")
     page.wait_for_selector("form[data-adr][data-pronto='sim']")
-    if page.locator(".adr-quem-nome").count():
+    if page.locator(".adr-quem").count() and page.locator(".adr-quem").get_attribute("data-vazio") == "sim":
         page.fill(".adr-quem-nome", nome)
         page.click(".adr-quem-ok")
     return page
@@ -174,7 +174,7 @@ def test_markdown_baixado_segue_o_template(sala):
         md = fh.read()
     assert md.startswith("# ADR NNNN: Qual preço usar no retorno")
     for secao in ("## Contexto e problema", "## Critérios de decisão", "## Opções consideradas",
-                  "## Decisão", "## Consequências"):
+                  "## Decisão", "## Consequências", "## Confirmação"):
         assert secao in md
     assert "Decidimos pelo preço com proventos" in md
 
@@ -197,8 +197,15 @@ def test_participacao_registra_quem_editou_e_reaproveita_o_nome_do_quiz(sala):
     assert "Ana Souza" in a.locator("form[data-adr] .adr-estado").inner_text()
     a.fill("form[data-adr] [name=contexto]", "texto da Ana")
     a.wait_for_timeout(1200)
-    # O mesmo navegador já tem o nome guardado: o segundo deck não pergunta de novo.
+    # O mesmo navegador já tem o nome guardado: o segundo deck abre com ele.
     b = _grupo(contexto, url)
-    assert b.locator(".adr-quem-nome").count() == 0
+    assert b.locator(".adr-quem").get_attribute("data-vazio") == "nao"
+    # A ADR é do grupo: um segundo integrante entra no mesmo computador.
+    b.fill(".adr-quem-nome", "Bruno Lima")
+    b.click(".adr-quem-ok")
+    assert "Ana Souza, Bruno Lima" in b.locator(".adr-quem-lista").inner_text()
+    b.fill("form[data-adr] [name=codigo]", "r = fins.pct_change()")
+    b.wait_for_timeout(1200)
     linhas = prof.evaluate("IntelIAula02Dados.criar().adrParticipacao('teste', 'm08-aula02-2026-11-05')")
     assert any(l["grupo"] == "G03" and l["nome"] == "Ana Souza" and l["edicoes"] >= 1 for l in linhas)
+    assert any(l["grupo"] == "G03" and l["nome"] == "Bruno Lima" and l["edicoes"] >= 1 for l in linhas)

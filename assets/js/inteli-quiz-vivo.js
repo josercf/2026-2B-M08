@@ -289,13 +289,21 @@
     }
 
     var secao = raiz.closest('section');
+    // Quiz dentro de um fragment (defesa no comitê da Aula 02): a votação só abre
+    // quando o professor avança até o fragment, depois de ouvir o grupo.
+    var fragmento = raiz.closest('.fragment');
+    function visivel() { return !fragmento || fragmento.classList.contains('visible'); }
     if (window.Reveal && window.Reveal.on && secao) {
       window.Reveal.on('slidechanged', function (e) {
-        if (e.currentSlide === secao) entrou();
+        if (e.currentSlide === secao && visivel()) entrou();
         else if (e.previousSlide === secao) saiu();
       });
-      window.Reveal.on('ready', function (e) { if (e.currentSlide === secao) entrou(); });
-      if (secao.classList.contains('present')) entrou();
+      window.Reveal.on('ready', function (e) { if (e.currentSlide === secao && visivel()) entrou(); });
+      if (fragmento) {
+        window.Reveal.on('fragmentshown', function (e) { if (e.fragment === fragmento) entrou(); });
+        window.Reveal.on('fragmenthidden', function (e) { if (e.fragment === fragmento) saiu(); });
+      }
+      if (secao.classList.contains('present') && visivel()) entrou();
     } else {
       entrou();
     }

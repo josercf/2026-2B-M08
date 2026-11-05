@@ -22,7 +22,7 @@
 (function () {
   'use strict';
 
-  var CAMPOS = ['titulo', 'contexto', 'criterios', 'opcoes', 'decisao', 'impacto'];
+  var CAMPOS = ['titulo', 'contexto', 'criterios', 'opcoes', 'decisao', 'impacto', 'codigo'];
   var GRUPOS = ['G01', 'G02', 'G03', 'G04'];
 
   var TABELAS = ['adr_campos', 'adr_prazos', 'moeda_sessoes', 'moeda_jogadas'];
@@ -72,6 +72,11 @@
         return rpc('adr_entrar', { p_sessao: sessao, p_grupo: grupo, p_token: token || '', p_nome: nome || '' });
       },
       adrParticipacao: function (chave, sessao) { return rpc('adr_participacao', { p_chave: chave, p_sessao: sessao }); },
+      adrIntegrantes: function (sessao, grupo, token) {
+        return rpc('adr_integrantes', { p_sessao: sessao, p_grupo: grupo, p_token: token || '' })
+          .then(function (l) { return (l || []).map(function (x) { return x.nome; }); })
+          .catch(function () { return []; });
+      },
       adrTokenOk: function (sessao, grupo, token) {
         return rpc('adr_token_ok', { p_sessao: sessao, p_grupo: grupo, p_token: token || '' });
       },
@@ -186,6 +191,12 @@
         gravar(e);
         return Promise.resolve(true);
       },
+      adrIntegrantes: function (sessao, grupo, token) {
+        var e = ler();
+        var ok = e.tokens.some(function (t) { return t.sessao === sessao && t.grupo === grupo && t.token === token; });
+        return Promise.resolve(ok ? (e.presencas || []).filter(function (p) { return p.sessao === sessao && p.grupo === grupo; })
+          .map(function (p) { return p.nome; }) : []);
+      },
       adrParticipacao: function (chave, sessao) {
         try { professor(chave); } catch (err) { return Promise.reject(err); }
         return Promise.resolve((ler().presencas || []).filter(function (p) { return p.sessao === sessao; }));
@@ -208,12 +219,12 @@
         if (!c) { c = { sessao: sessao, grupo: grupo, campo: campo }; e.campos.push(c); }
         c.texto = texto || '';
         c.autor = autor || null;
-        if (autor) {
+        String(autor || '').split(';').map(function (n) { return n.trim(); }).filter(Boolean).forEach(function (nome) {
           e.presencas = e.presencas || [];
-          var pr = e.presencas.filter(function (p) { return p.sessao === sessao && p.grupo === grupo && p.nome === autor; })[0];
-          if (!pr) { pr = { sessao: sessao, grupo: grupo, nome: autor, edicoes: 0 }; e.presencas.push(pr); }
+          var pr = e.presencas.filter(function (p) { return p.sessao === sessao && p.grupo === grupo && p.nome === nome; })[0];
+          if (!pr) { pr = { sessao: sessao, grupo: grupo, nome: nome, edicoes: 0 }; e.presencas.push(pr); }
           pr.edicoes += 1;
-        }
+        });
         c.atualizado_em = quando;
         gravar(e);
         return Promise.resolve(quando);

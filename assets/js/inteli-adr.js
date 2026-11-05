@@ -66,16 +66,17 @@
     ['criterios', 'Critérios de decisão'],
     ['opcoes', 'Opções consideradas'],
     ['decisao', 'Decisão'],
-    ['impacto', 'Consequências']
+    ['impacto', 'Consequências'],
+    ['codigo', 'Confirmação']
   ];
 
-  function markdown(valores, grupo) {
+  function markdown(valores, grupo, integrantes) {
     var linhas = [
       '# ADR NNNN: ' + (valores.titulo || 'título curto da decisão'),
       '',
       '- Status: proposto',
       '- Data: ' + new Date().toISOString().slice(0, 10),
-      '- Decisores: grupo ' + grupo,
+      '- Decisores: ' + (integrantes && integrantes.length ? integrantes.join(', ') + ' (grupo ' + grupo + ')' : 'grupo ' + grupo),
       '- Consultados: comitê de investimentos (Aula 02)',
       ''
     ];
@@ -199,62 +200,88 @@
       ev.preventDefault();
       var valores = {};
       Object.keys(campos).forEach(function (n) { valores[n] = campos[n].value.trim(); });
-      var blob = new Blob([markdown(valores, grupo)], { type: 'text/markdown;charset=utf-8' });
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'adr-aula02-' + grupo.toLowerCase() + '.md';
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      dados.adrIntegrantes(sessao, grupo, token).then(function (integrantes) {
+        var lista = integrantes.length ? integrantes : nomes;
+        var blob = new Blob([markdown(valores, grupo, lista)], { type: 'text/markdown;charset=utf-8' });
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'adr-aula02-' + grupo.toLowerCase() + '.md';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+      });
     });
     form.addEventListener('submit', function (ev) { ev.preventDefault(); });
 
-    // Quem está escrevendo: o nome do quiz da aula, se o aluno entrou nele neste
-    // navegador; senão, o nome que ele digita uma vez aqui (fica para o quiz também).
-    var autor = (function () {
-      var achado = null;
+    // Quem está escrevendo. A ADR é do grupo: o computador pode ter vários
+    // integrantes. A lista começa com o nome do quiz da aula, se o aluno entrou
+    // nele neste navegador, e cada um pode acrescentar o seu. Os nomes vão para
+    // a participação e para os decisores da ADR.
+    var CHAVE_NOMES = 'inteli-adr-nomes-' + sessao + '-' + grupo;
+    var nomes = (function () {
+      try { var v = JSON.parse(localStorage.getItem(CHAVE_NOMES)); if (Array.isArray(v) && v.length) return v; } catch (e) { /* nada */ }
+      var achado = [];
       ['inteli-quiz-eu-' + sessao, 'inteli-quiz-perfil'].some(function (k) {
-        try { var v = JSON.parse(localStorage.getItem(k)); if (v && v.nome) { achado = v.nome; return true; } } catch (e) { /* nada */ }
+        try { var v2 = JSON.parse(localStorage.getItem(k)); if (v2 && v2.nome) { achado = [v2.nome]; return true; } } catch (e) { /* nada */ }
         return false;
       });
       return achado;
     })();
+    var autor = nomes.join('; ');
 
-    function liberar() {
-      dados.adrEntrar(sessao, grupo, token, autor).catch(function (err) { console.error('[adr]', err); });
-      somenteLeitura(false);
-      mensagem('Editando como ' + autor + ', grupo ' + grupo + '. Cada campo salva sozinho.', 'ok');
+    var quem = el('div', 'adr-quem');
+    var listaNomes = el('p', 'adr-quem-lista');
+    var campoNome = el('input', 'adr-quem-nome');
+    campoNome.type = 'text';
+    campoNome.maxLength = 60;
+    campoNome.placeholder = 'Nome completo de quem está neste computador';
+    var botaoNome = el('button', 'adr-quem-ok', 'Adicionar integrante');
+    botaoNome.type = 'button';
+    quem.appendChild(listaNomes);
+    quem.appendChild(campoNome);
+    quem.appendChild(botaoNome);
+
+    function pintarNomes() {
+      quem.dataset.vazio = nomes.length ? 'nao' : 'sim';
+      listaNomes.textContent = nomes.length ? 'Integrantes neste computador: ' + nomes.join(', ') : 'Quem está neste computador?';
+      autor = nomes.join('; ');
+      try { localStorage.setItem(CHAVE_NOMES, JSON.stringify(nomes)); } catch (e) { /* aba privada */ }
     }
 
-    function pedirNome() {
-      var caixa = el('div', 'adr-quem');
-      var campo = el('input', 'adr-quem-nome');
-      campo.type = 'text';
-      campo.maxLength = 60;
-      campo.placeholder = 'Seu nome completo, como na chamada';
-      var ok = el('button', 'adr-quem-ok', 'Entrar na ADR');
-      ok.type = 'button';
-      caixa.appendChild(campo);
-      caixa.appendChild(ok);
-      estadoEl.parentNode.insertBefore(caixa, estadoEl);
-      mensagem('Digite seu nome para editar: ele vai para a participação da aula.', 'ok');
-      function confirmar() {
-        var nome = campo.value.trim();
-        if (nome.split(/\s+/).length < 2) { mensagem('Escreva o nome completo, com sobrenome.', 'erro'); return; }
-        autor = nome;
+    function liberar() {
+      nomes.forEach(function (n) { dados.adrEntrar(sessao, grupo, token, n).catch(function (err) { console.error('[adr]', err); }); });
+      somenteLeitura(false);
+      mensagem('Editando como ' + nomes.join(', ') + ', grupo ' + grupo + '. Cada campo salva sozinho.', 'ok');
+    }
+
+    function adicionarNome() {
+      var nome = campoNome.value.trim();
+      if (nome.split(/\s+/).length < 2) { mensagem('Escreva o nome completo, com sobrenome.', 'erro'); return; }
+      if (nomes.indexOf(nome) === -1) nomes.push(nome);
+      if (nomes.length === 1) {
         try { localStorage.setItem('inteli-quiz-perfil', JSON.stringify({ nome: nome, avatar: 'person' })); } catch (e) { /* aba privada */ }
-        caixa.remove();
-        liberar();
       }
-      ok.addEventListener('click', confirmar);
-      campo.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') { ev.preventDefault(); confirmar(); } });
+      campoNome.value = '';
+      pintarNomes();
+      liberar();
+    }
+    botaoNome.addEventListener('click', adicionarNome);
+    campoNome.addEventListener('keydown', function (ev) {
+      ev.stopPropagation();
+      if (ev.key === 'Enter') { ev.preventDefault(); adicionarNome(); }
+    });
+
+    function pedirNome() {
+      mensagem('Digitem o nome de cada integrante neste computador: os nomes vão para a participação da aula.', 'ok');
     }
 
     somenteLeitura(true);
     Promise.all([dados.adrTokenOk(sessao, grupo, token), relogioServidor.atualizar(), carregar()]).then(function (r) {
       podeEditar = r[0];
       if (podeEditar) {
-        if (autor) liberar(); else pedirNome();
+        form.insertBefore(quem, form.querySelector('[data-campo="contexto"]'));
+        pintarNomes();
+        if (nomes.length) liberar(); else pedirNome();
       } else {
         form.classList.add('adr-leitura');
         mensagem('Este link está sem permissão de edição. Peça ao professor o link do grupo no Slack.', 'erro');

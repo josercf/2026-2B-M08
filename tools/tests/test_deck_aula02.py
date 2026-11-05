@@ -73,7 +73,7 @@ def test_ponte_e_moeda_saem_das_medicoes():
 def test_comite_explica_o_roteiro_sem_antecipar_veredito():
     comite = _secao("comite")
     texto = re.sub(r"<aside.*?</aside>", "", comite, flags=re.S)
-    for tempo in ("até 12 min", "até 25 min", "3 min", "O que o grupo entrega"):
+    for tempo in ("até 20 min", "até 40 min", "5 min", "O que o grupo entrega"):
         assert tempo in texto, tempo
     assert "pode estar certa" not in texto
 

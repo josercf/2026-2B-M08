@@ -142,20 +142,21 @@ begin
   if not exists (select 1 from adr_tokens t where t.sessao = p_sessao and t.grupo = p_grupo and t.token = p_token) then
     raise exception 'link sem permissão de edição';
   end if;
-  if p_campo not in ('titulo', 'contexto', 'criterios', 'opcoes', 'decisao', 'impacto') then
+  if p_campo not in ('titulo', 'contexto', 'criterios', 'opcoes', 'decisao', 'impacto', 'codigo') then
     raise exception 'campo desconhecido';
   end if;
   if char_length(coalesce(p_texto, '')) > 4000 then raise exception 'texto acima de 4000 caracteres'; end if;
   select p.fim into v_fim from adr_prazos p where p.sessao = p_sessao;
   if v_fim is not null and now() > v_fim then raise exception 'prazo encerrado'; end if;
-  if coalesce(trim(p_autor), '') <> '' then
-    insert into adr_presencas (sessao, grupo, nome, edicoes)
-    values (p_sessao, p_grupo, left(trim(p_autor), 60), 1)
-    on conflict on constraint adr_presencas_pkey
-    do update set edicoes = adr_presencas.edicoes + 1, ultimo_em = now();
-  end if;
+  -- p_autor traz os integrantes do computador separados por ";": cada um conta.
+  insert into adr_presencas (sessao, grupo, nome, edicoes)
+  select p_sessao, p_grupo, left(trim(n), 60), 1
+    from unnest(string_to_array(coalesce(p_autor, ''), ';')) as n
+   where trim(n) <> ''
+  on conflict on constraint adr_presencas_pkey
+  do update set edicoes = adr_presencas.edicoes + 1, ultimo_em = now();
   insert into adr_campos (sessao, grupo, campo, texto, autor, atualizado_em)
-  values (p_sessao, p_grupo, p_campo, coalesce(p_texto, ''), left(p_autor, 40), v_quando)
+  values (p_sessao, p_grupo, p_campo, coalesce(p_texto, ''), left(p_autor, 200), v_quando)
   on conflict (sessao, grupo, campo)
   do update set texto = excluded.texto, autor = excluded.autor, atualizado_em = excluded.atualizado_em;
   return v_quando;
@@ -174,6 +175,16 @@ begin
   on conflict on constraint adr_presencas_pkey do update set ultimo_em = now();
   return true;
 end $$;
+
+-- Grupo: quem já entrou na ADR do grupo (para a lista de decisores da ADR).
+create or replace function adr_integrantes(p_sessao text, p_grupo text, p_token text)
+returns table (nome text)
+language sql security definer set search_path = public, extensions as $$
+  select p.nome from adr_presencas p
+   where p.sessao = p_sessao and p.grupo = p_grupo
+     and exists (select 1 from adr_tokens t where t.sessao = p_sessao and t.grupo = p_grupo and t.token = p_token)
+   order by p.primeiro_em;
+$$;
 
 -- Professor: participação por grupo (nome e quantas gravações fez na ADR).
 create or replace function adr_participacao(p_chave text, p_sessao text)
@@ -286,6 +297,7 @@ grant execute on function adr_agora(text) to anon, authenticated;
 grant execute on function adr_token_ok(text, text, text) to anon, authenticated;
 grant execute on function adr_entrar(text, text, text, text) to anon, authenticated;
 grant execute on function adr_participacao(text, text) to anon, authenticated;
+grant execute on function adr_integrantes(text, text, text) to anon, authenticated;
 grant execute on function adr_salvar(text, text, text, text, text, text) to anon, authenticated;
 grant execute on function moeda_liberar(text, text, int) to anon, authenticated;
 grant execute on function moeda_zerar(text, text) to anon, authenticated;
