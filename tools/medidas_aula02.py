@@ -373,3 +373,17 @@ def ponte_profunda(ticker="BBDC4", anos=range(2020, 2026), aporte=100):
                 imposto_regra=float(r.var(ddof=0) / 2),
                 imposto_medido=base["aritmetica"] - base["geometrica"],
                 aportes=aportes, tir=meio)
+
+
+def moeda_sorte_sala(jogadores=30, rodadas=10):
+    """Chance de a mediana de uma sala terminar acima de R$ 100 no jogo da moeda.
+
+    Um jogador termina acima de R$ 100 com 6 caras ou mais em 10 rodadas. Com 30
+    jogadores, a mediana é a média do 15º e do 16º saldo; ela passa de R$ 100
+    quando 15 ou mais jogadores terminam acima.
+    """
+    from math import comb
+    p = sum(comb(rodadas, k) for k in range(6, rodadas + 1)) / 2 ** rodadas
+    minimo = jogadores // 2
+    chance = sum(comb(jogadores, x) * p ** x * (1 - p) ** (jogadores - x) for x in range(minimo, jogadores + 1))
+    return {"p_jogador": p, "chance": chance}

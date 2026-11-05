@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import medidas_aula02 as m  # noqa: E402
 
 DECK = os.path.join(m.RAIZ, "aulas", "aula02.html")
-SEQUENCIA = ["capa", "agenda", "resgate", "daily", "vale-jogar", "moeda", "acertos", "lousa", "artigo", "simulacao",
+SEQUENCIA = ["capa", "agenda", "resgate", "daily", "vale-jogar", "moeda", "acertos", "lousa", "artigo", "por-que-simular", "simulacao",
              "bodie", "ponte", "aportes", "comite", "links", "comite-g01", "comite-g02", "comite-g03",
              "comite-g04", "a2", "referencias", "encerramento"]
 

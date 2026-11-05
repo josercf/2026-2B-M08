@@ -19,18 +19,19 @@ só a logística. Veredito, número decisivo e erro comum de cada grupo ficam no
 
 | Slides | Bloco | O que fazer |
 |---|---|---|
-| 1 a 4 | abertura | agenda, resgate da Aula 01 e daily com cronômetro de 15 min |
+| 1 a 4 | abertura | agenda, resgate da Aula 01 (pergunta do dia) e daily com cronômetro de 15 min |
 | 5 | 1 | voto "vale jogar?" em duas rodadas, sem revelar nada |
 | 6 | 1 | os celulares do quiz trocam sozinhos para a moeda; liberar uma rodada por vez; aba Trajetórias no fim |
 | 7 | 1 | voto de cada aluno contra o saldo dele, sem nomes |
-| 8 | 2 | case da SUZB3 projetado na lousa: um aluno por área, resposta só depois da discussão |
-| 9 e 10 | 2 | o artigo em Python e a simulação com a cena dos 12 jogadores (palpite da mediana antes) |
-| 11 | 2 | mesma média, três moedas: revelar uma linha por vez e só então a regra do capítulo 5 |
-| 12 e 13 | 3 | BBDC4: promessa contra vivido, imposto da volatilidade e o retorno de quem aporta todo ano |
-| 14 | 3 | o que cada grupo faz e entrega, com tempo |
-| 15 | 4 e 5 | links do Slack e os 40 minutos do servidor, com marco aos 20 |
-| 16 a 19 | 6 e 7 | 5 minutos por grupo no cronômetro; o QR da votação só aparece quando a seta avança, depois da defesa; o veredito sai da fala do professor |
-| 20 a 22 | 7 | o que vai para o A2 em 2 a 3 minutos, referências, encerramento |
+| 8 | 2 | case da SUZB3 projetado na lousa, uma área por vez: um aluno calcula, a sala discute, a seta revela |
+| 9 | 2 | o mesmo case da lousa em Python, com cumprod |
+| 10 | 2 | por que simular: 30 jogadores contra 10.000, e a ligação com o A3 e a Aula 04 |
+| 11 e 12 | 2 | a simulação com a cena dos 12 jogadores (palpite da mediana antes) e as três moedas do capítulo 5 |
+| 13 e 14 | 3 | BBDC4 de 2020 a 2025: promessa contra vivido, imposto da volatilidade e o retorno de quem aporta |
+| 15 | 3 | o que cada grupo faz e entrega, com tempo |
+| 16 | 4 e 5 | links do Slack e os 40 minutos do servidor, com marco aos 20 |
+| 17 a 20 | 6 e 7 | 5 minutos por grupo no cronômetro; o QR da votação só aparece quando a seta avança, depois da defesa |
+| 21 a 23 | 7 | o que vai para o A2 em 2 a 3 minutos, referências, encerramento |
 
 ## Moeda
 

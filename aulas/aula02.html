@@ -216,21 +216,22 @@
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Em Python, a composição é (1 + r).cumprod()</h2>
+          <h2>O cumprod refaz a conta da lousa para qualquer número de pregões</h2>
         </div>
-        <div class="codigo-passos codigo-passos-curto codigo-grande" data-codigo-passos data-intro-titulo="O exemplo do artigo em três linhas"
-             data-intro="Seção 1 do notebook. Avance com a seta.">
-          <div class="codigo-janela"><pre class="codigo-linhas"><code><span class="cl" data-n="1"><span class="cl-n">1</span>r = pd.Series([0.05, -0.02])</span><span class="cl" data-n="2"><span class="cl-n">2</span>r.sum()                <span class="tok-com"># 0.03</span></span><span class="cl" data-n="3"><span class="cl-n">3</span>(1 + r).cumprod() - 1  <span class="tok-com"># 0.05, 0.029</span></span></code></pre></div>
+        <div class="codigo-passos codigo-passos-curto codigo-grande" data-codigo-passos data-intro-titulo="A lousa em quatro linhas"
+             data-intro="Os mesmos dois pregões da SUZB3, agora em Python. Seção 1 do notebook.">
+          <div class="codigo-janela"><pre class="codigo-linhas"><code><span class="cl" data-n="1"><span class="cl-n">1</span>r = pd.Series([0.05, -0.0207])</span><span class="cl" data-n="2"><span class="cl-n">2</span>r.sum()                 <span class="tok-com"># 0.0293</span></span><span class="cl" data-n="3"><span class="cl-n">3</span>(1 + r).cumprod() - 1   <span class="tok-com"># 0.05, 0.0283</span></span><span class="cl" data-n="4"><span class="cl-n">4</span>1000 * (1 + r).cumprod() <span class="tok-com"># 1028.27</span></span></code></pre></div>
           <aside class="codigo-explica">
             <p class="codigo-contador"></p>
             <p class="codigo-titulo"></p>
             <p class="codigo-texto"></p>
           </aside>
-          <span class="fragment codigo-passo" data-linhas="1" data-titulo="Dois pregões" data-texto="Sobe 5% num dia e cai 2% no dia seguinte, como no autoestudo do Turing Talks e como a SUZB3 na lousa."></span>
-          <span class="fragment codigo-passo" data-linhas="2" data-titulo="Somar dá 3%" data-texto="A soma trata a queda como se ela incidisse sobre o preço de partida."></span>
-          <span class="fragment codigo-passo" data-linhas="3" data-titulo="Compor dá 2,90%" data-texto="1,05 vezes 0,98 é 1,029. O cumprod multiplica os (1 + r) em sequência, para a série inteira."></span>
+          <span class="fragment codigo-passo" data-linhas="1" data-titulo="Os dois pregões da lousa" data-texto="+5,00% em 19/07 e -2,07% em 20/07. O artigo do Turing Talks faz o mesmo com +5% e -2% e chega a 2,90%."></span>
+          <span class="fragment codigo-passo" data-linhas="2" data-titulo="A conta que soma" data-texto="2,93%: o número de quem somou na lousa."></span>
+          <span class="fragment codigo-passo" data-linhas="3" data-titulo="A conta que compõe" data-texto="2,83%: cada (1 + r) multiplica o saldo do dia anterior, como na área 2 da lousa."></span>
+          <span class="fragment codigo-passo" data-linhas="4" data-titulo="O caminho do dinheiro" data-texto="R$ 1.050,00 e R$ 1.028,27, os pontos da linha da lousa. Com 1.908 pregões em vez de dois, a mão para e o código continua igual."></span>
         </div>
-        <aside class="notes">Na moeda, uma cara e uma coroa dão 1,5 &times; 0,6 = 0,9.</aside>
+        <aside class="notes">Pergunta antes do passo 3: o que muda no código se forem os 1.908 pregões do snapshot? Nada: r passa a ser a coluna de retornos do coletor da Aula 01.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; autoestudo [3]</p>
           <p class="footer-page">9</p>
@@ -238,6 +239,30 @@
       </section>
 
       <!-- 10 -->
+      <section class="content-slide" id="por-que-simular">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Com 30 jogadores, a sala tem 11,56% de chance de a mediana enganar</h2>
+        </div>
+        <table class="tabela-leitura tabela-simular">
+          <thead><tr><th>Onde</th><th>Quantos futuros</th><th>O que dá para concluir</th></tr></thead>
+          <tbody>
+            <tr><td>A moeda da sala</td><td>30 jogadores</td><td>11,56% de chance de a mediana terminar acima de R$ 100 só por sorte</td></tr>
+            <tr class="linha-destaque"><td>A simulação</td><td>10.000 jogadores</td><td>a mediana para de depender da sorte e fica em R$ 59,05, a do jogador com 5 caras e 5 coroas</td></tr>
+            <tr><td>O A3 do projeto</td><td>milhares de trajetórias de uma carteira</td><td>o motor de Monte Carlo mostra a distribuição do saldo do cliente, além da média</td></tr>
+          </tbody>
+        </table>
+        <p class="simular-ligacao">Cada jogador simulado é um futuro possível de um ativo que sobe 50% ou cai 40%. Trocando a moeda pelos retornos da cesta, o mesmo código simula a carteira do parceiro: é o motor do A3 e a nuvem de 10.000 carteiras da Aula 04.</p>
+        <aside class="notes">Pergunta para abrir: se a sala tivesse terminado com a mediana acima de R$ 100, a conclusão do jogo estaria errada? Não: 30 jogadores são uma amostra pequena. A simulação existe para separar o efeito da sorte da sala.</aside>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
+          <p class="footer-page">10</p>
+        </div>
+      </section>
+
+      <!-- 11 -->
       <section class="content-slide" id="simulacao">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -255,18 +280,18 @@
             <p class="codigo-titulo"></p>
             <p class="codigo-texto"></p>
           </aside>
-          <span class="fragment codigo-passo" data-linhas="1-2" data-titulo="Uma tabela de moedas" data-texto="Uma linha por jogador, uma coluna por rodada. Ao lado, 12 jogadores de exemplo: verde é cara, coral é coroa."></span>
-          <span class="fragment codigo-passo" data-linhas="3-4" data-titulo="Saldo é produto" data-texto="Cara vira 1,5 e coroa vira 0,6. O saldo é 100 vezes o produto da linha: a barra de cada jogador cresce ou encolhe."></span>
+          <span class="fragment codigo-passo" data-linhas="1-2" data-titulo="Uma tabela de moedas" data-texto="Uma linha por jogador, uma coluna por rodada: cada linha é um futuro possível do ativo. Embaixo, 12 desses futuros: verde é cara, coral é coroa."></span>
+          <span class="fragment codigo-passo" data-linhas="3-4" data-titulo="Saldo é produto" data-texto="Cara vira 1,5 e coroa vira 0,6. O saldo é 100 vezes o produto da linha, a mesma composição do cumprod no slide anterior."></span>
           <span class="fragment codigo-passo" data-linhas="5" data-titulo="Média e mediana se separam" data-texto="Ordenados pelo saldo, poucos jogadores com muitas caras puxam a média para cima. O jogador do meio, com 5 caras e 5 coroas, fica com R$ 59,05."></span>
         </div>
         <aside class="notes">Seção 2 do notebook. Comparem com o palpite do caderno. A cena usa 12 jogadores de exemplo; a média e a mediana dos 10.000 saem do notebook (perto de R$ 163 e R$ 59,05).</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">10</p>
+          <p class="footer-page">11</p>
         </div>
       </section>
 
-      <!-- 11 -->
+      <!-- 12 -->
       <section class="content-slide" id="bodie">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -289,17 +314,17 @@
         <aside class="notes">Pergunta antes de revelar cada linha: a média é a mesma nas três moedas; quanto o jogador típico tem depois de 10 rodadas? A regra é do capítulo 5 de Bodie, Kane e Marcus (média geométrica abaixo da aritmética em cerca de metade da variância). Na linha de 30%, a regra dá 1,9% e a conta exata dá 2,0%: é uma aproximação. Ligação com o A2: reportar a média geométrica ao lado da aritmética.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; autoestudo [2]</p>
-          <p class="footer-page">11</p>
+          <p class="footer-page">12</p>
         </div>
       </section>
 
-      <!-- 12 -->
+      <!-- 13 -->
       <section class="content-slide" id="ponte">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>O BBDC4 rendeu 4,81% ao ano na média e quem segurou perdeu 0,42% ao ano</h2>
+          <h2>De 2020 a 2025, o BBDC4 rendeu 4,81% ao ano na média e quem segurou perdeu 0,42% ao ano</h2>
         </div>
         <div class="codigo-passos codigo-passos-curto codigo-com-cena codigo-ponte" data-codigo-passos data-intro-titulo="A ponte para o dado real"
              data-intro="Seção 4 do notebook. O gráfico se monta a cada passo do código.">
@@ -320,7 +345,7 @@
         <aside class="notes">Pergunta antes do passo 4: se a média é positiva, o cliente ganhou dinheiro? Depois do passo 5: qual dos dois números a função do A2 deve mostrar primeiro, e por quê?</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [1]</p>
-          <p class="footer-page">12</p>
+          <p class="footer-page">13</p>
         </div>
       </section>
 
@@ -329,7 +354,7 @@
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Quem aportou R$ 100 todo ano no mesmo BBDC4 teve 8,88% ao ano</h2>
+          <h2>De 2020 a 2025, quem aportou R$ 100 todo ano no mesmo BBDC4 teve 8,88% ao ano</h2>
         </div>
         <div class="codigo-passos codigo-passos-curto codigo-com-cena codigo-ponte" data-codigo-passos data-intro-titulo="O retorno do investidor"
              data-intro="O cliente agora aporta R$ 100 no início de cada ano, no mesmo BBDC4 e na mesma janela.">
@@ -349,11 +374,11 @@
         <aside class="notes">Os dois números são verdadeiros: -0,42% ao ano para quem comprou e segurou e 8,88% para quem aportou todo ano. A diferença vem de quando o dinheiro entrou, e o A2 hoje só mede o primeiro. Pergunta para o comitê: um assessor mostra 8,88% ao cliente que vai investir tudo de uma vez. Ele mentiu? E para o A2: qual dos dois números a função de vocês entrega, e para qual cliente?</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [1]</p>
-          <p class="footer-page">13</p>
+          <p class="footer-page">14</p>
         </div>
       </section>
 
-      <!-- 13 -->
+      <!-- 14 -->
       <section class="content-slide" id="comite">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -374,11 +399,11 @@
         <aside class="notes">As frases ficam nos decks dos grupos. Não antecipar o veredito de nenhuma: o grupo precisa chegar a ele pela conta. Se um grupo trouxer veredito sem número, perguntar qual célula do notebook sustenta a decisão. A ADR baixada em Markdown vale como ADR do A2.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">14</p>
+          <p class="footer-page">15</p>
         </div>
       </section>
 
-      <!-- 14 -->
+      <!-- 15 -->
       <section class="content-slide" id="links">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -390,11 +415,11 @@
         <aside class="notes">Os links aparecem sozinhos com a chave do professor no navegador; copiar para o Slack. Iniciar os 40 minutos quando os quatro grupos tiverem aberto o deck: o relógio é o mesmo prazo que trava a ADR. Aos 20 minutos o marco aparece: cada grupo diz em uma frase qual número calculou e mostra o código rodando. +5 minutos estende o prazo de todos.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">15</p>
+          <p class="footer-page">16</p>
         </div>
       </section>
 
-      <!-- 15 -->
+      <!-- 16 -->
       <section class="content-slide slide-comite" id="comite-g01">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -424,11 +449,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">16</p>
+          <p class="footer-page">17</p>
         </div>
       </section>
 
-      <!-- 16 -->
+      <!-- 17 -->
       <section class="content-slide slide-comite" id="comite-g02">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -458,11 +483,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">17</p>
+          <p class="footer-page">18</p>
         </div>
       </section>
 
-      <!-- 17 -->
+      <!-- 18 -->
       <section class="content-slide slide-comite" id="comite-g03">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -492,11 +517,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">18</p>
+          <p class="footer-page">19</p>
         </div>
       </section>
 
-      <!-- 18 -->
+      <!-- 19 -->
       <section class="content-slide slide-comite" id="comite-g04">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -526,11 +551,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">19</p>
+          <p class="footer-page">20</p>
         </div>
       </section>
 
-      <!-- 19 -->
+      <!-- 20 -->
       <section class="content-slide" id="a2">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -554,11 +579,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">20</p>
+          <p class="footer-page">21</p>
         </div>
       </section>
 
-      <!-- 20 -->
+      <!-- 21 -->
       <section class="content-slide" id="referencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -574,11 +599,11 @@
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2</p>
-          <p class="footer-page">21</p>
+          <p class="footer-page">22</p>
         </div>
       </section>
 
-      <!-- 21 -->
+      <!-- 22 -->
       <section class="end-slide" id="encerramento">
         <h1>Até 10/11/2026</h1>
         <h3>Aula 03: Correlação, Covariância e o Argumento Matemático da Diversificação</h3>

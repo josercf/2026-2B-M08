@@ -162,3 +162,7 @@ text.sc-mediana { fill: var(--inteli-coral); }
 .reveal .resgate-fluxo strong { font-size: 30px; font-weight: 700; }
 .reveal .resgate-fluxo span:last-child { font-size: 20px; font-weight: 300; line-height: 1.35; }
 .reveal .resgate-pergunta { margin: 40px 0 0; padding-left: 22px; border-left: 8px solid var(--inteli-coral); font-size: 32px; font-weight: 700; line-height: 1.3; }
+.reveal .tabela-simular td { font-size: 22px; padding-top: 16px; padding-bottom: 16px; }
+.reveal .tabela-simular td:first-child { font-weight: 700; white-space: nowrap; }
+.reveal .tabela-simular td:nth-child(2) { white-space: nowrap; }
+.reveal .simular-ligacao { margin: 28px 0 0; padding-left: 20px; border-left: 8px solid var(--seg-primaria); font-size: 23px; font-weight: 300; line-height: 1.45; }

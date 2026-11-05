@@ -290,3 +290,9 @@ def test_ponte_profunda_promessa_vivido_imposto_e_aportes():
     assert [a["aportado"] for a in p["aportes"]] == [100, 200, 300, 400, 500, 600]
     assert m.reais(p["aportes"][-1]["saldo"]) == "R$ 816,78"
     assert m.pct(p["tir"]) == "8,88%"
+
+
+def test_moeda_sorte_sala():
+    s = m.moeda_sorte_sala()
+    assert m.pct(s["p_jogador"]) == "37,70%"
+    assert m.pct(s["chance"]) == "11,56%"
