@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 02 - Grupo G03 - Comitê de investimentos</title>
+  <!-- Gerado por tools/gerar_decks_grupos_aula02.py. Editar o gerador, não este arquivo. -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-theme.css">
+  <link rel="stylesheet" href="../assets/css/inteli-adr.css">
+  <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <section class="content-slide slide-grupo" id="afirmacao">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Grupo G03: a frase do assessor</h2>
+          </div>
+        </div>
+        <blockquote class="grupo-afirmacao">A PETR4 tem volatilidade de 39% ao ano, então o pior que acontece em um ano é perder 39%.</blockquote>
+        <div class="grupo-papel">
+          <p>Vocês são analistas do comitê de investimentos do BTG. O comitê quer saber se essa frase se sustenta nos dados de 2019 a 2026 antes de deixá-la chegar a outro cliente.</p>
+          <p>Na reunião, o grupo tem 3 minutos para defender o veredito, com o número na tela.</p>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Grupo G03</p>
+          <p class="footer-page">1</p>
+        </div>
+      </section>
+
+      <section class="content-slide slide-grupo" id="partida">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Por onde começar a checagem do PETR4</h2>
+          </div>
+        </div>
+        <ol class="grupo-passos">
+          <li>Confirmem a volatilidade anual da PETR4: desvio padrão dos retornos diários vezes a raiz de 252.</li>
+          <li>Meçam a pior perda real em três escalas: o pior dia, a pior janela de 252 pregões e a queda do pico ao fundo.</li>
+          <li>Comparem cada perda com os 39% do assessor e escrevam o que o desvio padrão mede.</li>
+        </ol>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
+          <p><strong>Aos 12 minutos</strong> o número que decide o veredito precisa estar calculado. O tempo que sobra vai para a ADR.</p>
+        </div>
+        <p class="grupo-notebook"><a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula02.ipynb#g03" target="_blank" rel="noopener">Abrir o notebook da Aula 02</a> e ir para a seção do grupo G03, que já carrega os dados.</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Grupo G03</p>
+          <p class="footer-page">2</p>
+        </div>
+      </section>
+
+      <section class="content-slide slide-grupo slide-adr" id="adr">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>ADR do grupo G03</h2>
+          </div>
+          <p class="adr-cronometro" data-adr-cronometro data-fase="espera">Prazo ainda não iniciado</p>
+        </div>
+        <div class="adr-area">
+          <form class="adr-online" data-adr data-sessao="m08-aula02-2026-11-05" data-grupo="G03">
+            <div data-campo="titulo">
+              <label for="adr-titulo">Título da decisão <small>uma linha</small></label>
+              <input id="adr-titulo" name="titulo" type="text" maxlength="200" autocomplete="off">
+            </div>
+            <div data-campo="contexto">
+              <label for="adr-contexto">Contexto e problema <small>a frase do assessor e o dado que vocês usaram</small></label>
+              <textarea id="adr-contexto" name="contexto" maxlength="4000"></textarea>
+            </div>
+            <div data-campo="criterios">
+              <label for="adr-criterios">Critérios de decisão <small>o que pesa para o cliente</small></label>
+              <textarea id="adr-criterios" name="criterios" maxlength="4000"></textarea>
+            </div>
+            <div data-campo="opcoes">
+              <label for="adr-opcoes">Opções consideradas <small>o que o comitê pode fazer com a frase</small></label>
+              <textarea id="adr-opcoes" name="opcoes" maxlength="4000"></textarea>
+            </div>
+            <div data-campo="decisao">
+              <label for="adr-decisao">Decisão <small>a afirmação é sustentada ou enganosa, e por quê</small></label>
+              <textarea id="adr-decisao" name="decisao" maxlength="4000"></textarea>
+            </div>
+            <div data-campo="impacto">
+              <label for="adr-impacto">Consequências <small>o número que muda a decisão do cliente</small></label>
+              <textarea id="adr-impacto" name="impacto" maxlength="4000"></textarea>
+            </div>
+            <div class="adr-rodape">
+              <p class="adr-estado">Conectando...</p>
+              <button type="button" class="adr-baixar">Baixar ADR em Markdown</button>
+            </div>
+          </form>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Grupo G03</p>
+          <p class="footer-page">3</p>
+        </div>
+      </section>
+
+      <section class="content-slide slide-grupo" id="defesa">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Defesa do veredito no comitê</h2>
+          </div>
+        </div>
+        <ol class="grupo-passos">
+          <li>Leiam a frase do assessor em voz alta.</li>
+          <li>Mostrem o número que decide e a célula do notebook que chega nele.</li>
+          <li>Digam o veredito e a frase que o cliente deveria ter ouvido no lugar.</li>
+        </ol>
+        <p class="grupo-depois">Depois da aula, a ADR baixada em Markdown entra no repositório do grupo como uma ADR do A2, com a autoria de quem fez o commit.</p>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Grupo G03</p>
+          <p class="footer-page">4</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280, height: 720, center: false, margin: 0,
+      hash: true, slideNumber: false, pdfSeparateFragments: false, transition: 'fade'
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="../assets/js/inteli-quiz-config.js"></script>
+  <script src="../assets/js/inteli-aula02-dados.js"></script>
+  <script src="../assets/js/inteli-adr.js"></script>
+  <script src="../assets/js/inteli-zoom.js"></script>
+  <script src="../assets/js/inteli-print.js"></script>
+</body>
+</html>

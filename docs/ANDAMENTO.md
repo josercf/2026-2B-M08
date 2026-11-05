@@ -118,7 +118,7 @@ uma aula para outra.
 | Aula | Data | Slides | Material e referências | Observação |
 |---|---|---|---|---|
 | 01 Aquisição de Dados | 20/10 (ter), S2 | 28 | prontos | revisão de 13/10/2026 aplicada: Peer Instruction sobre o `end` exclusivo do yfinance, PETR4 no Bloco 3, pôster antes do grupamento, desafio com máquina limpa e cesta do grupo; notas do professor prontas |
-| 02 Do Preço ao Retorno | 05/11 (qui), S4 | 28 | prontos | métricas de cada ativo na série inteira (ADR-009) |
+| 02 Pontos cegos do retorno | 05/11 (qui), S4 | 20 | prontos (da versão de 13/10) | redesenhada em 05/11/2026 (ADR-016): moeda no celular, quatro decks de grupo com ADR online e comitê; gabarito fora do repositório |
 | 03 Correlação e Covariância | 10/11 (ter), S5 | 29 | prontos | matriz na janela comum dos 15 ativos (1.423 retornos) e slide do custo da janela (ADR-009); régua de correlação como heurística, com a redução de risco 50/50 de cada par |
 | 04 Monte Carlo e Markowitz | 18/11 (qua), S6 | 25 | prontos | mesma janela comum da Aula 03 (ADR-009); uniforme normalizado comparado com Dirichlet(1) e Dirichlet(0,2) |
 | 05 Validação e Robustez | 01/12 (ter), S8 | 29 | prontos | janela comum desde 04/01/2021 (1.412 retornos), treino 2023-2024, teste 2025; sobreposição das 33 janelas, anos disjuntos e custo de reotimizar (ADR-010) |
@@ -134,7 +134,7 @@ Nada em andamento. Fechado em 13/10/2026:
 | Tema: feedback de quiz, opções de escolha e botões de widget em 18px; código, cabeçalho de tabela e rótulo de widget em 16px (token `--escala-densa`); botão de exportar só com ícone no canto inferior esquerdo; vídeo trocado pelo pôster no PDF; divisor e encerramento centralizados no PDF; uma página por slide com fragments | `assets/css/`, `assets/js/inteli-print.js`, `tools/tests/test_tema_legibilidade.py` |
 | Fila de 128 conexões no servidor dos validadores, que derrubava conexões com a máquina carregada | `tools/check_slides.py`, `tools/tests/test_servidor.py` |
 | API da Aula 06 sem erro 500 em carteira de dois ativos | `exemplos/aula06-api-carteira/backend/carteira/otimizador.py` |
-| Aula 02 publicada pela exportação estática do Palco em `palco/aula02/`, com o botão Slides do portal apontando para ela e `aulas/aula02.html` mantido como reserva; push antes de 05/11/2026 é decisão do professor | ADR-015, `palco/aula02/`, `index.html` |
+| Aula 02 redesenhada em 05/11/2026 e conduzida por `aulas/aula02.html` (ADR-016, que substitui a ADR-015); `palco/aula02/` fica no repositório sem link no portal | ADR-016, `aulas/aula02*.html`, `quiz/moeda.html`, `exemplos/aula02-supabase/` |
 | Auditoria crítica de 13/10/2026, correções conceituais C-09 a C-13 e C-15 | `docs/auditorias/`, Aulas 03 a 06, ADR-010 |
 | Tema no `inteli-brand-kit` vigente: cantos retos, ícones Sharp em sprite, pesos do TIP-04, título em 40px com reserva do logo, `check_brand.py` com as três regras novas | ADR-011, `tools/icones.py`, `assets/icons/`, `tools/tests/test_icones.py` |
 | Práticas em camadas (até quatro passos obrigatórios, extensão rotulada, checagem e debrief) e trilha mínima de preparo em cada material, auditoria C-07 e C-08 | `aulas/`, `materiais/`, notas do professor, `tools/tests/test_praticas.py` |

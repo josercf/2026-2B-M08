@@ -88,7 +88,8 @@ Depois do encontro
 Data: 05/11/2026 (quinta), conforme a Adalove da turma 2026-2B-T19. Horário a confirmar. Aula 13 do módulo na planilha.
 Entrega que alimenta: A2 Módulo de Análise de Risco e Retorno Individual (peso 3), com review em 06/11/2026.
 O que a aula anterior deixou pronto: a Aula 01 deixou pronto o coletor parametrizado, com o Adj Close escolhido e a decisão de ausências registrada em ADR.
-O que esta aula deixa pronto: retornos diários, métricas anualizadas por 252 e a comparação de risco entre os ativos da cesta.
+O que esta aula deixa pronto: a diferença entre média aritmética e geométrica medida na moeda e no BBDC4, quatro frases de assessor checadas com o snapshot e uma ADR por grupo para o A2.
+Redesenhada em 05/11/2026 (spec `docs/superpowers/specs/2026-11-05-aula02-pontos-cegos-design.md`, ADR-016).
 
 Antes do encontro
   Autoestudo: Risco e retorno: passado e prólogo (70 min)
@@ -98,37 +99,35 @@ Antes do encontro
     autoverificação de cinco perguntas sem nota.
 
 Daily da equipe (15 min)
-  O que fiz, o que vou fazer, impedimentos. A equipe traz o estado do A1 e o que o ADR de
-  ausências decidiu, porque o retorno calculado hoje herda essa decisão.
+  O que fiz, o que vou fazer, impedimentos. A equipe traz o estado do A2, que tem review amanhã,
+  06/11/2026.
 
 Metodologia ativa (105 min)
-  Bloco 1 (0 a 15 min)  Resgate do coletor da Aula 01 e Peer Instruction sobre a queda de 29,70%
-    da PETR4 em 09/03/2020: qual é o retorno logarítmico correspondente. As opções e o valor exato
-    saem da medição da própria aula. Votar, discutir em dupla, votar de novo.
-  Bloco 2 (15 a 30 min)  Retorno simples e retorno logarítmico: definição, quando cada um se soma
-    e o que acontece em quedas grandes. A turma prevê a diferença entre os dois na queda do bloco
-    anterior antes de o widget revelar as duas séries lado a lado.
-  Bloco 3 (30 a 45 min)  Dupla no notebook: `pct_change`, `np.log`, média e desvio padrão diários
-    de cada ativo da cesta. Cronômetro de 12 minutos, condutor e navegador trocando na metade.
-  Bloco 4 (45 a 60 min)  Histograma dos retornos e o peso das caudas, com março de 2020 destacado.
-    O desvio padrão como medida de risco e o que ele deixa de fora. Pergunta disparada: o desvio
-    padrão diz qual foi a pior queda do período.
-  Bloco 5 (60 a 75 min)  Anualização: fator 252 no retorno e raiz de 252 na volatilidade, com a
-    conta feita no quadro. Widget de volatilidade anualizada em janela deslizante de 21, 63 e 252
-    pregões; a turma prevê qual janela reage primeiro a uma crise antes de mover o controle.
-  Bloco 6 (75 a 90 min)  Dupla no notebook: tabela de retorno e volatilidade anualizados da cesta,
-    com o CDI acumulado do período como referência. Fecha em escolha coletiva, com a sala julgando
-    afirmações sobre risco como sustentadas ou não pelos números da tabela.
-  Bloco 7 (90 a 105 min)  Quiz de verificação de três perguntas e amarração com a Sprint 2: o A2
-    (peso 3), as funções reutilizáveis que o A3 vai importar
-    e a pendência P5, dita em voz alta: o A2 cobra matriz de correlação e de covariância, que a
-    Aula 03 só ensina na semana 5, e o material de apoio antecipa o mínimo necessário.
+  Bloco 1 (0 a 15 min)  Peer Instruction sobre a aposta da moeda: cara rende +50%, coroa tira 40%,
+    10 rodadas; votar, discutir em dupla, votar de novo. Depois cada celular joga a própria moeda
+    e o slide mostra o histograma dos saldos com média e mediana.
+  Bloco 2 (15 a 30 min)  A moeda em Python: o +5% e -2% do artigo com `(1 + r).cumprod()`, a
+    simulação de 10.000 jogadores e a regra do capítulo 5 do Bodie (geométrica perto de aritmética
+    menos metade da variância). A turma prevê a mediana antes de o código rodar.
+  Bloco 3 (30 a 45 min)  Ponte com o dado real: o BBDC4 de 2020 a 2025, com média aritmética de
+    4,81% ao ano e geométrica de -0,42% ao ano. Apresentação do comitê de investimentos do BTG e das
+    quatro frases do assessor; links dos grupos no Slack. Pergunta disparada: qual das duas médias
+    o assessor costuma mostrar.
+  Bloco 4 (45 a 60 min)  Checagem em grupo no notebook, seção do grupo, com o prazo do servidor
+    correndo. Aos 12 minutos, pergunta disparada a cada grupo: qual número decide o veredito.
+  Bloco 5 (60 a 75 min)  ADR online no deck do grupo, escrita por todos ao mesmo tempo, que trava
+    quando o prazo acaba. O grupo faz pensar e compartilhar para fechar a decisão e escolhe quem
+    defende.
+  Bloco 6 (75 a 90 min)  Comitê: cada grupo defende o veredito em 3 minutos com a ADR projetada ao
+    vivo, e a sala faz a escolha coletiva entre sustentada e enganosa no quiz ao vivo.
+  Bloco 7 (90 a 105 min)  Amarração com a Sprint 2: cada veredito vira uma decisão da função de
+    risco e retorno do A2 (peso 3, review em 06/11/2026). Pergunta disparada: qual dessas decisões
+    o A2 do grupo ainda não tem.
 
 Depois do encontro
-  Desafio do notebook: repetir as métricas anualizadas com a decisão de ausências invertida e medir
-    quanto a volatilidade de cada ativo muda.
-  Avanço do A2: SPEC.md com as interfaces do módulo de métricas, histogramas por ativo e leitura
-    escrita comparando a cesta, mais o ADR da anualização.
+  Avanço do A2: a ADR baixada do deck do grupo entra no repositório como ADR do A2; a função de
+    métricas passa a entregar média geométrica, maior queda e a comparação com CDI e IPCA.
+  Desafio do notebook: refazer a checagem de outro grupo e comparar o número com o da ADR dele.
   Leitura complementar: seção do autoestudo de risco e retorno sobre prêmio de risco, retomada com
     os números da cesta.
 

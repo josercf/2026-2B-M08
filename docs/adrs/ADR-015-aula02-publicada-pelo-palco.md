@@ -1,7 +1,7 @@
 # ADR-015: Aula 02 publicada pela exportação estática do Palco
 
 **Data:** 21/10/2026
-**Status:** Proposta
+**Status:** Substituída pela ADR-016 (05/11/2026)
 **Decisores:** Prof. José Romualdo
 
 ## Contexto

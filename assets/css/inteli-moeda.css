@@ -1,0 +1,130 @@
+/* Jogo da moeda da Aula 02 (assets/js/inteli-moeda.js): histograma no slide
+   e tela do aluno no celular. Só tokens e canto reto (GRA-01). */
+
+/* ---------------------------------------------------------------- slide */
+
+.moeda-sala {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.moeda-lado { display: flex; flex-direction: column; gap: 8px; }
+
+.moeda-qr { width: 170px; height: 170px; }
+.moeda-qr svg { width: 100%; height: 100%; display: block; }
+
+.reveal .moeda-link,
+.moeda-link { margin: 0; font-size: 13px; color: var(--seg-texto-suave); word-break: break-all; }
+
+.reveal .moeda-jogadores,
+.reveal .moeda-rodada,
+.moeda-jogadores,
+.moeda-rodada { margin: 0; font-size: 20px; font-weight: 600; }
+
+.reveal .moeda-media,
+.reveal .moeda-mediana,
+.moeda-media,
+.moeda-mediana { margin: 0; display: flex; flex-direction: column; font-size: 30px; line-height: 1.1; }
+
+.moeda-media strong { color: var(--inteli-verde); font-weight: 700; }
+.moeda-mediana strong { color: var(--inteli-coral); font-weight: 700; }
+.moeda-rotulo { font-size: 15px; font-weight: 600; color: var(--seg-texto-suave); }
+
+.moeda-botoes { display: flex; gap: 8px; }
+
+.moeda-liberar,
+.moeda-zerar {
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  border: 0;
+  border-radius: 0;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: var(--inteli-branco);
+  background: var(--seg-primaria);
+}
+
+.moeda-zerar { background: var(--seg-texto-suave); }
+.moeda-liberar:disabled { background: var(--seg-borda); cursor: default; }
+.moeda-liberar[hidden], .moeda-zerar[hidden] { display: none; }
+
+/* -------------------------------------------------------------- celular */
+
+.moeda-corpo {
+  margin: 0;
+  background: var(--seg-base);
+  color: var(--seg-texto);
+}
+
+.moeda-aluno {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 16px 18px 28px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.moeda-topo { display: flex; justify-content: space-between; align-items: center; }
+.moeda-logo { height: 26px; }
+.moeda-quem { margin: 0; font-size: 15px; font-weight: 600; color: var(--seg-texto-suave); }
+
+.moeda-aluno .tela { display: none; flex-direction: column; gap: 16px; padding-top: 22px; }
+.moeda-aluno[data-estado="entrar"] .tela-entrar,
+.moeda-aluno[data-estado="jogar"] .tela-jogar { display: flex; }
+
+.moeda-aluno h1 { margin: 0; font-size: 28px; font-weight: 700; }
+.moeda-aluno p { margin: 0; font-size: 17px; font-weight: 300; line-height: 1.45; }
+.moeda-aluno form { display: flex; flex-direction: column; gap: 10px; }
+.moeda-aluno label { font-size: 14px; font-weight: 600; }
+
+.moeda-aluno input {
+  font: inherit;
+  font-size: 18px;
+  padding: 14px;
+  border: 2px solid var(--seg-primaria);
+  border-radius: 0;
+  background: var(--seg-base);
+  color: var(--seg-texto);
+}
+
+.moeda-aluno button {
+  font: inherit;
+  font-size: 19px;
+  font-weight: 700;
+  padding: 16px;
+  border: 0;
+  border-radius: 0;
+  color: var(--inteli-branco);
+  background: var(--seg-primaria);
+}
+
+.moeda-aluno button:disabled { background: var(--seg-borda); color: var(--seg-texto-suave); }
+.moeda-aluno .erro { color: var(--inteli-coral); font-weight: 600; }
+
+.moeda-aluno .moeda-saldo { display: flex; flex-direction: column; font-size: 16px; font-weight: 600; }
+.moeda-saldo-valor { font-size: 46px; font-weight: 700; color: var(--seg-primaria); font-variant-numeric: tabular-nums; }
+
+.moeda-aluno .moeda-resultado { font-size: 24px; font-weight: 700; min-height: 32px; }
+.moeda-resultado[data-fase="cara"] { color: var(--inteli-verde); }
+.moeda-resultado[data-fase="coroa"],
+.moeda-resultado[data-fase="erro"] { color: var(--inteli-coral); }
+
+.historico { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+
+.historico li {
+  display: grid;
+  grid-template-columns: 90px 1fr auto;
+  gap: 8px;
+  padding: 8px 10px;
+  font-size: 16px;
+  background: var(--seg-superficie);
+}
+
+.historico li.cara .h-lado { color: var(--inteli-verde); font-weight: 600; }
+.historico li.coroa .h-lado { color: var(--inteli-coral); font-weight: 600; }
+.h-saldo { font-variant-numeric: tabular-nums; }

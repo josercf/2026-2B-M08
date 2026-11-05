@@ -1,0 +1,275 @@
+/* ADR online da Aula 02 (assets/js/inteli-adr.js): formulário do grupo,
+   cronômetro sincronizado, painel de links do professor e ADR no projetor.
+   Só tokens e canto reto (GRA-01). Texto dos campos em 20 px ou mais, porque
+   o grupo lê e escreve na tela compartilhada. */
+
+.adr-online {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr 1fr 1fr auto;
+  gap: 8px 22px;
+  height: 100%;
+}
+
+.adr-area { position: absolute; left: 60px; right: 60px; top: 128px; bottom: 74px; }
+.adr-online .adr-rodape { grid-column: 1 / -1; }
+
+.adr-online [data-campo] {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  position: relative;
+}
+
+.adr-online [data-campo="titulo"] { grid-column: 1 / -1; }
+.adr-online [data-campo="decisao"] { grid-row: 2 / 4; grid-column: 2; }
+.adr-online [data-campo="impacto"] { grid-row: 4; grid-column: 2; }
+.adr-online [data-campo="contexto"] { grid-row: 2; grid-column: 1; }
+.adr-online [data-campo="criterios"] { grid-row: 3; grid-column: 1; }
+.adr-online [data-campo="opcoes"] { grid-row: 4; grid-column: 1; }
+
+.reveal .adr-online label {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--seg-primaria);
+  margin: 0;
+}
+
+.reveal .adr-online label small {
+  font-weight: 300;
+  color: var(--seg-texto-suave);
+  font-size: 15px;
+}
+
+.adr-online input,
+.adr-online textarea {
+  font: inherit;
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.3;
+  color: var(--seg-texto);
+  background: var(--inteli-branco);
+  border: 2px solid var(--seg-borda);
+  border-radius: 0;
+  padding: 6px 10px;
+  width: 100%;
+  box-sizing: border-box;
+  resize: none;
+}
+
+.adr-online textarea { flex: 1; min-height: 0; }
+
+.adr-online [data-campo="decisao"] textarea {
+  border-color: var(--seg-primaria);
+  font-size: 22px;
+}
+
+.adr-online input:focus,
+.adr-online textarea:focus {
+  outline: none;
+  border-color: var(--seg-destaque);
+}
+
+.adr-online.adr-travado input,
+.adr-online.adr-travado textarea,
+.adr-online.adr-leitura input,
+.adr-online.adr-leitura textarea {
+  background: var(--seg-superficie);
+  color: var(--seg-texto-suave);
+}
+
+.reveal .adr-aviso {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  max-width: 70%;
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--inteli-branco);
+  background: var(--inteli-coral);
+}
+
+.reveal .adr-aviso[hidden] { display: none; }
+
+.reveal .adr-estado {
+  margin: 0;
+  font-size: 15px;
+  color: var(--seg-texto-suave);
+}
+
+.reveal .adr-estado[data-tipo="erro"],
+.reveal .adr-estado[data-tipo="fim"] { color: var(--inteli-coral); font-weight: 600; }
+
+.adr-rodape {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.adr-online button,
+[data-adr-links] button {
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--inteli-branco);
+  background: var(--seg-primaria);
+  border: 0;
+  border-radius: 0;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+/* Cronômetro do grupo: segue o fim do prazo gravado no servidor. */
+.reveal .adr-cronometro {
+  font-size: 34px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--seg-primaria);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.reveal .adr-cronometro[data-fase="espera"] { font-size: 18px; font-weight: 600; color: var(--seg-texto-suave); }
+.reveal .adr-cronometro[data-fase="final"] { color: var(--inteli-coral); }
+.reveal .adr-cronometro[data-fase="fim"] { font-size: 22px; color: var(--inteli-coral); }
+
+/* Painel de links do professor. */
+[data-adr-links] { display: flex; flex-direction: column; gap: 14px; }
+
+.adr-links-controles,
+.adr-links-prazo { display: flex; align-items: center; gap: 14px; }
+
+.reveal .adr-links-lista { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+.reveal .adr-links-lista li {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 8px 12px;
+  background: var(--seg-superficie);
+  font-size: 18px;
+}
+
+.reveal .adr-link-url { font-size: 15px; word-break: break-all; }
+
+.adr-links-prazo label { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 600; }
+
+.adr-links-prazo input {
+  font: inherit;
+  font-size: 20px;
+  width: 80px;
+  padding: 4px 8px;
+  border: 2px solid var(--seg-borda);
+  border-radius: 0;
+}
+
+.reveal .adr-restante { font-size: 24px; font-weight: 700; color: var(--seg-primaria); font-variant-numeric: tabular-nums; }
+.reveal .adr-aviso-professor { margin: 0; font-size: 16px; color: var(--inteli-coral); white-space: pre-line; }
+
+/* ADR do grupo no projetor. */
+[data-adr-comite] { display: flex; flex-direction: column; gap: 14px; }
+
+.reveal .adr-comite-titulo { margin: 0; font-size: 26px; font-weight: 600; color: var(--seg-primaria); }
+
+.reveal .adr-comite-decisao {
+  margin: 0;
+  padding: 14px 18px;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.3;
+  border-left: 8px solid var(--seg-primaria);
+  background: var(--seg-superficie);
+  max-height: 210px;
+  overflow: hidden;
+}
+
+.reveal .adr-comite-detalhes {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 6px 16px;
+  font-size: 17px;
+  max-height: 200px;
+  overflow: hidden;
+}
+
+.reveal .adr-comite-detalhes dt { font-weight: 600; color: var(--seg-texto-suave); margin: 0; }
+.reveal .adr-comite-detalhes dd { margin: 0; font-weight: 300; }
+
+/* Decks dos grupos: a frase do assessor e os passos em fonte grande. */
+.reveal .grupo-afirmacao {
+  margin: 30px 0 28px;
+  padding: 26px 34px;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--seg-texto);
+  border-left: 10px solid var(--inteli-coral);
+  background: var(--seg-superficie);
+}
+
+.reveal .grupo-papel p { font-size: 24px; font-weight: 300; line-height: 1.4; margin: 0 0 12px; }
+
+.reveal .grupo-passos { margin: 26px 0 24px; padding-left: 0; list-style: none; counter-reset: passo; }
+
+.reveal .grupo-passos li {
+  counter-increment: passo;
+  position: relative;
+  margin: 0 0 20px;
+  padding-left: 64px;
+  font-size: 26px;
+  font-weight: 300;
+  line-height: 1.35;
+}
+
+.reveal .grupo-passos li::before {
+  content: counter(passo);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--seg-primaria);
+}
+
+.reveal .grupo-notebook,
+.reveal .grupo-depois { font-size: 20px; font-weight: 300; margin: 16px 0 0; }
+
+/* Slides do comitê no deck principal: ADR do grupo à esquerda, voto à direita. */
+.comite-grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 28px;
+  align-items: start;
+}
+
+.quiz-vivo.quiz-vivo-comite { grid-template-columns: 1fr; gap: 16px; }
+.reveal .quiz-vivo-comite .quiz-vivo-enunciado { font-size: 22px; }
+
+/* Voto com alternativas em frase (Aula 02): texto na coluna larga. */
+.reveal .quiz-vivo-texto .quiz-vivo-opcoes li { grid-template-columns: 56px 1fr 140px 64px; }
+.reveal .quiz-vivo-texto .qv-texto { font-size: 28px; line-height: 1.15; }
+
+.reveal .quiz-vivo-comite .quiz-vivo-opcoes li { grid-template-columns: 56px minmax(0, 1fr) 70px 56px; gap: 10px; }
+.reveal .quiz-vivo-comite .qv-texto { font-size: 28px; }
+.quiz-vivo-comite .quiz-vivo-lado {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 6px 14px;
+  align-items: start;
+  min-width: 0;
+}
+.quiz-vivo.quiz-vivo-comite > * { min-width: 0; }
+.quiz-vivo-comite .quiz-vivo-chave input { width: 100%; }
+.quiz-vivo-comite .quiz-vivo-lado > :first-child { grid-row: span 6; }
+.reveal .quiz-vivo-comite .quiz-vivo-instrucao { font-size: 13px; }
+
+/* O slide de links vai ao projetor: o endereço com token fica borrado até o
+   professor passar o mouse, para a sala não ver o token dos outros grupos. */
+.reveal .adr-link-url { filter: blur(7px); transition: filter 0.2s; }
+.reveal .adr-links-lista li:hover .adr-link-url { filter: none; }

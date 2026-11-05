@@ -243,3 +243,59 @@ def extremos_da_cesta():
 def pct(valor, casas=2):
     """0.123456 -> "12,35%", no formato do deck."""
     return ("%.*f%%" % (casas, valor * 100)).replace(".", ",")
+
+
+# ---- Aula 02 redesenhada em 05/11/2026 (spec 2026-11-05-aula02-pontos-cegos) ----
+
+def moeda_teorica(rodadas=10):
+    """Jogo da moeda: cara rende +50%, coroa rende -40%, saldo inicial de R$ 100.
+
+    A média do saldo cresce 5% por rodada; a mediana (metade das jogadas em cara)
+    multiplica 1,5 x 0,6 = 0,9 a cada par de rodadas.
+    """
+    aritmetica = 0.5 * 0.5 + 0.5 * (-0.4)
+    variancia = 0.5 * (0.5 - aritmetica) ** 2 + 0.5 * (-0.4 - aritmetica) ** 2
+    return {
+        "rodadas": rodadas,
+        "media": 100 * 1.05 ** rodadas,
+        "mediana": 100 * (1.5 * 0.6) ** (rodadas / 2),
+        "aritmetica": aritmetica,
+        "geometrica": (1.5 * 0.6) ** 0.5 - 1,
+        "variancia": variancia,
+        "aproximacao": aritmetica - variancia / 2,
+    }
+
+
+def reais(valor):
+    """162.889 -> "R$ 162,89", no formato do deck."""
+    return "R$ " + ("%.2f" % valor).replace(".", ",")
+
+
+def ponte_bbdc4(ticker="BBDC4", anos=range(2020, 2026)):
+    """Retorno anual de fim de ano a fim de ano: média aritmética contra geométrica."""
+    s = precos()[ticker].dropna()
+    fins = s.groupby(s.index.year).last()
+    anuais = fins.pct_change().loc[list(anos)]
+    return {
+        "anuais": {int(a): float(v) for a, v in anuais.items()},
+        "anos": [int(a) for a in anuais.index],
+        "aritmetica": float(anuais.mean()),
+        "geometrica": float((1 + anuais).prod() ** (1 / len(anuais)) - 1),
+    }
+
+
+def afirmacoes_grupos():
+    """Números que os assessores citam nas afirmações dos grupos, como aparecem no deck.
+
+    Só a afirmação: o que a confirma ou desmonta fica no gabarito fora do repositório.
+    """
+    close = m1.carregar_precos("precos_fechamento.csv")
+    bbas3 = close["BBAS3"].dropna()
+    mglu3 = close["MGLU3"].dropna()
+    vol_petr4 = anualizadas().loc["PETR4", "vol_anual"]
+    return {
+        "bbas3_close": pct(abs(bbas3.iloc[-1] / bbas3.iloc[0] - 1), 1),
+        # Truncado: o assessor arredonda para baixo (a queda medida é de 90,7%).
+        "mglu3_queda": "%d%%" % int(abs(mglu3.iloc[-1] / mglu3.iloc[0] - 1) * 100),
+        "petr4_vol": "%d%%" % int(vol_petr4 * 100),
+    }

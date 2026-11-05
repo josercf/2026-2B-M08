@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Jogo da moeda - Módulo 08 AdmTech</title>
+  <!-- Tela do aluno no jogo da moeda da Aula 02. O QR code do slide abre esta
+       página com ?s=<sessão>. Cada celular joga a própria moeda; o sorteio é
+       do servidor (exemplos/aula02-supabase/aula02.sql). -->
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-moeda.css">
+</head>
+<body class="moeda-corpo">
+  <main class="moeda-aluno" data-moeda-aluno data-sessao="m08-aula02-2026-11-05" data-estado="carregando">
+    <header class="moeda-topo">
+      <img src="../assets/img/inteli-logo-positiva.svg" alt="Inteli" class="moeda-logo">
+      <p class="moeda-quem"></p>
+    </header>
+
+    <section class="tela tela-entrar">
+      <h1>Jogo da moeda</h1>
+      <p>Você começa com R$ 100. A cada rodada sua moeda é jogada: cara rende +50% sobre o que você tem, coroa tira 40%.</p>
+      <form>
+        <label for="apelido">Apelido</label>
+        <input id="apelido" type="text" maxlength="30" autocomplete="off" required placeholder="Como quer aparecer">
+        <button type="submit" class="entrar">Entrar no jogo</button>
+        <p class="erro"></p>
+      </form>
+    </section>
+
+    <section class="tela tela-jogar">
+      <p class="moeda-saldo">Seu saldo <strong class="moeda-saldo-valor">R$ 100,00</strong></p>
+      <p class="moeda-resultado" data-fase="espera">Ainda sem jogadas</p>
+      <button type="button" class="jogar" disabled>Aguarde o professor liberar a rodada 1</button>
+      <ol class="historico"></ol>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="../assets/js/inteli-quiz-config.js"></script>
+  <script src="../assets/js/inteli-aula02-dados.js"></script>
+  <script src="../assets/js/inteli-moeda.js"></script>
+</body>
+</html>

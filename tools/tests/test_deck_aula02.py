@@ -1,7 +1,8 @@
-"""Trava a estrutura do deck da Aula 02 e amarra os números dele às medições.
+"""Trava a estrutura do deck da Aula 02 (redesenhada em 05/11/2026) e amarra os números às medições.
 
 Cada número central do deck é formatado aqui a partir de tools/medidas_aula02.py
-e procurado no HTML: se a medição mudar, o deck reprova até ser atualizado.
+e procurado no HTML: se a medição mudar, o deck reprova até ser atualizado. O
+deck não traz o veredito de nenhum grupo; o gabarito vive fora do repositório.
 """
 import os
 import re
@@ -12,6 +13,9 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import medidas_aula02 as m  # noqa: E402
 
 DECK = os.path.join(m.RAIZ, "aulas", "aula02.html")
+SEQUENCIA = ["capa", "agenda", "resgate", "daily", "vale-jogar", "moeda", "artigo", "simulacao", "bodie",
+             "ponte", "comite", "links", "investigacao", "comite-g01", "comite-g02", "comite-g03",
+             "comite-g04", "a2", "referencias", "encerramento"]
 
 
 def _html():
@@ -23,69 +27,75 @@ def _secoes():
     return re.findall(r"<section\b(.*?)</section>", _html(), flags=re.S)
 
 
+def _secao(sid):
+    return next(s for s in _secoes() if 'id="%s"' % sid in s)
+
+
 def test_rodapes_numerados_em_sequencia():
     numeros = [int(n) for n in re.findall(r'<p class="footer-page">(\d+)</p>', _html())]
     esperados = [i + 1 for i, s in enumerate(_secoes()) if "footer-page" in s]
     assert numeros == esperados
 
 
-def test_primeira_interacao_e_peer_instruction_sobre_o_preparo():
-    secoes = _secoes()
-    primeiro_quiz = next(i for i, s in enumerate(secoes) if "quiz-options" in s)
-    assert 'id="preparo"' in secoes[primeiro_quiz]
-    assert "Votar de novo" in secoes[primeiro_quiz]
-    assert 'id="resgate"' in "".join(secoes[:primeiro_quiz])
+def test_sequencia_de_slides():
+    ids = [re.search(r'id="([^"]+)"', s).group(1) for s in _secoes()]
+    assert ids == SEQUENCIA
 
 
-def test_peer_instruction_usa_as_alternativas_medidas():
-    q = m.queda_petr4()
-    preparo = next(s for s in _secoes() if 'id="preparo"' in s)
-    certa = re.search(r'data-correct="true".*?>([^<]+)</li>', preparo, re.S).group(1)
-    assert certa == m.pct(q["log"])
-    for chave in ("erro_repetir_simples", "erro_simetrico", "erro_log10"):
-        assert ">%s</li>" % m.pct(q[chave]) in preparo, chave
+def test_ponte_e_moeda_saem_das_medicoes():
+    p = m.ponte_bbdc4()
+    ponte = _secao("ponte")
+    assert m.pct(p["aritmetica"]) in ponte and m.pct(p["geometrica"]) in ponte
+    for ano, valor in p["anuais"].items():
+        assert m.pct(valor) in ponte, ano
+    notas = _secao("moeda")
+    for rodadas in (10, 20):
+        t = m.moeda_teorica(rodadas)
+        assert m.reais(t["media"]) in notas and m.reais(t["mediana"]) in notas, rodadas
+    simulacao = _secao("simulacao")
+    assert m.reais(m.moeda_teorica()["mediana"]) in simulacao
+    t = m.moeda_teorica()
+    bodie = _secao("bodie")
+    for chave in ("aritmetica", "geometrica", "aproximacao"):
+        assert m.pct(t[chave], 1) in bodie, chave
+    assert m.pct(t["variancia"]) in bodie
 
 
-def test_numeros_centrais_do_deck_saem_das_medicoes():
+def test_afirmacoes_do_comite_saem_das_medicoes():
+    comite = _secao("comite")
+    a = m.afirmacoes_grupos()
+    for numero in (a["bbas3_close"], a["mglu3_queda"], a["petr4_vol"]):
+        assert numero in comite, numero
+
+
+def test_votos_do_comite_nao_tem_correta():
+    for g in ("g01", "g02", "g03", "g04"):
+        s = _secao("comite-" + g)
+        assert "data-quiz-vivo" in s and 'data-adr-comite' in s, g
+        assert "data-correta" not in s and 'data-correct="true"' not in s, g
+        assert 'data-grupo="%s"' % g.upper() in s, g
+
+
+def test_deck_nao_traz_veredito_dos_grupos():
+    texto = re.sub(r"<[^>]+>", " ", _html()).lower()
+    # "Sustentada" e "Enganosa" só como opções de voto, uma vez por grupo.
+    assert texto.count("sustentada") == 4 and texto.count("enganosa") == 4
+
+
+def test_componentes_novos_declarados():
     html = _html()
-    j = m.janela_crise()
-    c = m.conta_anualizacao()
-    cdi = m.cdi()
-    caudas = m.caudas()
-    for numero in (m.pct(j["soma_simples"]), m.pct(j["acumulado"]), m.pct(j["soma_log"]),
-                   m.pct(c["vol_anual"]), m.pct(c["retorno_anual"]), m.pct(c["erro_desvio_vezes_252"]),
-                   m.pct(cdi["acumulado"]), m.pct(cdi["anual"]),
-                   m.pct(m.cdi("2020-12-11")["acumulado"])):
-        assert numero in html, numero
-    assert ("%.2f" % abs(caudas["pior_em_desvios"])).replace(".", ",") in html
-    assert ("%.2f pontos" % (m.erro_da_soma_simples() * 100)).replace(".", ",") in html
-
-
-def test_tabela_da_cesta_repete_as_metricas_anualizadas():
-    cesta = next(s for s in _secoes() if 'id="cesta"' in s)
-    a = m.anualizadas()
-    for ticker in a.index:
-        linha = re.search(r"<td>%s\*?</td>(.*?)</tr>" % ticker, cesta, re.S).group(1)
-        valores = re.findall(r"<td>([^<]+)</td>", linha)
-        assert valores == [m.pct(a.loc[ticker, "retorno_anual"]), m.pct(a.loc[ticker, "vol_anual"]),
-                           m.pct(a.loc[ticker, "total"])], ticker
-    assert len(m.abaixo_do_cdi()) == 9 and "Nove dos 15" in cesta
-
-
-def test_widgets_e_videos_da_aula_estao_no_deck():
-    html = _html()
-    for widget in ("simples-log", "vol-janela"):
-        assert 'data-widget="%s"' % widget in html
-        assert "../assets/js/widgets/%s.js" % widget in html
-    for video in ("aula02-histograma-retornos", "aula02-raiz-do-tempo"):
-        assert "../assets/video/%s.mp4" % video in html
+    for js in ("inteli-aula02-dados.js", "inteli-moeda.js", "inteli-adr.js", "inteli-quiz-vivo.js",
+               "inteli-codigo.js", "inteli-cronometro.js"):
+        assert "../assets/js/%s" % js in html, js
+    for css in ("inteli-moeda.css", "inteli-adr.css", "inteli-quiz-vivo.css"):
+        assert "../assets/css/%s" % css in html, css
+    assert 'data-aluno="../quiz/moeda.html"' in html
 
 
 def test_amarracao_cita_o_peso_do_plano_de_ensino():
-    a2 = next(s for s in _secoes() if 'id="a2"' in s)
+    a2 = _secao("a2")
     assert "A2 vale 3 pontos" in a2
     assert "06/11/2026" in a2
-    assert "P5" in next(s for s in _secoes() if 'id="p5"' in s)
 
 
 def test_sem_travessao_no_deck():

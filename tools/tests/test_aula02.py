@@ -224,3 +224,41 @@ def test_raiz_do_tempo_superestima_horizontes_longos(h, medido, previsto):
     r = m.raiz_do_tempo(horizontes=(h,))[h]
     assert r4(r["medido"]) == medido
     assert r4(r["previsto"]) == previsto
+
+
+# ---- Aula 02 redesenhada em 05/11/2026: moeda, ponte e afirmações dos grupos ----
+
+def test_moeda_teorica():
+    t = m.moeda_teorica()
+    assert t["media"] == pytest.approx(162.89, abs=0.01)
+    assert t["mediana"] == pytest.approx(59.05, abs=0.01)
+    assert t["rodadas"] == 10
+    t20 = m.moeda_teorica(20)
+    assert t20["media"] == pytest.approx(265.33, abs=0.01)
+    assert t20["mediana"] == pytest.approx(34.87, abs=0.01)
+
+
+def test_ponte_bbdc4():
+    p = m.ponte_bbdc4()
+    assert r4(p["aritmetica"]) == 0.0481
+    assert r4(p["geometrica"]) == -0.0042
+    assert p["anos"] == [2020, 2021, 2022, 2023, 2024, 2025]
+
+
+def test_afirmacoes_grupos():
+    a = m.afirmacoes_grupos()
+    assert a["bbas3_close"] == "14,7%"
+    assert a["mglu3_queda"] == "90%"
+    assert a["petr4_vol"] == "39%"
+
+
+def test_notebook_aula02_tem_secao_por_grupo_sem_veredito():
+    import json
+    with open(os.path.join(m.RAIZ, "notebooks", "aula02.ipynb"), encoding="utf-8") as fh:
+        nb = json.load(fh)
+    texto = "\n".join("".join(c["source"]) for c in nb["cells"])
+    for g in ("g01", "g02", "g03", "g04"):
+        assert '<a id="%s"></a>' % g in texto, g
+    assert "(1 + r).cumprod()" in texto
+    assert "default_rng(2026)" in texto
+    assert "enganosa" not in texto.lower() and "sustentada" not in texto.lower()

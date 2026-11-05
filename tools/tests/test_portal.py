@@ -45,6 +45,4 @@ def test_artefato_existente_tem_botao_habilitado():
                                 ("referencias", "html"), ("notebooks", "ipynb")):
             caminho = "%s/aula%s.%s" % (pasta, numero, extensao)
             if os.path.isfile(os.path.join(RAIZ, caminho)):
-                # A Aula 02 abre o deck exportado pelo Palco (ADR-015); aulas/aula02.html fica como reserva.
-                alternativa = "palco/aula%s/" % numero if pasta == "aulas" else None
-                assert caminho in card or (alternativa and alternativa in card), (numero, caminho)
+                assert caminho in card, (numero, caminho)
