@@ -21,7 +21,7 @@ só a logística. Veredito, número decisivo e erro comum de cada grupo ficam no
 |---|---|---|
 | 1 a 4 | abertura | agenda, resgate da Aula 01 e daily com cronômetro de 15 min |
 | 5 | 1 | voto "vale jogar?" em duas rodadas, sem revelar nada |
-| 6 | 1 | QR da moeda; liberar uma rodada por vez e esperar a maioria jogar |
+| 6 | 1 | os celulares do quiz trocam sozinhos para a moeda; liberar uma rodada por vez e esperar a maioria jogar; aba Trajetórias no fim |
 | 7 a 9 | 2 | o artigo em Python, a simulação (a turma anota o palpite da mediana antes) e a tabela do Bodie |
 | 10 e 11 | 3 | BBDC4 e as quatro frases do comitê |
 | 12 | 3 | gerar os links, copiar para o Slack, iniciar o prazo de 25 min |
@@ -31,10 +31,14 @@ só a logística. Veredito, número decisivo e erro comum de cada grupo ficam no
 
 ## Moeda
 
-- Teoria para a fala: 10 rodadas dão média esperada de R$ 162,89 e mediana de R$ 59,05; 20 rodadas
-  dão R$ 265,33 e R$ 34,87.
-- Se na rodada 10 a mediana da sala ainda estiver acima de R$ 100, seguir até a 20.
-- O botão Zerar volta a rodada para 0 e permite jogar de novo do começo com novos apelidos.
+- O jogo tem 10 rodadas, como no enunciado do voto. Teoria para a fala: média esperada de
+  R$ 162,89 e mediana de R$ 59,05.
+- Com uns 30 alunos, há cerca de uma chance em oito de a mediana da sala terminar acima de R$ 100 por
+  sorte. Se acontecer, a aba Trajetórias e a simulação de 10.000 jogadores (slide 8) mostram o efeito
+  sem depender da sorte da sala.
+- A aba Trajetórias do slide mostra uma linha por aluno, rodada a rodada, com a média e a mediana.
+- O botão Zerar pede um segundo clique, apaga o jogo e volta para a rodada 0; os celulares do quiz
+  entram de novo sozinhos.
 - Plano B sem rede: moeda física, saldo no papel e a tabela teórica acima.
 
 ## Links e prazo

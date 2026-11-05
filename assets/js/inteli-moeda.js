@@ -3,8 +3,11 @@
 // pelo slide; o slide mostra o histograma dos saldos com a média e a mediana.
 //
 // Slide:   <div class="moeda-sala" data-moeda data-sessao="..." data-rodadas="10"
-//               data-aluno="../quiz/moeda.html" data-largura="760" data-altura="380"></div>
-// Celular: quiz/moeda.html?s=<sessão>, com <main data-moeda-aluno>.
+//               data-largura="760" data-altura="380"></div>
+// Celular: o mesmo quiz/index.html do quiz ao vivo. Quando o slide da moeda
+//          aparece, ele abre no quiz uma rodada com pergunta "moeda", e o
+//          celular que entrou pelo QR de qualquer slide anterior troca de tela
+//          sozinho, com o nome do quiz. quiz/moeda.html segue como entrada avulsa.
 //
 // Dados por IntelIAula02Dados (assets/js/inteli-aula02-dados.js). O sorteio é
 // feito no servidor (moeda_jogar).
@@ -59,6 +62,27 @@
     var altura = Number(raiz.dataset.altura || 380);
 
     var grafico = el('div', 'moeda-grafico');
+    // Duas vistas do mesmo jogo: a distribuição dos saldos agora e a trajetória
+    // de cada aluno rodada a rodada, com a média e a mediana da turma.
+    var abas = el('div', 'moeda-abas');
+    var vista = 'distribuicao';
+    [['distribuicao', 'Distribuição'], ['trajetorias', 'Trajetórias']].forEach(function (par) {
+      var b = el('button', 'moeda-aba', par[1]);
+      b.type = 'button';
+      b.dataset.vista = par[0];
+      b.setAttribute('aria-pressed', par[0] === vista ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        vista = par[0];
+        raiz.dataset.vista = vista;
+        Array.prototype.forEach.call(abas.children, function (x) {
+          x.setAttribute('aria-pressed', x.dataset.vista === vista ? 'true' : 'false');
+        });
+        redesenhar();
+      });
+      abas.appendChild(b);
+    });
+    raiz.dataset.vista = vista;
+    grafico.appendChild(abas);
     var canvas = el('canvas', 'moeda-canvas');
     var escala = window.devicePixelRatio || 1;
     canvas.width = largura * escala;
@@ -68,8 +92,7 @@
     grafico.appendChild(canvas);
 
     var lado = el('div', 'moeda-lado');
-    var qr = el('div', 'moeda-qr');
-    var link = el('p', 'moeda-link');
+    var aviso = el('p', 'moeda-aviso', 'Os celulares que entraram no quiz já estão no jogo.');
     var jogadores = el('p', 'moeda-jogadores', '0 jogadores');
     jogadores.dataset.n = '0';
     var rodada = el('p', 'moeda-rodada', 'Rodada 0 de ' + total);
@@ -85,19 +108,29 @@
     var botoes = el('div', 'moeda-botoes');
     botoes.appendChild(liberar);
     botoes.appendChild(zerar);
-    [qr, link, jogadores, rodada, media, med, botoes].forEach(function (e) { lado.appendChild(e); });
+    [aviso, jogadores, rodada, media, med, botoes].forEach(function (e) { lado.appendChild(e); });
     raiz.appendChild(grafico);
     raiz.appendChild(lado);
 
-    var alvo = new URL(raiz.dataset.aluno || '../quiz/moeda.html', window.location.href);
-    alvo.search = '?s=' + encodeURIComponent(sessao) + (IntelIAula02Dados.demo() ? '&quiz-demo=1' : '');
-    link.textContent = alvo.href.replace(/^https?:\/\//, '');
-    if (window.qrcode) {
-      var q = window.qrcode(0, 'M');
-      q.addData(alvo.href);
-      q.make();
-      qr.innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    // Sinal para os celulares do quiz: rodada "moeda" aberta enquanto o slide
+    // está na tela, fechada quando o professor sai dele.
+    var quiz = window.IntelIQuizDados ? window.IntelIQuizDados.criar() : null;
+    function abrirSinal() {
+      if (!quiz || !chave()) return;
+      quiz.abrir(chave(), sessao, 'moeda', 1, 'Jogo da moeda', []).catch(function (err) { console.error('[moeda]', err); });
     }
+    function fecharSinal() {
+      if (!quiz || !chave()) return;
+      quiz.fechar(chave(), sessao).catch(function (err) { console.error('[moeda]', err); });
+    }
+    var secao = raiz.closest('section');
+    if (window.Reveal && window.Reveal.on && secao) {
+      window.Reveal.on('slidechanged', function (e) {
+        if (e.currentSlide === secao) abrirSinal();
+        else if (e.previousSlide === secao) fecharSinal();
+      });
+    }
+    abrirSinal();
 
     var liberada = 0;
 
@@ -146,10 +179,95 @@
       linha(valorMedia, '--inteli-verde', 'Média', topo + 26);
     }
 
+    // Uma linha por aluno (saldo depois de cada rodada, escala log), mais a
+    // média e a mediana da turma em cada rodada e a linha dos R$ 100.
+    function desenharTrajetorias(jogadas) {
+      var ctx = canvas.getContext('2d');
+      ctx.setTransform(escala, 0, 0, escala, 0, 0);
+      ctx.clearRect(0, 0, largura, altura);
+      var esq = 70, dir = largura - 90, base = altura - 40, topo = 16;
+      var MIN = Math.log10(0.5), MAX = Math.log10(6000);
+      function x(r) { return esq + r / total * (dir - esq); }
+      function y(v) { return base - (Math.log10(Math.max(v, 0.5)) - MIN) / (MAX - MIN) * (base - topo); }
+
+      ctx.font = '600 14px ' + cor('--fonte-texto');
+      ctx.fillStyle = cor('--seg-texto-suave');
+      ctx.strokeStyle = cor('--seg-borda');
+      ctx.lineWidth = 1;
+      ctx.textAlign = 'right';
+      [1, 10, 100, 1000].forEach(function (v) {
+        ctx.fillText(reais(v).replace(',00', ''), esq - 10, y(v) + 5);
+      });
+      ctx.textAlign = 'center';
+      for (var r = 0; r <= total; r++) ctx.fillText(String(r), x(r), base + 22);
+      ctx.beginPath(); ctx.moveTo(esq, base); ctx.lineTo(dir, base); ctx.stroke();
+
+      ctx.setLineDash([6, 6]);
+      ctx.strokeStyle = cor('--seg-texto-suave');
+      ctx.beginPath(); ctx.moveTo(esq, y(100)); ctx.lineTo(dir, y(100)); ctx.stroke();
+      ctx.setLineDash([]);
+
+      var porJogador = {};
+      jogadas.forEach(function (j) {
+        if (j.rodada > liberada) return;
+        (porJogador[j.jogador] = porJogador[j.jogador] || {})[j.rodada] = j.saldo;
+      });
+      var ids = Object.keys(porJogador);
+      ctx.strokeStyle = cor('--seg-primaria');
+      ctx.globalAlpha = ids.length > 15 ? 0.25 : 0.4;
+      ctx.lineWidth = 2;
+      ids.forEach(function (id) {
+        ctx.beginPath();
+        ctx.moveTo(x(0), y(100));
+        for (var r = 1; r <= total && porJogador[id][r] !== undefined; r++) ctx.lineTo(x(r), y(porJogador[id][r]));
+        ctx.stroke();
+      });
+      ctx.globalAlpha = 1;
+
+      var medias = [100], medianas = [100];
+      for (var r2 = 1; r2 <= liberada; r2++) {
+        var v = ids.map(function (id) { return porJogador[id][r2]; }).filter(function (s) { return s !== undefined; });
+        if (!v.length) break;
+        medias.push(v.reduce(function (a, b) { return a + b; }, 0) / v.length);
+        medianas.push(mediana(v));
+      }
+      function serie(valores, nome, rotulo, dy) {
+        ctx.strokeStyle = cor(nome);
+        ctx.fillStyle = cor(nome);
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        valores.forEach(function (v, i) { if (i === 0) ctx.moveTo(x(i), y(v)); else ctx.lineTo(x(i), y(v)); });
+        ctx.stroke();
+        var u = valores.length - 1;
+        ctx.font = '700 16px ' + cor('--fonte-texto');
+        ctx.textAlign = 'left';
+        ctx.fillText(rotulo, x(u) + 10, y(valores[u]) + 5 + (dy || 0));
+      }
+      if (medias.length > 1) {
+        // Rótulos afastados quando as duas linhas terminam perto uma da outra.
+        var u2 = medias.length - 1;
+        var perto = Math.abs(y(medias[u2]) - y(medianas[u2])) < 20;
+        var mediaAcima = y(medias[u2]) <= y(medianas[u2]);
+        serie(medianas, '--inteli-coral', 'Mediana', perto ? (mediaAcima ? 11 : -11) : 0);
+        serie(medias, '--inteli-verde', 'Média', perto ? (mediaAcima ? -11 : 11) : 0);
+      }
+      canvas.dataset.linhas = String(ids.length);
+    }
+
+    var ultimas = [];
+    var ultimosSaldos = [];
+    var ultimaMedia = null;
+    var ultimaMediana = null;
+    function redesenhar() {
+      if (vista === 'trajetorias') desenharTrajetorias(ultimas);
+      else desenhar(ultimosSaldos, ultimaMedia, ultimaMediana);
+    }
+
     function atualizar() {
       return Promise.all([dados.moedaRodada(sessao), dados.moedaJogadas(sessao), dados.moedaSala(sessao)]).then(function (r) {
         liberada = r[0];
         var jogadas = r[1];
+        ultimas = jogadas;
         var saldos = saldosAtuais(jogadas, liberada);
         var n = r[2];
         jogadores.textContent = n + (n === 1 ? ' jogador' : ' jogadores');
@@ -168,7 +286,10 @@
         med.innerHTML = '';
         med.appendChild(el('span', 'moeda-rotulo', 'Mediana'));
         med.appendChild(el('strong', '', vMediana === null ? '-' : reais(vMediana)));
-        desenhar(saldos, vMedia, vMediana);
+        ultimosSaldos = saldos;
+        ultimaMedia = vMedia;
+        ultimaMediana = vMediana;
+        redesenhar();
       });
     }
 
@@ -199,7 +320,9 @@
 
   // --------------------------------------------------------------- celular
 
-  function montarAluno(raiz) {
+  // opcoes.apelido: entra no jogo sozinho com esse nome (celular vindo do quiz).
+  function montarAluno(raiz, opcoes) {
+    opcoes = opcoes || {};
     var dados = IntelIAula02Dados.criar();
     var params = new URLSearchParams(window.location.search);
     var sessao = params.get('s') || IntelIAula02Dados.sessao(raiz.dataset.sessao);
@@ -213,6 +336,9 @@
     var resultado = raiz.querySelector('.moeda-resultado');
     var historico = raiz.querySelector('.historico');
     var quem = raiz.querySelector('.moeda-quem');
+    var giro = raiz.querySelector('.moeda-giro');
+    var trilha = raiz.querySelector('.moeda-trilha');
+    var GIRO_MS = 1300;
     var liberada = 0;
     var feitas = [];      // jogadas deste jogador, em ordem de rodada
     var ocupado = false;
@@ -233,10 +359,24 @@
         li.appendChild(el('strong', 'h-saldo', reais(j.saldo)));
         historico.insertBefore(li, null);
       });
+      if (trilha) {
+        // Um marcador por rodada: as jogadas com o lado e o saldo, as liberadas
+        // e ainda não jogadas em destaque, e as que faltam até a rodada 10 vazias.
+        trilha.textContent = '';
+        var ate = Math.max(10, liberada, feitas.length);
+        for (var r = 1; r <= ate; r++) {
+          var j = feitas[r - 1];
+          var m = el('li', 'mt ' + (j ? (j.cara ? 'mt-cara' : 'mt-coroa') : (r <= liberada ? 'mt-liberada' : 'mt-vazia')));
+          m.appendChild(el('span', 'mt-n', String(r)));
+          if (j) m.title = 'Rodada ' + r + ': ' + (j.cara ? 'cara' : 'coroa') + ', ' + reais(j.saldo);
+          trilha.appendChild(m);
+        }
+      }
+      if (giro && !ocupado && feitas.length) giro.dataset.lado = feitas[feitas.length - 1].cara ? 'cara' : 'coroa';
       var proxima = feitas.length + 1;
       var pode = proxima <= liberada && !ocupado;
       jogar.disabled = !pode;
-      jogar.textContent = proxima > 20 ? 'Fim do jogo' :
+      jogar.textContent = proxima > 10 ? 'Fim do jogo' :
         (proxima <= liberada ? 'Jogar rodada ' + proxima : 'Aguarde o professor liberar a rodada ' + proxima);
     }
 
@@ -263,12 +403,20 @@
       try { sessionStorage.removeItem(CHAVE); } catch (e) { /* aba privada */ }
       eu = null;
       feitas = [];
-      tela('entrar');
+      if (opcoes.apelido) entrar(opcoes.apelido); else tela('entrar');
+    }
+
+    function entrar(apelido) {
+      return dados.moedaEntrar(sessao, apelido).then(function (id) {
+        eu = { id: id, apelido: apelido };
+        try { sessionStorage.setItem(CHAVE, JSON.stringify(eu)); } catch (e) { /* aba privada */ }
+        comecar();
+      });
     }
 
     var ouvindo = false;
     function comecar() {
-      quem.textContent = eu.apelido;
+      if (quem) quem.textContent = eu.apelido;
       tela('jogar');
       carregar();
       if (ouvindo) return;
@@ -282,18 +430,27 @@
       leitura++;
       jogar.disabled = true;
       resultado.dataset.fase = 'girando';
-      resultado.textContent = 'Jogando...';
+      resultado.textContent = 'A moeda está no ar...';
+      var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var inicio = Date.now();
+      if (giro && !reduzir) {
+        giro.classList.remove('girando');
+        void giro.offsetWidth;  // reinicia a animação
+        giro.classList.add('girando');
+      }
       dados.moedaJogar(sessao, eu.id, rodada).then(function (j) {
-        var reduzir = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var falta = reduzir ? 0 : Math.max(0, GIRO_MS - (Date.now() - inicio));
         setTimeout(function () {
+          if (giro) { giro.classList.remove('girando'); giro.dataset.lado = j.cara ? 'cara' : 'coroa'; }
           resultado.dataset.fase = j.cara ? 'cara' : 'coroa';
           resultado.textContent = j.cara ? 'Cara: +50%' : 'Coroa: -40%';
           guardar(feitas.concat([{ rodada: rodada, cara: j.cara, saldo: j.saldo }]));
           ocupado = false;
           render();
-        }, reduzir ? 0 : 700);
+        }, falta);
       }, function (err) {
         ocupado = false;
+        if (giro) giro.classList.remove('girando');
         if (err.message.indexOf('jogador desconhecido') !== -1) { sair(); return; }
         resultado.dataset.fase = 'erro';
         resultado.textContent = err.message;
@@ -301,19 +458,21 @@
       });
     });
 
-    form.addEventListener('submit', function (ev) {
-      ev.preventDefault();
-      var apelido = form.querySelector('#apelido').value.trim();
-      if (!apelido) return;
-      dados.moedaEntrar(sessao, apelido).then(function (id) {
-        eu = { id: id, apelido: apelido };
-        try { sessionStorage.setItem(CHAVE, JSON.stringify(eu)); } catch (e) { /* aba privada */ }
-        comecar();
-      }, function (err) { form.querySelector('.erro').textContent = err.message; });
-    });
+    if (form) {
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        var apelido = form.querySelector('#apelido').value.trim();
+        if (!apelido) return;
+        entrar(apelido).catch(function (err) { form.querySelector('.erro').textContent = err.message; });
+      });
+    }
 
-    if (eu && eu.id) comecar(); else tela('entrar');
+    if (eu && eu.id) comecar();
+    else if (opcoes.apelido) entrar(opcoes.apelido).catch(function (err) { console.error('[moeda]', err); });
+    else tela('entrar');
   }
+
+  window.IntelIMoeda = { montarAluno: montarAluno };
 
 
   // Dentro de um deck Reveal, o componente só conecta ao banco quando o slide
@@ -330,7 +489,8 @@
 
   function iniciar() {
     Array.prototype.forEach.call(document.querySelectorAll('[data-moeda]'), function (r) { quandoPresente(r, montarSlide); });
-    Array.prototype.forEach.call(document.querySelectorAll('[data-moeda-aluno]'), montarAluno);
+    Array.prototype.forEach.call(document.querySelectorAll('[data-moeda-aluno]:not([data-moeda-auto="nao"])'),
+      function (r) { montarAluno(r); });
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);

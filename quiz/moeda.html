@@ -30,8 +30,27 @@
 
     <section class="tela tela-jogar">
       <p class="moeda-saldo">Seu saldo <strong class="moeda-saldo-valor">R$ 100,00</strong></p>
-      <p class="moeda-resultado" data-fase="espera">Ainda sem jogadas</p>
+      <div class="moeda-palco" aria-live="polite">
+            <div class="moeda-giro" data-lado="cara">
+            <svg class="moeda-face moeda-cara" viewBox="0 0 200 200" aria-hidden="true">
+              <circle class="mf-borda" cx="100" cy="100" r="96"></circle>
+              <circle class="mf-miolo" cx="100" cy="100" r="80"></circle>
+              <circle class="mf-friso" cx="100" cy="100" r="70"></circle>
+              <text class="mf-rotulo" x="100" y="88" text-anchor="middle">CARA</text>
+              <text class="mf-valor" x="100" y="128" text-anchor="middle">+50%</text>
+            </svg>
+            <svg class="moeda-face moeda-coroa" viewBox="0 0 200 200" aria-hidden="true">
+              <circle class="mf-borda" cx="100" cy="100" r="96"></circle>
+              <circle class="mf-miolo" cx="100" cy="100" r="80"></circle>
+              <circle class="mf-friso" cx="100" cy="100" r="70"></circle>
+              <text class="mf-rotulo" x="100" y="88" text-anchor="middle">COROA</text>
+              <text class="mf-valor" x="100" y="128" text-anchor="middle">-40%</text>
+            </svg>
+            </div>
+          </div>
+          <p class="moeda-resultado" data-fase="espera">Ainda sem jogadas</p>
       <button type="button" class="jogar" disabled>Aguarde o professor liberar a rodada 1</button>
+          <ol class="moeda-trilha" aria-label="Resultado de cada rodada"></ol>
       <ol class="historico"></ol>
     </section>
   </main>

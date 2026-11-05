@@ -1,4 +1,7 @@
-"""Jogo da moeda da Aula 02: celular (aulas/aula02-moeda.html) e slide (data-moeda).
+"""Jogo da moeda da Aula 02: celular (a tela do quiz, quiz/index.html) e slide (data-moeda).
+
+O celular entra no quiz uma vez; quando o slide da moeda monta, ele abre no quiz
+a rodada "moeda" e o celular troca de tela sozinho, com o nome do quiz.
 
 Modo de memória (?quiz-demo=1): o slide e os celulares, abertos no mesmo
 contexto do navegador, conversam por localStorage e BroadcastChannel. A
@@ -48,13 +51,21 @@ def _slide(contexto, base, chave=True):
     return page
 
 
+LIMPA_QUIZ = ("Object.keys(localStorage).filter(k => k.startsWith('inteli-quiz-eu') || "
+              "k === 'inteli-quiz-perfil').forEach(k => localStorage.removeItem(k))")
+
+
 def _celular(contexto, base, apelido):
+    """Entra no quiz como um aluno novo e espera a tela trocar para a moeda, sem outro QR."""
     page = contexto.new_page()
     page.set_viewport_size({"width": 390, "height": 844})
-    page.goto("%s/quiz/moeda.html?s=%s&quiz-demo=1" % (base, SESSAO), wait_until="load")
-    page.fill("#apelido", apelido)
-    page.click(".entrar")
-    page.wait_for_selector(".moeda-saldo")
+    page.goto("%s/quiz/?s=%s&quiz-demo=1" % (base, SESSAO), wait_until="load")
+    page.evaluate(LIMPA_QUIZ)
+    page.reload(wait_until="load")
+    page.fill("#nome", apelido + " Teste")
+    page.click(".avatar[data-avatar=star]")
+    page.click(".principal")
+    page.wait_for_selector(".aluno[data-estado='moeda'] .moeda-aluno[data-estado='jogar']", timeout=10000)
     return page
 
 
@@ -150,4 +161,31 @@ def test_zerar_pede_confirmacao_apaga_o_jogo_e_celular_volta_para_entrada(sala):
     slide.click("[data-moeda] .moeda-zerar")
     slide.wait_for_function("document.querySelector('[data-moeda] .moeda-jogadores').dataset.n === '0'")
     assert slide.locator("[data-moeda] .moeda-media").get_attribute("data-valor") == ""
-    c.wait_for_selector(".moeda-aluno[data-estado='entrar']", timeout=8000)
+    # Vindo do quiz, o celular entra de novo sozinho, com o histórico zerado.
+    c.wait_for_function("document.querySelectorAll('.historico li').length === 0", timeout=8000)
+    slide.wait_for_function("document.querySelector('[data-moeda] .moeda-jogadores').dataset.n === '1'")
+
+
+def test_celular_do_quiz_troca_para_a_moeda_e_volta_quando_o_slide_fecha(sala):
+    contexto, base, _ = sala
+    slide = _slide(contexto, base)
+    c = _celular(contexto, base, "Hugo")
+    assert c.locator(".aluno-quem-nome").inner_text().startswith("Hugo")
+    slide.evaluate("IntelIQuizDados.criar().fechar('teste', '%s')" % SESSAO)
+    c.wait_for_selector(".aluno[data-estado='esperar']", timeout=8000)
+
+
+def test_moeda_em_svg_e_trilha_marcam_cada_rodada(sala):
+    contexto, base, _ = sala
+    slide = _slide(contexto, base)
+    for r in range(1, 5):
+        _liberar(slide, r)
+    c = _celular(contexto, base, "Iara")
+    _jogar_tudo(c, 3)
+    lados = [li.get_attribute("class") for li in c.locator(".historico li").all()]
+    marcas = [m.get_attribute("class") for m in c.locator(".moeda-trilha .mt").all()]
+    assert len(marcas) == 10
+    assert [("mt mt-cara" if l == "cara" else "mt mt-coroa") for l in lados] == marcas[:3]
+    assert marcas[3] == "mt mt-liberada" and marcas[4] == "mt mt-vazia"
+    assert c.locator(".moeda-giro").get_attribute("data-lado") == lados[-1]
+    assert c.locator(".moeda-face").count() == 2

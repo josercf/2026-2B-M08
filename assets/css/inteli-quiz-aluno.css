@@ -183,3 +183,7 @@ input[type="text"]:focus { outline: 3px solid var(--seg-secundaria); outline-off
 @media (prefers-reduced-motion: reduce) {
   .opcao, .votou-marca, .espera-marca span { animation: none; }
 }
+
+/* Jogo da moeda dentro da tela do quiz (Aula 02). */
+.aluno[data-estado="moeda"] .tela-moeda { display: flex; }
+.tela-moeda .moeda-aluno { min-height: 0; padding: 0; max-width: none; margin: 0; }

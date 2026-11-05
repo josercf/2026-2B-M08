@@ -31,7 +31,8 @@ checa a frase de um assessor e registra a decisão numa ADR online, com prazo da
 - O banco ao vivo falhar em sala. Mitigação: as páginas funcionam em memória com `?quiz-demo=1`, e o
   plano B é moeda física e ADR em documento compartilhado.
 - Com uns 30 alunos e 10 rodadas, a mediana da sala pode ficar acima de R$ 100 por sorte (perto de
-  uma chance em oito). Mitigação: o jogo aceita até 20 rodadas.
+  uma chance em oito). Mitigação: a aba de trajetórias e a simulação de 10.000 jogadores no notebook
+  mostram o efeito sem depender da sorte da sala. O jogo fica em 10 rodadas, o número do enunciado.
 - O gabarito vazar pelo repositório público. Mitigação: veredito e números que desmontam as frases
   ficam fora do git, com uma varredura que reprova se algum deles aparecer no acervo.
 - Token de grupo exposto no projetor. Mitigação: o painel de links borra os endereços.

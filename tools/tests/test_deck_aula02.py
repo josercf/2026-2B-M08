@@ -49,9 +49,9 @@ def test_ponte_e_moeda_saem_das_medicoes():
     for ano, valor in p["anuais"].items():
         assert m.pct(valor) in ponte, ano
     notas = _secao("moeda")
-    for rodadas in (10, 20):
-        t = m.moeda_teorica(rodadas)
-        assert m.reais(t["media"]) in notas and m.reais(t["mediana"]) in notas, rodadas
+    t10 = m.moeda_teorica(10)
+    assert m.reais(t10["media"]) in notas and m.reais(t10["mediana"]) in notas
+    assert 'data-rodadas="10"' in notas
     simulacao = _secao("simulacao")
     assert m.reais(m.moeda_teorica()["mediana"]) in simulacao
     t = m.moeda_teorica()
@@ -89,7 +89,10 @@ def test_componentes_novos_declarados():
         assert "../assets/js/%s" % js in html, js
     for css in ("inteli-moeda.css", "inteli-adr.css", "inteli-quiz-vivo.css"):
         assert "../assets/css/%s" % css in html, css
-    assert 'data-aluno="../quiz/moeda.html"' in html
+    # A moeda chega ao celular pelo quiz: o slide não tem QR próprio.
+    assert "inteli-quiz-dados.js" in html
+    moeda = _secao("moeda")
+    assert "data-aluno" not in moeda and "qrcode" not in moeda
 
 
 def test_amarracao_cita_o_peso_do_plano_de_ensino():

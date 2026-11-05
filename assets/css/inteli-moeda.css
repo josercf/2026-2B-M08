@@ -12,8 +12,8 @@
 
 .moeda-lado { display: flex; flex-direction: column; gap: 8px; }
 
-.moeda-qr { width: 170px; height: 170px; }
-.moeda-qr svg { width: 100%; height: 100%; display: block; }
+.reveal .moeda-aviso,
+.moeda-aviso { margin: 0 0 8px; font-size: 18px; font-weight: 600; color: var(--seg-texto-suave); line-height: 1.3; }
 
 .reveal .moeda-link,
 .moeda-link { margin: 0; font-size: 13px; color: var(--seg-texto-suave); word-break: break-all; }
@@ -128,3 +128,90 @@
 .historico li.cara .h-lado { color: var(--inteli-verde); font-weight: 600; }
 .historico li.coroa .h-lado { color: var(--inteli-coral); font-weight: 600; }
 .h-saldo { font-variant-numeric: tabular-nums; }
+
+/* Moeda em SVG no celular: duas faces num disco que gira em 3D. A classe
+   girando dá cinco voltas; data-lado decide a face que fica para cima. */
+.moeda-palco { display: flex; justify-content: center; perspective: 900px; padding: 6px 0; }
+
+.moeda-giro {
+  position: relative;
+  width: 168px;
+  height: 168px;
+  transform-style: preserve-3d;
+  transition: transform 0.35s ease-out;
+}
+
+.moeda-giro[data-lado="coroa"] { transform: rotateY(180deg); }
+
+.moeda-giro.girando { animation: moeda-gira 1.3s cubic-bezier(0.25, 0.8, 0.3, 1) both; }
+
+@keyframes moeda-gira {
+  0%   { transform: translateY(0) rotateY(0deg); }
+  45%  { transform: translateY(-46px) rotateY(1080deg); }
+  100% { transform: translateY(0) rotateY(1800deg); }
+}
+
+.moeda-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.moeda-coroa { transform: rotateY(180deg); }
+
+.moeda-cara .mf-borda { fill: var(--inteli-verde); }
+.moeda-coroa .mf-borda { fill: var(--inteli-coral); }
+.mf-miolo { fill: var(--seg-base); }
+.mf-friso { fill: none; stroke: var(--seg-borda); stroke-width: 3; stroke-dasharray: 4 6; }
+.mf-rotulo { font: inherit; font-size: 22px; font-weight: 700; letter-spacing: 0.12em; fill: var(--seg-texto-suave); }
+.mf-valor { font: inherit; font-size: 44px; font-weight: 700; }
+.moeda-cara .mf-valor { fill: var(--inteli-verde); }
+.moeda-coroa .mf-valor { fill: var(--inteli-coral); }
+
+@media (prefers-reduced-motion: reduce) {
+  .moeda-giro, .moeda-giro.girando { animation: none; transition: none; }
+}
+
+/* Trilha das rodadas: um marcador por rodada, na ordem. */
+.moeda-trilha {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+}
+
+.moeda-trilha .mt {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  border: 2px solid var(--seg-borda);
+  color: var(--seg-texto-suave);
+  background: var(--seg-base);
+}
+
+.moeda-trilha .mt-cara { background: var(--inteli-verde); border-color: var(--inteli-verde); color: var(--inteli-branco); }
+.moeda-trilha .mt-coroa { background: var(--inteli-coral); border-color: var(--inteli-coral); color: var(--inteli-branco); }
+.moeda-trilha .mt-liberada { border-color: var(--seg-primaria); color: var(--seg-primaria); border-style: dashed; }
+
+/* Abas do slide: distribuição e trajetórias. */
+.moeda-abas { display: flex; gap: 0; margin-bottom: 8px; }
+.moeda-aba {
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border: 2px solid var(--seg-primaria);
+  border-radius: 0;
+  background: var(--seg-base);
+  color: var(--seg-primaria);
+  cursor: pointer;
+}
+.moeda-aba + .moeda-aba { border-left: 0; }
+.moeda-aba[aria-pressed="true"] { background: var(--seg-primaria); color: var(--inteli-branco); }

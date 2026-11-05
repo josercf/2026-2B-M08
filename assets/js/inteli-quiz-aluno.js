@@ -1,6 +1,8 @@
 // Tela do aluno do quiz ao vivo (quiz/index.html).
 //
-// Estados, em data-estado do <main>: entrar, esperar, votar, votou, sem-sessao.
+// Estados, em data-estado do <main>: entrar, esperar, votar, votou, moeda, sem-sessao.
+// A rodada com pergunta "moeda" (aberta pelo slide do jogo da moeda da Aula 02)
+// troca a tela para o jogo, com o nome do quiz, sem novo QR code.
 // O aluno entra uma vez por sessão (nome e avatar ficam no localStorage do
 // celular), e a tela segue a rodada aberta pelo slide: aparece quando o slide
 // abre, some quando o slide fecha, e aceita um voto por rodada.
@@ -125,9 +127,23 @@
     }).then(function () { votando = false; });
   }
 
+  var moedaMontada = false;
+  function mostrarMoeda() {
+    if (!moedaMontada && window.IntelIMoeda) {
+      moedaMontada = true;
+      window.IntelIMoeda.montarAluno(raiz.querySelector('.tela-moeda .moeda-aluno'), { apelido: eu.nome.slice(0, 30) });
+    }
+    estado('moeda');
+  }
+
   function atualizar() {
     if (!eu) return;
     dados.rodadaAberta(sessao).then(function (rodada) {
+      if (rodada && rodada.pergunta === 'moeda' && window.IntelIMoeda) {
+        rodadaAtual = rodada;
+        mostrarMoeda();
+        return;
+      }
       if (!rodada) {
         rodadaAtual = null;
         estado('esperar');

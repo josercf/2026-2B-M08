@@ -10,6 +10,7 @@
        por rodada e trava a escolha (exemplos/quiz-supabase/quiz.sql). -->
   <link rel="stylesheet" href="../assets/css/inteli-brand.css">
   <link rel="stylesheet" href="../assets/css/inteli-quiz-aluno.css">
+  <link rel="stylesheet" href="../assets/css/inteli-moeda.css">
 </head>
 <body>
   <main class="aluno" data-estado="carregando">
@@ -72,6 +73,39 @@
       <p>A escolha fica travada. Espere o professor.</p>
     </section>
 
+    <!-- 5. Jogo da moeda (Aula 02): aparece quando o slide da moeda abre -->
+    <section class="tela tela-moeda">
+      <div class="moeda-aluno" data-moeda-aluno data-moeda-auto="nao" data-estado="carregando">
+        <section class="tela tela-jogar">
+          <h1>Jogo da moeda</h1>
+          <p>Você começa com R$ 100. Cara rende +50% sobre o que você tem, coroa tira 40%.</p>
+          <p class="moeda-saldo">Seu saldo <strong class="moeda-saldo-valor">R$ 100,00</strong></p>
+          <div class="moeda-palco" aria-live="polite">
+            <div class="moeda-giro" data-lado="cara">
+            <svg class="moeda-face moeda-cara" viewBox="0 0 200 200" aria-hidden="true">
+              <circle class="mf-borda" cx="100" cy="100" r="96"></circle>
+              <circle class="mf-miolo" cx="100" cy="100" r="80"></circle>
+              <circle class="mf-friso" cx="100" cy="100" r="70"></circle>
+              <text class="mf-rotulo" x="100" y="88" text-anchor="middle">CARA</text>
+              <text class="mf-valor" x="100" y="128" text-anchor="middle">+50%</text>
+            </svg>
+            <svg class="moeda-face moeda-coroa" viewBox="0 0 200 200" aria-hidden="true">
+              <circle class="mf-borda" cx="100" cy="100" r="96"></circle>
+              <circle class="mf-miolo" cx="100" cy="100" r="80"></circle>
+              <circle class="mf-friso" cx="100" cy="100" r="70"></circle>
+              <text class="mf-rotulo" x="100" y="88" text-anchor="middle">COROA</text>
+              <text class="mf-valor" x="100" y="128" text-anchor="middle">-40%</text>
+            </svg>
+            </div>
+          </div>
+          <p class="moeda-resultado" data-fase="espera">Ainda sem jogadas</p>
+          <button type="button" class="jogar" disabled>Aguarde o professor liberar a rodada 1</button>
+          <ol class="moeda-trilha" aria-label="Resultado de cada rodada"></ol>
+          <ol class="historico"></ol>
+        </section>
+      </div>
+    </section>
+
     <!-- Sem sessão no endereço -->
     <section class="tela tela-sem-sessao">
       <h1>Abra pelo QR code do slide</h1>
@@ -82,6 +116,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
   <script src="../assets/js/inteli-quiz-config.js"></script>
   <script src="../assets/js/inteli-quiz-dados.js"></script>
+  <script src="../assets/js/inteli-aula02-dados.js"></script>
+  <script src="../assets/js/inteli-moeda.js"></script>
   <script src="../assets/js/inteli-quiz-aluno.js"></script>
 </body>
 </html>
