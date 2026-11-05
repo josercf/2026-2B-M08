@@ -204,7 +204,7 @@
           </div>
           <div class="lousa-campo">
             <p class="lousa-pergunta"><span>3</span>Quanto rendeu nos dois dias? Por que não 2,93%?</p>
-            <div class="lousa-area"><p class="fragment lousa-resposta" data-fragment-index="3"><strong>2,83%</strong>. Os -2,07% incidem sobre R$ 1.050, não sobre R$ 1.000.</p></div>
+            <div class="lousa-area"><p class="fragment lousa-resposta" data-fragment-index="3"><strong>2,83%</strong>. A queda de 2,07% incide sobre os R$ 1.050 do dia anterior.</p></div>
           </div>
         </div>
         <svg class="lousa-trilha" viewBox="0 0 1160 90" aria-hidden="true">
@@ -326,7 +326,7 @@
           <span class="fragment codigo-passo" data-linhas="1-2" data-titulo="Um retorno por ano" data-texto="Seis anos de BBDC4, do fim de 2019 ao fim de 2025: quatro de queda e dois de alta. Os retornos aparecem embaixo do gráfico."></span>
           <span class="fragment codigo-passo" data-linhas="3" data-titulo="A média de vitrine" data-texto="4,81% ao ano. R$ 100 crescendo nessa taxa virariam R$ 132,57."></span>
           <span class="fragment codigo-passo" data-linhas="4" data-titulo="O que o cliente viveu" data-texto="-0,42% ao ano. Quem comprou no fim de 2019 e segurou tem R$ 97,51."></span>
-          <span class="fragment codigo-passo" data-linhas="5-6" data-titulo="O imposto da volatilidade" data-texto="A regra do capítulo 5 prevê 6,6% de distância entre as duas médias; a conta exata dá 5,2%. Com um ano de 76,54%, a regra vira aproximação: por isso o código calcula o exato."></span>
+          <span class="fragment codigo-passo" data-linhas="5-6" data-titulo="O imposto da volatilidade" data-texto="A regra do capítulo 5 prevê 6,6% de distância entre as duas médias; a conta exata dá 5,2%. Com um ano de 76,54% na série, a regra se afasta da conta, e o código calcula o valor exato."></span>
         </div>
         <aside class="notes">Pergunta antes do passo 4: se a média é positiva, o cliente ganhou dinheiro? Depois do passo 5: qual dos dois números a função do A2 deve mostrar primeiro, e por quê?</aside>
         <div class="slide-footer">
@@ -343,7 +343,7 @@
           <h2>Quem aportou R$ 100 todo ano no mesmo BBDC4 teve 8,88% ao ano</h2>
         </div>
         <div class="codigo-passos codigo-passos-curto codigo-com-cena codigo-ponte" data-codigo-passos data-intro-titulo="O retorno do investidor"
-             data-intro="Mesmo ativo, mesma janela, outro cliente: um que aporta R$ 100 no início de cada ano.">
+             data-intro="O cliente agora aporta R$ 100 no início de cada ano, no mesmo BBDC4 e na mesma janela.">
           <div class="codigo-janela"><pre class="codigo-linhas"><code><span class="cl" data-n="1"><span class="cl-n">1</span>saldo = 0</span><span class="cl" data-n="2"><span class="cl-n">2</span><span class="tok-kw">for</span> ret <span class="tok-kw">in</span> r:</span><span class="cl" data-n="3"><span class="cl-n">3</span>    saldo = (saldo + 100) * (1 + ret)</span><span class="cl" data-n="4"><span class="cl-n">4</span>fluxo = [-100] * len(r) + [saldo]</span><span class="cl" data-n="5"><span class="cl-n">5</span>vpl = <span class="tok-kw">lambda</span> t: sum(c / (1 + t) ** k <span class="tok-kw">for</span> k, c <span class="tok-kw">in</span> enumerate(fluxo))</span><span class="cl" data-n="6"><span class="cl-n">6</span>brentq(vpl, -0.9, 1.0)              <span class="tok-com"># 0.0888</span></span></code></pre>
             <div class="ponte-cena" data-ponte-cena data-modo="aportes" data-largura="820" data-altura="225"
                  data-serie='{"anos": [2019, 2020, 2021, 2022, 2023, 2024, 2025], "anuais": [-0.1522, -0.1866, -0.113, 0.2562, -0.2812, 0.7654], "promessa": [100.0, 104.81, 109.85, 115.14, 120.68, 126.48, 132.57], "vivido": [100.0, 84.78, 68.96, 61.17, 76.84, 55.23, 97.51], "aportado": [100, 200, 300, 400, 500, 600], "saldo": [84.78, 150.3, 222.02, 404.53, 362.65, 816.78]}' data-rotulos='{"saldo": "R$ 816,78", "tir": "TIR dos aportes: 8,88% ao ano. Quem comprou e segurou: -0,42%"}'></div>
@@ -357,7 +357,7 @@
           <span class="fragment codigo-passo" data-linhas="4" data-titulo="Seis entradas e uma saída" data-texto="R$ 600 aportados viraram R$ 816,78, porque boa parte do dinheiro entrou antes do 76,54% de 2025."></span>
           <span class="fragment codigo-passo" data-linhas="5-6" data-titulo="A taxa do dinheiro" data-texto="A taxa interna de retorno, que o capítulo 5 chama de retorno ponderado pelo dinheiro, dá 8,88% ao ano. Quem comprou em 2019 e segurou teve -0,42%."></span>
         </div>
-        <aside class="notes">Mesmo ativo, mesma janela, dois números verdadeiros: -0,42% para quem comprou e segurou, 8,88% para quem aportou todo ano. O retorno do ativo não é o retorno do investidor; depende de quando o dinheiro entrou. Pergunta para o comitê: um assessor mostra 8,88% ao cliente que vai investir tudo de uma vez. Ele mentiu? E para o A2: qual dos dois números a função de vocês entrega, e para qual cliente?</aside>
+        <aside class="notes">Os dois números são verdadeiros: -0,42% ao ano para quem comprou e segurou e 8,88% para quem aportou todo ano. A diferença vem de quando o dinheiro entrou, e o A2 hoje só mede o primeiro. Pergunta para o comitê: um assessor mostra 8,88% ao cliente que vai investir tudo de uma vez. Ele mentiu? E para o A2: qual dos dois números a função de vocês entrega, e para qual cliente?</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 02 &middot; Sprint 2 &middot; [1]</p>
           <p class="footer-page">13</p>

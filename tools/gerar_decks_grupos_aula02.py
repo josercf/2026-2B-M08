@@ -160,8 +160,27 @@ def deck(grupo, dados):
           <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
           <p><strong>Aos 12 minutos</strong> o número que decide o veredito precisa estar calculado. O tempo que sobra vai para a ADR.</p>
         </div>
-        <p class="grupo-notebook"><a href="{notebook}" target="_blank" rel="noopener">Abrir o notebook da Aula 02</a> e ir para a seção do grupo {grupo}, que já carrega os dados.</p>
+        <p class="grupo-notebook"><a href="{notebook}" target="_blank" rel="noopener">Abrir o notebook da Aula 02</a> e ir para a seção do grupo {grupo}, que já carrega os dados. O próximo slide diz o que a ADR precisa mostrar.</p>
 {rodape2}
+      </section>
+
+      <section class="content-slide slide-grupo" id="guia">
+{topo_guia}
+        <table class="tabela-leitura tabela-guia">
+          <thead><tr><th>Campo da ADR</th><th>O que o comitê precisa ler nele</th></tr></thead>
+          <tbody>
+            <tr><td>Contexto</td><td>a frase do assessor, o ativo, a janela de datas e qual arquivo e coluna de preço vocês usaram</td></tr>
+            <tr><td>Critérios</td><td>o que o cliente perde se a frase estiver errada e contra o que o número precisa ser comparado</td></tr>
+            <tr><td>Opções</td><td>manter a frase, corrigir a frase com outro número ou retirar a frase de circulação</td></tr>
+            <tr><td>Decisão</td><td>o veredito em uma frase e a frase que o cliente deveria ter ouvido no lugar</td></tr>
+            <tr><td>Consequências</td><td>o número que muda a decisão do cliente, a célula do notebook que chega nele e o que a função do A2 precisa calcular para não repetir o erro</td></tr>
+          </tbody>
+        </table>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#gavel"></use></svg>
+          <p>O comitê só aceita a decisão que traz o número e aponta a célula do notebook que chega nele.</p>
+        </div>
+{rodape_guia}
       </section>
 
       <section class="content-slide slide-grupo slide-adr" id="adr">
@@ -204,12 +223,14 @@ def deck(grupo, dados):
         afirmacao=afirmacao,
         topo1=_topo("Grupo %s: a frase do assessor" % grupo),
         topo2=_topo("Por onde começar a checagem do %s" % dados["ativo"]),
+        topo_guia=_topo("O que a ADR do grupo precisa mostrar"),
         topo3=_topo("ADR do grupo %s" % grupo, cronometro),
         topo4=_topo("Defesa do veredito no comitê"),
         passos=passos,
         notebook=NOTEBOOK + "#" + g,
         formulario=_formulario(grupo),
-        rodape1=_rodape(grupo, 1), rodape2=_rodape(grupo, 2), rodape3=_rodape(grupo, 3), rodape4=_rodape(grupo, 4),
+        rodape1=_rodape(grupo, 1), rodape2=_rodape(grupo, 2), rodape_guia=_rodape(grupo, 3),
+        rodape3=_rodape(grupo, 4), rodape4=_rodape(grupo, 5),
     )
 
 

@@ -288,3 +288,7 @@
 [data-adr-links] .adr-links-controles:hover .adr-participacao,
 [data-adr-links] .adr-copiar-todos:focus-visible,
 [data-adr-links] .adr-participacao:focus-visible { opacity: 1; }
+
+/* Guia de preenchimento da ADR nos decks dos grupos. */
+.reveal .tabela-guia td { font-size: 21px; padding-top: 12px; padding-bottom: 12px; line-height: 1.35; }
+.reveal .tabela-guia td:first-child { font-weight: 700; white-space: nowrap; width: 190px; color: var(--seg-primaria); }
