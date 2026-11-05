@@ -279,3 +279,12 @@
 /* Nome de quem edita a ADR (participação). */
 .adr-quem { grid-column: 1 / -1; display: flex; gap: 10px; }
 .adr-quem input { font: inherit; font-size: 20px; flex: 1; padding: 8px 10px; border: 2px solid var(--seg-primaria); border-radius: 0; }
+
+/* Os botões de copiar ficam ocultos no projetor; aparecem só com o mouse sobre
+   a faixa de botões do painel. */
+[data-adr-links] .adr-copiar-todos,
+[data-adr-links] .adr-participacao { opacity: 0; transition: opacity 0.2s; }
+[data-adr-links] .adr-links-controles:hover .adr-copiar-todos,
+[data-adr-links] .adr-links-controles:hover .adr-participacao,
+[data-adr-links] .adr-copiar-todos:focus-visible,
+[data-adr-links] .adr-participacao:focus-visible { opacity: 1; }
