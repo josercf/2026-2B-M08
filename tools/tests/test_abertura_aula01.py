@@ -67,7 +67,8 @@ def test_combinados_viram_linha_do_tempo_animada_com_os_mesmos_prazos():
 # --- agenda, nas seis aulas ------------------------------------------------
 
 # A Aula 02, redesenhada em 05/11/2026 (ADR-016), troca a tabela por uma linha do tempo com horário.
-@pytest.mark.parametrize("n", [1, 3, 4, 5, 6])
+# A Aula 03, redesenhada em 10/11/2026 (ADR-017), traz horário, minutos e micro exercício de cada bloco.
+@pytest.mark.parametrize("n", [1, 4, 5, 6])
 def test_agenda_mostra_bloco_e_tema_sem_minutos_nem_nota_de_horario(n):
     deck = os.path.join(RAIZ, "aulas", "aula%02d.html" % n)
     agenda = next(s for s in _secoes(deck) if 'id="agenda"' in s)

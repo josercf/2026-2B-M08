@@ -16,12 +16,12 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import medidas_aula03 as m  # noqa: E402
 
 RAIZ = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DECK = os.path.join(RAIZ, "aulas", "aula03.html")
+DECK = os.path.join(RAIZ, "aulas", "aula03-v1.html")
 MATERIAL = os.path.join(RAIZ, "materiais", "aula03.html")
 REFERENCIAS = os.path.join(RAIZ, "referencias", "aula03.html")
-NOTAS = os.path.join(RAIZ, "docs", "notas-do-professor", "aula03.md")
+NOTAS = os.path.join(RAIZ, "docs", "notas-do-professor", "aula03-v1.md")
 AUTOESTUDOS = os.path.join(RAIZ, "docs", "autoestudos-por-semana.md")
-NOTEBOOK = os.path.join(RAIZ, "notebooks", "aula03.ipynb")
+NOTEBOOK = os.path.join(RAIZ, "notebooks", "aula03-v1.ipynb")
 
 
 def _ler(caminho):

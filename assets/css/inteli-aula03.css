@@ -1,0 +1,44 @@
+/* Aula 03 redesenhada em 10/11/2026 (ADR-017): figura com código ao lado e passos da ponderada. */
+
+.duas-colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 18px; align-items: start; }
+.duas-colunas-larga { grid-template-columns: 1.35fr 1fr; }
+
+.figura-aula { display: block; max-width: 100%; max-height: 470px; margin: 8px auto 0; }
+.figura-baixa { max-height: 340px; }
+
+.reveal .codigo-curto { margin: 0; padding: 14px 18px; background: var(--seg-superficie); border-left: 6px solid var(--seg-primaria); font-size: var(--escala-texto); line-height: 1.45; }
+.reveal .codigo-curto code { font-size: inherit; }
+.reveal .legenda-figura { margin: 10px 0 0; font-size: var(--escala-texto); line-height: 1.4; }
+
+.passos-ponderada { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 26px; }
+.passos-ponderada li { display: flex; gap: 14px; align-items: flex-start; margin: 0; font-size: var(--escala-texto); line-height: 1.35; }
+.reveal .passos-ponderada .pp-n { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; font-weight: 700; color: var(--inteli-branco); background: var(--seg-primaria); }
+.figura-grande { grid-template-columns: 1.15fr 1fr; margin-top: 0; }
+.figura-grande .figura-aula { max-height: 470px; }
+.reveal .tabela-afastada { margin-top: 34px; }
+.reveal section#funcao .codigo-linhas code, .reveal section#assert .codigo-linhas code { font-size: 21px; line-height: 38px; }
+
+/* Planilha desenhada em HTML para os slides socráticos de Excel e pandas. */
+.planilha { border: 1px solid var(--seg-borda); background: var(--seg-base); }
+.planilha-formula { display: flex; align-items: center; gap: 12px; padding: 8px 12px; border-bottom: 1px solid var(--seg-borda); background: var(--seg-superficie); font-size: var(--escala-texto); }
+.reveal .planilha-formula .pl-ref { min-width: 64px; padding-right: 12px; border-right: 1px solid var(--seg-borda); font-weight: 700; }
+.reveal .planilha-formula .pl-fx { font-style: italic; font-weight: 700; }
+.reveal .planilha table { width: 100%; margin: 0; border-collapse: collapse; font-size: 16px; }
+.reveal .planilha th, .reveal .planilha td { padding: 5px 8px; border: 1px solid var(--seg-borda); text-align: right; line-height: 1.2; }
+.reveal .planilha thead th, .reveal .planilha tbody th { background: var(--seg-superficie); font-weight: 600; text-align: center; }
+.reveal .planilha tbody tr:first-child td { font-weight: 700; text-align: center; }
+.reveal .planilha .pl-pula td, .reveal .planilha .pl-pula th { padding: 1px 8px; text-align: center; }
+.reveal .planilha .pl-ativa { outline: 3px solid var(--seg-primaria); outline-offset: -3px; font-weight: 700; }
+.reveal .planilha .pl-vazia { background: var(--seg-secundaria); }
+.reveal .pl-abas { display: flex; gap: 2px; margin: 0; padding: 6px 8px 0; font-size: 14px; background: var(--seg-superficie); }
+.reveal .pl-abas span { padding: 4px 12px; border: 1px solid var(--seg-borda); border-bottom: none; background: var(--seg-base); }
+.reveal .pl-abas .pl-aba-ativa { font-weight: 700; border-top: 3px solid var(--seg-primaria); }
+.perguntas-socraticas { margin: 0; padding-left: 26px; display: flex; flex-direction: column; gap: 16px; }
+.reveal .perguntas-socraticas li { font-size: var(--escala-texto); line-height: 1.4; }
+
+/* Slides de exercício desta aula: passos e planilha maiores para ocupar a altura do slide. */
+.reveal .exercise-slide .exercise-steps li { font-size: 23px; line-height: 1.45; margin-bottom: 14px; }
+.reveal .exercise-slide .faixa-nota p { font-size: 21px; }
+.reveal section#m1 .planilha table { font-size: 21px; }
+.reveal section#m1 .planilha th, .reveal section#m1 .planilha td { padding: 9px 12px; }
+.reveal section#m1 .planilha-formula { font-size: 21px; }
