@@ -12,12 +12,13 @@
 
        Divisão do encontro de 120 minutos:
          14h00  Daily (15 min)                         slides 1 a 3
-         14h15  Excel e pandas (10 min, M1)            slides 4 a 9
-         14h25  Funções (12 min, M2 e M3)              slides 10 a 13
-         14h37  Gráficos (8 min, M4)                   slides 14 a 16
-         14h45  Testes (10 min, M5)                    slides 17 a 19
-         14h55  Preparação e dúvidas da Ponderada 1    slides 20 a 22
-         15h00  Atividade Ponderada 1 (60 min)         slide 23
+         (a definir)  Verificação do preparo, duas votações com QR code   slides 4 e 5
+         14h15  Excel e pandas (10 min, M1)            slides 6 a 11
+         14h25  Funções (12 min, M2 e M3)              slides 12 a 16
+         14h37  Gráficos (8 min, M4)                   slides 17 a 19
+         14h45  Testes (10 min, M5)                    slides 20 a 22
+         14h55  Preparação e dúvidas da Ponderada 1    slides 23 a 25
+         15h00  Atividade Ponderada 1 (60 min)         slide 26
        O horário de relógio vem da agenda do professor (bloco da T19 das 14h às 18h, prova das 15h às 16h). -->
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
@@ -25,6 +26,7 @@
   <link rel="stylesheet" href="../assets/css/inteli-theme.css">
   <link rel="stylesheet" href="../assets/css/inteli-aula02.css">
   <link rel="stylesheet" href="../assets/css/inteli-aula03.css">
+  <link rel="stylesheet" href="../assets/css/inteli-quiz-vivo.css">
   <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
 </head>
 <body>
@@ -94,7 +96,72 @@
         </div>
       </section>
 
-      <!-- 4 -->
+            <!-- 4 -->
+      <section class="quiz-slide" id="preparo">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Preparo: primeira votação</h2>
+        </div>
+        <div class="quiz-vivo quiz-vivo-curto" data-quiz-vivo data-sessao="m08-aula03-2026-11-10" data-pergunta="preparo-risco"
+             data-rodadas="1" data-tempo="0"
+             data-enunciado="Dois ativos com 30% de volatilidade cada, correlação de 0,5 e metade do dinheiro em cada. A volatilidade da carteira fica:">
+          <div class="quiz-vivo-pergunta">
+            <p class="quiz-vivo-enunciado">Dois ativos com 30% de volatilidade cada, correlação de 0,5 e metade do dinheiro em cada. A volatilidade da carteira fica:</p>
+            <ol class="quiz-vivo-opcoes">
+              <li>abaixo de 30%</li>
+              <li>exatamente em 30%</li>
+              <li>acima de 30%</li>
+            </ol>
+          </div>
+        </div>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#how_to_vote"></use></svg>
+          <p>Leiam o QR code, entrem com nome e avatar e votem sozinhos, sem conversar. O resultado só aparece depois que a votação fecha.</p>
+        </div>
+        <aside class="notes">Primeira votação, sem conversa. Não revelar nada: o próximo slide abre a discussão em dupla e a segunda votação, e o cálculo aparece no slide da conta.</aside>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
+          <p class="footer-page">4</p>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="quiz-slide" id="preparo-conversa">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Preparo: discussão e segunda votação</h2>
+          </div>
+          <div class="cronometro" id="cronometro-preparo" data-minutos="2"></div>
+        </div>
+        <div class="quiz-vivo quiz-vivo-curto" data-quiz-vivo data-sessao="m08-aula03-2026-11-10" data-pergunta="preparo-risco-2" data-correta="0"
+             data-rodadas="1" data-tempo="0"
+             data-enunciado="Dois ativos com 30% de volatilidade cada, correlação de 0,5 e metade do dinheiro em cada. A volatilidade da carteira fica:">
+          <div class="quiz-vivo-pergunta">
+            <p class="quiz-vivo-enunciado">Dois ativos com 30% de volatilidade cada, correlação de 0,5 e metade do dinheiro em cada. A volatilidade da carteira fica:</p>
+            <ol class="quiz-vivo-opcoes">
+              <li>abaixo de 30%</li>
+              <li>exatamente em 30%</li>
+              <li>acima de 30%</li>
+            </ol>
+          </div>
+        </div>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#groups"></use></svg>
+          <p>Dois minutos em dupla: defendam o voto com a animação do autoestudo e votem de novo pelo mesmo QR code.</p>
+        </div>
+        <aside class="notes">Dois minutos em dupla e a segunda votação, que é uma pergunta separada na sessão (preparo-risco-2). Comparar com o resultado da primeira votação, que ficou no slide anterior, e só então revelar. A resposta é abaixo de 30%: 25,98%.</aside>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
+          <p class="footer-page">5</p>
+        </div>
+      </section>
+
+<!-- 6 -->
       <section class="content-slide" id="planilha">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -132,11 +199,11 @@
         <aside class="notes">Uma pergunta por vez, duas ou três respostas da sala antes de revelar a próxima. Respostas: 105 fórmulas (15 x 14 / 2); o BOVA11 ficou sem cotação e a fórmula leu a célula vazia como zero, sem aviso; todos os intervalos precisam ser reescritos; não há como saber, só conferindo célula a célula.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">4</p>
+          <p class="footer-page">6</p>
         </div>
       </section>
 
-      <!-- 5 -->
+      <!-- 7 -->
       <section class="content-slide" id="limites-planilha">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -175,11 +242,11 @@
         <aside class="notes">Revelar um limite por vez, ligando cada um à resposta que a sala deu no slide anterior. Fechar com a pergunta do próximo slide: o que precisaria existir para esses cinco limites sumirem?</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">5</p>
+          <p class="footer-page">7</p>
         </div>
       </section>
 
-      <!-- 6 -->
+      <!-- 8 -->
       <section class="content-slide" id="excel-pandas">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -202,11 +269,11 @@
         <aside class="notes">Antes de cada revelação, pedir que a sala proponha a linha de Python. A última linha é a que a aula constrói até as 14h55.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">6</p>
+          <p class="footer-page">8</p>
         </div>
       </section>
 
-      <!-- 7 -->
+      <!-- 9 -->
       <section class="exercise-slide" id="m1">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -246,11 +313,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">7</p>
+          <p class="footer-page">9</p>
         </div>
       </section>
 
-      <!-- 8 -->
+      <!-- 10 -->
       <section class="content-slide" id="celula-vazia">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -276,11 +343,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1]</p>
-          <p class="footer-page">8</p>
+          <p class="footer-page">10</p>
         </div>
       </section>
 
-      <!-- 9 -->
+      <!-- 11 -->
       <section class="content-slide" id="testes-unidade">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -304,11 +371,36 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [1]</p>
-          <p class="footer-page">9</p>
+          <p class="footer-page">11</p>
         </div>
       </section>
 
-      <!-- 10 -->
+            <!-- 12 -->
+      <section class="content-slide" id="conta">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Correlação de 0,5 leva dois ativos de 30% a 25,98% de risco</h2>
+        </div>
+        <div class="duas-colunas duas-colunas-larga figura-grande">
+          <img class="figura-aula" src="../assets/img/aula03-conta-risco.png" alt="Risco de uma carteira de dois ativos de 30% de volatilidade, metade em cada, de acordo com a correlação: 30,00% com correlação 1, 25,98% com 0,5, 21,21% com 0 e 0,00% com -1">
+          <div>
+            <pre class="codigo-curto"><code>peso 0,5 em cada, vol 30%, correlação 0,5
+termos dos ativos:  0,0225 + 0,0225
+termo cruzado:      0,0225
+variância = 0,0675
+risco     = raiz de 0,0675 = 25,98%</code></pre>
+            <p class="legenda-figura">Só o termo cruzado depende da correlação. Com correlação 1 o risco é a média das volatilidades, 30,00%. A área sombreada é o risco que a diversificação elimina.</p>
+          </div>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
+          <p class="footer-page">12</p>
+        </div>
+      </section>
+
+<!-- 13 -->
       <section class="content-slide" id="funcao">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -332,11 +424,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">10</p>
+          <p class="footer-page">13</p>
         </div>
       </section>
 
-      <!-- 11 -->
+      <!-- 14 -->
       <section class="exercise-slide" id="m2">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -361,11 +453,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">11</p>
+          <p class="footer-page">14</p>
         </div>
       </section>
 
-      <!-- 12 -->
+      <!-- 15 -->
       <section class="exercise-slide" id="m3">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -391,11 +483,11 @@
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">12</p>
+          <p class="footer-page">15</p>
         </div>
       </section>
 
-      <!-- 13 -->
+      <!-- 16 -->
       <section class="content-slide" id="retiradas">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -425,11 +517,11 @@
         <p class="legenda-figura">Tirar o IVVB11, o menor peso, é a retirada que mais aumenta o risco: ele é o ativo que menos anda junto com os bancos. Este é o item D2 da Ponderada 1, com a sua carteira.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">13</p>
+          <p class="footer-page">16</p>
         </div>
       </section>
 
-      <!-- 14 -->
+      <!-- 17 -->
       <section class="content-slide" id="heatmap">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -450,11 +542,11 @@ eixo.imshow(matriz, cmap="PRGn_r",
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [2]</p>
-          <p class="footer-page">14</p>
+          <p class="footer-page">17</p>
         </div>
       </section>
 
-      <!-- 15 -->
+      <!-- 18 -->
       <section class="content-slide" id="movel">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -466,11 +558,11 @@ eixo.imshow(matriz, cmap="PRGn_r",
         <p class="legenda-figura">O vídeo complementar do autoestudo calcula a correlação sobre os preços, que mede se as duas séries têm a mesma tendência no período. Na janela móvel de 252 pregões, a dos preços oscila de -0,91 a 0,60 e a dos retornos diários fica entre -0,62 e -0,17: o dólar tende a subir nos dias em que o BOVA11 cai. Três afirmações da Ponderada 1 dependem dessa diferença.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [3]</p>
-          <p class="footer-page">15</p>
+          <p class="footer-page">18</p>
         </div>
       </section>
 
-      <!-- 16 -->
+      <!-- 19 -->
       <section class="exercise-slide" id="m4">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -496,11 +588,11 @@ eixo.imshow(matriz, cmap="PRGn_r",
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">16</p>
+          <p class="footer-page">19</p>
         </div>
       </section>
 
-      <!-- 17 -->
+      <!-- 20 -->
       <section class="content-slide" id="assert">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -519,16 +611,16 @@ eixo.imshow(matriz, cmap="PRGn_r",
           <span class="fragment codigo-passo" data-linhas="2" data-titulo="Diagonal igual a 1" data-texto="Todo ativo tem correlação 1 com ele mesmo. Uma matriz montada à mão com uma coluna trocada reprova aqui."></span>
           <span class="fragment codigo-passo" data-linhas="3" data-titulo="Simetria" data-texto="A correlação de A com B é a de B com A."></span>
           <span class="fragment codigo-passo" data-linhas="4" data-titulo="Pesos somam 1" data-texto="Na Ponderada 1, a retirada do D2 redistribui pesos: este assert pega a redistribuição errada."></span>
-          <span class="fragment codigo-passo" data-linhas="5" data-titulo="Caso conhecido" data-texto="Um valor calculado à mão, o 25,98% do slide 10, vira teste da função."></span>
+          <span class="fragment codigo-passo" data-linhas="5" data-titulo="Caso conhecido" data-texto="Um valor calculado à mão, o 25,98% do slide 12, vira teste da função."></span>
           <span class="fragment codigo-passo" data-linhas="6" data-titulo="Diversificação" data-texto="media_ponderada é a soma de peso vezes volatilidade de cada ativo, na mesma janela. Na carteira do M3: 18,82% contra 29,65%."></span>
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">17</p>
+          <p class="footer-page">20</p>
         </div>
       </section>
 
-      <!-- 18 -->
+      <!-- 21 -->
       <section class="exercise-slide" id="m5">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -558,11 +650,11 @@ eixo.imshow(matriz, cmap="PRGn_r",
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">18</p>
+          <p class="footer-page">21</p>
         </div>
       </section>
 
-      <!-- 19 -->
+      <!-- 22 -->
       <section class="content-slide" id="bugs">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -581,11 +673,11 @@ eixo.imshow(matriz, cmap="PRGn_r",
         <p class="legenda-figura">O 47,24% parece plausível e passaria numa planilha. Só a propriedade da anualização pega o erro. Na Ponderada 1, a última célula, <code>entregar()</code>, faz o mesmo com as suas respostas: avisa item em branco, par mal escrito, troca impossível e parecer fora do tamanho.</p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">19</p>
+          <p class="footer-page">22</p>
         </div>
       </section>
 
-      <!-- 20 -->
+      <!-- 23 -->
       <section class="content-slide" id="preparacao">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -600,7 +692,7 @@ eixo.imshow(matriz, cmap="PRGn_r",
             <tr><td>Calcular a volatilidade da carteira com <code>np.sqrt(w @ cov @ w)</code></td><td>M3</td></tr>
             <tr><td>Achar o par de maior e o de menor correlação, e testar cinco retiradas num laço</td><td>M3 e M4</td></tr>
             <tr><td>Montar a tabela do vídeo com <code>pd.concat</code> e <code>dropna</code>, e a correlação móvel de 252 pregões</td><td>M4 e autoestudo [3]</td></tr>
-            <tr><td>Comparar correlação de preços e de retornos, e o BOVA11 dolarizado</td><td>slide 15 e vídeo [3]</td></tr>
+            <tr><td>Comparar correlação de preços e de retornos, e o BOVA11 dolarizado</td><td>slide 18 e vídeo [3]</td></tr>
             <tr><td>Testar trocas de ativo e escolher a que mais reduz o risco</td><td>M3, com outro laço</td></tr>
             <tr><td>Fazer o heatmap da carteira e o gráfico da móvel, e ler o mês do mínimo com <code>idxmin()</code></td><td>M4</td></tr>
             <tr><td>Dizer o que fazem <code>pct_change</code>, <code>rolling</code>, <code>concat</code>, <code>dropna</code>, <code>ffill</code>, <code>@</code> e seus argumentos</td><td>M1 a M5</td></tr>
@@ -612,11 +704,11 @@ eixo.imshow(matriz, cmap="PRGn_r",
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">20</p>
+          <p class="footer-page">23</p>
         </div>
       </section>
 
-      <!-- 21 -->
+      <!-- 24 -->
       <section class="content-slide" id="ponderada">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -644,11 +736,11 @@ eixo.imshow(matriz, cmap="PRGn_r",
         </table>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3 &middot; [4]</p>
-          <p class="footer-page">21</p>
+          <p class="footer-page">24</p>
         </div>
       </section>
 
-      <!-- 22 -->
+      <!-- 25 -->
       <section class="exercise-slide" id="duvidas">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -671,11 +763,11 @@ eixo.imshow(matriz, cmap="PRGn_r",
         <p><a href="https://git.inteli.edu.br/graduacao/2026-2b/t19/ponderada" target="_blank" rel="noopener">git.inteli.edu.br/graduacao/2026-2b/t19/ponderada</a></p>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">22</p>
+          <p class="footer-page">25</p>
         </div>
       </section>
 
-      <!-- 23 -->
+      <!-- 26 -->
       <section class="content-slide slide-daily" id="prova">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -698,11 +790,11 @@ eixo.imshow(matriz, cmap="PRGn_r",
         </div>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">23</p>
+          <p class="footer-page">26</p>
         </div>
       </section>
 
-      <!-- 24 -->
+      <!-- 27 -->
       <section class="content-slide" id="referencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -718,11 +810,11 @@ eixo.imshow(matriz, cmap="PRGn_r",
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
-          <p class="footer-page">24</p>
+          <p class="footer-page">27</p>
         </div>
       </section>
 
-      <!-- 25 -->
+      <!-- 28 -->
       <section class="end-slide" id="encerramento">
         <h1>Até 18/11/2026</h1>
         <h3>Aula 04: Da Nuvem à Fronteira, Monte Carlo e Otimização de Markowitz</h3>
@@ -740,6 +832,11 @@ eixo.imshow(matriz, cmap="PRGn_r",
     });
   </script>
   <script src="../assets/js/inteli-codigo.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="../assets/js/inteli-quiz-config.js"></script>
+  <script src="../assets/js/inteli-quiz-dados.js"></script>
+  <script src="../assets/js/inteli-quiz-vivo.js"></script>
   <script src="../assets/js/inteli-zoom.js"></script>
   <script src="../assets/js/inteli-print.js"></script>
   <script src="../assets/js/inteli-cronometro.js"></script>

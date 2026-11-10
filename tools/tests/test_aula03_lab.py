@@ -108,6 +108,31 @@ def test_deck_sem_peer_instruction_inexistente_e_com_nomes_do_notebook():
         assert nome in deck and nome in nb, nome
 
 
+def test_curva_do_slide_da_conta():
+    rhos, risco = m.curva_risco_dois_ativos()
+    por_rho = {round(float(r), 2): float(v) for r, v in zip(rhos, risco)}
+    assert [m.pct(por_rho[k]) for k in (1.0, 0.5, 0.0, -1.0)] == ["30,00%", "25,98%", "21,21%", "0,00%"]
+    deck = _deck()
+    trecho = deck[deck.index('id="conta"'):deck.index('id="funcao"')]
+    assert "aula03-conta-risco.png" in trecho and "25,98%" in trecho and "0,0675" in trecho
+    assert os.path.exists(os.path.join(RAIZ, "assets", "img", "aula03-conta-risco.png"))
+
+
+def test_verificacao_do_preparo_em_dois_slides_com_qr():
+    deck = _deck()
+    assert deck.index('id="daily"') < deck.index('id="preparo"') < deck.index('id="preparo-conversa"') < deck.index('id="planilha"')
+    primeiro = deck[deck.index('id="preparo"'):deck.index('id="preparo-conversa"')]
+    segundo = deck[deck.index('id="preparo-conversa"'):deck.index('id="planilha"')]
+    assert 'data-pergunta="preparo-risco"' in primeiro and "data-correta" not in primeiro
+    assert 'data-pergunta="preparo-risco-2"' in segundo and 'data-correta="0"' in segundo
+    assert "abaixo de 30%</li>" in segundo.split("<li>")[1] + "</li>" or "<li>abaixo de 30%</li>" in segundo
+    for trecho in (primeiro, segundo):
+        assert 'data-sessao="m08-aula03-2026-11-10"' in trecho and "data-quiz-vivo" in trecho
+    for script in ("qrcode.js", "inteli-quiz-config.js", "inteli-quiz-dados.js", "inteli-quiz-vivo.js"):
+        assert script in deck
+    assert "inteli-quiz-vivo.css" in deck
+
+
 TESTES_DO_SLIDE = '''
 def test_retorno_de_um_pregao_normal():
     r = retornos(pd.Series([100.0, 110.0]))

@@ -55,6 +55,12 @@ def risco_dois_ativos(peso, vol_a, vol_b, rho):
     return float(np.sqrt(max(var, 0.0)))
 
 
+def curva_risco_dois_ativos(passos=201):
+    """Risco de dois ativos de 30% com metade em cada, para a correlação de -1 a 1 (slide #conta)."""
+    rhos = np.linspace(-1.0, 1.0, passos)
+    return rhos, np.array([risco_dois_ativos(0.5, 0.30, 0.30, r) for r in rhos])
+
+
 def vol_carteira(retornos, pesos):
     w = np.array([pesos[c] for c in retornos.columns])
     return float(np.sqrt(w @ (retornos.cov().values * PREGOES_ANO) @ w))

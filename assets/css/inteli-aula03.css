@@ -42,3 +42,7 @@
 .reveal section#m1 .planilha table { font-size: 21px; }
 .reveal section#m1 .planilha th, .reveal section#m1 .planilha td { padding: 9px 12px; }
 .reveal section#m1 .planilha-formula { font-size: 21px; }
+
+/* Slide da conta: figura larga do risco contra a correlação. */
+.reveal section#conta .duas-colunas { grid-template-columns: 1.75fr 1fr; align-items: center; }
+.reveal section#conta .figura-aula { max-height: 520px; }

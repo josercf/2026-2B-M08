@@ -1,7 +1,7 @@
 """Figuras estáticas do deck da Aula 03 (ADR-017), geradas de dados/ com a paleta do tema.
 
 Uso: .venv/bin/python tools/figuras_aula03.py
-Saída: assets/img/aula03-heatmap-cesta.png e assets/img/aula03-movel-bova-dolar.png
+Saída: assets/img/aula03-heatmap-cesta.png, aula03-movel-bova-dolar.png e aula03-conta-risco.png
 """
 import os
 
@@ -61,7 +61,35 @@ def movel():
     plt.close(fig)
 
 
+def conta():
+    rhos, risco = m.curva_risco_dois_ativos()
+    fig = figura()
+    eixo = fig.add_axes([0.11, 0.14, 0.86, 0.80])
+    eixo.fill_between(rhos, risco * 100, 30, color=cor("--seg-secundaria"), alpha=0.35, linewidth=0)
+    eixo.axhline(30, color=cor("--seg-borda"), linewidth=2, linestyle="--")
+    eixo.plot(rhos, risco * 100, color=cor("--seg-primaria"), linewidth=3.5)
+    eixo.text(-0.97, 31.2, "média das volatilidades: 30,00%", fontsize=18, color=cor("--seg-texto"))
+    for rho, rotulo, dx, dy in ((1.0, "30,00%", -0.02, -3.6), (0.5, "25,98%", -0.05, -4.4), (0.0, "21,21%", 0.05, -3.2), (-1.0, "0,00%", 0.04, 1.6)):
+        v = m.risco_dois_ativos(0.5, 0.30, 0.30, rho) * 100
+        destaque = rho == 0.5
+        eixo.plot([rho], [v], marker="o", markersize=16 if destaque else 10,
+                  color=cor("--seg-destaque") if destaque else cor("--seg-primaria"), zorder=5)
+        eixo.text(rho + dx, v + dy, rotulo, fontsize=22 if destaque else 18, fontweight="bold" if destaque else "normal",
+                  ha="right" if rho == 1.0 or destaque else "left", color=cor("--seg-texto"))
+    eixo.set_xlabel("correlação entre os dois ativos", fontsize=20)
+    eixo.set_ylabel("risco da carteira (volatilidade anual, %)", fontsize=20)
+    eixo.set_xlim(-1.05, 1.05)
+    eixo.set_xticks([-1, -0.5, 0, 0.5, 1], ["-1", "-0,5", "0", "0,5", "1"])
+    eixo.set_ylim(-2, 34)
+    eixo.tick_params(labelsize=18)
+    for lado in ("top", "right"):
+        eixo.spines[lado].set_visible(False)
+    fig.savefig(os.path.join(SAIDA, "aula03-conta-risco.png"), dpi=100)
+    plt.close(fig)
+
+
 if __name__ == "__main__":
     heatmap()
     movel()
+    conta()
     print("ok")
