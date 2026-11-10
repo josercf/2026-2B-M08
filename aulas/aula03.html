@@ -574,10 +574,10 @@ eixo.imshow(matriz, cmap="PRGn_r",
           <div class="cronometro" id="cronometro-m4" data-minutos="5"></div>
         </div>
         <ol class="exercise-steps">
-          <li>Seção M4, primeira célula: escrevam os valores dentro do heatmap com <code>eixo.text</code>, como no vídeo.</li>
-          <li>Segunda célula: calculem <code>movel_retornos</code> com <code>pct_change</code> na tabela do vídeo e tracem as duas linhas no mesmo eixo.</li>
-          <li>Na mesma tabela, calculem o BOVA11 dolarizado, <code>tabela["BOVA11"] / tabela["DOLAR"]</code>, e marquem um período em que as duas linhas da móvel discordam de sinal.</li>
-          <li>Achem o mês do mínimo da móvel com <code>idxmin()</code> e comparem a correlação das duas metades da tabela, separadas por <code>índice &lt; data_meio</code>.</li>
+          <li>Primeira célula: escrevam os valores no heatmap com <code>eixo.text</code>, como no vídeo.</li>
+          <li>Segunda célula: calculem <code>movel_retornos</code> com <code>pct_change</code> e tracem as duas linhas no mesmo eixo.</li>
+          <li>Calculem o BOVA11 dolarizado e marquem um período em que as duas móveis discordam de sinal.</li>
+          <li>Achem o mês do mínimo com <code>idxmin()</code> e comparem a correlação das duas metades da tabela.</li>
         </ol>
         <pre class="codigo-curto"><code>for i in range(len(matriz)):
     for j in range(len(matriz)):
