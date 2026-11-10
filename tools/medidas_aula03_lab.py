@@ -89,6 +89,27 @@ def media_ponderada_demo():
     return float(sum(CARTEIRA_DEMO[a] * vol[a] for a in CARTEIRA_DEMO))
 
 
+# ---------------------------------------------------------------- planilha (slide #planilha)
+def janela_24_meses_na_planilha():
+    """Linhas dos 24 meses até o fim do snapshot na aba de retornos: a linha 1 é o cabeçalho."""
+    precos = pd.read_csv(os.path.join(rt.DADOS, "precos_ajustados.csv"), index_col="data", parse_dates=["data"])
+    fim = precos.index[-1]
+    inicio = (fim - pd.DateOffset(months=24)) + pd.Timedelta(days=1)
+    posicoes = [i for i, d in enumerate(precos.index) if d >= inicio]
+    primeira = posicoes[0] + 2
+    ultima = len(precos) + 1
+    return {"primeira": primeira, "ultima": ultima, "linhas": ultima - primeira + 1, "total": len(precos),
+            "inicio": inicio.date().isoformat(), "fim": fim.date().isoformat()}
+
+
+def correlacao_com_referencia_deslocada(a="VALE3", b="BBDC4"):
+    """Correlação certa de a com b e a mesma conta com b deslocado uma linha, como numa fórmula arrastada."""
+    r = rt.retornos_janela_comum()
+    certa = float(r[a].corr(r[b]))
+    errada = float(r[a].iloc[:-1].reset_index(drop=True).corr(r[b].iloc[1:].reset_index(drop=True)))
+    return certa, errada
+
+
 # ---------------------------------------------------------------- gráficos
 def matriz_cesta():
     return rt.retornos_janela_comum().corr()

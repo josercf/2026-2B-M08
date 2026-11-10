@@ -46,3 +46,71 @@
 /* Slide da conta: figura larga do risco contra a correlação. */
 .reveal section#conta .duas-colunas { grid-template-columns: 1.75fr 1fr; align-items: center; }
 .reveal section#conta .figura-aula { max-height: 520px; }
+
+/* Slide #planilha: quatro cenas na mesma moldura, trocadas pelo data-passo (inteli-planilha-cena.js).
+   Passos: 0 a 4 = preços (A2 anima no 4), 1 e 2 = grade de correlação (A1 anima no 2),
+   5 e 6 = janela (A3 anima no 6), 7 e 8 = referência deslocada (A4 anima no 8). */
+.planilha-cena { display: grid; }
+.planilha-cena > .planilha { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity 0.35s ease; align-self: start; }
+.planilha-cena[data-passo="0"] .cena-precos, .planilha-cena[data-passo="3"] .cena-precos, .planilha-cena[data-passo="4"] .cena-precos,
+.planilha-cena[data-passo="1"] .cena-grade, .planilha-cena[data-passo="2"] .cena-grade,
+.planilha-cena[data-passo="5"] .cena-janela, .planilha-cena[data-passo="6"] .cena-janela,
+.planilha-cena[data-passo="7"] .cena-referencia, .planilha-cena[data-passo="8"] .cena-referencia { opacity: 1; visibility: visible; }
+
+.reveal .perguntas-animadas { list-style: none; padding: 0; margin: 0; gap: 5px; counter-reset: pergunta; }
+.reveal .perguntas-animadas .pergunta { margin: 0; font-size: 20px; line-height: 1.25; counter-increment: pergunta; }
+.reveal .perguntas-animadas .pergunta::before { content: counter(pergunta) ". "; font-weight: 700; }
+.reveal .perguntas-animadas .resposta { margin: 2px 0 0 4px; padding: 1px 0 1px 12px; border-left: 4px solid var(--seg-primaria); font-size: 17px; line-height: 1.3; }
+
+/* Cena de preços: a célula vazia e o erro só aparecem na resposta 2. */
+.cena-precos .pl-e1699, .cena-precos .pl-e1700 { opacity: 0; }
+.planilha-cena[data-passo="4"] .pl-d1699 { animation: planilha-marca 0.6s ease 0.2s both; }
+.planilha-cena[data-passo="4"] .pl-e1699 { outline: 3px solid var(--seg-primaria); outline-offset: -3px; font-weight: 700; animation: planilha-revela 0.5s ease 1s both; }
+.planilha-cena[data-passo="4"] .pl-e1700 { animation: planilha-revela 0.5s ease 1.8s both; }
+@keyframes planilha-marca { from { background: transparent; } to { background: var(--seg-secundaria); } }
+@keyframes planilha-revela { from { opacity: 0; } to { opacity: 1; } }
+
+/* Cena da grade: as 105 fórmulas acendem em sequência. */
+.grade-correl { display: grid; grid-template-columns: repeat(15, 1fr); gap: 2px; padding: 10px 12px 4px; }
+.grade-correl i { display: block; height: 14px; background: var(--seg-base); border: 1px solid var(--seg-borda); }
+.grade-correl i.d { background: var(--seg-superficie); }
+.grade-correl i.b { border-color: transparent; background: transparent; }
+.planilha-cena[data-passo="2"] .grade-correl i.t { animation: planilha-acende 0.4s ease var(--d) both; }
+@keyframes planilha-acende { from { background: var(--seg-base); } to { background: var(--seg-primaria); border-color: var(--seg-primaria); } }
+.reveal .grade-legenda { margin: 4px 12px 8px; font-size: 18px; opacity: 0; }
+.planilha-cena[data-passo="2"] .grade-legenda { animation: planilha-revela 0.5s ease 1.5s both; }
+
+/* Cena da janela: o intervalo encolhe de 1.908 para 498 linhas. */
+.janela-corpo { padding: 14px 16px 10px; }
+.reveal .janela-rotulo, .reveal .janela-conta { margin: 0 0 10px; font-size: 18px; }
+.janela-trilho { display: flex; justify-content: flex-end; height: 56px; background: var(--seg-superficie); border: 1px solid var(--seg-borda); margin-bottom: 14px; }
+.janela-recorte { width: 100%; display: flex; align-items: center; justify-content: center; background: var(--seg-primaria); color: var(--inteli-branco); font-size: 18px; font-weight: 600; white-space: nowrap; overflow: hidden; transition: width 1.2s ease; }
+.planilha-cena[data-passo="6"] .janela-recorte { width: 26.1%; }
+.cena-janela .planilha-formula, .cena-referencia .planilha-formula { align-items: flex-start; }
+.cena-janela code, .cena-referencia code { min-width: 0; overflow-wrap: anywhere; font-size: 14px; }
+.janela-formula { display: grid; }
+.janela-formula > span { grid-area: 1 / 1; }
+.janela-antiga, .janela-nova { transition: opacity 0.5s ease; }
+.janela-nova { opacity: 0; }
+.planilha-cena[data-passo="6"] .janela-antiga { opacity: 0; }
+.planilha-cena[data-passo="6"] .janela-nova { opacity: 1; }
+.janela-recorte { display: grid; place-items: center; }
+.janela-recorte > span { grid-area: 1 / 1; }
+.reveal .janela-conta { opacity: 0; margin: 0; }
+.planilha-cena[data-passo="6"] .janela-conta { animation: planilha-revela 0.5s ease 1.2s both; }
+
+/* Cena da referência: a segunda fórmula aparece deslocada em uma linha. */
+.reveal .ref-resultado { margin: 0; padding: 14px 16px; font-size: 20px; }
+.ref-valor { display: inline-block; min-width: 88px; font-size: 34px; font-weight: 700; }
+.ref-errada { opacity: 0; }
+.planilha-cena[data-passo="8"] .ref-errada { animation: planilha-revela 0.6s ease 0.2s both; }
+.ref-marca { background: var(--seg-secundaria); font-weight: 700; }
+
+/* Recapitulação do slide 7. */
+.reveal .fecho-limites { margin: 14px 0 0; font-size: var(--escala-texto); font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  .planilha-cena *, .planilha-cena { animation-duration: 0.01s !important; animation-delay: 0s !important; transition-duration: 0.01s !important; }
+}
+
+.reveal section#planilha .duas-colunas { grid-template-columns: 0.85fr 1.15fr; }

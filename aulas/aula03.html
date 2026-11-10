@@ -170,7 +170,8 @@
           <h2>Como vocês mediriam o risco desta cesta numa planilha?</h2>
         </div>
         <div class="duas-colunas duas-colunas-larga">
-          <div class="planilha" role="img" aria-label="Planilha com os preços ajustados de PETR4, VALE3 e BOVA11 em outubro de 2025 e a coluna de retorno do BOVA11">
+          <div class="planilha-cena" data-passo="0" role="img" aria-label="Planilha em quatro cenas: a matriz de 105 fórmulas CORREL, a célula vazia do BOVA11 em 24/10/2025, a janela de 24 meses em 498 linhas e a referência deslocada em uma linha">
+          <div class="planilha cena-precos">
             <div class="planilha-formula"><span class="pl-ref">E1699</span><span class="pl-fx">fx</span><code>=D1699/D1698-1</code></div>
             <table>
               <thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead>
@@ -181,22 +182,48 @@
                 <tr><th>1696</th><td>21/10/2025</td><td>26,90</td><td>56,20</td><td>141,45</td><td>0,13%</td></tr>
                 <tr><th>1697</th><td>22/10/2025</td><td>27,21</td><td>57,20</td><td>141,88</td><td>0,30%</td></tr>
                 <tr><th>1698</th><td>23/10/2025</td><td>27,52</td><td>57,09</td><td>142,68</td><td>0,56%</td></tr>
-                <tr><th>1699</th><td>24/10/2025</td><td>27,20</td><td>57,06</td><td class="pl-vazia"></td><td class="pl-ativa">-100,00%</td></tr>
-                <tr><th>1700</th><td>27/10/2025</td><td>27,34</td><td>56,99</td><td>144,00</td><td>#DIV/0!</td></tr>
+                <tr><th>1699</th><td>24/10/2025</td><td>27,20</td><td>57,06</td><td class="pl-d1699"></td><td class="pl-e1699">-100,00%</td></tr>
+                <tr><th>1700</th><td>27/10/2025</td><td>27,34</td><td>56,99</td><td>144,00</td><td class="pl-e1700">#DIV/0!</td></tr>
                 <tr class="pl-pula"><th>&#8942;</th><td></td><td></td><td></td><td></td><td></td></tr>
                 <tr><th>1909</th><td>31/08/2026</td><td></td><td></td><td></td><td></td></tr>
               </tbody>
             </table>
             <p class="pl-abas"><span class="pl-aba-ativa">Preços</span><span>Retornos</span><span>Correlação</span><span>Carteira</span></p>
           </div>
-          <ol class="perguntas-socraticas">
-            <li class="fragment">A cesta tem 15 ativos. Quantas fórmulas <code>CORREL</code> a matriz de correlação precisa?</li>
-            <li class="fragment">O que aconteceu na linha 1699? Quem, na planilha, avisaria vocês?</li>
-            <li class="fragment">O cliente pede os últimos 24 meses em vez de 2019 a 2026. O que muda nas fórmulas?</li>
-            <li class="fragment">Como saber que nenhuma fórmula foi arrastada com a referência errada?</li>
+          <div class="planilha cena-grade">
+            <div class="planilha-formula"><span class="pl-ref">E3</span><span class="pl-fx">fx</span><code>=CORREL(Retornos!$C$2:$C$1909;Retornos!E$2:E$1909)</code></div>
+            <div class="grade-correl"><i class="d"></i><i class="t" style="--d:0ms"></i><i class="t" style="--d:11ms"></i><i class="t" style="--d:22ms"></i><i class="t" style="--d:33ms"></i><i class="t" style="--d:44ms"></i><i class="t" style="--d:55ms"></i><i class="t" style="--d:66ms"></i><i class="t" style="--d:77ms"></i><i class="t" style="--d:88ms"></i><i class="t" style="--d:99ms"></i><i class="t" style="--d:110ms"></i><i class="t" style="--d:121ms"></i><i class="t" style="--d:132ms"></i><i class="t" style="--d:143ms"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:154ms"></i><i class="t" style="--d:165ms"></i><i class="t" style="--d:176ms"></i><i class="t" style="--d:187ms"></i><i class="t" style="--d:198ms"></i><i class="t" style="--d:209ms"></i><i class="t" style="--d:220ms"></i><i class="t" style="--d:231ms"></i><i class="t" style="--d:242ms"></i><i class="t" style="--d:253ms"></i><i class="t" style="--d:264ms"></i><i class="t" style="--d:275ms"></i><i class="t" style="--d:286ms"></i><i class="b"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:297ms"></i><i class="t" style="--d:308ms"></i><i class="t" style="--d:319ms"></i><i class="t" style="--d:330ms"></i><i class="t" style="--d:341ms"></i><i class="t" style="--d:352ms"></i><i class="t" style="--d:363ms"></i><i class="t" style="--d:374ms"></i><i class="t" style="--d:385ms"></i><i class="t" style="--d:396ms"></i><i class="t" style="--d:407ms"></i><i class="t" style="--d:418ms"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:429ms"></i><i class="t" style="--d:440ms"></i><i class="t" style="--d:451ms"></i><i class="t" style="--d:462ms"></i><i class="t" style="--d:473ms"></i><i class="t" style="--d:484ms"></i><i class="t" style="--d:495ms"></i><i class="t" style="--d:506ms"></i><i class="t" style="--d:517ms"></i><i class="t" style="--d:528ms"></i><i class="t" style="--d:539ms"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:550ms"></i><i class="t" style="--d:561ms"></i><i class="t" style="--d:572ms"></i><i class="t" style="--d:583ms"></i><i class="t" style="--d:594ms"></i><i class="t" style="--d:605ms"></i><i class="t" style="--d:616ms"></i><i class="t" style="--d:627ms"></i><i class="t" style="--d:638ms"></i><i class="t" style="--d:649ms"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:660ms"></i><i class="t" style="--d:671ms"></i><i class="t" style="--d:682ms"></i><i class="t" style="--d:693ms"></i><i class="t" style="--d:704ms"></i><i class="t" style="--d:715ms"></i><i class="t" style="--d:726ms"></i><i class="t" style="--d:737ms"></i><i class="t" style="--d:748ms"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:759ms"></i><i class="t" style="--d:770ms"></i><i class="t" style="--d:781ms"></i><i class="t" style="--d:792ms"></i><i class="t" style="--d:803ms"></i><i class="t" style="--d:814ms"></i><i class="t" style="--d:825ms"></i><i class="t" style="--d:836ms"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:847ms"></i><i class="t" style="--d:858ms"></i><i class="t" style="--d:869ms"></i><i class="t" style="--d:880ms"></i><i class="t" style="--d:891ms"></i><i class="t" style="--d:902ms"></i><i class="t" style="--d:913ms"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:924ms"></i><i class="t" style="--d:935ms"></i><i class="t" style="--d:946ms"></i><i class="t" style="--d:957ms"></i><i class="t" style="--d:968ms"></i><i class="t" style="--d:979ms"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:990ms"></i><i class="t" style="--d:1001ms"></i><i class="t" style="--d:1012ms"></i><i class="t" style="--d:1023ms"></i><i class="t" style="--d:1034ms"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:1045ms"></i><i class="t" style="--d:1056ms"></i><i class="t" style="--d:1067ms"></i><i class="t" style="--d:1078ms"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:1089ms"></i><i class="t" style="--d:1100ms"></i><i class="t" style="--d:1111ms"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:1122ms"></i><i class="t" style="--d:1133ms"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="d"></i><i class="t" style="--d:1144ms"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="b"></i><i class="d"></i></div>
+            <p class="grade-legenda"><strong>105</strong> pares acima da diagonal, uma fórmula <code>CORREL</code> em cada</p>
+            <p class="pl-abas"><span>Preços</span><span>Retornos</span><span class="pl-aba-ativa">Correlação</span><span>Carteira</span></p>
+          </div>
+          <div class="planilha cena-janela">
+            <div class="planilha-formula"><span class="pl-ref">E3</span><span class="pl-fx">fx</span>
+              <code class="janela-formula"><span class="janela-antiga">=CORREL(Retornos!$C$2:$C$1909;Retornos!E$2:E$1909)</span><span class="janela-nova">=CORREL(Retornos!$C$1412:$C$1909;Retornos!E$1412:E$1909)</span></code></div>
+            <div class="janela-corpo">
+              <p class="janela-rotulo">Cada intervalo da aba Retornos, em linhas</p>
+              <div class="janela-trilho"><div class="janela-recorte"><span class="janela-antiga">1.908 linhas, de 02/01/2019 a 31/08/2026</span><span class="janela-nova">498 linhas</span></div></div>
+              <p class="janela-conta"><strong>210</strong> intervalos para reescrever: 105 fórmulas, dois intervalos em cada</p>
+            </div>
+            <p class="pl-abas"><span>Preços</span><span class="pl-aba-ativa">Retornos</span><span>Correlação</span><span>Carteira</span></p>
+          </div>
+          <div class="planilha cena-referencia">
+            <div class="planilha-formula"><span class="pl-ref">E3</span><span class="pl-fx">fx</span><code>=CORREL(Retornos!$C$2:$C$1909;Retornos!E$2:E$1909)</code></div>
+            <p class="ref-resultado"><span class="ref-valor">0,23</span> VALE3 com BBDC4, linhas alinhadas</p>
+            <div class="ref-errada">
+              <div class="planilha-formula"><span class="pl-ref">E3</span><span class="pl-fx">fx</span><code>=CORREL(Retornos!$C$2:$C$1909;Retornos!E<span class="ref-marca">$3:E$1910</span>)</code></div>
+              <p class="ref-resultado"><span class="ref-valor">-0,03</span> a mesma conta, com a coluna uma linha abaixo</p>
+            </div>
+            <p class="pl-abas"><span>Preços</span><span>Retornos</span><span class="pl-aba-ativa">Correlação</span><span>Carteira</span></p>
+          </div>
+          </div>
+          <ol class="perguntas-socraticas perguntas-animadas">
+            <li><p class="fragment pergunta">A cesta tem 15 ativos. Quantas fórmulas <code>CORREL</code> a matriz precisa?</p><p class="fragment resposta"><strong>Escala.</strong> 15 x 14 / 2 = 105 fórmulas, cada uma com dois intervalos de 1.908 linhas.</p></li>
+            <li><p class="fragment pergunta">O que aconteceu na linha 1699? Quem avisaria vocês?</p><p class="fragment resposta"><strong>Dado ausente.</strong> A fórmula leu a célula vazia como zero: -100,00% na linha 1699 e #DIV/0! na seguinte, sem aviso.</p></li>
+            <li><p class="fragment pergunta">O cliente pede só os últimos 24 meses. O que muda nas fórmulas?</p><p class="fragment resposta"><strong>Janela.</strong> São 498 linhas, da 1412 à 1909: 210 intervalos para reescrever.</p></li>
+            <li><p class="fragment pergunta">Como saber que nenhuma fórmula foi arrastada com a referência errada?</p><p class="fragment resposta"><strong>Conferência.</strong> Uma linha de deslocamento muda o 0,23 para -0,03, sem erro e sem aviso.</p></li>
           </ol>
         </div>
-        <aside class="notes">Uma pergunta por vez, duas ou três respostas da sala antes de revelar a próxima. Respostas: 105 fórmulas (15 x 14 / 2); o BOVA11 ficou sem cotação e a fórmula leu a célula vazia como zero, sem aviso; todos os intervalos precisam ser reescritos; não há como saber, só conferindo célula a célula.</aside>
+        <aside class="notes">Uma pergunta por vez: esperar duas ou três respostas da sala e só então revelar a resposta, que anima a planilha da esquerda. Respostas: 105 fórmulas (15 x 14 / 2); o BOVA11 ficou sem cotação e a fórmula leu a célula vazia como zero, sem aviso; os 24 meses até 31/08/2026 são 498 linhas (1412 a 1909) e os 210 intervalos precisam ser reescritos; com a referência uma linha abaixo a correlação do VALE3 com o BBDC4 vai de 0,23 a -0,03 e nada reprova. Cada resposta nomeia um limite da planilha: escala, dado ausente, janela e conferência. O quinto, dado novo, vem no slide seguinte.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
           <p class="footer-page">6</p>
@@ -209,7 +236,7 @@
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>A matriz da cesta pede 105 fórmulas CORREL na planilha</h2>
+          <h2>Cinco limites da planilha aparecem já na matriz de 15 ativos</h2>
         </div>
         <div class="duas-colunas duas-colunas-larga">
           <div class="planilha" role="img" aria-label="Aba de correlação da planilha, com a fórmula CORREL e as referências entre abas">
@@ -231,15 +258,16 @@
           <table class="tabela-leitura tabela-compacta">
             <thead><tr><th>Limite</th><th>Na planilha</th></tr></thead>
             <tbody>
-              <tr class="fragment"><td>Escala</td><td>105 fórmulas, cada uma com dois intervalos de 1.908 linhas</td></tr>
-              <tr class="fragment"><td>Dado ausente</td><td>célula vazia vira zero, sem aviso</td></tr>
-              <tr class="fragment"><td>Janela</td><td>trocar o período é reescrever 210 intervalos</td></tr>
+              <tr><td>Escala</td><td>105 fórmulas, cada uma com dois intervalos de 1.908 linhas</td></tr>
+              <tr><td>Dado ausente</td><td>célula vazia vira zero, sem aviso</td></tr>
+              <tr><td>Janela</td><td>trocar o período é reescrever 210 intervalos</td></tr>
               <tr class="fragment"><td>Dado novo</td><td>colar o CSV e conferir se as linhas continuam alinhadas</td></tr>
-              <tr class="fragment"><td>Conferência</td><td>olhar o número; nada reprova uma fórmula errada</td></tr>
+              <tr><td>Conferência</td><td>olhar o número; nada reprova uma fórmula errada</td></tr>
             </tbody>
           </table>
         </div>
-        <aside class="notes">Revelar um limite por vez, ligando cada um à resposta que a sala deu no slide anterior. Fechar com a pergunta do próximo slide: o que precisaria existir para esses cinco limites sumirem?</aside>
+        <p class="fragment fecho-limites">O que precisaria existir para esses cinco limites sumirem?</p>
+        <aside class="notes">Recapitulação dos limites que a sala acabou de ver, com um novo: dado novo (colar o CSV e conferir se as linhas continuam alinhadas), que entra por último. Fechar com a pergunta, sem mostrar código: o próximo slide pergunta qual linha de pandas substitui cada fórmula.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 03 &middot; Sprint 3</p>
           <p class="footer-page">7</p>
@@ -838,7 +866,9 @@ eixo.imshow(matriz, cmap="PRGn_r",
   <script src="../assets/js/inteli-quiz-dados.js"></script>
   <script src="../assets/js/inteli-quiz-vivo.js"></script>
   <script src="../assets/js/inteli-zoom.js"></script>
+  <script src="../assets/js/inteli-tela-cheia.js"></script>
   <script src="../assets/js/inteli-print.js"></script>
   <script src="../assets/js/inteli-cronometro.js"></script>
+  <script src="../assets/js/inteli-planilha-cena.js"></script>
 </body>
 </html>

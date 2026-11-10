@@ -133,6 +133,31 @@ def test_verificacao_do_preparo_em_dois_slides_com_qr():
     assert "inteli-quiz-vivo.css" in deck
 
 
+def test_numeros_das_cenas_da_planilha():
+    j = m.janela_24_meses_na_planilha()
+    assert (j["primeira"], j["ultima"], j["linhas"], j["total"]) == (1412, 1909, 498, 1908)
+    assert (j["inicio"], j["fim"]) == ("2024-09-01", "2026-08-31")
+    certa, errada = m.correlacao_com_referencia_deslocada()
+    assert (m.dec(certa), m.dec(errada)) == ("0,23", "-0,03")
+    deck = _deck()
+    trecho = deck[deck.index('id="planilha"'):deck.index('id="limites-planilha"')]
+    for texto in ("$C$1412:$C$1909", "498 linhas", "da 1412 à 1909", "210 intervalos", "-0,03", "0,23", "105 fórmulas", "1.908 linhas"):
+        assert texto in trecho, texto
+
+
+def test_planilha_tem_quatro_perguntas_com_resposta_e_script_das_cenas():
+    deck = _deck()
+    trecho = deck[deck.index('id="planilha"'):deck.index('id="limites-planilha"')]
+    assert trecho.count('class="fragment pergunta"') == 4 and trecho.count('class="fragment resposta"') == 4
+    for cena in ("cena-precos", "cena-grade", "cena-janela", "cena-referencia"):
+        assert cena in trecho
+    assert trecho.count('<i class="t"') == 105
+    assert "inteli-planilha-cena.js" in deck
+    assert os.path.exists(os.path.join(RAIZ, "assets", "js", "inteli-planilha-cena.js"))
+    recap = deck[deck.index('id="limites-planilha"'):deck.index('id="excel-pandas"')]
+    assert "O que precisaria existir para esses cinco limites sumirem?" in recap
+
+
 TESTES_DO_SLIDE = '''
 def test_retorno_de_um_pregao_normal():
     r = retornos(pd.Series([100.0, 110.0]))

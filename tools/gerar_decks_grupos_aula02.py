@@ -217,6 +217,7 @@ def deck(grupo, dados):
   <script src="../assets/js/inteli-aula02-dados.js"></script>
   <script src="../assets/js/inteli-adr.js"></script>
   <script src="../assets/js/inteli-zoom.js"></script>
+  <script src="../assets/js/inteli-tela-cheia.js"></script>
   <script src="../assets/js/inteli-print.js"></script>
 </body>
 </html>

@@ -31,7 +31,7 @@ SUBSTITUTOS = {"insights": "query_stats"}
 
 # Ícones montados por JavaScript (inteli-print.js, inteli-cronometro.js e inteli-nuvem.js).
 ICONES_JS = ["picture_as_pdf", "play_arrow", "pause", "replay",
-              "mic", "stop", "check", "delete_sweep", "settings"]
+              "mic", "stop", "check", "delete_sweep", "settings", "fullscreen", "fullscreen_exit"]
 
 PAGINAS = ["index.html", "aulas/*.html", "materiais/*.html", "referencias/*.html", "quiz/*.html"]
 
