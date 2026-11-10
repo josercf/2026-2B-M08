@@ -158,6 +158,21 @@ def test_planilha_tem_quatro_perguntas_com_resposta_e_script_das_cenas():
     assert "O que precisaria existir para esses cinco limites sumirem?" in recap
 
 
+def test_slides_de_aaa_e_tdd_vem_antes_dos_tres_testes_da_celula_vazia():
+    deck = _deck()
+    assert deck.index('id="celula-vazia"') < deck.index('id="aaa"') < deck.index('id="tdd"') < deck.index('id="testes-unidade"') < deck.index('id="conta"')
+    aaa = deck[deck.index('id="aaa"'):deck.index('id="tdd"')]
+    for texto in ("Arrange", "Act", "Assert", "# Arrange", "# Act", "# Assert"):
+        assert texto in aaa, texto
+    assert aaa.count('class="fragment codigo-passo"') == 4
+    tdd = deck[deck.index('id="tdd"'):deck.index('id="testes-unidade"')]
+    for texto in ("Vermelho", "Verde", "Refatorar"):
+        assert texto in tdd, texto
+    assert tdd.count('<li class="fragment">') == 3 and "passos-cena" in tdd
+    with open(os.path.join(RAIZ, "assets", "js", "inteli-planilha-cena.js"), encoding="utf-8") as fh:
+        assert ".passos-cena" in fh.read()
+
+
 TESTES_DO_SLIDE = '''
 def test_retorno_de_um_pregao_normal():
     r = retornos(pd.Series([100.0, 110.0]))

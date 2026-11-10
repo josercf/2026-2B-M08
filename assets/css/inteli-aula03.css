@@ -114,3 +114,40 @@
 }
 
 .reveal section#planilha .duas-colunas { grid-template-columns: 0.85fr 1.15fr; }
+
+/* Slide #tdd: ciclo vermelho, verde e refatoração, aceso a cada fragmento (inteli-planilha-cena.js). */
+.tdd-corpo { display: grid; grid-template-columns: 1fr 1.05fr; gap: 28px; align-items: center; margin-top: 8px; }
+.tdd-ciclo { display: block; width: 100%; max-height: 440px; }
+.tdd-ciclo .no { opacity: 0.2; transition: opacity 0.4s ease; }
+.tdd-ciclo .no circle { stroke: var(--seg-texto); stroke-width: 3; }
+.tdd-ciclo .no-vermelho circle { fill: var(--seg-destaque); }
+.tdd-ciclo .no-verde circle { fill: var(--seg-secundaria); }
+.tdd-ciclo .no-refatorar circle { fill: var(--seg-primaria); }
+.tdd-ciclo .no-num { font-size: 44px; font-weight: 700; text-anchor: middle; fill: var(--inteli-branco); }
+.tdd-ciclo .no-rotulo { font-size: 18px; font-weight: 600; text-anchor: middle; fill: var(--inteli-branco); }
+.tdd-ciclo .no-verde text { fill: var(--seg-texto); }
+.tdd-ciclo .seta { fill: none; stroke: var(--seg-texto); stroke-width: 4; stroke-dasharray: 420; stroke-dashoffset: 420; }
+.tdd-ciclo .tdd-ponta { fill: var(--seg-texto); }
+.passos-cena[data-passo="1"] .no-vermelho, .passos-cena[data-passo="2"] .no-vermelho, .passos-cena[data-passo="3"] .no-vermelho { opacity: 1; }
+.passos-cena[data-passo="2"] .no-verde, .passos-cena[data-passo="3"] .no-verde { opacity: 1; }
+.passos-cena[data-passo="3"] .no-refatorar { opacity: 1; }
+.passos-cena[data-passo="1"] .no-vermelho circle { animation: tdd-pulo 0.6s ease both; }
+.passos-cena[data-passo="2"] .no-verde circle { animation: tdd-pulo 0.6s ease 0.7s both; }
+.passos-cena[data-passo="3"] .no-refatorar circle { animation: tdd-pulo 0.6s ease 0.7s both; }
+.passos-cena[data-passo="2"] .seta-1, .passos-cena[data-passo="3"] .seta-1 { animation: tdd-traco 0.7s ease both; }
+.passos-cena[data-passo="3"] .seta-2 { animation: tdd-traco 0.7s ease both; }
+.passos-cena[data-passo="3"] .seta-3 { animation: tdd-traco 0.7s ease 1.4s both; }
+@keyframes tdd-traco { from { stroke-dashoffset: 420; } to { stroke-dashoffset: 0; } }
+@keyframes tdd-pulo { 0% { transform: scale(0.7); } 60% { transform: scale(1.1); } 100% { transform: scale(1); } }
+.tdd-ciclo .no circle { transform-box: fill-box; transform-origin: center; }
+.tdd-passos { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 18px; }
+.reveal .tdd-passos li { display: flex; gap: 16px; align-items: flex-start; margin: 0; }
+.reveal .tdd-passos p { margin: 0; font-size: 23px; line-height: 1.35; }
+.reveal .tdd-passos code { font-size: 19px; }
+.tdd-n { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; font-size: 22px; font-weight: 700; border: 2px solid var(--seg-texto); }
+.tdd-n-vermelho { background: var(--seg-destaque); color: var(--inteli-branco); }
+.tdd-n-verde { background: var(--seg-secundaria); color: var(--seg-texto); }
+.tdd-n-refatorar { background: var(--seg-primaria); color: var(--inteli-branco); }
+@media (prefers-reduced-motion: reduce) { .tdd-ciclo * { animation-duration: 0.01s !important; animation-delay: 0s !important; transition-duration: 0.01s !important; } }
+
+.reveal section#aaa .codigo-linhas code { font-size: 26px; line-height: 58px; }

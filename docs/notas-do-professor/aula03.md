@@ -12,17 +12,19 @@ Este arquivo é público. Enunciado, carteiras, gabarito e corretor da Ponderada
 |---|---|---|
 | 1 a 3 | 14h00 | capa, agenda e daily com cronômetro de 15 min |
 | 4 e 5 | a definir | verificação do preparo com QR code: votação individual, dois minutos em dupla e segunda votação (sessão `m08-aula03-2026-11-10`, perguntas `preparo-risco` e `preparo-risco-2`); revelar só depois da segunda |
-| 6 | 14h15 | planilha desenhada: uma pergunta socrática por vez, duas ou três respostas da sala antes de revelar a próxima |
-| 7 | | a aba de correlação e os cinco limites, revelados um a um e ligados às respostas da sala |
+| 6 | 14h15 | planilha desenhada com quatro perguntas, cada uma com resposta e cena animada: 105 fórmulas, célula vazia, janela de 24 meses em 498 linhas, referência deslocada de 0,23 para -0,03 |
+| 7 | | recapitulação dos cinco limites da planilha, com a pergunta final sobre o que precisaria existir para eles sumirem |
 | 8 | | a sala propõe a linha de pandas antes de cada revelação |
 | 9 | | M1 (3 min): o CSV no Sheets, coluna N, fórmula em Q3, linha 1699 |
 | 10 | | a célula vazia passo a passo, com a pergunta para a sala no passo 5 antes da ADR-009 |
-| 11 | | os três testes de unidade passo a passo; no notebook, trocar `ffill()` por `fillna(0)` reprova dois |
-| 12 a 16 | 14h25 | a conta dos dois ativos de 30% no gráfico do risco contra a correlação (25,98% com correlação 0,5); anatomia da função (código passo a passo); M2 (5 min); M3 (6 min); a tabela das retiradas |
-| 17 a 19 | 14h37 | heatmap da cesta, móvel BOVA11 e dólar sobre preços e retornos, M4 (5 min) |
-| 20 a 22 | 14h45 | os asserts passo a passo, M5 (5 min), a tabela da caça ao bug e a ligação com `entregar()` |
-| 23 a 25 | 14h55 | preparação, o que o aluno faz e entrega, dúvidas com o GitLab aberto (5 min) |
-| 26 | 15h00 | cronômetro de 60 min da prova, com aviso aos 50 |
+| 11 | | padrão Arrange, Act, Assert: o teste do caminho feliz separado nas três etapas, uma linha por etapa |
+| 12 | | ciclo do TDD (vermelho, verde, refatoração) com o caso da célula vazia; o ciclo acende a cada passo |
+| 13 | | os três testes de unidade passo a passo; no notebook, trocar `ffill()` por `fillna(0)` reprova dois |
+| 14 a 18 | 14h25 | a conta dos dois ativos de 30% no gráfico do risco contra a correlação (25,98% com correlação 0,5); anatomia da função (código passo a passo); M2 (5 min); M3 (6 min); a tabela das retiradas |
+| 19 a 21 | 14h37 | heatmap da cesta, móvel BOVA11 e dólar sobre preços e retornos, M4 (5 min) |
+| 22 a 24 | 14h45 | os asserts passo a passo, M5 (5 min), a tabela da caça ao bug e a ligação com `entregar()` |
+| 25 a 27 | 14h55 | preparação, o que o aluno faz e entrega, dúvidas com o GitLab aberto (5 min) |
+| 28 | 15h00 | cronômetro de 60 min da prova, com aviso aos 50 |
 
 Respostas do slide 6: 105 fórmulas (15 x 14 / 2); o BOVA11 ficou sem cotação em 24/10/2025 e a
 fórmula leu a célula vazia como zero, sem aviso; trocar a janela exige reescrever os intervalos;

@@ -1,22 +1,23 @@
-// Cenas animadas da planilha do slide #planilha (Aula 03). Cada pergunta e cada
-// resposta são fragmentos do Reveal; o número de fragmentos visíveis vira o
-// atributo data-passo da cena, e o CSS decide qual planilha aparece e o que anima.
+// Cenas animadas por fragmentos (Aula 03): a planilha do slide #planilha e o ciclo do TDD.
+// O número de fragmentos visíveis da seção vira o atributo data-passo da cena, e o CSS
+// decide o que aparece e o que anima.
 (function () {
   'use strict';
 
+  var CENAS = '.planilha-cena, .passos-cena';
+
   function atualizar(secao) {
-    var cena = secao.querySelector('.planilha-cena');
-    if (!cena) return;
-    cena.setAttribute('data-passo', String(secao.querySelectorAll('.fragment.visible').length));
+    var passo = String(secao.querySelectorAll('.fragment.visible').length);
+    secao.querySelectorAll(CENAS).forEach(function (cena) { cena.setAttribute('data-passo', passo); });
   }
 
   function ligar() {
-    var secao = document.getElementById('planilha');
-    if (!secao) return;
-    atualizar(secao);
-    ['fragmentshown', 'fragmenthidden', 'slidechanged'].forEach(function (evento) {
-      Reveal.on(evento, function () { atualizar(secao); });
-    });
+    var secoes = Array.prototype.filter.call(document.querySelectorAll('.reveal .slides section'),
+      function (secao) { return secao.querySelector(CENAS); });
+    if (!secoes.length) return;
+    function todas() { secoes.forEach(atualizar); }
+    todas();
+    ['fragmentshown', 'fragmenthidden', 'slidechanged'].forEach(function (evento) { Reveal.on(evento, todas); });
   }
 
   if (window.Reveal && typeof Reveal.isReady === 'function' && Reveal.isReady()) ligar();
