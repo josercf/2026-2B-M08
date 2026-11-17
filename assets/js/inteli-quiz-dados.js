@@ -13,6 +13,17 @@
 //     sala(sessao)                              -> Promise<quantos entraram> (sem nomes)
 //     ouvir(sessao, aoMudar)                    -> função que cancela
 //
+// abrir e fechar de todos os componentes da página passam por uma fila única,
+// uma operação por vez. Os pedidos feitos no mesmo turno do navegador (a troca
+// de slide avisa todos os componentes de uma vez) seguem com os fechamentos na
+// frente das aberturas. quiz_fechar fecha todas as rodadas abertas da sessão:
+// sem a fila, o fechar do slide que sai disputa com o abrir do slide que entra,
+// e quando o fechar chega depois ele derruba a rodada recém-aberta (Aula 03,
+// 10/11/2026).
+//
+// No modo de memória, ?quiz-demo-atraso=abrir:30,fechar:200 atrasa cada
+// operação em milissegundos, para ensaiar e testar com a latência de uma rede.
+//
 // A versão Supabase usa as funções de exemplos/quiz-supabase/quiz.sql; ela não
 // escreve em tabela nenhuma diretamente.
 (function () {
@@ -20,6 +31,46 @@
 
   function demo() {
     return /[?&]quiz-demo=1/.test(window.location.search);
+  }
+
+  // --------------------------------------------------------------- fila
+
+  var LIMITE_FILA = 8000;
+  var fila = Promise.resolve();
+  var turno = [];
+  function nada() {}
+
+  // Falha não trava a fila, e uma requisição que nunca responde libera a fila
+  // depois de LIMITE_FILA milissegundos.
+  function despachar() {
+    var pedidos = turno;
+    turno = [];
+    pedidos.filter(function (p) { return p.nome === 'fechar'; })
+      .concat(pedidos.filter(function (p) { return p.nome !== 'fechar'; }))
+      .forEach(function (p) {
+        var resultado = fila.then(p.operacao);
+        var limite = new Promise(function (resolve) { setTimeout(resolve, LIMITE_FILA); });
+        fila = Promise.race([resultado.then(nada, nada), limite]);
+        resultado.then(p.resolve, p.reject);
+      });
+  }
+
+  function emOrdem(nome, operacao) {
+    return new Promise(function (resolve, reject) {
+      if (!turno.length) Promise.resolve().then(despachar);
+      turno.push({ nome: nome, operacao: operacao, resolve: resolve, reject: reject });
+    });
+  }
+
+  function ordenado(backend) {
+    ['abrir', 'fechar'].forEach(function (nome) {
+      var original = backend[nome];
+      backend[nome] = function () {
+        var args = arguments;
+        return emOrdem(nome, function () { return original.apply(backend, args); });
+      };
+    });
+    return backend;
   }
 
   // ----------------------------------------------------------- Supabase
@@ -113,6 +164,16 @@
     function id() { return 'm' + Math.random().toString(36).slice(2, 10); }
     if (canal) canal.onmessage = function () { ouvintes.forEach(function (f) { f(); }); };
 
+    var atraso = {};
+    (new URLSearchParams(window.location.search).get('quiz-demo-atraso') || '').split(',').forEach(function (par) {
+      var kv = par.split(':');
+      if (kv[1]) atraso[kv[0]] = Number(kv[1]);
+    });
+    function comAtraso(nome, operacao) {
+      if (!atraso[nome]) return operacao();
+      return new Promise(function (resolve) { setTimeout(resolve, atraso[nome]); }).then(operacao);
+    }
+
     return {
       tipo: 'memoria',
       entrar: function (sessao, nome, avatar) {
@@ -132,7 +193,7 @@
         gravar(e);
         return Promise.resolve(true);
       },
-      abrir: function (chave, sessao, pergunta, rodada, enunciado, opcoes) {
+      abrir: function (chave, sessao, pergunta, rodada, enunciado, opcoes) { return comAtraso('abrir', function () {
         var e = ler();
         e.rodadas.forEach(function (x) {
           if (x.sessao === sessao && !(x.pergunta === pergunta && x.rodada === rodada)) x.aberta = false;
@@ -148,8 +209,8 @@
         r.aberta_em = r.aberta_em || new Date().toISOString();
         gravar(e);
         return Promise.resolve(r.id);
-      },
-      fechar: function (chave, sessao, pergunta, correta) {
+      }); },
+      fechar: function (chave, sessao, pergunta, correta) { return comAtraso('fechar', function () {
         var e = ler();
         e.rodadas.forEach(function (x) {
           if (x.sessao === sessao) {
@@ -159,7 +220,7 @@
         });
         gravar(e);
         return Promise.resolve();
-      },
+      }); },
       rodadaAberta: function (sessao) {
         return Promise.resolve(ler().rodadas.filter(function (x) { return x.sessao === sessao && x.aberta; })[0] || null);
       },
@@ -182,8 +243,8 @@
 
   window.IntelIQuizDados = {
     criar: function () {
-      if (demo() || !window.supabase || !window.IntelIQuizConfig) return memoria();
-      return supabase();
+      if (demo() || !window.supabase || !window.IntelIQuizConfig) return ordenado(memoria());
+      return ordenado(supabase());
     },
     demo: demo
   };

@@ -15,6 +15,12 @@
 // Sair do slide fecha a rodada aberta. Com data-tempo > 0, a rodada fecha
 // sozinha no fim do cronômetro.
 //
+// Voltar a um slide cuja votação já fechou (ensaio antes da aula, ida e volta
+// no deck): sem nenhum voto na rodada, a votação reabre sozinha; com votos, o
+// resultado fica na tela e "Reabrir votação" reabre a mesma rodada, mantendo
+// os votos. Na Aula 03 de 10/11/2026 o slide visitado no ensaio ficou
+// encerrado, sem botão, e os celulares ficaram na espera.
+//
 // Abrir e fechar rodada exige a chave do professor, gravada uma vez neste
 // navegador por ?quiz-chave=<chave> ou pelo campo que o widget mostra quando
 // ela falta. Ela nunca entra no repositório.
@@ -132,6 +138,7 @@
     var bEncerrar = botao('encerrar', 'Encerrar votação');
     var bDeNovo = botao('rodada', 'Votar de novo');
     var bRevelar = botao('revelar', 'Revelar');
+    var bReabrir = botao('reabrir', 'Reabrir votação');
     var formChave = el('form', 'quiz-vivo-chave');
     var campo = el('input', '');
     campo.type = 'password';
@@ -154,6 +161,13 @@
     raiz.appendChild(lado);
 
     var estado = { rodada: 1, fase: 'parada', revelada: false, rodadaId: null };
+    // presente: o slide (e o fragment, se houver) está em cena.
+    // abandonada: saiu do slide com a abertura ainda a caminho do banco.
+    // versao: muda a cada abertura ou fechamento pedido por este slide; leitura
+    // que começou antes da mudança não serve para conferir a fase.
+    var presente = false;
+    var abandonada = false;
+    var versao = 0;
     var cancelarOuvir = null;
     var relogio = null;
     var fimCronometro = 0;
@@ -168,16 +182,29 @@
       bEncerrar.hidden = !temChave || estado.fase !== 'aberta';
       bDeNovo.hidden = !temChave || estado.fase !== 'encerrada' || estado.rodada >= maxRodadas || estado.revelada;
       bRevelar.hidden = !temChave || estado.fase !== 'encerrada' || estado.revelada || correta === null;
+      bReabrir.hidden = !temChave || estado.fase !== 'encerrada' || estado.revelada;
       rotuloRodada.textContent = maxRodadas > 1 ? 'Rodada ' + estado.rodada + ' de ' + maxRodadas : '';
       itens.forEach(function (li, i) {
         li.classList.toggle('qv-certa', estado.revelada && i === correta);
       });
     }
 
+    // Resolve com o número de votos da rodada atual (undefined sem conexão).
     function atualizarContagem() {
+      var lida = versao;
       return Promise.all([dados.rodadas(sessao, pergunta), dados.sala(sessao)]).then(function (r) {
         var rodadas = r[0];
         nSala.textContent = String(r[1]);
+        // O slide mostra a votação aberta e o banco diz que ela fechou (outra aba
+        // do deck, outro componente): mostra o fechamento e deixa o botão de reabrir.
+        var noBanco = rodadas.filter(function (x) { return x.rodada === estado.rodada; })[0];
+        if (lida === versao && estado.fase === 'aberta' && noBanco && noBanco.aberta === false) {
+          pararCronometro();
+          versao += 1;
+          estado.fase = 'encerrada';
+          avisar('A votação foi fechada fora deste slide. Use Reabrir votação para continuar.');
+          pintar();
+        }
         var ids = rodadas.map(function (x) { return x.id; });
         return dados.votos(ids).then(function (votos) {
           var porRodada = {};
@@ -202,6 +229,7 @@
             li.querySelector('.qv-pct').textContent = mostra && t ? Math.round((contas[estado.rodada][i] / t) * 100) + '%' : '';
           });
           raiz.classList.toggle('quiz-vivo-com-rodada-2', Boolean(totais[2]));
+          return totais[estado.rodada] || 0;
         });
       }).catch(function (e) { avisar('Sem conexão com o quiz (' + e.message + ').'); });
     }
@@ -231,9 +259,21 @@
       if (!chave) { avisar('Informe a chave do professor para abrir a votação.'); pintar(); return; }
       if (estado.fase === 'abrindo') return;
       estado.fase = 'abrindo';
+      abandonada = false;
+      versao += 1;
       avisar('Abrindo a votação');
       dados.abrir(chave, sessao, pergunta, estado.rodada, enunciado, opcoes).then(function (id) {
         estado.rodadaId = id;
+        versao += 1;
+        if (abandonada) {
+          // saiu() já pediu o fechamento, que chega ao banco depois desta abertura.
+          abandonada = false;
+          estado.fase = 'parada';
+          avisar('');
+          pintar();
+          if (presente) abrir();
+          return;
+        }
         estado.fase = 'aberta';
         avisar('');
         pintar();
@@ -250,7 +290,9 @@
     function encerrar() {
       pararCronometro();
       if (estado.fase !== 'aberta') return Promise.resolve();
+      versao += 1;
       estado.fase = 'encerrada';
+      avisar('');
       pintar();
       return dados.fechar(ler(), sessao).then(atualizarContagem).catch(function (e) { avisar('Não fechou (' + e.message + ').'); });
     }
@@ -260,6 +302,7 @@
       estado.rodada += 1;
       abrir();
     });
+    bReabrir.addEventListener('click', abrir);
     bRevelar.addEventListener('click', function () {
       estado.revelada = true;
       pintar();
@@ -276,14 +319,22 @@
     campo.addEventListener('keydown', function (e) { e.stopPropagation(); });
 
     function entrou() {
+      presente = true;
       if (!cancelarOuvir) cancelarOuvir = dados.ouvir(sessao, atualizarContagem);
-      if (estado.fase === 'parada' && !estado.revelada) abrir();
-      else atualizarContagem();
       pintar();
+      if (estado.fase === 'parada' && !estado.revelada) { abrir(); return; }
+      atualizarContagem().then(function (votos) {
+        if (presente && estado.fase === 'encerrada' && !estado.revelada && votos === 0) abrir();
+      });
     }
 
     function saiu() {
+      presente = false;
       if (estado.fase === 'aberta') encerrar();
+      else if (estado.fase === 'abrindo' && !abandonada) {
+        abandonada = true;
+        dados.fechar(ler(), sessao).catch(function () { /* a próxima abertura fecha as demais */ });
+      }
       pararCronometro();
       if (cancelarOuvir) { cancelarOuvir(); cancelarOuvir = null; }
     }
