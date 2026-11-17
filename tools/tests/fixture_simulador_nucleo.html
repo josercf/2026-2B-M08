@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>Fixture do núcleo do simulador</title></head>
+<body>
+<script src="../../assets/js/simulador-nucleo.js"></script>
+<script>
+  fetch('../../assets/data/aula04-cotacoes.json').then(function (r) { return r.json(); })
+    .then(function (dados) { window.cotacoes = dados; document.body.dataset.pronto = 'sim'; });
+</script>
+</body>
+</html>

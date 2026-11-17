@@ -120,9 +120,43 @@ uma aula para outra.
 | 01 Aquisição de Dados | 20/10 (ter), S2 | 28 | prontos | revisão de 13/10/2026 aplicada: Peer Instruction sobre o `end` exclusivo do yfinance, PETR4 no Bloco 3, pôster antes do grupamento, desafio com máquina limpa e cesta do grupo; notas do professor prontas |
 | 02 Pontos cegos do retorno | 05/11 (qui), S4 | 20 | prontos (da versão de 13/10) | redesenhada em 05/11/2026 (ADR-016): moeda no celular, quatro decks de grupo com ADR online e comitê; gabarito fora do repositório |
 | 03 Correlação e Covariância | 10/11 (ter), S5 | 29 | prontos | matriz na janela comum dos 15 ativos (1.423 retornos) e slide do custo da janela (ADR-009); régua de correlação como heurística, com a redução de risco 50/50 de cada par |
-| 04 Monte Carlo e Markowitz | 18/11 (qua), S6 | 25 | prontos | mesma janela comum da Aula 03 (ADR-009); uniforme normalizado comparado com Dirichlet(1) e Dirichlet(0,2) |
+| 04 Monte Carlo e Markowitz | 18/11 (qua), S6 | 26 | prontos | redesenhada em 17/11/2026 (ADR-018): simulador em cinco turnos, com portal, notebook, kit e tela de spec; a versão de 13/10 (25 slides, SLSQP e fronteira) segue nos arquivos `-v1` |
 | 05 Validação e Robustez | 01/12 (ter), S8 | 29 | prontos | janela comum desde 04/01/2021 (1.412 retornos), treino 2023-2024, teste 2025; sobreposição das 33 janelas, anos disjuntos e custo de reotimizar (ADR-010) |
 | 06 React, FastAPI e LLM | 16/12 (qua), S10 | 25 | prontos | exemplo em `exemplos/aula06-api-carteira/` (ADR-008), janela comum dos ativos pedidos |
+
+## Aula 04 em turnos (17/11/2026)
+
+Redesenho da Aula 04 para o encontro de 18/11/2026, pela spec
+`docs/superpowers/specs/2026-11-17-aula04-simulador-em-turnos-design.md` e pelo plano
+`docs/superpowers/plans/2026-11-17-aula04-simulador-em-turnos.md`, de oito tarefas. Decisão na
+ADR-018.
+
+| Peça | Onde | Teste |
+|---|---|---|
+| Cotações da aula (162 ativos, 718 pregões, 02/01/2024 a 13/11/2026) | `assets/data/aula04-cotacoes.json`, `exemplos/aula04-simulador/dados/` | `test_dados_aula04_simulador.py` |
+| Conta do simulador em Python e em JavaScript | `tools/simulador_referencia.py`, `assets/js/simulador-nucleo.js` | `test_simulador_referencia.py`, `test_simulador_paridade.py` |
+| Banco da sala | `exemplos/aula04-supabase/aula04.sql`, `assets/js/simulador-dados.js` | `test_simulador_sql.py` |
+| Portal de simulação | `simulador/index.html` | `test_simulador_portal.py` |
+| Notebook dos turnos 1 e 2 | `notebooks/aula04.ipynb` | `test_notebook_aula04_turnos.py` |
+| Kit dos turnos 3 a 5 | `exemplos/aula04-simulador/`, `materiais/aula04-simulador.zip` | `test_kit_aula04.py` |
+| Deck, tela de spec, material, referências e notas | `aulas/aula04.html`, `aulas/aula04-spec.html`, `materiais/aula04.html`, `referencias/aula04.html`, `docs/notas-do-professor/aula04.md`, `assets/css/aula04-turnos.css`, `assets/js/aula04-turnos.js`, `assets/js/aula04-spec.js` | `test_deck_aula04_turnos.py` |
+| Versão de 13/10/2026 preservada | arquivos `aula04-v1` em `aulas/`, `materiais/`, `referencias/`, `notebooks/` e `docs/notas-do-professor/` | `test_aula04.py` |
+| Planejamento e decisão | `PLANEJAMENTO_AULA_A_AULA.md` (Aula 04), ADR-018 | `test_planejamento.py`, `test_adrs.py` |
+
+A tela de spec reaproveita `assets/js/inteli-adr.js`, que ganhou três atributos opcionais
+(`data-pagina`, `data-rotulos` e os textos de espera); os testes da ADR online da Aula 02 seguem
+passando.
+
+Pendências deste redesenho:
+
+- A otimização com SLSQP e a fronteira saíram do encontro. A Aula 05 reutiliza a função `otimizar`
+  e o A4 depende desse conteúdo. Falta decidir se ele vira autoestudo com o material v1, abertura
+  da Aula 05 ou encontro extra. A seção da Aula 05 no `PLANEJAMENTO_AULA_A_AULA.md` ainda descreve
+  o que a Aula 04 anterior deixava pronto.
+- O `PLANO_DE_ENSINO.md` continua listando o A4 entre as entregas que a Aula 04 alimenta.
+- Ensaio do bloco 1 com o projetor, contagem das máquinas com agente funcionando e a lista dos
+  ativos dos grupos dependem do professor.
+- Commit e push dependem de autorização do professor, porque publicam no Pages.
 
 ## Em andamento
 

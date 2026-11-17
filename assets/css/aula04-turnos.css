@@ -1,0 +1,75 @@
+/* Aula 04 em turnos (ADR-018): QR code do portal, painel embutido, ficha de
+   cada turno, abas da visão de projetor e a tela de spec do grupo
+   (aulas/aula04-spec.html). Só tokens e canto reto (GRA-01). */
+
+/* QR code de um endereço fixo (assets/js/aula04-turnos.js). */
+.portal-entrada { display: grid; grid-template-columns: 300px 1fr; gap: 44px; margin-top: 22px; align-items: start; }
+.qr-fixo { border: 3px solid var(--seg-primaria); width: 300px; box-sizing: border-box; }
+.qr-fixo svg { display: block; width: 100%; height: auto; }
+.qr-fixo .qr-fundo { fill: var(--seg-base); }
+.qr-fixo .qr-modulo { fill: var(--seg-primaria); }
+.reveal .portal-endereco { margin: 12px 0 0; font-size: 18px; font-weight: 600; word-break: break-all; }
+
+/* Lista numerada com o número em destaque, em uma coluna. */
+.passos-numerados { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.passos-numerados li { display: flex; gap: 16px; align-items: flex-start; margin: 0; font-size: 22px; font-weight: 300; line-height: 1.35; }
+.reveal .passos-numerados .pn { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; font-weight: 700; color: var(--inteli-branco); background: var(--seg-primaria); }
+.passos-numerados.passos-densos { gap: 10px; }
+.passos-numerados.passos-densos li { font-size: 20px; }
+
+/* Painel do portal embutido no slide. */
+.painel-portal { width: 100%; height: 340px; border: 2px solid var(--seg-borda); background: var(--seg-base); box-sizing: border-box; display: block; margin-top: 14px; }
+.reveal .painel-link { margin: 8px 0 0; font-size: 18px; }
+.reveal .pergunta-previsao { margin: 14px 0 0; padding: 12px 18px; background: var(--seg-superficie); border-left: 6px solid var(--seg-destaque); font-size: 22px; font-weight: 600; line-height: 1.35; }
+
+/* Ficha do turno: função, onde roda, quem implementa e o que entrega. */
+.reveal .tabela-turno { margin-top: 10px; }
+.reveal .tabela-turno td { font-size: 18px; vertical-align: top; }
+.reveal .tabela-turno td:first-child { white-space: normal; }
+.reveal .exercise-slide[data-ficha] .exercise-steps { margin-top: 14px; gap: 6px; }
+.reveal .exercise-slide[data-ficha] .exercise-steps li { font-size: 20px; line-height: 1.35; margin-bottom: 4px; }
+.reveal .exercise-slide[data-ficha] .faixa-nota p { font-size: 19px; }
+
+/* Tabelas de referência do deck. */
+.reveal .tabela-a3 td { font-size: 18px; }
+.reveal .nota-slide { margin: 14px 0 0; font-size: 20px; font-weight: 300; line-height: 1.4; }
+
+/* Painel de links da spec: o botão de participação é da ADR da Aula 02. */
+.painel-spec .adr-participacao { display: none; }
+
+/* Visão do projetor: uma spec por vez, escolhida por turno e grupo. */
+.spec-abas { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.reveal .spec-abas button {
+  font: inherit; font-size: 18px; font-weight: 600; padding: 6px 16px; cursor: pointer;
+  color: var(--seg-texto); background: var(--seg-base); border: 2px solid var(--seg-borda); border-radius: 0;
+}
+.reveal .spec-abas button[aria-pressed="true"] { color: var(--inteli-branco); background: var(--seg-primaria); border-color: var(--seg-primaria); }
+.spec-abas .spec-abas-separador { width: 18px; }
+.spec-projetor { margin-top: 16px; }
+.spec-projetor [data-adr-comite][hidden] { display: none; }
+.reveal .spec-projetor .adr-comite-titulo { font-size: 24px; }
+.reveal .spec-projetor .adr-comite-decisao { font-size: 22px; }
+.reveal .spec-projetor .adr-comite-detalhes { font-size: 19px; }
+
+/* Tela de spec do grupo: cinco campos, sem a lista de integrantes (nenhum
+   nome de aluno vai para o banco; o autor gravado é o código do grupo). */
+.spec-online .adr-quem { display: none; }
+.adr-online.spec-online { grid-template-rows: auto 1fr 1fr auto; }
+.adr-online.spec-online [data-campo="titulo"] { grid-column: 1 / -1; grid-row: 1; }
+.adr-online.spec-online [data-campo="contexto"] { grid-row: 2; grid-column: 1; }
+.adr-online.spec-online [data-campo="criterios"] { grid-row: 2; grid-column: 2; }
+.adr-online.spec-online [data-campo="opcoes"] { grid-row: 3; grid-column: 1; }
+.adr-online.spec-online [data-campo="decisao"] { grid-row: 3; grid-column: 2; }
+.adr-online.spec-online .adr-rodape { grid-row: 4; }
+.adr-online.spec-online textarea { font-size: 19px; }
+.adr-online.spec-online [data-campo="decisao"] textarea { font-size: 19px; }
+.reveal .spec-online .spec-copiado { margin: 0; font-size: 16px; font-weight: 600; color: var(--seg-primaria); }
+/* Texto gerado pelo botão de copiar: fora do fluxo e sem capturar clique. */
+.adr-online.spec-online { position: relative; }
+.adr-online.spec-online .spec-saida {
+  position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; min-height: 0;
+  padding: 0; border: 0; opacity: 0; pointer-events: none;
+}
+.reveal .spec-aviso { margin: 24px 0 0; padding: 14px 18px; background: var(--seg-superficie); border-left: 6px solid var(--seg-destaque); font-size: 22px; }
+.adr-online.spec-online[hidden] { display: none; }
+.reveal .spec-projetor .adr-comite-detalhes dd { white-space: pre-line; line-height: 1.3; }

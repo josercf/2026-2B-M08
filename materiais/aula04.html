@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Material de apoio &middot; Aula 04 &middot; O simulador em cinco turnos</title>
+  <meta name="description" content="Material de apoio da Aula 04 do Módulo 08 AdmTech: preparação, roteiro dos cinco turnos do simulador de carteiras, definições numéricas, portal, notebook e kit, e o que fazer depois do encontro para o A3.">
+
+  <!-- Aula 04 redesenhada em 17/11/2026 (ADR-018). Este material acompanha o encontro em turnos.
+       O material da versão de 13/10/2026, com a otimização por SLSQP e a fronteira, está em
+       materiais/aula04-v1.html e é a leitura posterior indicada na seção "Depois do encontro".
+       Números citados: assets/data/aula04-cotacoes.json, travados em
+       tools/tests/test_deck_aula04_turnos.py. -->
+
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-material.css">
+</head>
+<body>
+  <div class="doc">
+
+    <header class="doc-header">
+      <p class="doc-eyebrow">Módulo 08 AdmTech &middot; Aula 04 &middot; 18/11/2026 &middot; Semana 6 &middot; Sprint 3</p>
+      <h1>Material de apoio: Da Nuvem à Fronteira, o simulador em cinco turnos</h1>
+      <p class="doc-subtitulo">Neste encontro cada grupo escreve o próprio <code>simulador.py</code>,
+      com testes, em cinco turnos. O módulo sorteia carteiras e devolve retorno, risco e Índice de
+      Sharpe de cada uma, que é o motor pedido no A3.</p>
+    </header>
+
+    <nav class="doc-toc" aria-label="Sumário">
+      <h2>Nesta página</h2>
+      <ol>
+        <li><a href="#preparacao">Preparação</a></li>
+        <li><a href="#ferramentas">Portal, notebook e kit</a></li>
+        <li><a href="#turnos">Roteiro dos cinco turnos</a></li>
+        <li><a href="#definicoes">Definições numéricas</a></li>
+        <li><a href="#agente">Trabalho com o agente</a></li>
+        <li><a href="#depois">Depois do encontro</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc-conteudo">
+
+      <section class="doc-secao" id="preparacao">
+        <h2>1. Preparação</h2>
+        <p>O encontro mede o preparo no segundo bloco, com duas perguntas de quiz ao vivo sobre os
+        autoestudos da semana. A trilha mínima diz por onde começar quando o tempo da semana não
+        alcança tudo.</p>
+
+        <div id="trilha-minima">
+        <h3>Trilha mínima</h3>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Prioridade</th><th>Item</th><th>Tempo</th><th>Para que serve no encontro</th></tr></thead>
+            <tbody>
+              <tr><td>Indispensável</td><td>Autoestudo: Carteiras e simulação de Monte Carlo com Python</td><td>65 min</td><td>o sorteio dos pesos, o retorno e o risco da carteira e o Índice de Sharpe, que são as funções dos turnos 1 a 4</td></tr>
+              <tr><td>Indispensável</td><td>Autoverificação de cinco perguntas, sem nota</td><td>sem duração declarada</td><td>mostra ao aluno o que rever antes do encontro</td></tr>
+              <tr><td>Indispensável</td><td>Máquina com Python, o kit descompactado e um agente de codificação aberto</td><td>sem duração declarada</td><td>os turnos 3 a 5 rodam no terminal, sem rede</td></tr>
+              <tr><td>Recomendado</td><td>Autoestudo: Da nuvem à fronteira eficiente de Markowitz</td><td>70 min</td><td>a leitura da nuvem no bloco final e a pergunta sobre a melhor carteira sorteada</td></tr>
+              <tr><td>Aprofundamento</td><td>Material da versão anterior da aula, sobre otimização e fronteira</td><td>sem duração declarada</td><td>depois do encontro, como base do A4</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>A trilha indispensável soma 65 min de autoestudo; com o recomendado, 135 min. Os tempos
+        dos autoestudos são os da Adalove. Nesta semana não há Atividade Ponderada.</p>
+        </div>
+
+        <h3>1.1 Autoestudos da semana, na Adalove</h3>
+        <ol>
+          <li><strong>Carteiras e simulação de Monte Carlo com Python</strong> (65 min)</li>
+          <li><strong>Da nuvem à fronteira eficiente de Markowitz</strong> (70 min)</li>
+        </ol>
+        <p>Os dois vêm do capítulo 9 de Caetano (2021), citado na
+        <a href="../referencias/aula04.html">página de referências</a>.</p>
+
+        <h3>1.2 Ambiente</h3>
+        <p>Antes do encontro, baixe o <a href="aula04-simulador.zip">kit do simulador</a>,
+        descompacte dentro do repositório do grupo e rode <code>python checar_ambiente.py</code>
+        na pasta do kit. O verificador confere a versão do Python e as bibliotecas pandas, NumPy,
+        matplotlib e pytest. O kit não baixa nada: os preços estão em <code>dados/precos.csv</code>.</p>
+
+        <h3>1.3 Autoverificação, sem nota</h3>
+        <p>Responda antes de abrir a resposta comentada.</p>
+        <ol>
+          <li>Um sorteio gera um número entre 0 e 1 para cada ativo e divide cada número pela soma de
+          todos. O que a divisão garante?
+            <details><summary>Resposta comentada</summary>
+            <p>Que os pesos somam 1, ou seja, que a carteira está toda investida. O sorteio entre 0 e
+            1 já garante que nenhum peso é negativo.</p></details></li>
+          <li>Uma carteira tem metade em cada um de dois ativos. Num pregão, um sobe 2% e o outro cai
+          1%. Qual é o retorno da carteira nesse pregão?
+            <details><summary>Resposta comentada</summary>
+            <p>0,5%: 0,5 vezes 2% mais 0,5 vezes -1%. É a conta da função do turno 1.</p></details></li>
+          <li>O retorno diário médio de uma carteira é multiplicado por 252 para virar anual. Por
+          qual número o desvio padrão diário é multiplicado?
+            <details><summary>Resposta comentada</summary>
+            <p>Pela raiz de 252. A variância cresce com o número de pregões, e o desvio padrão é a
+            raiz da variância.</p></details></li>
+          <li>Uma carteira hipotética rende 20% ao ano com risco de 10% ao ano, e a taxa livre de
+          risco é 14% ao ano. Qual é o Índice de Sharpe?
+            <details><summary>Resposta comentada</summary>
+            <p>0,60: retorno menos a taxa livre de risco, dividido pelo risco.</p></details></li>
+          <li>Entre 10.000 carteiras sorteadas, a de maior Índice de Sharpe é a carteira ótima?
+            <details><summary>Resposta comentada</summary>
+            <p>Ela é a melhor entre as sorteadas. O sorteio não procura a melhor carteira, e uma
+            otimização pode achar outra com Sharpe maior. O A3 pede essa explicação por escrito.</p></details></li>
+        </ol>
+      </section>
+
+      <section class="doc-secao" id="ferramentas">
+        <h2>2. Portal, notebook e kit</h2>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Ferramenta</th><th>Onde abre</th><th>Para que serve</th></tr></thead>
+            <tbody>
+              <tr><td><a href="../simulador/">Portal de simulação</a></td><td>navegador, no computador ou no celular</td><td>montar a carteira do grupo, ver retorno e risco, sortear carteiras e marcar os turnos concluídos</td></tr>
+              <tr><td><a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula04.ipynb" target="_blank" rel="noopener">Notebook da Aula 04</a></td><td>Google Colab</td><td>turnos 1 e 2, escritos à mão, com <code>conferir_turno1</code> e <code>conferir_turno2</code></td></tr>
+              <tr><td><a href="aula04-simulador.zip">Kit do simulador</a></td><td>terminal, dentro do repositório do grupo</td><td>turnos 3 a 5, com <code>SPEC.md</code>, <code>simulador.py</code>, testes, <code>conferir.py</code> e duas ADRs de exemplo</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>O portal entra com iniciais e grupo, sem senha. O arquivo de cotações da aula tem 162
+        ativos e 718 pregões, de 02/01/2024 a 13/11/2026, a data de referência da carteira montada
+        na aula de Negócios. Se um ativo do grupo não estiver no arquivo, o portal avisa, e o grupo
+        troca por outro do mesmo setor.</p>
+        <p>O número que o portal mostra para a sua carteira é o valor esperado dos seus testes nos
+        turnos 1 e 2. Por isso a carteira e o período informados no notebook precisam ser os mesmos
+        do portal: os mesmos ativos e 9 pregões.</p>
+      </section>
+
+      <section class="doc-secao" id="turnos">
+        <h2>3. Roteiro dos cinco turnos</h2>
+        <p>Todo turno segue a mesma sequência: ler a spec, escrever o teste à mão, rodar e ver o
+        teste falhar, implementar, rodar de novo, ver passar e marcar o turno no portal.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Turno</th><th>Função</th><th>Onde</th><th>Quem implementa</th><th>Entrega</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td><code>retorno_do_dia(pesos, retornos_do_dia)</code></td><td>Colab</td><td>o aluno, à mão e sem IA</td><td><code>conferir_turno1</code> em OK</td></tr>
+              <tr><td>2</td><td><code>metricas(pesos, retornos)</code></td><td>Colab</td><td>o aluno, à mão e sem IA</td><td><code>conferir_turno2</code> em OK e <code>simulador.py</code> gravado</td></tr>
+              <tr><td>3</td><td><code>sortear_pesos(k, rng)</code></td><td>kit</td><td>o agente, com a spec pronta e o teste da dupla</td><td><code>python conferir.py 3</code> em OK</td></tr>
+              <tr><td>4</td><td><code>simular(retornos, n, semente, rf)</code></td><td>tela de spec e kit</td><td>o agente, com a spec e o teste da dupla</td><td><code>python conferir.py 4</code> em OK e o gráfico de risco e retorno</td></tr>
+              <tr><td>5</td><td><code>simular</code> com requisito de tempo e <code>posicionar(pesos, retornos, rf)</code></td><td>tela de spec e kit</td><td>o agente, com a spec e o teste da dupla</td><td><code>python conferir.py 5</code> em OK e a carteira do grupo marcada na nuvem</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Do Colab para o kit</h3>
+        <ol>
+          <li>A última célula do notebook grava <code>simulador.py</code> com as duas funções.</li>
+          <li>Na pasta do kit, rode <code>python checar_ambiente.py</code>.</li>
+          <li>Cole as duas funções no <code>simulador.py</code> do kit e rode
+          <code>python conferir.py 1</code> e <code>python conferir.py 2</code>.</li>
+          <li>Abra o agente na pasta do kit. O primeiro pedido é de leitura: "Leia o SPEC.md e o
+          AGENTS.md e diga o que o turno 3 pede, sem escrever código."</li>
+        </ol>
+        <h3>A spec dos turnos 4 e 5</h3>
+        <p>A spec tem cinco campos: Função, Entrada, Saída, Casos de borda e Critério de aceite. A
+        do turno 3 vem preenchida no <code>SPEC.md</code> e serve de modelo. As dos turnos 4 e 5 o
+        grupo escreve na tela de spec, pelo link que o professor envia, e leva para o
+        <code>SPEC.md</code> de cada dupla com o botão "Copiar como SPEC.md".</p>
+      </section>
+
+      <section class="doc-secao" id="definicoes">
+        <h2>4. Definições numéricas</h2>
+        <p>O portal e o Python usam as mesmas definições. Se a função do grupo seguir esta tabela,
+        o número dela bate com o do portal nos turnos 1 e 2.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Medida</th><th>Definição</th></tr></thead>
+            <tbody>
+              <tr><td>Retorno diário</td><td>retorno simples do preço ajustado, de um pregão para o seguinte</td></tr>
+              <tr><td>Janela</td><td>janela comum dos ativos escolhidos, com a regra de ausência da ADR-009</td></tr>
+              <tr><td>Retorno da carteira no pregão</td><td>soma de cada peso vezes o retorno do ativo no pregão</td></tr>
+              <tr><td>Retorno anual</td><td>média dos retornos diários da carteira vezes 252</td></tr>
+              <tr><td>Risco anual</td><td>desvio padrão amostral (<code>ddof=1</code>) dos retornos diários da carteira vezes raiz de 252</td></tr>
+              <tr><td>Índice de Sharpe</td><td>retorno anual menos a taxa livre de risco, dividido pelo risco anual; a taxa é parâmetro da função e vem de <code>dados/rf.txt</code></td></tr>
+              <tr><td>Sorteio dos pesos</td><td>uniforme normalizado: um número entre 0 e 1 por ativo, cada um dividido pela soma</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Os 9 pregões servem aos turnos 1 e 2 porque cabem numa tabela que se confere à mão. A
+        nuvem usa 252 pregões, porque risco medido em 9 pregões muda muito de um dia para o outro.</p>
+        <p>Do turno 3 em diante há sorteio. O gerador aleatório do navegador e o do NumPy produzem
+        sequências diferentes, então o portal deixa de servir como valor esperado. Os testes passam
+        a verificar propriedades: os pesos somam 1, nenhum é negativo, a tabela tem o formato
+        combinado, a mesma semente devolve o mesmo resultado e o tempo fica dentro do limite.</p>
+      </section>
+
+      <section class="doc-secao" id="agente">
+        <h2>5. Trabalho com o agente</h2>
+        <p>Nos turnos 3 a 5 o agente de codificação escreve a implementação. A dupla escreve a spec
+        e o teste, e confere o resultado.</p>
+        <div class="doc-tabela-rolagem">
+          <table class="doc-tabela">
+            <thead><tr><th>Etapa</th><th>Quem faz</th><th>Como conferir</th></tr></thead>
+            <tbody>
+              <tr><td>Spec do turno</td><td>a dupla</td><td>os cinco campos estão preenchidos no <code>SPEC.md</code></td></tr>
+              <tr><td>Teste da dupla</td><td>a dupla, à mão</td><td><code>pytest</code> falha antes da implementação</td></tr>
+              <tr><td>Implementação</td><td>o agente</td><td><code>pytest</code> passa sem nenhum teste alterado</td></tr>
+              <tr><td>Aceite</td><td>a dupla</td><td><code>python conferir.py</code> com o número do turno imprime OK</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>O arquivo <code>AGENTS.md</code> do kit instrui o agente a ler a spec, a não alterar os
+        testes e a nunca editar o <code>conferir.py</code>. Se o agente parar e pedir que a dupla
+        preencha um campo ou escreva o <code>assert</code>, ele está seguindo a instrução.</p>
+        <div class="doc-nota">
+          <p><strong>Dupla sem agente funcionando.</strong> Junte-se a outra dupla do mesmo grupo. A
+          spec e o teste continuam sendo escritos por todos.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="depois">
+        <h2>6. Depois do encontro</h2>
+        <p><strong>Avanço do A3.</strong> O A3 Motor de Simulação de Monte Carlo vale 3 pontos. A
+        review da Sprint 3 é em 19/11/2026, e a entrega vai até sexta, 20/11/2026, 23h59. O
+        <code>simulador.py</code> do encontro é a base da entrega. Falta:</p>
+        <ul>
+          <li>rodar o simulador com a cesta completa do grupo e medir o tempo com 2 a 20 ativos;</li>
+          <li>o gráfico da nuvem com cor pelo Índice de Sharpe;</li>
+          <li>a leitura escrita da nuvem, com a explicação de por que a simulação não substitui a
+          otimização;</li>
+          <li>o <code>SPEC.md</code> com plano de testes, o README e as docstrings;</li>
+          <li>a ADR individual de cada aluno, sobre uma decisão que ele tomou. As duas ADRs do kit
+          são do professor, servem de exemplo de formato e não contam como entrega.</li>
+        </ul>
+        <p><strong>Leitura posterior sobre otimização.</strong> A otimização com restrições e a
+        fronteira eficiente não foram trabalhadas neste encontro. O
+        <a href="aula04-v1.html">material da versão anterior da Aula 04</a> cobre o assunto, com o
+        <a href="../aulas/aula04-v1.html">deck</a> e o
+        <a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula04-v1.ipynb" target="_blank" rel="noopener">notebook</a>
+        correspondentes. A Aula 05 e o A4 partem desse conteúdo.</p>
+        <p>As fontes estão na <a href="../referencias/aula04.html">página de referências</a>.</p>
+      </section>
+
+    </main>
+
+    <p class="doc-rodape">Prof. José Romualdo &middot; Módulo 08 AdmTech &middot; Computação &middot;
+    2026-2B-T19</p>
+
+  </div>
+
+  <nav class="doc-nav" aria-label="Navegação da aula">
+    <a href="../index.html"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#home"></use></svg>Portal</a>
+    <a href="../aulas/aula04.html"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#slideshow"></use></svg>Slides</a>
+    <a href="../referencias/aula04.html"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#link"></use></svg>Referências</a>
+  </nav>
+</body>
+</html>

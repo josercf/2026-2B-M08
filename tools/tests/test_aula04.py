@@ -20,9 +20,9 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import medidas_aula04 as m  # noqa: E402
 
-DECK = os.path.join(m.RAIZ, "aulas", "aula04.html")
+DECK = os.path.join(m.RAIZ, "aulas", "aula04-v1.html")
 DATA = os.path.join(m.RAIZ, "assets", "data")
-NOTEBOOK = os.path.join(m.RAIZ, "notebooks", "aula04.ipynb")
+NOTEBOOK = os.path.join(m.RAIZ, "notebooks", "aula04-v1.ipynb")
 
 
 def _r(valor, casas=4):
@@ -421,15 +421,15 @@ def test_deck_declara_os_dois_widgets_e_as_tres_animacoes():
 
 def test_sem_travessao_nos_artefatos_da_aula():
     for caminho in (DECK, NOTEBOOK,
-                    os.path.join(m.RAIZ, "materiais", "aula04.html"),
-                    os.path.join(m.RAIZ, "referencias", "aula04.html"),
-                    os.path.join(m.RAIZ, "docs", "notas-do-professor", "aula04.md")):
+                    os.path.join(m.RAIZ, "materiais", "aula04-v1.html"),
+                    os.path.join(m.RAIZ, "referencias", "aula04-v1.html"),
+                    os.path.join(m.RAIZ, "docs", "notas-do-professor", "aula04-v1.md")):
         with open(caminho, encoding="utf-8") as fh:
             assert chr(0x2014) not in fh.read(), caminho
 
 
 def test_material_cita_os_numeros_medidos():
-    with open(os.path.join(m.RAIZ, "materiais", "aula04.html"), encoding="utf-8") as fh:
+    with open(os.path.join(m.RAIZ, "materiais", "aula04-v1.html"), encoding="utf-8") as fh:
         material = fh.read()
     n = m.nuvem()
     mv = m.carteira(m.variancia_minima())
@@ -457,7 +457,7 @@ def test_material_cita_os_numeros_medidos():
 
 
 def test_referencias_copiam_os_autoestudos_da_semana_6():
-    with open(os.path.join(m.RAIZ, "referencias", "aula04.html"), encoding="utf-8") as fh:
+    with open(os.path.join(m.RAIZ, "referencias", "aula04-v1.html"), encoding="utf-8") as fh:
         pagina = fh.read()
     with open(os.path.join(m.RAIZ, "docs", "autoestudos-por-semana.md"), encoding="utf-8") as fh:
         fonte = fh.read()
@@ -605,7 +605,7 @@ def test_quiz_final_inclui_a_distribuicao_dos_pesos():
 
 
 def test_material_cita_a_comparacao_de_distribuicoes():
-    with open(os.path.join(m.RAIZ, "materiais", "aula04.html"), encoding="utf-8") as fh:
+    with open(os.path.join(m.RAIZ, "materiais", "aula04-v1.html"), encoding="utf-8") as fh:
         material = fh.read()
     for valor in _numeros_da_comparacao() + [_num(_esquemas()["dirichlet_02"]["ativos_efetivos_melhor"]),
                                              "Dirichlet(1)", "Dirichlet(0,2)", "Devroye"]:
@@ -614,7 +614,7 @@ def test_material_cita_a_comparacao_de_distribuicoes():
 
 
 def test_referencias_trazem_a_amostragem_no_simplex():
-    with open(os.path.join(m.RAIZ, "referencias", "aula04.html"), encoding="utf-8") as fh:
+    with open(os.path.join(m.RAIZ, "referencias", "aula04-v1.html"), encoding="utf-8") as fh:
         pagina = fh.read()
     complementar = pagina.split('id="complementar"')[1]
     itens = re.findall(r"<li>", complementar.split("</ol>")[0])
@@ -623,7 +623,7 @@ def test_referencias_trazem_a_amostragem_no_simplex():
 
 
 def test_notas_do_professor_citam_a_comparacao():
-    with open(os.path.join(m.RAIZ, "docs", "notas-do-professor", "aula04.md"), encoding="utf-8") as fh:
+    with open(os.path.join(m.RAIZ, "docs", "notas-do-professor", "aula04-v1.md"), encoding="utf-8") as fh:
         notas = fh.read()
     e = _esquemas()
     for valor in (_num(e["dirichlet_1"]["melhor_sharpe"]), _num(e["dirichlet_02"]["melhor_sharpe"]),
@@ -649,8 +649,8 @@ def test_notebook_compara_as_tres_distribuicoes():
 
 RAIZ_C07 = m.RAIZ
 DECK_C07 = DECK
-MATERIAL_C07 = os.path.join(m.RAIZ, "materiais", "aula04.html")
-NOTAS_C07 = os.path.join(m.RAIZ, "docs", "notas-do-professor", "aula04.md")
+MATERIAL_C07 = os.path.join(m.RAIZ, "materiais", "aula04-v1.html")
+NOTAS_C07 = os.path.join(m.RAIZ, "docs", "notas-do-professor", "aula04-v1.md")
 PRATICAS_C07 = [("pratica-motor", 12), ("pratica-fronteira", 12)]
 MARCADORES_NOTAS_C07 = ["## Bloco 3: o motor", "## Bloco 6: a fronteira"]
 TITULO_PLANEJAMENTO_C07 = "### Aula 04 "

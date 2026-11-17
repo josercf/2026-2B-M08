@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aula 04 - Spec do turno - Grupo</title>
+
+  <!-- Tela de spec da Aula 04 (ADR-018). Abre com ?g=G01&t=<token>&turno=4 (ou 5); o link de cada
+       grupo sai do slide "Spec do turno N: links dos grupos e prazo" de aulas/aula04.html.
+       Reaproveita o formulário da ADR online (assets/js/inteli-adr.js) na sessão
+       m08-aula04-2026-11-18-t4 ou -t5. O banco só aceita os campos da ADR, então:
+       titulo = Função, contexto = Entrada, criterios = Saída, opcoes = Casos de borda,
+       decisao = Critério de aceite. Com ?quiz-demo=1 funciona em memória. -->
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-theme.css">
+  <link rel="stylesheet" href="../assets/css/inteli-adr.css">
+  <link rel="stylesheet" href="../assets/css/aula04-turnos.css">
+  <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <section class="content-slide slide-grupo slide-adr" id="spec">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area slide-title-area-cronometro">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Spec do turno <span data-spec-turno>4</span>: grupo <span data-spec-grupo>a definir</span></h2>
+          </div>
+          <p class="adr-cronometro" data-adr-cronometro data-fase="espera">Prazo ainda não iniciado</p>
+        </div>
+        <div class="adr-area">
+          <p class="spec-aviso" data-spec-aviso hidden>Este endereço precisa do grupo e do turno. Abra o link que o professor enviou no Slack, no formato <code>aula04-spec.html?g=G01&amp;t=...&amp;turno=4</code>.</p>
+          <form class="adr-online spec-online" data-adr data-spec data-sessao="m08-aula04-2026-11-18-t4" data-grupo="G01">
+            <div data-campo="titulo">
+              <label for="spec-funcao">Função <small>nome e parâmetros, em uma linha</small></label>
+              <input id="spec-funcao" name="titulo" type="text" maxlength="200" autocomplete="off">
+            </div>
+            <div data-campo="contexto">
+              <label for="spec-entrada">Entrada <small>tipo e formato de cada parâmetro</small></label>
+              <textarea id="spec-entrada" name="contexto" maxlength="4000"></textarea>
+            </div>
+            <div data-campo="criterios">
+              <label for="spec-saida">Saída <small>o que a função devolve, e em que unidade</small></label>
+              <textarea id="spec-saida" name="criterios" maxlength="4000"></textarea>
+            </div>
+            <div data-campo="opcoes">
+              <label for="spec-borda">Casos de borda <small>entradas que a função recusa ou trata à parte</small></label>
+              <textarea id="spec-borda" name="opcoes" maxlength="4000"></textarea>
+            </div>
+            <div data-campo="decisao">
+              <label for="spec-aceite">Critério de aceite <small>o teste que precisa passar</small></label>
+              <textarea id="spec-aceite" name="decisao" maxlength="4000"></textarea>
+            </div>
+            <div class="adr-rodape">
+              <p class="adr-estado">Conectando...</p>
+              <p class="spec-copiado" aria-live="polite"></p>
+              <button type="button" class="spec-copiar">Copiar como SPEC.md</button>
+            </div>
+            <textarea class="spec-saida" readonly tabindex="-1" aria-hidden="true"></textarea>
+          </form>
+        </div>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Spec do simulador</p>
+          <p class="footer-page">1</p>
+        </div>
+      </section>
+
+      <section class="content-slide slide-grupo" id="depois">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div>
+            <div class="accent-bar"></div>
+            <h2>Depois da spec: teste, agente e conferência</h2>
+          </div>
+        </div>
+        <ol class="grupo-passos">
+          <li>Colem o texto copiado no <code>SPEC.md</code> do kit, no lugar do bloco do turno.</li>
+          <li>Escrevam à mão o <code>assert</code> do teste da dupla, rodem <code>pytest</code> e vejam falhar.</li>
+          <li>Peçam a implementação ao agente, rodem <code>python conferir.py</code> com o número do turno e marquem o turno em <a href="../simulador/#progresso">Progresso, no portal</a>.</li>
+        </ol>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Spec do simulador</p>
+          <p class="footer-page">2</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280, height: 720, center: false, margin: 0,
+      hash: true, slideNumber: false, pdfSeparateFragments: false, transition: 'fade'
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+  <script src="../assets/js/inteli-quiz-config.js"></script>
+  <script src="../assets/js/inteli-aula02-dados.js"></script>
+  <script src="../assets/js/aula04-spec.js"></script>
+  <script src="../assets/js/inteli-adr.js"></script>
+  <script src="../assets/js/inteli-zoom.js"></script>
+  <script src="../assets/js/inteli-tela-cheia.js"></script>
+  <script src="../assets/js/inteli-print.js"></script>
+</body>
+</html>

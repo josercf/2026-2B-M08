@@ -188,16 +188,19 @@ Depois do encontro
 ### Aula 04 - Semana 6 - Da Nuvem à Fronteira: Monte Carlo e Otimização de Markowitz  (Sprint 3)
 
 Data: 18/11/2026 (quarta), conforme a Adalove da turma 2026-2B-T19. Horário a confirmar. Aula 28 do módulo na planilha.
-Entrega que alimenta: A3 Motor de Simulação de Monte Carlo (peso 3) e A4 Otimizador de Carteira com Fronteira Eficiente (peso 3), que a Adalove lista nas Sprints 3 e 4; review da Sprint 3 em 19/11/2026.
-O que a aula anterior deixou pronto: a Aula 03 deixou pronta a matriz de covariância anualizada da cesta e a curva de risco de dois ativos em função da correlação.
-O que esta aula deixa pronto: nuvem de 10.000 carteiras, carteiras de variância mínima e de máximo Sharpe e a fronteira de 50 pontos.
+Entrega que alimenta: A3 Motor de Simulação de Monte Carlo (peso 3), com review da Sprint 3 em 19/11/2026 e entrega em 20/11/2026, 23h59. O A4 Otimizador de Carteira com Fronteira Eficiente (peso 3), que a Adalove lista nas Sprints 3 e 4, deixa de ser alimentado por este encontro (ADR-018).
+O que a aula anterior deixou pronto: a Aula 03 deixou prontas as funções de retorno e de volatilidade da carteira escritas em Python, com testes de unidade, e a matriz de correlação da cesta.
+O que esta aula deixa pronto: um módulo `simulador.py` por dupla, com testes, que calcula o retorno e o risco de uma carteira, sorteia N carteiras e devolve retorno, risco e Índice de Sharpe de cada uma, com o gráfico da nuvem e a carteira do grupo marcada sobre ela. A otimização com SLSQP, as carteiras de variância mínima e de máximo Sharpe e a fronteira saem do encontro.
+
+Formato redesenhado em 17/11/2026 (ADR-018). O roteiro anterior, com o motor pronto, o SLSQP e a
+fronteira de 50 pontos, corresponde aos artefatos `-v1` (`aulas/aula04-v1.html`,
+`materiais/aula04-v1.html`, `notebooks/aula04-v1.ipynb`).
 
 Antes do encontro
   Autoestudo: Carteiras e simulação de Monte Carlo com Python (65 min)
   Autoestudo: Da nuvem à fronteira eficiente de Markowitz (70 min)
-  Preparação no material de apoio: animação da nuvem de Monte Carlo acumulando pontos; animação da
-    fronteira traçada sobre a nuvem; animação do SLSQP caminhando até o ótimo no triângulo de pesos
-    de três ativos; autoverificação de cinco perguntas sem nota.
+  Preparação no material de apoio: trilha mínima, kit do simulador baixado e conferido com
+    `python checar_ambiente.py`, e autoverificação de cinco perguntas sem nota.
 
 Daily da equipe (15 min)
   O que fiz, o que vou fazer, impedimentos. A equipe traz o estado do motor de simulação e o tempo
@@ -205,37 +208,46 @@ Daily da equipe (15 min)
   segundos.
 
 Metodologia ativa (105 min)
-  Bloco 1 (0 a 15 min)  Resgate da covariância da Aula 03 e Peer Instruction: entre 10.000
-    carteiras sorteadas, a de maior Índice de Sharpe é a carteira ótima. Votar, discutir em dupla,
-    votar de novo.
-  Bloco 2 (15 a 30 min)  Pesos, retorno e variância em forma vetorial, e o Índice de Sharpe com o
-    CDI no lugar da taxa livre de risco. Widget do triângulo de pesos de três ativos, com a turma
-    prevendo onde o ponto cai no plano risco-retorno antes de arrastar o vértice.
-  Bloco 3 (30 a 45 min)  Dupla no notebook: motor vetorizado que sorteia 10.000 carteiras com pesos
-    normalizados e devolve retorno, volatilidade e Sharpe de cada uma em menos de 10 segundos.
-    Cronômetro de 12 minutos, condutor e navegador trocando na metade.
-  Bloco 4 (45 a 60 min)  Widget de sorteio progressivo: a melhor carteira sorteada comparada com a
-    ótima, conforme o número de sorteios cresce. Pergunta disparada: quantos sorteios faltariam
-    para a melhor sorteada encostar na ótima.
-  Bloco 5 (60 a 75 min)  Otimização com restrições: função objetivo, soma dos pesos igual a 1,
-    limites sem venda a descoberto e `scipy.optimize.minimize` com SLSQP. Variância mínima e máximo
-    Sharpe resolvidos ao vivo, com a animação do SLSQP retomada quadro a quadro. Antes de rodar o
-    otimizador, a turma prevê qual das duas carteiras vai concentrar mais peso num único ativo, e a
-    previsão fica no quadro para ser comparada com o resultado na tela.
-  Bloco 6 (75 a 90 min)  Dupla no notebook: otimizador das duas carteiras e fronteira de 50 pontos
-    de retorno alvo desenhada sobre a nuvem do bloco 3. Cronômetro de 12 minutos.
-  Bloco 7 (90 a 105 min)  Quiz de verificação de três perguntas e amarração com a Sprint 3: o A3
-    (peso 3, entrega em 20/11/2026, 23h59), fechado com a nuvem e a leitura escrita de por que a simulação não
-    substitui a otimização, e a prévia do A4 na Sprint 4, que entrega este otimizador como módulo
-    Python validado; a aplicação web fica para o A5 (ADR-007).
+  Bloco 1 (0 a 15 min)  Portal de simulação: cada aluno entra com iniciais e grupo, monta a
+    carteira com os ativos que o grupo escolheu na aula de Negócios e escolhe 9 pregões. Antes de
+    simular, a turma prevê onde a carteira de pesos iguais cai dentro da nuvem de carteiras
+    sorteadas, e a previsão é conferida no painel da sala, com a simulação de dois alunos aberta
+    no projetor.
+  Bloco 2 (15 a 30 min)  Verificação do preparo por quiz ao vivo, com duas perguntas sobre os
+    autoestudos (normalização dos pesos e Índice de Sharpe). Leitura da spec do simulador, da
+    anatomia de um turno (ler a spec, escrever o teste, ver falhar, implementar, ver passar e
+    marcar) e das duas ADRs de exemplo do kit.
+  Bloco 3 (30 a 45 min)  Dupla no notebook: turnos 1 e 2, à mão e sem IA, no Colab. Cada aluno
+    escreve `retorno_do_dia` e `metricas` com o colega revisando, usa como valor esperado o número
+    que o portal mostrou para a própria carteira e fecha com `conferir_turno1` e `conferir_turno2`
+    em OK e a marcação no placar.
+  Bloco 4 (45 a 60 min)  Dupla no notebook, agora no kit do simulador: passagem do Colab para o
+    terminal e turno 3, `sortear_pesos`, o primeiro com agente de codificação. A spec vem pronta,
+    a dupla escreve o teste e o agente implementa. Fecha com `python conferir.py 3` em OK e a
+    marcação no placar.
+  Bloco 5 (60 a 75 min)  Dupla no notebook, no kit: turno 4, `simular`. O grupo escreve a spec na
+    tela de spec, cada dupla escreve o teste e o agente implementa. Fecha com
+    `python conferir.py 4` em OK, o gráfico de risco e retorno e a marcação no placar.
+  Bloco 6 (75 a 90 min)  Dupla no notebook, no kit: turno 5, o requisito de 10.000 simulações em
+    menos de 10 segundos com 2 a 20 ativos e `posicionar`, que marca a carteira do grupo sobre a
+    nuvem. Fecha com `python conferir.py 5` em OK e a marcação no placar. É o primeiro turno a
+    virar tarefa da sprint se o encontro atrasar.
+  Bloco 7 (90 a 105 min)  Nuvens dos quatro grupos no projetor, com a leitura de onde caem a
+    carteira de pesos iguais e a carteira com os pesos do Solver. Quiz ao vivo de três perguntas e
+    amarração com a Sprint 3: o A3 (peso 3, review em 19/11/2026 e entrega em 20/11/2026, 23h59),
+    com a ADR individual sobre decisão do próprio aluno.
 
 Depois do encontro
-  Desafio do notebook: repetir a otimização com uma restrição de peso máximo por ativo e comparar
-    os pesos resultantes com os da aula.
-  Avanço do A3 e prévia do A4: gráfico integrando nuvem, fronteira e os dois pontos ótimos, tabela
-    comparativa das duas carteiras e o ADR das restrições da otimização.
-  Leitura complementar: seção do autoestudo sobre a fronteira como borda da nuvem, relida com o
-    gráfico do próprio grupo.
+  Avanço do A3: rodar o simulador com a cesta completa do grupo, medir o tempo com 2 a 20 ativos,
+    gerar o gráfico da nuvem com cor pelo Índice de Sharpe, escrever a leitura de por que a
+    simulação não substitui a otimização, completar o SPEC.md com o plano de testes e registrar a
+    ADR individual.
+  Leitura posterior: material e notebook da versão v1, sobre otimização com restrições e
+    fronteira eficiente.
+  Pendência aberta em 17/11/2026 (ADR-018): a otimização com SLSQP e a fronteira saíram deste
+    encontro, e a Aula 05 e o A4 dependem delas, porque a Aula 05 reutiliza a função `otimizar`.
+    Falta decidir se o conteúdo vira autoestudo com o material v1, abertura da Aula 05 ou encontro
+    extra.
 
 ### Aula 05 - Semana 8 - Validação e Robustez do Modelo  (Sprint 4)
 

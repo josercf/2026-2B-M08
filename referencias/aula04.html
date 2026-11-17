@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Referências &middot; Aula 04 &middot; O simulador em cinco turnos</title>
+  <meta name="description" content="Autoestudos da Semana 6 na Adalove e leitura complementar da Aula 04 do Módulo 08 AdmTech.">
+
+  <!-- Duas seções fixas, nesta ordem:
+       1. Autoestudos da semana, copiados de docs/autoestudos-por-semana.md, título por título.
+       2. Leitura complementar do professor, que nunca é omitida.
+       As referências da versão de 13/10/2026 estão em referencias/aula04-v1.html. -->
+
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/inteli-material.css">
+</head>
+<body>
+  <div class="doc">
+
+    <header class="doc-header">
+      <p class="doc-eyebrow">Módulo 08 AdmTech &middot; Aula 04 &middot; 18/11/2026 &middot; Semana 6</p>
+      <h1>Referências: Da Nuvem à Fronteira, o simulador em cinco turnos</h1>
+      <p class="doc-subtitulo">Os dois autoestudos da Semana 6 e as fontes citadas no deck e no
+      material de apoio da Aula 04, na mesma numeração do slide de referências.</p>
+    </header>
+
+    <nav class="doc-toc" aria-label="Sumário">
+      <h2>Nesta página</h2>
+      <ol>
+        <li><a href="#autoestudos">Autoestudos da semana</a></li>
+        <li><a href="#complementar">Leitura complementar do professor</a></li>
+      </ol>
+    </nav>
+
+    <main class="doc-conteudo">
+
+      <section class="doc-secao" id="autoestudos">
+        <h2>1. Autoestudos da semana</h2>
+        <p>Semana 6, que cobre o encontro de 18/11/2026. Os dois autoestudos que o roteiro desta
+        aula pressupõe:</p>
+        <ol class="doc-referencias">
+          <li>Carteiras e simulação de Monte Carlo com Python (65 min)
+            <span class="doc-porque">CAETANO, M. A. L. <em>Python e mercado financeiro: programação
+            para estudantes, investidores e analistas</em>. São Paulo: Blucher, 2021. cap. 9, seções
+            9.2 e 9.5. Base dos turnos 1 a 4: retorno e risco da carteira, Índice de Sharpe e o
+            sorteio dos pesos.</span></li>
+          <li>Da nuvem à fronteira eficiente de Markowitz (70 min)
+            <span class="doc-porque">CAETANO, M. A. L. <em>Python e mercado financeiro</em>. São
+            Paulo: Blucher, 2021. cap. 9, seção 9.3. Base da leitura das nuvens no bloco final e do
+            conteúdo de otimização, que fica como leitura posterior.</span></li>
+        </ol>
+        <div class="doc-nota">
+          <p>Títulos copiados de <code>docs/autoestudos-por-semana.md</code>, Semana 06, e tempos do
+          <code>PLANEJAMENTO_AULA_A_AULA.md</code>, conferidos contra a Adalove da turma
+          2026-2B-T19. O acesso ao conteúdo é pela Adalove.</p>
+        </div>
+      </section>
+
+      <section class="doc-secao" id="complementar">
+        <h2>2. Leitura complementar do professor</h2>
+        <p>A curadoria desta seção ainda será fechada pelo professor. Até lá, ficam aqui as fontes
+        citadas no deck e no material de apoio, na mesma numeração do slide de referências.</p>
+        <ol class="doc-referencias">
+          <li>CAETANO, M. A. L. <em>Python e mercado financeiro</em>. Blucher, 2021. cap. 9, seções 9.2 e 9.5.
+            <span class="doc-porque">Autoestudo: Carteiras e simulação de Monte Carlo com Python.</span></li>
+          <li>CAETANO, M. A. L. <em>Python e mercado financeiro</em>. Blucher, 2021. cap. 9, seção 9.3.
+            <span class="doc-porque">Autoestudo: Da nuvem à fronteira eficiente de Markowitz.</span></li>
+          <li><a href="../materiais/aula04-simulador.zip">Kit do simulador</a>, também em
+            <a href="https://github.com/josercf/2026-2B-M08/blob/main/exemplos/aula04-simulador/README.md" target="_blank" rel="noopener">exemplos/aula04-simulador</a>.
+            <span class="doc-porque"><code>SPEC.md</code>, <code>simulador.py</code>, testes,
+            <code>conferir.py</code>, verificador de ambiente, instruções para o agente e duas ADRs
+            de exemplo.</span></li>
+          <li><a href="https://github.com/josercf/2026-2B-M08/blob/main/docs/adrs/ADR-009-tratamento-de-ausencia-unico-com-janela-comum.md" target="_blank" rel="noopener">ADR-009</a>:
+            tratamento de ausência único, com janela comum na análise conjunta.
+            <span class="doc-porque">A regra que o portal e o kit aplicam aos ativos escolhidos.</span></li>
+          <li><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a>.
+            <span class="doc-porque">Formato da ADR individual do A3.</span></li>
+          <li><a href="https://github.com/josercf/2026-2B-M08/blob/main/docs/adrs/ADR-018-aula04-em-turnos-com-portal-e-agente.md" target="_blank" rel="noopener">ADR-018</a>:
+            Aula 04 em turnos, com portal e agente.
+            <span class="doc-porque">Registra a troca de formato do encontro e a saída da otimização.</span></li>
+          <li>MARKOWITZ, H. Portfolio Selection. <em>The Journal of Finance</em>, v. 7, n. 1, p. 77-91, 1952.
+            <span class="doc-porque">O artigo que define a carteira eficiente em média e variância,
+            para a leitura posterior sobre otimização.</span></li>
+          <li><a href="aula04-v1.html">Referências da versão anterior da Aula 04</a>.
+            <span class="doc-porque">Fontes de otimização com SLSQP, fronteira eficiente e amostragem
+            dos pesos, que acompanham o <a href="../materiais/aula04-v1.html">material da versão
+            anterior</a>.</span></li>
+        </ol>
+      </section>
+
+    </main>
+
+    <p class="doc-rodape">Prof. José Romualdo &middot; Módulo 08 AdmTech &middot; Computação &middot;
+    2026-2B-T19</p>
+
+  </div>
+
+  <nav class="doc-nav" aria-label="Navegação da aula">
+    <a href="../index.html"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#home"></use></svg>Portal</a>
+    <a href="../aulas/aula04.html"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#slideshow"></use></svg>Slides</a>
+    <a href="../materiais/aula04.html"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#menu_book"></use></svg>Material</a>
+  </nav>
+</body>
+</html>

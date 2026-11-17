@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Simulador de carteiras - Aula 04 - Módulo 08 AdmTech</title>
+  <meta name="description" content="Portal de simulação de carteiras da Aula 04: montar a carteira, sortear pesos, ler a nuvem de risco e retorno e acompanhar a sala.">
+  <!-- Portal de simulação da Aula 04 em turnos (ADR-018). Página estática: a conta
+       vem de assets/js/simulador-nucleo.js, a sala de assets/js/simulador-dados.js
+       e as cotações de assets/data/aula04-cotacoes.json.
+         ?demo=1    sala em memória, para ensaio e testes
+         ?painel=1  abre direto no painel, para o projetor
+       Telas por hash: #entrar, #montar, #simular, #painel, #progresso, #ver=<id>. -->
+  <link rel="stylesheet" href="../assets/css/inteli-brand.css">
+  <link rel="stylesheet" href="../assets/css/simulador.css">
+</head>
+<body class="sim" data-tela="carregando">
+
+  <header class="sim-topo">
+    <a class="sim-marca" href="../index.html" aria-label="Portal do Módulo 08">
+      <img src="../assets/img/inteli-logo-negativa.svg" alt="Inteli">
+    </a>
+    <p class="sim-nome">Simulador de carteiras <span>Aula 04</span></p>
+    <nav class="sim-nav" aria-label="Telas do simulador">
+      <a href="#montar" data-nav="montar"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#tune"></use></svg>Montar</a>
+      <a href="#simular" data-nav="simular"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#query_stats"></use></svg>Simular</a>
+      <a href="#progresso" data-nav="progresso"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#checklist"></use></svg>Progresso</a>
+      <a href="#painel" data-nav="painel"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#groups"></use></svg>Painel</a>
+    </nav>
+    <div class="sim-eu" hidden>
+      <span class="avatar" id="eu-avatar"></span>
+      <button type="button" class="sim-sair" id="sair">Sair</button>
+    </div>
+  </header>
+
+  <p class="sim-aviso" id="aviso" role="status" hidden>
+    <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#warning"></use></svg>
+    <span id="aviso-texto"></span>
+  </p>
+
+  <main id="conteudo" tabindex="-1">
+
+    <!-- Carregando: cotações e conexão com a sala -->
+    <section class="tela tela-carregando" data-tela="carregando" aria-live="polite">
+      <div class="espera" aria-hidden="true"><span></span><span></span><span></span></div>
+      <p>Carregando as cotações da aula.</p>
+    </section>
+
+    <!-- Erro: o arquivo de cotações não abriu -->
+    <section class="tela tela-erro" data-tela="erro" hidden>
+      <div class="vazio">
+        <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#warning"></use></svg>
+        <h1>O arquivo de cotações não abriu</h1>
+        <p id="erro-detalhe">Verifique a conexão e tente de novo.</p>
+        <button type="button" class="botao-principal" id="tentar">Tentar de novo</button>
+      </div>
+    </section>
+
+    <!-- 1. Entrar -->
+    <section class="tela tela-entrar" data-tela="entrar" hidden>
+      <div class="entrar-coluna">
+        <h1>Simulador de carteiras</h1>
+        <p class="entrar-apoio">Monte uma carteira com ativos da B3, sorteie até 10.000 combinações de pesos e compare o resultado com a sala. Os números desta página são o valor esperado dos testes dos turnos 1 e 2.</p>
+        <form class="entrar-form" id="form-entrar" novalidate>
+          <div class="campo">
+            <label for="iniciais">Suas iniciais</label>
+            <div class="entrar-identidade">
+              <input id="iniciais" name="iniciais" type="text" inputmode="text" maxlength="3" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AB" aria-describedby="iniciais-ajuda">
+              <span class="avatar avatar-grande" id="previa" data-grupo="" aria-hidden="true"></span>
+            </div>
+            <p class="ajuda" id="iniciais-ajuda">De 1 a 3 letras. O portal não guarda nome.</p>
+          </div>
+          <fieldset class="campo">
+            <legend>Seu grupo</legend>
+            <div class="grupos">
+              <label class="grupo-opcao" data-grupo="G01"><input type="radio" name="grupo" value="G01"><span>G01</span></label>
+              <label class="grupo-opcao" data-grupo="G02"><input type="radio" name="grupo" value="G02"><span>G02</span></label>
+              <label class="grupo-opcao" data-grupo="G03"><input type="radio" name="grupo" value="G03"><span>G03</span></label>
+              <label class="grupo-opcao" data-grupo="G04"><input type="radio" name="grupo" value="G04"><span>G04</span></label>
+              <label class="grupo-opcao" data-grupo="VIS"><input type="radio" name="grupo" value="VIS"><span>Visitante</span></label>
+            </div>
+          </fieldset>
+          <p class="erro" id="entrar-erro" role="alert"></p>
+          <button type="submit" class="botao-principal" id="entrar-botao">Entrar na sala</button>
+        </form>
+        <p class="entrar-rodape"><a href="#painel">Ver o painel da sala sem entrar</a></p>
+      </div>
+      <figure class="entrar-vitrine">
+        <canvas id="vitrine" role="img" aria-label="Nuvem de risco e retorno de carteiras sorteadas"></canvas>
+        <figcaption id="vitrine-legenda"></figcaption>
+      </figure>
+    </section>
+
+    <!-- 2. Montar -->
+    <section class="tela tela-montar" data-tela="montar" hidden>
+      <header class="tela-cabeca">
+        <h1>Montar a carteira</h1>
+        <p>Escolha de 2 a 5 ativos e o período. A conta usa pesos iguais e o preço ajustado até 13/11/2026.</p>
+      </header>
+
+      <div class="duas-colunas">
+        <div class="coluna-controles">
+          <section class="bloco" aria-labelledby="t-ativos">
+            <h2 id="t-ativos">Ativos</h2>
+            <form class="busca" id="form-busca" autocomplete="off" novalidate>
+              <label for="busca">Código do ativo</label>
+              <div class="busca-linha">
+                <div class="busca-campo">
+                  <input id="busca" type="text" maxlength="8" spellcheck="false" autocapitalize="characters" placeholder="PETR4" role="combobox" aria-expanded="false" aria-controls="sugestoes" aria-autocomplete="list">
+                  <ul class="sugestoes" id="sugestoes" role="listbox" hidden></ul>
+                </div>
+                <button type="submit" class="botao-secundario">Adicionar</button>
+              </div>
+              <p class="erro" id="busca-erro" role="alert"></p>
+            </form>
+            <ul class="ativos" id="ativos" aria-label="Ativos da carteira"></ul>
+            <p class="ajuda" id="ativos-ajuda"></p>
+          </section>
+
+          <section class="bloco" aria-labelledby="t-periodo">
+            <h2 id="t-periodo">Período</h2>
+            <p class="rotulo" id="r-periodo">Pregões anteriores a 13/11/2026</p>
+            <div class="segmentos periodos" role="group" aria-labelledby="r-periodo"></div>
+            <p class="ajuda" id="m-janela" data-disponiveis="0"></p>
+          </section>
+        </div>
+
+        <div class="coluna-resultado">
+          <div class="vazio" id="montar-vazio">
+            <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#balance"></use></svg>
+            <h2>A carteira precisa de pelo menos 2 ativos</h2>
+            <p>Digite o código de um ativo, por exemplo PETR4 ou VALE3, e adicione. O retorno, o risco e a evolução aparecem aqui.</p>
+          </div>
+
+          <div id="montar-resultado" hidden>
+            <div class="metricas">
+              <div class="metrica">
+                <p class="rotulo">Retorno anual <span class="rotulo-nota">média diária × 252</span></p>
+                <p class="metrica-valor numero-destaque-valor" id="m-retorno" data-valor=""></p>
+                <p class="metrica-decimal"><code id="m-retorno-dec"></code></p>
+              </div>
+              <div class="metrica">
+                <p class="rotulo">Risco anual <span class="rotulo-nota">desvio diário × √252</span></p>
+                <p class="metrica-valor numero-destaque-valor" id="m-risco" data-valor=""></p>
+                <p class="metrica-decimal"><code id="m-risco-dec"></code></p>
+              </div>
+              <div class="metrica metrica-nota">
+                <p id="m-pesos"></p>
+                <label class="chave">
+                  <input type="checkbox" id="decimal">
+                  <span class="chave-trilho" aria-hidden="true"></span>
+                  <span>Mostrar valor decimal com 6 casas</span>
+                </label>
+              </div>
+            </div>
+
+            <section class="bloco bloco-grafico" aria-labelledby="m-evolucao-titulo">
+              <h2 id="m-evolucao-titulo"></h2>
+              <div class="grafico-palco" id="evolucao-palco">
+                <canvas id="evolucao" role="img" aria-label="Evolução de R$ 100.000 investidos na carteira de pesos iguais"></canvas>
+                <div class="grafico-fio" id="evolucao-fio" hidden></div>
+                <div class="dica" id="evolucao-dica" hidden></div>
+              </div>
+              <p class="ajuda" id="m-final" data-valor=""></p>
+            </section>
+
+            <section class="bloco" id="bloco-diaria" aria-labelledby="t-diaria" hidden>
+              <h2 id="t-diaria">Retornos diários dos 9 pregões</h2>
+              <p class="ajuda">Use estes números como valor esperado nos testes dos turnos 1 e 2. A coluna Carteira é o retorno do pregão com pesos iguais.</p>
+              <div class="rolagem" tabindex="0" role="region" aria-labelledby="t-diaria">
+                <table class="tabela" id="tabela-diaria"></table>
+              </div>
+            </section>
+
+            <p class="proximo"><a class="botao-principal" href="#simular">Simular esta carteira<svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#arrow_forward"></use></svg></a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Simular -->
+    <section class="tela tela-simular" data-tela="simular" hidden>
+      <header class="tela-cabeca">
+        <h1>Simular carteiras</h1>
+        <p id="simular-resumo"></p>
+      </header>
+
+      <div class="vazio" id="simular-vazio" hidden>
+        <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#query_stats"></use></svg>
+        <h2>Monte a carteira antes de simular</h2>
+        <p>A simulação sorteia pesos para os ativos escolhidos. Escolha pelo menos 2 ativos.</p>
+        <a class="botao-principal" href="#montar">Montar a carteira</a>
+      </div>
+
+      <div class="duas-colunas" id="simular-corpo">
+        <div class="coluna-controles">
+          <section class="bloco" aria-labelledby="t-sorteio">
+            <h2 id="t-sorteio">Sorteio</h2>
+            <p class="rotulo" id="r-quantidade">Carteiras sorteadas</p>
+            <div class="segmentos quantidades" role="group" aria-labelledby="r-quantidade"></div>
+            <p class="semente">Semente <code id="semente"></code>
+              <button type="button" class="botao-texto" id="novo-sorteio"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#replay"></use></svg>Sortear de novo</button>
+            </p>
+            <p class="ajuda">A mesma semente refaz a mesma nuvem em qualquer navegador, inclusive no painel.</p>
+          </section>
+
+          <section class="bloco" aria-labelledby="t-periodo-sim">
+            <h2 id="t-periodo-sim">Período</h2>
+            <p class="rotulo" id="r-periodo-sim">Pregões anteriores a 13/11/2026</p>
+            <div class="segmentos periodos" role="group" aria-labelledby="r-periodo-sim"></div>
+            <p class="nota" id="nota-periodo">
+              <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#info"></use></svg>
+              <span>Com 9 pregões o risco medido é instável e a nuvem muda de forma a cada pregão novo. O padrão para a nuvem é 252 pregões.</span>
+            </p>
+          </section>
+
+          <section class="bloco" aria-labelledby="t-pesos">
+            <h2 id="t-pesos">Seus pesos</h2>
+            <p class="ajuda">Informe os pesos do Solver da aula de Negócios, em porcentagem. Eles precisam somar 100%.</p>
+            <form id="form-pesos" novalidate>
+              <div class="pesos" id="pesos"></div>
+              <p class="pesos-soma" id="pesos-soma" data-soma=""></p>
+              <p class="erro" id="pesos-erro" role="alert"></p>
+              <div class="acoes">
+                <button type="submit" class="botao-secundario">Marcar na nuvem</button>
+                <button type="button" class="botao-texto" id="pesos-limpar" hidden>Remover marcador</button>
+              </div>
+            </form>
+          </section>
+        </div>
+
+        <div class="coluna-resultado" id="simular-nuvem"></div>
+      </div>
+    </section>
+
+    <!-- 4. Progresso -->
+    <section class="tela tela-progresso" data-tela="progresso" hidden>
+      <header class="tela-cabeca">
+        <h1>Progresso da dupla</h1>
+        <p>Marque o turno quando o teste da dupla passar. Só uma pessoa da dupla marca, para o placar contar duplas. A marcação entra no painel e pode ser desfeita.</p>
+      </header>
+      <ol class="turnos" id="turnos">
+        <li class="turno">
+          <label><input type="checkbox" data-turno="1"><span class="turno-caixa" aria-hidden="true"><svg class="icone"><use href="../assets/icons/icones.svg#check"></use></svg></span>
+            <span class="turno-texto"><strong>Turno 1 <code>retorno_do_dia</code></strong><span>Retorno da carteira em um pregão. No Colab, escrito pela dupla.</span></span></label>
+        </li>
+        <li class="turno">
+          <label><input type="checkbox" data-turno="2"><span class="turno-caixa" aria-hidden="true"><svg class="icone"><use href="../assets/icons/icones.svg#check"></use></svg></span>
+            <span class="turno-texto"><strong>Turno 2 <code>metricas</code></strong><span>Retorno anual e risco anual em N pregões. No Colab, escrito pela dupla.</span></span></label>
+        </li>
+        <li class="turno">
+          <label><input type="checkbox" data-turno="3"><span class="turno-caixa" aria-hidden="true"><svg class="icone"><use href="../assets/icons/icones.svg#check"></use></svg></span>
+            <span class="turno-texto"><strong>Turno 3 <code>sortear_pesos</code></strong><span>Vetor de pesos não negativos que soma 1. No kit, implementado pelo agente.</span></span></label>
+        </li>
+        <li class="turno">
+          <label><input type="checkbox" data-turno="4"><span class="turno-caixa" aria-hidden="true"><svg class="icone"><use href="../assets/icons/icones.svg#check"></use></svg></span>
+            <span class="turno-texto"><strong>Turno 4 <code>simular</code></strong><span>Tabela com pesos, retorno, risco e Sharpe de cada carteira, e o gráfico. No kit, implementado pelo agente.</span></span></label>
+        </li>
+        <li class="turno">
+          <label><input type="checkbox" data-turno="5"><span class="turno-caixa" aria-hidden="true"><svg class="icone"><use href="../assets/icons/icones.svg#check"></use></svg></span>
+            <span class="turno-texto"><strong>Turno 5 desempenho e <code>posicionar</code></strong><span>10.000 simulações em menos de 10 s e a carteira dada marcada sobre a nuvem. No kit, implementado pelo agente.</span></span></label>
+        </li>
+      </ol>
+      <p class="ajuda" id="progresso-nota"></p>
+      <section class="bloco bloco-kit" aria-labelledby="t-kit">
+        <h2 id="t-kit">Kit dos turnos 3 a 5</h2>
+        <p>O kit traz a spec, os testes de aceite e os dados da aula. Cada dupla usa uma cópia.</p>
+        <a class="botao-secundario" href="../materiais/aula04-simulador.zip" download><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#deployed_code"></use></svg>Baixar o kit do simulador</a>
+      </section>
+    </section>
+
+    <!-- 5. Painel -->
+    <section class="tela tela-painel" data-tela="painel" hidden>
+      <header class="tela-cabeca tela-cabeca-linha">
+        <div>
+          <h1>Painel da sala</h1>
+          <p id="painel-resumo"></p>
+        </div>
+        <p class="painel-legenda">Os números contam as duplas que concluíram cada turno. Toque em um avatar para abrir a simulação da pessoa.</p>
+      </header>
+      <div class="vazio" id="painel-vazio" hidden>
+        <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#groups"></use></svg>
+        <h2>Ninguém entrou na sala ainda</h2>
+        <p>Quem abrir o portal e informar iniciais e grupo aparece aqui.</p>
+      </div>
+      <div class="painel-grade" id="painel-grade"></div>
+      <p class="ajuda painel-turnos">T1 <code>retorno_do_dia</code>, T2 <code>metricas</code>, T3 <code>sortear_pesos</code>, T4 <code>simular</code>, T5 desempenho e <code>posicionar</code>.</p>
+    </section>
+
+    <!-- 6. Ver a simulação de um participante -->
+    <section class="tela tela-ver" data-tela="ver" hidden>
+      <p class="voltar"><a href="#painel">Voltar ao painel</a></p>
+      <div class="vazio" id="ver-vazio" hidden>
+        <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#person"></use></svg>
+        <h2 id="ver-vazio-titulo"></h2>
+        <p id="ver-vazio-texto"></p>
+      </div>
+      <div id="ver-corpo" hidden>
+        <header class="ver-cabeca">
+          <span class="avatar avatar-grande" id="ver-avatar"></span>
+          <div>
+            <h1 id="ver-titulo"></h1>
+            <p id="ver-parametros"></p>
+          </div>
+        </header>
+        <div id="ver-nuvem"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="sim-rodape">
+    <p>Módulo 08 AdmTech, Aula 04. Cotações de 02/01/2024 a 13/11/2026, preço ajustado. <span id="rodape-modo"></span></p>
+  </footer>
+
+  <!-- Bloco da nuvem, usado na tela Simular e na simulação aberta pelo painel -->
+  <template id="molde-nuvem">
+    <div class="nuvem">
+      <div class="nuvem-palco">
+        <canvas class="nuvem-tela" role="img" aria-label="Nuvem de carteiras sorteadas: risco anual no eixo horizontal e retorno anual no eixo vertical"></canvas>
+        <div class="nuvem-mira" hidden></div>
+        <div class="dica nuvem-dica" hidden></div>
+      </div>
+      <ul class="legenda">
+        <li><span class="legenda-escala" aria-hidden="true"></span>Sharpe de <strong class="escala-min"></strong> a <strong class="escala-max"></strong></li>
+        <li><svg class="marca marca-melhor" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7"></circle></svg>Melhor Sharpe sorteado</li>
+        <li><svg class="marca marca-iguais" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6"></circle></svg>Pesos iguais</li>
+        <li class="legenda-proprios" hidden><svg class="marca marca-proprios" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 18 10 10 18 2 10Z"></path></svg>Seus pesos</li>
+        <li><span class="legenda-rf" aria-hidden="true"></span>Taxa livre de risco</li>
+      </ul>
+      <p class="leitura" aria-live="polite"></p>
+      <div class="rolagem" tabindex="0" role="region" aria-label="Carteiras em destaque">
+        <table class="tabela destaques">
+          <thead><tr><th scope="col">Carteira</th><th scope="col">Pesos</th><th scope="col" class="num">Retorno</th><th scope="col" class="num">Risco</th><th scope="col" class="num">Sharpe</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </template>
+
+  <script src="../assets/js/inteli-quiz-config.js"></script>
+  <script src="../assets/js/simulador-nucleo.js"></script>
+  <script src="../assets/js/simulador-dados.js"></script>
+  <script src="../assets/js/simulador-portal.js"></script>
+</body>
+</html>

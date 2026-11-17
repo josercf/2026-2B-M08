@@ -1,0 +1,144 @@
+# Notas do professor: Aula 04
+
+Da Nuvem à Fronteira: Monte Carlo e Otimização de Markowitz, no formato em turnos. 18/11/2026
+(quarta), Semana 6, Sprint 3, aula 28 do módulo. Horário de relógio pendente (P1): este roteiro usa
+minutos contados a partir do fim da daily. Redesenhada em 17/11/2026 (ADR-018). A versão de
+13/10/2026, com o motor pronto, o SLSQP e a fronteira, está em `aulas/aula04-v1.html`,
+`materiais/aula04-v1.html`, `notebooks/aula04-v1.ipynb` e `docs/notas-do-professor/aula04-v1.md`.
+
+Este arquivo é público. Nenhum nome de aluno entra aqui, no portal ou na tela de spec: o banco
+guarda iniciais e grupo.
+
+## Antes do encontro
+
+| Item | Como conferir |
+|---|---|
+| Chave do professor no navegador do projetor | abrir `aulas/aula04.html?quiz-chave=<chave>` uma vez; a mesma chave serve ao quiz e aos links da spec |
+| Portal respondendo | abrir `simulador/` e `simulador/?painel=1`; se o banco não responder, o portal avisa e segue em memória |
+| Links da spec no Slack | slides 16 e 19: copiar os quatro links de cada turno e colar no canal de cada grupo antes do bloco 5 |
+| Kit baixado pelos grupos | pedir no dia anterior que cada dupla rode `python checar_ambiente.py` |
+| Lista dos ativos dos grupos | não há lista prévia; o arquivo da aula tem 162 ativos e 718 pregões, de 02/01/2024 a 13/11/2026 |
+
+## Roteiro por bloco
+
+| Bloco | Minutos | Slides | O que fazer |
+|---|---|---|---|
+| Daily | 15 | 1 a 3 | capa, agenda e daily com cronômetro; cada grupo diz o estado do motor e o tempo de execução medido |
+| 1 | 0 a 15 | 4 e 5 | QR code do portal; cada aluno entra, monta a carteira do grupo e para na montagem; previsão com a mão levantada; simulação; abrir no painel a simulação de dois alunos |
+| 2 | 15 a 30 | 6 a 9 | duas perguntas de quiz ao vivo (sessão `m08-aula04-2026-11-18`, perguntas `preparo-normalizar` e `preparo-sharpe`); anatomia do turno; leitura das duas ADRs do kit |
+| 3 | 30 a 45 | 10 a 12 | código do turno 1 linha a linha (3 min), turno 1 (5 min), turno 2 (7 min) |
+| 4 | 45 a 60 | 13 e 14 | passagem para o kit (5 min) e turno 3 (8 min); 2 minutos de marcação e debrief |
+| 5 | 60 a 75 | 15 a 17 | turno 4 (13 min); prazo de 5 minutos da spec no slide 16; projetar uma spec no slide 17 |
+| 6 | 75 a 90 | 18 e 19 | turno 5 (12 min); prazo de 4 minutos da spec no slide 19; 3 minutos de debrief |
+| 7 | 90 a 105 | 20 a 26 | nuvens dos grupos no painel, quiz de três perguntas (`fecho-propriedades`, `fecho-sorteada`, `fecho-conferir`), A3, referências e encerramento |
+
+Piloto e copiloto trocam a cada turno. Nos turnos 1 e 2 cada aluno escreve no próprio notebook e o
+colega da dupla revisa. Nos turnos 3 a 5 há um kit por dupla, de duas a três duplas por grupo.
+
+## Práticas
+
+**Turno 1 (slide 11, 5 min).**
+Obrigatório: preencher `ATIVOS` e `PREGOES = 9`, escrever o valor esperado lido no portal, ver o
+teste falhar e escrever o corpo de `retorno_do_dia`.
+Checagem aos 3 min: o teste já falhou uma vez.
+O que observar: aluno que escreve o corpo antes do valor esperado; aluno que copia o número do
+colega em vez de ler o da própria carteira.
+Erros comuns: valor esperado em porcentagem quando a função devolve fração (o `conferir` aceita
+`0.123`, `12.3` e `"12,3%"`); carteira do notebook diferente da do portal; soma dos retornos sem
+multiplicar pelos pesos.
+Contingência: quem travar por mais de 2 minutos usa a pergunta do slide 10, sobre o peso zero e o
+peso 1.
+
+**Turno 2 (slide 12, 7 min).**
+Obrigatório: escrever os dois valores esperados, implementar `metricas`, rodar `conferir_turno2`,
+gravar `simulador.py` e marcar os turnos 1 e 2 no portal.
+Checagem aos 4 min: os dois valores esperados escritos e o teste falhando.
+O que observar: se a dupla conversa sobre a conta ou só sobre a sintaxe.
+Erros comuns: desvio padrão populacional no lugar do amostral (`ddof=1`); multiplicar o risco por
+252 em vez da raiz de 252; anualizar cada ativo e só depois aplicar os pesos.
+Contingência: quem não fechar usa as duas funções que vêm comentadas no `simulador.py` do kit, com
+a liberação do professor, e segue para o bloco 4.
+
+**Passagem para o kit (slide 13, 5 min).**
+Obrigatório: descompactar o kit, rodar `checar_ambiente.py`, colar as duas funções, rodar
+`conferir.py 1` e `conferir.py 2` e fazer o primeiro pedido de leitura ao agente.
+Checagem aos 3 min: `checar_ambiente.py` sem erro.
+Erros comuns: kit descompactado fora do repositório do grupo; terminal aberto em outra pasta;
+Python anterior ao 3.10.
+Contingência: dupla sem agente funcionando se junta a outra dupla do mesmo grupo. Não consertar
+ambiente em aula.
+
+**Turno 3 (slide 14, 8 min).**
+Obrigatório: ler a spec modelo, escrever o `assert` do teste da dupla, ver falhar, pedir a
+implementação ao agente e rodar `conferir.py 3`.
+Checagem aos 4 min: o `assert` da dupla escrito e falhando.
+O que observar: dupla que pede ao agente para escrever o `assert`; o `AGENTS.md` manda o agente
+recusar.
+Erros comuns: `assert` que compara com um vetor fixo, que só passa com uma semente; pedido ao
+agente sem citar o turno, e o agente implementa os turnos seguintes.
+Contingência: se o agente alterar um teste, mostrar que `conferir.py` continua reprovando e pedir
+que a dupla desfaça a alteração.
+
+**Turno 4 (slide 15, 13 min).**
+Obrigatório: preencher a spec na tela do grupo, copiar para o `SPEC.md`, escrever o `assert`,
+pedir `simular` ao agente, rodar `conferir.py 4` e gerar o gráfico.
+Checagem aos 6 min: a spec está no `SPEC.md` e o teste falha.
+O que observar: critério de aceite escrito como frase vaga ("funciona"); perguntar qual teste
+reprova quando a função está errada.
+Erros comuns: saída sem dizer as colunas da tabela; caso de borda ausente para `n` igual a zero ou
+para um ativo só; Sharpe com a taxa livre de risco fixa dentro da função.
+Contingência: se a tela de spec falhar, o grupo escreve direto no `SPEC.md` do kit, nos mesmos
+cinco campos.
+
+**Turno 5 (slide 18, 12 min).**
+Obrigatório: escrever o requisito de tempo na spec, escrever o teste de tempo e o de `posicionar`,
+pedir a implementação e rodar `conferir.py 5`; marcar os pesos do Solver na nuvem do portal.
+Checagem aos 6 min: os dois testes escritos e falhando.
+O que observar: se o grupo mede o tempo ou confia na resposta do agente.
+Erros comuns: teste de tempo com 100 simulações no lugar de 10.000; pesos do Solver informados em
+porcentagem que não soma 100.
+Contingência: é o primeiro turno a cortar. Se o bloco 5 atrasar, o turno 5 vira tarefa da sprint e
+o bloco 6 fecha o turno 4.
+
+## Perguntas para quando a sala trava
+
+| Pergunta | Resposta esperada | Erro que ela revela |
+|---|---|---|
+| Se o peso de um ativo for zero, quanto ele contribui para o retorno do dia? | nada; com peso 1, o retorno é o do próprio ativo | somar retornos sem os pesos |
+| Por que ver o teste falhar antes de implementar? | um teste que nunca falhou pode não testar nada | tratar o teste como formalidade |
+| O portal dá o número do turno 3? | não: o sorteio do navegador e o do NumPy geram sequências diferentes | esperar valor fixo de função aleatória |
+| O que o teste de `sortear_pesos` pode afirmar sem conhecer o sorteio? | soma 1, nenhum negativo, formato, mesma semente devolve o mesmo vetor | teste que só passa com uma semente |
+| A melhor carteira entre as 10.000 é a ótima? | é a melhor entre as sorteadas; a do Solver pode ficar fora da nuvem | confundir simulação com otimização |
+
+## Contingências
+
+| Situação | O que fazer |
+|---|---|
+| Banco fora do ar ou lento | o portal avisa e segue em memória; para forçar, abrir `simulador/?demo=1`. O painel e o placar ficam locais, e a marcação dos turnos vai para o quadro. O quiz ao vivo vira votação com a mão levantada, e a tela de spec é substituída pelo `SPEC.md` do kit |
+| Ativo do grupo ausente do arquivo | o portal mostra "ativo não encontrado no arquivo da aula" e mantém a carteira montada; o grupo troca por outro do mesmo setor e anota a troca |
+| Ativo com início de negociação dentro da janela | o portal limita o período ao que a janela comum tem e informa quantos pregões existem; o grupo escolhe um período menor ou troca o ativo |
+| Dupla sem agente funcionando | junta-se a outra dupla do mesmo grupo; não há segundo notebook para os turnos 3 a 5 |
+| Tela de spec fora do ar ou link perdido | a spec é escrita direto no `SPEC.md` do kit; os links são fixos por sessão e reaparecem nos slides 16 e 19 |
+| Encontro atrasado | ordem de corte: turno 5, depois a tela de spec; o núcleo é o portal, os turnos 1 e 2 e os turnos 3 e 4 no kit |
+
+## Visitantes na sala
+
+Em 18/11 a turma recebe de 8 a 12 visitantes de uma faculdade de Rondônia, que vêm observar a
+dinâmica do PBL. A orientação da coordenação é manter o conteúdo previsto.
+
+- Na abertura, dizer em uma frase o que os visitantes vão ver: grupos construindo, em turnos, o
+  motor do artefato da sprint.
+- Visitantes entram no portal pelo mesmo QR code e escolhem "Visitante". Ficam fora do placar e do
+  relatório de participação.
+- Na daily e nos turnos, os visitantes circulam e observam uma dupla por vez, sem intervir no
+  código. Perguntas aos alunos ficam para os debriefs.
+- No bloco 7, convidar um visitante a escolher qual nuvem abrir no painel.
+- O PDF exportado pelo botão do deck revela o gabarito dos quizzes e não é distribuído.
+
+## Depois do encontro
+
+- A otimização com SLSQP e a fronteira saíram do encontro. A Aula 05 reutiliza a função `otimizar`
+  e o A4 depende dela. Decisão em aberto, registrada na ADR-018 e no `PLANEJAMENTO_AULA_A_AULA.md`:
+  autoestudo com o material v1, abertura da Aula 05 ou encontro extra.
+- O A3 (peso 3) tem review em 19/11/2026 e entrega em 20/11/2026, 23h59. A ADR individual trata de
+  decisão do próprio aluno; as duas ADRs do kit são exemplo.

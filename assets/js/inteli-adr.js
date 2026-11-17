@@ -349,7 +349,16 @@
     var override = new URLSearchParams(window.location.search).get('sessao');
     if (override) extras.push('sessao=' + encodeURIComponent(override));
 
+    // data-pagina (opcional) troca a página de destino do link: "{grupo}" vira o
+    // código do grupo e a query da página é mantida (tela de spec da Aula 04).
+    var pagina = raiz.dataset.pagina || '';
+
     function url(grupo, token) {
+      if (pagina) {
+        var p = new URL(base + pagina.replace('{grupo}', grupo), window.location.href);
+        var q = p.search ? p.search.slice(1) + '&' : '';
+        return p.href.split('?')[0].split('#')[0] + '?' + q + 't=' + token + (extras.length ? '&' + extras.join('&') : '');
+      }
       var u = new URL(base + 'aula02-' + grupo.toLowerCase() + '.html', window.location.href);
       return u.href.split('?')[0] + '?t=' + token + (extras.length ? '&' + extras.join('&') : '');
     }
@@ -426,20 +435,30 @@
     var dados = IntelIAula02Dados.criar();
     var sessao = IntelIAula02Dados.sessao(raiz.dataset.sessao);
     var grupo = raiz.dataset.grupo;
-    var titulo = el('p', 'adr-comite-titulo', 'Aguardando a ADR do grupo ' + grupo);
+    // data-rotulos (JSON, opcional) renomeia os campos do detalhe, e data-espera,
+    // data-sem-titulo e data-sem-decisao trocam os textos de espera (tela de spec
+    // da Aula 04). Sem esses atributos, vale o texto da ADR da Aula 02.
+    var espera = raiz.dataset.espera || 'Aguardando a ADR do grupo';
+    var semTitulo = raiz.dataset.semTitulo || 'ADR do grupo';
+    var semDecisao = raiz.dataset.semDecisao || 'Decisão ainda em branco';
+    var titulo = el('p', 'adr-comite-titulo', espera + ' ' + grupo);
     var decisao = el('p', 'adr-comite-decisao');
     var detalhes = el('dl', 'adr-comite-detalhes');
     raiz.appendChild(titulo);
     raiz.appendChild(decisao);
     raiz.appendChild(detalhes);
     var NOMES = { contexto: 'Contexto', criterios: 'Critérios', opcoes: 'Opções', impacto: 'Consequências' };
+    try {
+      var rotulos = JSON.parse(raiz.dataset.rotulos || '{}');
+      Object.keys(rotulos).forEach(function (k) { NOMES[k] = rotulos[k]; });
+    } catch (e) { console.error('[adr-comite] data-rotulos inválido', e); }
 
     function carregar() {
       return dados.adrCampos(sessao, grupo).then(function (linhas) {
         var v = {};
         linhas.forEach(function (l) { v[l.campo] = l.texto; });
-        titulo.textContent = v.titulo || ('ADR do grupo ' + grupo);
-        decisao.textContent = v.decisao || 'Decisão ainda em branco';
+        titulo.textContent = v.titulo || (semTitulo + ' ' + grupo);
+        decisao.textContent = v.decisao || semDecisao;
         detalhes.textContent = '';
         ['contexto', 'criterios', 'opcoes', 'impacto'].forEach(function (n) {
           if (!v[n]) return;
