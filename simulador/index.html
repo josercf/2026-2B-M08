@@ -156,6 +156,23 @@
               </div>
             </div>
 
+            <div class="metricas metricas-var" aria-label="Valor em risco de 1 dia a 95%">
+              <div class="metrica">
+                <p class="rotulo">VaR histórico <span class="rotulo-nota">1 dia, 95%</span></p>
+                <p class="metrica-valor numero-destaque-valor" id="m-var-hist" data-valor=""></p>
+                <p class="metrica-reais" id="m-var-hist-reais" data-valor=""></p>
+              </div>
+              <div class="metrica">
+                <p class="rotulo">VaR paramétrico <span class="rotulo-nota">1 dia, 95%</span></p>
+                <p class="metrica-valor numero-destaque-valor" id="m-var-param" data-valor=""></p>
+                <p class="metrica-reais" id="m-var-param-reais" data-valor=""></p>
+              </div>
+              <div class="metrica metrica-nota">
+                <p>Perda de 1 dia que não foi superada em 95% dos pregões da janela. O histórico é o percentil 5% dos retornos diários da carteira. O paramétrico é 1,645 × desvio diário − média diária.</p>
+                <p id="m-var-nota"></p>
+              </div>
+            </div>
+
             <section class="bloco bloco-grafico" aria-labelledby="m-evolucao-titulo">
               <h2 id="m-evolucao-titulo"></h2>
               <div class="grafico-palco" id="evolucao-palco">

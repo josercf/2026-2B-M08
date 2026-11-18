@@ -529,6 +529,18 @@
     risco.textContent = porcento(medidas.risco);
     $('#m-retorno-dec').textContent = decimal(medidas.retorno);
     $('#m-risco-dec').textContent = decimal(medidas.risco);
+    var var95 = N.valorEmRisco(pesos, janela.linhas);
+    [['hist', var95.historico], ['param', var95.parametrico]].forEach(function (par) {
+      var valor = $('#m-var-' + par[0]);
+      var emReais = $('#m-var-' + par[0] + '-reais');
+      valor.setAttribute('data-valor', String(par[1]));
+      valor.textContent = porcento(par[1]);
+      emReais.setAttribute('data-valor', String(par[1] * CAPITAL));
+      emReais.textContent = 'ou ' + reais(par[1] * CAPITAL) + ' em ' + reais(CAPITAL);
+    });
+    $('#m-var-nota').textContent = sim.pregoes < 63
+      ? 'Com ' + sim.pregoes + ' pregões o percentil de 5% é pouco estável: ele se apoia em um ou dois dias.'
+      : '';
     $('#m-pesos').textContent = 'Pesos iguais: ' + porcento(1 / k) + ' em cada um dos ' + k + ' ativos, de ' +
       data(janela.datas[0]) + ' a ' + data(janela.datas[janela.datas.length - 1]) + '.';
 

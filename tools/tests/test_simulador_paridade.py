@@ -67,6 +67,18 @@ def test_metricas_do_portal_sao_as_da_referencia(pagina, precos, ativos, pesos, 
     assert js[4] == pytest.approx(sim.retorno_do_dia(pesos, rets.iloc[0]), abs=1e-12)
 
 
+@pytest.mark.parametrize("ativos,pesos,pregoes", CARTEIRAS)
+def test_var_do_portal_e_o_da_referencia(pagina, precos, ativos, pesos, pregoes):
+    js = pagina.evaluate(
+        "([a, w, n]) => { const r = SimuladorNucleo.retornos(cotacoes, a, n);"
+        " const v = SimuladorNucleo.valorEmRisco(w, r.linhas);"
+        " return [v.historico, v.parametrico]; }",
+        [ativos, pesos, pregoes])
+    historico, parametrico = sim.valor_em_risco(pesos, sim.retornos(precos, ativos, pregoes))
+    assert js[0] == pytest.approx(historico, abs=1e-12)
+    assert js[1] == pytest.approx(parametrico, abs=1e-12)
+
+
 def test_simulacao_do_portal_confere_com_metricas_e_repete_com_a_semente(pagina, precos):
     ativos = ["PETR4", "VALE3", "ITUB4"]
     js = pagina.evaluate(

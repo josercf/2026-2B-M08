@@ -346,6 +346,8 @@ body.sim {
 .metricas { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 40px; align-items: end; padding-bottom: 20px; border-bottom: 1px solid var(--seg-borda); }
 .metrica-valor { font-size: 48px; line-height: 1.05; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .metrica-decimal { display: none; margin-top: 4px }
+.metricas-var { padding-top: 20px; }
+.metrica-reais { margin-top: 4px; font-size: 15px; font-variant-numeric: tabular-nums; }
 .metrica-decimal code { font-size: 15px; background: var(--seg-superficie); padding: 2px 6px; }
 .metrica-nota { font-size: 14px; display: grid; gap: 10px; }
 

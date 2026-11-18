@@ -194,6 +194,29 @@ def test_retorno_e_risco_de_petr4_e_vale3_em_9_pregoes_sao_os_da_referencia(sala
     assert _numero(page, "#m-retorno") == pytest.approx(retorno21, abs=1e-9)
 
 
+def test_var_de_um_dia_a_95_por_cento_aparece_com_os_dois_metodos_e_em_reais(sala, precos):
+    contexto, url = sala
+    page = _abrir(contexto, url)
+    _entrar(page)
+    _montar(page, ["PETR4", "VALE3"], 252)
+
+    historico, parametrico = sim.valor_em_risco(
+        [0.5, 0.5], sim.retornos(precos, ["PETR4", "VALE3"], 252))
+    assert _numero(page, "#m-var-hist") == pytest.approx(historico, abs=1e-9)
+    assert _numero(page, "#m-var-param") == pytest.approx(parametrico, abs=1e-9)
+    assert page.inner_text("#m-var-hist") == ("%.2f%%" % (historico * 100)).replace(".", ",")
+    assert _numero(page, "#m-var-hist-reais") == pytest.approx(historico * 100000, abs=1e-4)
+    assert "R$" in page.inner_text("#m-var-param-reais")
+
+    # Com 9 pregões o percentil é pouco estável, e a tela avisa.
+    page.click(".tela-montar .periodos button[data-pregoes='9']")
+    hist9, _ = sim.valor_em_risco([0.5, 0.5], sim.retornos(precos, ["PETR4", "VALE3"], 9))
+    assert _numero(page, "#m-var-hist") == pytest.approx(hist9, abs=1e-9)
+    assert "pouco estável" in page.inner_text("#m-var-nota")
+    page.click(".tela-montar .periodos button[data-pregoes='252']")
+    assert "pouco estável" not in page.inner_text("#m-var-nota")
+
+
 def test_ticker_inexistente_avisa_e_mantem_a_carteira(sala):
     contexto, url = sala
     page = _abrir(contexto, url)

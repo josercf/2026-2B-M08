@@ -3,11 +3,15 @@
 // compara as duas. Definições:
 //   retorno diário simples do preço ajustado, na janela comum dos ativos;
 //   retorno anual = média diária x 252; risco anual = desvio amostral x raiz de 252;
-//   Sharpe = (retorno - rf) / risco; sorteio dos pesos uniforme normalizado.
+//   Sharpe = (retorno - rf) / risco; sorteio dos pesos uniforme normalizado;
+//   VaR de 1 dia a 95%, em fração do capital: histórico = percentil 5% da série
+//   diária da carteira com o sinal trocado (interpolação linear, como np.percentile);
+//   paramétrico = 1,645 x desvio amostral diário - média diária.
 (function () {
   'use strict';
 
   var PREGOES_ANO = 252;
+  var Z_95 = 1.6448536269514722;
 
   // Índice do primeiro pregão em que todos os ativos têm cotação, ou -1.
   function inicioComum(cotacoes, ativos) {
@@ -76,6 +80,29 @@
     return {
       retorno: media * PREGOES_ANO,
       risco: Math.sqrt(quadrados / (n - 1)) * Math.sqrt(PREGOES_ANO)
+    };
+  }
+
+  function percentil(valores, p) {
+    var ordenado = Array.prototype.slice.call(valores).sort(function (a, b) { return a - b; });
+    var posicao = (ordenado.length - 1) * p;
+    var abaixo = Math.floor(posicao);
+    var acima = Math.ceil(posicao);
+    return ordenado[abaixo] + (ordenado[acima] - ordenado[abaixo]) * (posicao - abaixo);
+  }
+
+  // Perda de 1 dia que não é superada em 95% dos pregões, como número positivo.
+  function valorEmRisco(pesos, linhas) {
+    var serie = serieDaCarteira(pesos, linhas);
+    var n = serie.length;
+    var media = 0;
+    for (var i = 0; i < n; i++) media += serie[i];
+    media /= n;
+    var quadrados = 0;
+    for (var j = 0; j < n; j++) quadrados += (serie[j] - media) * (serie[j] - media);
+    return {
+      historico: -percentil(serie, 0.05),
+      parametrico: Z_95 * Math.sqrt(quadrados / (n - 1)) - media
     };
   }
 
@@ -181,6 +208,7 @@
     retornoDoDia: retornoDoDia,
     serieDaCarteira: serieDaCarteira,
     metricas: metricas,
+    valorEmRisco: valorEmRisco,
     gerador: gerador,
     sortearPesos: sortearPesos,
     simular: simular,

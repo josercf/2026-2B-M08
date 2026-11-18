@@ -11,6 +11,10 @@ Definições:
 - retorno anual: média dos retornos diários da carteira vezes 252;
 - risco anual: desvio padrão amostral (ddof=1) vezes raiz de 252;
 - Sharpe: (retorno anual - taxa livre de risco) / risco anual;
+- VaR de 1 dia a 95%, como perda positiva em fração do capital: histórico é o
+  percentil 5% da série diária da carteira com o sinal trocado (interpolação
+  linear, a de np.percentile); paramétrico é 1,645 x desvio amostral diário
+  menos a média diária. Não entra no contrato dos turnos 1 e 2;
 - sorteio dos pesos: uniforme normalizado;
 - otimização (turno 6): scipy.optimize.minimize com SLSQP, pesos entre 0 e 1
   (sem venda a descoberto) e soma 1, partindo de pesos iguais. É a mesma
@@ -21,6 +25,7 @@ import pandas as pd
 from scipy.optimize import minimize
 
 PREGOES_ANO = 252
+Z_95 = 1.6448536269514722   # norm.ppf(0,95), cauda unilateral de 5%
 TOLERANCIA = 1e-12   # ftol do SLSQP: o padrão (1e-6) para antes do ótimo da variância
 
 
@@ -45,6 +50,14 @@ def metricas(pesos, retornos):
     serie = np.asarray(retornos, dtype=float) @ np.asarray(pesos, dtype=float)
     return (float(serie.mean() * PREGOES_ANO),
             float(serie.std(ddof=1) * np.sqrt(PREGOES_ANO)))
+
+
+def valor_em_risco(pesos, retornos):
+    """VaR de 1 dia a 95% da carteira: (histórico, paramétrico), perdas em fração."""
+    serie = np.asarray(retornos, dtype=float) @ np.asarray(pesos, dtype=float)
+    historico = -float(np.percentile(serie, 5))
+    parametrico = float(Z_95 * serie.std(ddof=1) - serie.mean())
+    return historico, parametrico
 
 
 def sortear_pesos(k, rng):

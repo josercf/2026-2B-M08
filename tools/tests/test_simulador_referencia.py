@@ -229,3 +229,30 @@ def test_fronteira_de_cinquenta_pontos_com_cinco_ativos_em_menos_de_dez_segundos
     fronteira = sim.fronteira(rets)
     assert time.perf_counter() - inicio < 10
     assert len(fronteira) == 50
+
+
+# ------------------------------------------------------------ valor em risco
+
+def test_var_historico_e_parametrico_de_uma_serie_conhecida():
+    # Série de um ativo com média zero: percentil 5% por interpolação linear
+    # em (n - 1) x 0,05 = 0,2, ou seja -0,04 + 0,2 x 0,02 = -0,036.
+    serie = np.array([[-0.04], [-0.02], [0.01], [0.02], [0.03]])
+    historico, parametrico = sim.valor_em_risco([1.0], serie)
+    assert historico == pytest.approx(0.036, abs=1e-12)
+    desvio = np.sqrt(0.0034 / 4)
+    assert parametrico == pytest.approx(1.6448536269514722 * desvio, abs=1e-12)
+
+
+def test_var_e_perda_positiva_e_a_carteira_so_com_ganhos_tem_var_negativo():
+    ganhos = np.array([[0.01], [0.02], [0.03], [0.04], [0.05]])
+    historico, parametrico = sim.valor_em_risco([1.0], ganhos)
+    assert historico < 0 and parametrico < 0
+
+
+def test_var_da_carteira_usa_a_serie_diaria_ponderada(precos):
+    rets = sim.retornos(precos, ["PETR4", "VALE3"], 252)
+    serie = 0.3 * rets["PETR4"] + 0.7 * rets["VALE3"]
+    historico, parametrico = sim.valor_em_risco([0.3, 0.7], rets)
+    assert historico == pytest.approx(-np.percentile(serie, 5), abs=1e-12)
+    assert parametrico == pytest.approx(1.6448536269514722 * serie.std(ddof=1) - serie.mean(),
+                                        abs=1e-12)
