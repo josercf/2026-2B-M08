@@ -10,12 +10,28 @@
 //     o que os colegas escrevem, não sobrescreve o campo em que a pessoa está
 //     digitando (mostra um aviso) e trava tudo quando o prazo do servidor acaba.
 //
+//     Extensões opcionais, usadas pela tela de spec da Aula 04 (aula04-spec.js).
+//     Sem esses atributos o formulário se comporta como na Aula 02:
+//       data-autor="JR"       o autor vem da página, e não da lista de nomes
+//                             (que nem é montada). Vazio, o formulário fica só
+//                             para leitura até a página preencher o atributo e
+//                             disparar o evento "adr-autor" no formulário.
+//       data-sem-permissao    texto do aviso de link sem permissão de edição.
+//     Eventos disparados no formulário (e no painel data-adr-comite), com bolha:
+//       adr-pronto   detail {podeEditar}
+//       adr-campos   detail {linhas, agora}   a cada leitura; `agora` é o
+//                    relógio do servidor em milissegundos
+//       adr-salvo    detail {campo, autor, atualizado_em}   a cada gravação
+//
 //   <div data-adr-links data-sessao="..." data-base="">   (slide do professor)
 //     Gera os quatro links com token e inicia ou estende o prazo. Exige a chave
 //     do professor, a mesma do quiz ao vivo.
 //
 //   <div data-adr-comite data-sessao="..." data-grupo="G01">   (projetor)
-//     Mostra a ADR do grupo ao vivo, com a decisão em destaque.
+//     Mostra a ADR do grupo ao vivo, com a decisão em destaque. Com o atributo
+//     opcional data-selos, cada campo ganha <small class="adr-comite-selo">
+//     com o autor gravado e há quanto tempo, e data-vivo="sim" nos primeiros
+//     10 s. Só faz sentido onde o autor são iniciais (spec da Aula 04).
 (function () {
   'use strict';
 
@@ -99,6 +115,11 @@
     var podeEditar = false;
     var travado = false;
     var relogioServidor = prazo(dados, sessao);
+    var externo = form.hasAttribute('data-autor');
+    function autorExterno() { return (form.getAttribute('data-autor') || '').trim(); }
+    function avisar(nome, detalhe, alvo) {
+      (alvo || form).dispatchEvent(new CustomEvent(nome, { bubbles: true, detail: detalhe }));
+    }
 
     var estadoEl = form.querySelector('.adr-estado') || form.insertBefore(el('p', 'adr-estado'), form.firstChild);
     var cronometroEl = document.querySelector('[data-adr-cronometro]');
@@ -146,9 +167,11 @@
       enviado[nome] = texto;
       emVoo[nome] = (emVoo[nome] || 0) + 1;
       var fim = function () { emVoo[nome] -= 1; };
-      return dados.adrSalvar(sessao, grupo, token, nome, texto, autor).then(function () {
+      var quem = externo ? autorExterno() : autor;
+      return dados.adrSalvar(sessao, grupo, token, nome, texto, quem).then(function (quando) {
         fim();
         mensagem('Salvo às ' + new Date().toLocaleTimeString('pt-BR'), 'ok');
+        avisar('adr-salvo', { campo: nome, autor: quem, atualizado_em: quando });
       }, function (err) {
         fim();
         mensagem(err.message === 'prazo encerrado' ? 'Prazo encerrado: o texto não foi salvo.' : 'Não salvou: ' + err.message, 'erro');
@@ -168,6 +191,7 @@
           }
           c.value = l.texto;
         });
+        avisar('adr-campos', { linhas: linhas, agora: Date.now() + relogioServidor.desvio });
       });
     }
 
@@ -190,7 +214,7 @@
       else if (r !== null && r > 0 && travado && podeEditar) {
         // O professor estendeu o prazo.
         travado = false;
-        somenteLeitura(false);
+        somenteLeitura(externo && !autorExterno());
         form.classList.remove('adr-travado');
         mensagem('Prazo estendido. Podem continuar.', 'ok');
       }
@@ -249,9 +273,10 @@
     }
 
     function liberar() {
-      nomes.forEach(function (n) { dados.adrEntrar(sessao, grupo, token, n).catch(function (err) { console.error('[adr]', err); }); });
-      somenteLeitura(false);
-      mensagem('Editando como ' + nomes.join(', ') + ', grupo ' + grupo + '. Cada campo salva sozinho.', 'ok');
+      var lista = externo ? [autorExterno()] : nomes;
+      lista.forEach(function (n) { dados.adrEntrar(sessao, grupo, token, n).catch(function (err) { console.error('[adr]', err); }); });
+      if (!(externo && travado)) somenteLeitura(false);
+      mensagem('Editando como ' + lista.join(', ') + ', grupo ' + grupo + '. Cada campo salva sozinho.', 'ok');
     }
 
     function adicionarNome() {
@@ -278,18 +303,24 @@
     somenteLeitura(true);
     Promise.all([dados.adrTokenOk(sessao, grupo, token), relogioServidor.atualizar(), carregar()]).then(function (r) {
       podeEditar = r[0];
-      if (podeEditar) {
+      if (podeEditar && externo) {
+        // O autor vem da página (iniciais do portal, na tela de spec da Aula 04).
+        if (autorExterno()) liberar();
+        else mensagem('Informe as iniciais para liberar a edição.', 'ok');
+        form.addEventListener('adr-autor', function () { if (autorExterno()) liberar(); });
+      } else if (podeEditar) {
         form.insertBefore(quem, form.querySelector('[data-campo="contexto"]'));
         pintarNomes();
         if (nomes.length) liberar(); else pedirNome();
       } else {
         form.classList.add('adr-leitura');
-        mensagem('Este link está sem permissão de edição. Peça ao professor o link do grupo no Slack.', 'erro');
+        mensagem(form.dataset.semPermissao || 'Este link está sem permissão de edição. Peça ao professor o link do grupo no Slack.', 'erro');
       }
       tique();
       setInterval(tique, 1000);
       dados.ouvir(sessao, function () { carregar(); relogioServidor.atualizar().then(tique); }, ['adr_campos', 'adr_prazos']);
       form.dataset.pronto = 'sim';
+      avisar('adr-pronto', { podeEditar: podeEditar });
     }).catch(function (err) {
       mensagem('Sem conexão com o banco: ' + err.message, 'erro');
       form.dataset.pronto = 'erro';
@@ -453,19 +484,47 @@
       Object.keys(rotulos).forEach(function (k) { NOMES[k] = rotulos[k]; });
     } catch (e) { console.error('[adr-comite] data-rotulos inválido', e); }
 
+    var comSelos = raiz.hasAttribute('data-selos');
+    var relogioServidor = prazo(dados, sessao);
+    var ultimas = [];
+
+    // Selo de autoria: "(JR, agora)" ou "(JR, há 2 min)".
+    function selar(no, linha) {
+      if (!comSelos || !linha || !linha.autor || !linha.texto) return;
+      var ms = Math.max(0, Date.now() + relogioServidor.desvio - Date.parse(linha.atualizado_em));
+      var quando = ms < 10000 ? 'agora' : ms < 60000 ? 'há ' + Math.floor(ms / 1000) + ' s'
+        : ms < 3600000 ? 'há ' + Math.floor(ms / 60000) + ' min' : 'há ' + Math.floor(ms / 3600000) + ' h';
+      var selo = el('small', 'adr-comite-selo', ' (' + String(linha.autor).slice(0, 24) + ', ' + quando + ')');
+      selo.dataset.vivo = ms < 10000 ? 'sim' : 'nao';
+      no.appendChild(selo);
+    }
+
+    function pintar(linhas) {
+      var v = {};
+      var porCampo = {};
+      linhas.forEach(function (l) { v[l.campo] = l.texto; porCampo[l.campo] = l; });
+      titulo.textContent = v.titulo || (semTitulo + ' ' + grupo);
+      selar(titulo, porCampo.titulo);
+      decisao.textContent = v.decisao || semDecisao;
+      selar(decisao, porCampo.decisao);
+      detalhes.textContent = '';
+      ['contexto', 'criterios', 'opcoes', 'impacto'].forEach(function (n) {
+        if (!v[n]) return;
+        selar(detalhes.appendChild(el('dt', '', NOMES[n])), porCampo[n]);
+        detalhes.appendChild(el('dd', '', v[n]));
+      });
+    }
+
     function carregar() {
       return dados.adrCampos(sessao, grupo).then(function (linhas) {
-        var v = {};
-        linhas.forEach(function (l) { v[l.campo] = l.texto; });
-        titulo.textContent = v.titulo || (semTitulo + ' ' + grupo);
-        decisao.textContent = v.decisao || semDecisao;
-        detalhes.textContent = '';
-        ['contexto', 'criterios', 'opcoes', 'impacto'].forEach(function (n) {
-          if (!v[n]) return;
-          detalhes.appendChild(el('dt', '', NOMES[n]));
-          detalhes.appendChild(el('dd', '', v[n]));
-        });
+        ultimas = linhas;
+        pintar(linhas);
+        raiz.dispatchEvent(new CustomEvent('adr-campos', { bubbles: true, detail: { linhas: linhas, agora: Date.now() + relogioServidor.desvio } }));
       });
+    }
+    if (comSelos) {
+      relogioServidor.atualizar().catch(function () { /* sem o relógio do servidor, vale o local */ });
+      setInterval(function () { pintar(ultimas); }, 5000);
     }
     carregar().then(function () { raiz.dataset.pronto = 'sim'; }, function (err) {
       raiz.dataset.pronto = 'erro';

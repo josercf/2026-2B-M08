@@ -556,3 +556,164 @@ body.sim {
 
 /* Definição curta ao lado do rótulo da métrica: o aluno lê a conta que vai escrever. */
 .rotulo-nota { font-weight: 300; opacity: 0.75; margin-left: 0.5em; white-space: nowrap; }
+
+/* ------------------------------------------------- atalho da spec do grupo */
+
+/* Progresso, turnos 4 e 5: o botão fica dentro da moldura do turno. */
+.turno-spec {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 10px 16px 14px 76px;
+  border: 1px solid var(--seg-borda);
+  border-top: 0;
+  border-left: 6px solid var(--seg-borda);
+  transition: background-color 160ms ease-out, border-color 160ms ease-out;
+}
+.turno:has(.turno-spec) label { border-bottom: 0; }
+.turno-feito .turno-spec { background: var(--seg-superficie); border-left-color: var(--seg-secundaria); }
+.turno-spec-botao { min-height: 44px; padding: 8px 16px; }
+.turno-spec-botao[aria-disabled="true"] { border-color: var(--seg-borda); color: var(--seg-texto-suave); cursor: not-allowed; }
+.turno-spec-botao[aria-disabled="true"]:hover { background: var(--seg-base); }
+.turno-spec-botao[data-estado="erro"] { border-color: var(--seg-destaque); }
+.turno-spec-nota { flex: 1 1 240px; font-size: 14px; }
+.turno-spec-botao[data-estado="erro"] + .turno-spec-nota { font-weight: 600; padding-left: 10px; border-left: 4px solid var(--seg-destaque); }
+
+/* Painel: visão somente leitura da spec de cada grupo. */
+.painel-specs { grid-column: 2; display: flex; gap: 10px; margin-top: 2px; font-size: 12px; font-weight: 600; }
+.painel-specs a { text-decoration: underline; text-underline-offset: 2px; }
+.painel-specs a:hover { background: var(--seg-secundaria); }
+
+.telao-cabeca, .ver-numeros, .voltar .icone { display: none; }
+
+/* ------------------------------------------------------------------- telão */
+
+/* ?painel=1&telao=1: só o painel, lido do fundo da sala. A página ocupa
+   exatamente a janela (iframe de cerca de 1170x520 no deck, ou tela cheia) e
+   nada rola. Toda medida sai de duas unidades de viewport:
+     --u   a menor entre 1% da altura e 0,444% da largura (5,2px em 1170x520,
+           8,5px em 1920x1080), para letra, faixa e placar;
+     --av  o lado do avatar, limitado pela altura da linha e pela largura que
+           10 avatares ocupam ao lado do nome do grupo e do placar. */
+
+body.sim-telao {
+  --u: min(1vh, 0.444vw);
+  --av: min(11.6vh, 5.3vw);
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
+}
+.sim-telao .sim-topo, .sim-telao .sim-rodape, .sim-telao .sim-aviso,
+.sim-telao .tela-painel .tela-cabeca, .sim-telao .painel-turnos { display: none; }
+.sim-telao main { flex: 1 1 auto; max-width: none; min-height: 0; height: 100vh; padding: 0; }
+.sim-telao .tela:not([hidden]) { animation: none; }
+
+.sim-telao .tela-painel:not([hidden]) { display: grid; grid-template-rows: auto minmax(0, 1fr); height: 100vh; }
+
+.sim-telao .telao-cabeca {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 5);
+  height: calc(var(--u) * 15);
+  padding: 0 calc(var(--u) * 4);
+  background: var(--seg-primaria);
+  color: var(--inteli-branco);
+}
+.telao-marca { display: block; height: calc(var(--u) * 6.4); width: auto; }
+.telao-titulo { margin-right: auto; white-space: nowrap; }
+.telao-titulo h2 { font-size: calc(var(--u) * 5.2); line-height: 1.1; }
+.telao-titulo p { font-size: calc(var(--u) * 2.5); line-height: 1.4; }
+.telao-numero { display: flex; align-items: center; gap: calc(var(--u) * 1.6); }
+.telao-numero strong { font-size: calc(var(--u) * 7); line-height: 1; font-variant-numeric: tabular-nums; }
+.telao-numero span { max-width: 11ch; font-size: calc(var(--u) * 2.5); font-weight: 600; line-height: 1.15; }
+.telao-numero-principal { align-self: stretch; padding: 0 calc(var(--u) * 3.2); background: var(--seg-secundaria); color: var(--inteli-roxo); }
+.telao-numero-principal strong { font-size: calc(var(--u) * 10.5); }
+.telao-numero-principal span { font-size: calc(var(--u) * 2.9); font-weight: 700; }
+.telao-vivo { display: flex; align-items: center; gap: calc(var(--u) * 1.4); font-size: calc(var(--u) * 2.3); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.telao-pulso { width: calc(var(--u) * 2); height: calc(var(--u) * 2); background: var(--seg-secundaria); animation: sim-pulso 1.6s ease-in-out infinite; }
+.telao-vivo-alerta .telao-pulso { background: var(--seg-destaque); animation: none; }
+
+.sim-telao .painel-grade { display: grid; grid-auto-rows: minmax(0, 1fr); border-top: 0; min-height: 0; }
+.sim-telao .painel-linha {
+  grid-template-columns: calc(var(--u) * 29) minmax(0, 1fr) auto;
+  gap: calc(var(--u) * 3);
+  padding: 0 calc(var(--u) * 4) 0 0;
+  min-height: 0;
+}
+.sim-telao .painel-linha:last-child { border-bottom: 0; }
+.sim-telao .painel-linha[data-grupo="VIS"] { background: var(--seg-superficie); }
+
+.sim-telao .painel-grupo {
+  align-self: stretch;
+  grid-template-columns: calc(var(--u) * 2.4) minmax(0, 1fr);
+  grid-template-rows: 1fr auto auto 1fr;
+  column-gap: calc(var(--u) * 2.2);
+}
+.sim-telao .painel-cor { grid-row: 1 / -1; width: auto; height: auto; align-self: stretch; }
+.sim-telao .painel-grupo h2 { grid-column: 2; grid-row: 2; font-size: calc(var(--u) * 4.6); line-height: 1.1; white-space: nowrap; }
+.sim-telao .painel-quantos { grid-column: 2; grid-row: 3; font-size: calc(var(--u) * 2.5); line-height: 1.5; }
+.sim-telao .painel-specs { grid-column: 2; grid-row: 4; align-self: start; gap: calc(var(--u) * 1.8); margin: 0; font-size: calc(var(--u) * 2.2); }
+
+.sim-telao .painel-avatares { gap: calc(var(--av) * 0.1); min-height: 0; align-content: center; }
+.sim-telao .painel-avatar { width: var(--av); height: var(--av); font-size: calc(var(--av) * 0.36); font-weight: 700; }
+.sim-telao .painel-linha[data-densidade="2"] .painel-avatar { width: calc(var(--av) * 0.47); height: calc(var(--av) * 0.47); font-size: calc(var(--av) * 0.19); }
+.sim-telao .painel-linha:not([data-densidade="1"]) .painel-avatares { display: grid; grid-template-columns: repeat(var(--por-linha), auto); justify-content: start; }
+.sim-telao .painel-linha[data-densidade="2"] .painel-avatares { gap: calc(var(--av) * 0.06); }
+.sim-telao .painel-linha[data-densidade="3"] .painel-avatar { width: calc(var(--av) * 0.3); height: calc(var(--av) * 0.3); font-size: calc(var(--av) * 0.13); }
+.sim-telao .painel-linha[data-densidade="3"] .painel-avatares { gap: calc(var(--av) * 0.05); }
+.sim-telao .avatar-eu { box-shadow: none; }
+.sim-telao .painel-sem { font-size: calc(var(--u) * 2.6); color: var(--seg-texto-suave); font-weight: 600; }
+
+.sim-telao .placar { grid-template-columns: repeat(5, calc(var(--u) * 9.4)); gap: calc(var(--u) * 1); }
+.sim-telao .placar-celula { padding: calc(var(--u) * 0.8) 0 calc(var(--u) * 0.6); border-width: 2px; }
+.sim-telao .placar-celula span { font-size: calc(var(--u) * 2.2); }
+.sim-telao .placar-celula strong { font-size: calc(var(--u) * 6); line-height: 1.05; }
+.sim-telao .placar-celula:not(.placar-celula-cheia) strong { color: var(--seg-texto-suave); }
+.sim-telao .placar-fora { width: calc(var(--u) * 51); font-size: calc(var(--u) * 2.5); font-weight: 600; text-align: center; }
+
+/* Simulação de uma pessoa no telão: faixa com o botão de voltar, nuvem à
+   esquerda ocupando a altura livre e a leitura à direita. Os contêineres
+   intermediários saem da caixa (display: contents) para que a faixa, o palco e
+   a coluna de leitura sejam células da mesma grade. */
+.sim-telao .tela-ver:not([hidden]) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(calc(var(--u) * 58), 30vw);
+  grid-template-rows: calc(var(--u) * 15) auto minmax(0, 1fr) auto;
+  grid-template-areas: "voltar cabeca cabeca" "palco palco numeros" "palco palco leitura" "palco palco legenda";
+  height: 100vh;
+}
+.sim-telao #ver-corpo:not([hidden]), .sim-telao #ver-nuvem, .sim-telao #ver-nuvem .nuvem { display: contents; }
+.sim-telao .voltar { grid-area: voltar; display: flex; align-items: center; margin: 0; padding-left: calc(var(--u) * 4); background: var(--seg-primaria); }
+.sim-telao .voltar a {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.4);
+  padding: calc(var(--u) * 1.6) calc(var(--u) * 2.6);
+  background: var(--seg-secundaria);
+  color: var(--inteli-roxo);
+  font-size: calc(var(--u) * 2.8);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.sim-telao .voltar .icone { display: inline-block; font-size: calc(var(--u) * 3.6); }
+.sim-telao .ver-cabeca { grid-area: cabeca; margin: 0; gap: calc(var(--u) * 2.4); padding: 0 calc(var(--u) * 4); background: var(--seg-primaria); color: var(--inteli-branco); min-width: 0; }
+.sim-telao .ver-cabeca .avatar { width: calc(var(--u) * 10); height: calc(var(--u) * 10); font-size: calc(var(--u) * 3.8); font-weight: 700; box-shadow: 0 0 0 2px var(--inteli-branco); }
+.sim-telao .ver-cabeca h1 { margin: 0; font-size: calc(var(--u) * 4.6); line-height: 1.1; }
+.sim-telao .ver-cabeca p { font-size: calc(var(--u) * 2.5); line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sim-telao .ver-cabeca > div { min-width: 0; }
+
+.sim-telao .nuvem-palco { grid-area: palco; min-height: 0; overflow: hidden; }
+.sim-telao .nuvem-tela { position: absolute; top: 0; left: 0; }
+
+.sim-telao .ver-numeros { grid-area: numeros; display: grid; grid-template-columns: repeat(3, auto); justify-content: space-between; gap: calc(var(--u) * 2); margin: 0; padding: calc(var(--u) * 3) calc(var(--u) * 4) calc(var(--u) * 2.4); border-bottom: 1px solid var(--seg-borda); }
+.ver-numeros dt { font-size: calc(var(--u) * 2.3); font-weight: 600; }
+.ver-numeros dd { margin: 0; font-size: calc(var(--u) * 6.4); line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ver-numeros div:first-child dd { box-shadow: inset 0 calc(var(--u) * -1.6) 0 var(--seg-secundaria); }
+.sim-telao .leitura { grid-area: leitura; align-self: start; max-width: none; margin: calc(var(--u) * 2.6) calc(var(--u) * 4) 0; padding-left: calc(var(--u) * 2.2); font-size: calc(var(--u) * 2.75); line-height: 1.4; overflow: hidden; }
+.sim-telao .legenda { grid-area: legenda; display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 1) calc(var(--u) * 2); padding: calc(var(--u) * 2) calc(var(--u) * 4) calc(var(--u) * 3); font-size: calc(var(--u) * 2.2); border-top: 1px solid var(--seg-borda); }
+.sim-telao .legenda li:first-child { grid-column: 1 / -1; }
+.sim-telao .tela-ver .rolagem { display: none; }
+.sim-telao #ver-vazio:not([hidden]) { grid-column: 1 / -1; grid-row: 2 / -1; align-self: center; justify-self: center; }
+.sim-telao .tela-ver:has(#ver-vazio:not([hidden])) .voltar { grid-column: 1 / -1; }

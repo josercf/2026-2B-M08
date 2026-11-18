@@ -13,13 +13,19 @@
        travados em tools/tests/test_deck_aula04_turnos.py.
 
        Divisão dos 105 minutos de metodologia ativa (depois da daily de 15 min):
-         Bloco 1 (0 a 15)    slides 4 e 5     portal, previsão e painel da sala
-         Bloco 2 (15 a 30)   slides 6 a 9     preparo por quiz ao vivo, anatomia do turno, ADRs do kit
+         Bloco 1 (0 a 15)    slides 4 e 5     portal, previsão falada e painel da sala em modo telão
+         Bloco 2 (15 a 30)   slides 6 a 9     preparo por quiz ao vivo, anúncio da atividade, ADRs do kit
          Bloco 3 (30 a 45)   slides 10 a 12   turnos 1 e 2, à mão, no Colab
          Bloco 4 (45 a 60)   slides 13 e 14   passagem para o kit e turno 3, primeiro com agente
-         Bloco 5 (60 a 75)   slides 15 a 17   turno 4, com a spec escrita pelo grupo
-         Bloco 6 (75 a 90)   slides 18 e 19   turno 5, tempo e posição da carteira
-         Bloco 7 (90 a 105)  slides 20 a 25   nuvens dos grupos, quiz de três perguntas, A3, referências
+         Bloco 5 (60 a 75)   slides 15 e 16   turno 4, com a spec escrita pelo grupo, e specs no projetor
+         Bloco 6 (75 a 90)   slide 17         turno 5, tempo e posição da carteira
+         Bloco 7 (90 a 105)  slides 18 a 23   nuvens dos grupos, demonstração da fronteira, quiz de duas
+                                              perguntas, A3 com o turno 6 e o A4, referências
+
+       Slide de atividade (turnos 1 a 5 e passagem): O que, Onde, Como e Pronto quando, com o apoio
+       do turno na coluna da direita e a ampulheta do cronômetro. A checagem e o debrief ficam nas
+       notas do apresentador (aside.notes.checagem-pratica) e em docs/notas-do-professor/aula04.md.
+       Os documentos do kit abrem no slide por assets/js/aula04-documento.js.
 
        Ordem de corte se o tempo apertar: turno 5 (vira tarefa da sprint), depois a tela de spec
        (a spec vai direto no SPEC.md do kit). -->
@@ -32,6 +38,7 @@
   <link rel="stylesheet" href="../assets/css/inteli-quiz-vivo.css">
   <link rel="stylesheet" href="../assets/css/inteli-adr.css">
   <link rel="stylesheet" href="../assets/css/aula04-turnos.css">
+  <link rel="stylesheet" href="../assets/css/aula04-atividade.css">
   <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
 </head>
 <body>
@@ -69,7 +76,7 @@
             <tr><td>4</td><td>Turno 3: o teste da dupla e o agente, no kit</td></tr>
             <tr><td>5</td><td>Turno 4: a spec do grupo e a função simular</td></tr>
             <tr><td>6</td><td>Turno 5: tempo e posição da carteira na nuvem</td></tr>
-            <tr><td>7</td><td>Nuvens dos grupos, quiz e amarração com o A3</td></tr>
+            <tr><td>7</td><td>Nuvens dos grupos, fronteira, quiz e amarração</td></tr>
           </tbody>
         </table>
         <div class="slide-footer">
@@ -119,12 +126,12 @@
           </div>
           <div>
             <ol class="passos-numerados">
-              <li><span class="pn">1</span><span>Entre com as suas iniciais e o seu grupo, de G01 a G04. Quem está visitando a turma escolhe Visitante.</span></li>
-              <li><span class="pn">2</span><span>Monte a carteira com 2 a 5 dos ativos que o grupo escolheu na aula de Negócios.</span></li>
-              <li><span class="pn">3</span><span>Escolha o período de 9 pregões e anote o retorno e o risco da carteira de pesos iguais.</span></li>
-              <li><span class="pn">4</span><span>Pare na tela de montagem. A simulação começa depois da pergunta do próximo slide.</span></li>
+              <li><span class="pn">1</span><span>Entrem com as iniciais e o grupo, de G01 a G04. Quem visita a turma escolhe Visitante.</span></li>
+              <li><span class="pn">2</span><span>Montem a carteira com 2 a 5 dos ativos que o grupo escolheu na aula de Negócios.</span></li>
+              <li><span class="pn">3</span><span>Escolham o período de 9 pregões e anotem o retorno e o risco da carteira de pesos iguais.</span></li>
+              <li><span class="pn">4</span><span>Parem na tela de montagem e aguardem a liberação da simulação.</span></li>
             </ol>
-            <p class="nota-slide">O arquivo da aula tem 162 ativos e 718 pregões, de 02/01/2024 a 13/11/2026. Se o ativo do grupo não estiver nele, troquem por outro do mesmo setor.</p>
+            <p class="nota-slide">O arquivo da aula tem 162 ativos e 718 pregões, de 02/01/2024 a 13/11/2026. Ativo do grupo fora do arquivo: troquem por outro do mesmo setor.</p>
           </div>
         </div>
         <aside class="notes">Um aluno por máquina ou celular. O portal guarda só iniciais e grupo. Se o banco não responder, o portal avisa e segue em memória; com rede ruim, abrir com ?demo=1. Circular conferindo que cada aluno chegou à tela de montagem com a carteira do grupo. Visitantes entram como Visitante e ficam fora do placar.</aside>
@@ -135,19 +142,17 @@
       </section>
 
       <!-- 5 -->
-      <section class="content-slide" id="painel">
+      <section class="content-slide slide-telao" id="painel">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Painel da sala e previsão antes de simular</h2>
+          <h2>Painel da sala</h2>
         </div>
-        <p class="pergunta-previsao">Antes de simular, cada um prevê: entre 1.000 carteiras sorteadas com os seus ativos, a de pesos iguais cai na borda de menor risco, no meio da nuvem ou na borda de maior risco?</p>
-        <iframe class="painel-portal" data-src="../simulador/?painel=1" title="Painel da sala no portal de simulação"></iframe>
-        <p class="painel-link">Depois da previsão: Simular, com 10, 100, 1.000 e 10.000 carteiras. <a href="../simulador/?painel=1" target="_blank" rel="noopener">Abrir o painel em outra aba</a></p>
-        <aside class="notes">Prever e observar. Pedir a previsão com a mão levantada, anotar a contagem no quadro e só então liberar a simulação. Abrir no painel a simulação de dois alunos de grupos diferentes e comparar onde a carteira de pesos iguais caiu. O sorteio uniforme normalizado deixa as bordas da nuvem pouco povoadas, então a carteira de pesos iguais costuma cair no meio dela; essa consequência está registrada na ADR-002 do kit. A nuvem usa 252 pregões: risco medido em 9 pregões é instável, e o portal avisa isso ao lado do seletor.</aside>
+        <iframe class="painel-portal" data-src="../simulador/?painel=1&amp;telao=1" title="Painel da sala no portal de simulação"></iframe>
+        <aside class="notes">Prever e observar. Pergunta falada, antes de liberar a simulação: entre 1.000 carteiras sorteadas com os seus ativos, a de pesos iguais cai na borda de menor risco, no meio da nuvem ou na borda de maior risco? Pedir a previsão com a mão levantada, anotar a contagem no quadro e só então liberar: Simular, com 10, 100, 1.000 e 10.000 carteiras. Abrir no painel a simulação de dois alunos de grupos diferentes e comparar onde a carteira de pesos iguais caiu. O sorteio uniforme normalizado deixa as bordas da nuvem pouco povoadas, então a carteira de pesos iguais costuma cair no meio dela; essa consequência está registrada na ADR-002 do kit. A nuvem usa 252 pregões: risco medido em 9 pregões é instável, e o portal avisa isso ao lado do seletor.</aside>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; <a href="../simulador/?painel=1&amp;telao=1" target="_blank" rel="noopener">Abrir o painel em outra aba</a></p>
           <p class="footer-page">5</p>
         </div>
       </section>
@@ -212,29 +217,31 @@
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Spec do simulador e anatomia de um turno</h2>
+          <h2>Atividade do encontro: o simulador em turnos</h2>
         </div>
-        <div class="duas-colunas">
-          <ol class="passos-numerados passos-densos">
-            <li><span class="pn">1</span><span>Ler a spec do turno.</span></li>
-            <li><span class="pn">2</span><span>Escrever o teste à mão. Nos turnos 1 e 2, o valor esperado é o número que o portal mostrou.</span></li>
-            <li><span class="pn">3</span><span>Rodar e ver o teste falhar.</span></li>
-            <li><span class="pn">4</span><span>Implementar: a dupla nos turnos 1 e 2, o agente nos turnos 3 a 5.</span></li>
-            <li><span class="pn">5</span><span>Rodar, ver passar e marcar o turno no portal.</span></li>
+        <p class="anuncio-frase">A turma constrói em Python o motor do simulador que acabou de usar no portal: uma função por turno, cinco turnos no encontro e o sexto depois dele.</p>
+        <table class="tabela-leitura tabela-compacta tabela-turnos">
+          <thead><tr><th>Turno</th><th>O que se constrói</th><th>Onde</th><th>Quem implementa</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><code>retorno_do_dia</code>: retorno da carteira em um pregão</td><td>Colab</td><td>cada aluno, à mão</td></tr>
+            <tr><td>2</td><td><code>metricas</code>: retorno anual e risco anual</td><td>Colab</td><td>cada aluno, à mão</td></tr>
+            <tr><td>3</td><td><code>sortear_pesos</code>: os pesos de uma carteira sorteada</td><td>kit, spec pronta</td><td>o agente, com o teste da dupla</td></tr>
+            <tr><td>4</td><td><code>simular</code>: N carteiras com retorno, risco e Sharpe</td><td>kit, spec do grupo</td><td>o agente, com o teste da dupla</td></tr>
+            <tr><td>5</td><td><code>simular</code> em menos de 10 segundos e <code>posicionar</code></td><td>kit, spec do grupo</td><td>o agente, com o teste da dupla</td></tr>
+            <tr><td>6</td><td><code>variancia_minima</code>, <code>maximo_sharpe</code> e <code>fronteira</code></td><td>kit, spec pronta</td><td>o agente, depois do encontro</td></tr>
+          </tbody>
+        </table>
+        <div class="ciclo-area">
+          <div class="ciclo-topo"><span class="at-rotulo">Ciclo de cada turno</span><p>Os cinco campos da spec de cada turno estão no arquivo:</p><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/SPEC.md" data-nome="SPEC.md"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>SPEC.md</code></button></div>
+          <ol class="ciclo">
+            <li><span class="pn">1</span>Ler a spec</li>
+            <li><span class="pn">2</span>Escrever o teste</li>
+            <li><span class="pn">3</span>Ver falhar</li>
+            <li><span class="pn">4</span>Implementar</li>
+            <li><span class="pn">5</span>Ver passar e marcar no portal</li>
           </ol>
-          <table class="tabela-leitura tabela-compacta">
-            <thead><tr><th>Campo da spec</th><th>O que responde</th></tr></thead>
-            <tbody>
-              <tr><td>Função</td><td>nome e parâmetros</td></tr>
-              <tr><td>Entrada</td><td>tipo e formato de cada parâmetro</td></tr>
-              <tr><td>Saída</td><td>o que a função devolve, e em que unidade</td></tr>
-              <tr><td>Casos de borda</td><td>entradas que a função recusa ou trata à parte</td></tr>
-              <tr><td>Critério de aceite</td><td>o teste que precisa passar</td></tr>
-            </tbody>
-          </table>
         </div>
-        <p class="nota-slide">O <code>SPEC.md</code> do kit traz um bloco por turno com esses cinco campos. O do turno 3 vem preenchido como modelo; os dos turnos 4 e 5 o grupo escreve.</p>
-        <aside class="notes">Pergunta para a sala: por que ver o teste falhar antes de implementar? Resposta esperada: um teste que nunca falhou pode não testar nada. O passo 3 é o vermelho do ciclo da Aula 03. Piloto e copiloto trocam a cada turno.</aside>
+        <aside class="notes">Anúncio da atividade. Dizer em uma frase o que a sala faz até o fim do encontro e mostrar a tabela. Abrir o SPEC.md pelo botão: cada turno tem cinco campos (Função, Entrada, Saída, Casos de borda e Critério de aceite), e o bloco do turno 3 é o modelo de escrita. Pergunta para a sala: por que ver o teste falhar antes de implementar? Resposta esperada: um teste que nunca falhou pode não testar nada. O passo 3 é o vermelho do ciclo da Aula 03. Piloto e copiloto trocam a cada turno. Nos turnos 1 e 2 o valor esperado do teste é o número que o portal mostrou. O turno marcado no portal aparece no placar da sala. O turno 6, da otimização, usa scipy.optimize.minimize com SLSQP e fica para depois do encontro: é a base do A4.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3]</p>
           <p class="footer-page">8</p>
@@ -249,20 +256,22 @@
           <div class="accent-bar"></div>
           <h2>ADRs de exemplo do kit</h2>
         </div>
-        <table class="tabela-leitura">
-          <thead><tr><th>Arquivo em <code>docs/adrs/</code></th><th>Decisão registrada</th><th>Consequência escrita na ADR</th></tr></thead>
+        <p class="anuncio-frase">Em dupla, 2 minutos: um lê a ADR-001, o outro a ADR-002, e cada um conta a decisão ao colega.</p>
+        <table class="tabela-leitura tabela-adrs">
+          <thead><tr><th>ADR</th><th>Decisão registrada</th><th>Sustenta</th><th>Arquivo</th></tr></thead>
           <tbody>
-            <tr><td>ADR-001, janela dos dados</td><td>cotações de 02/01/2024 a 13/11/2026, janela comum dos ativos escolhidos, 9 pregões para conferir à mão e 252 para a nuvem</td><td>252 pregões cobrem só o último ano, e o risco medido pode ser menor que o de um período mais longo</td></tr>
-            <tr><td>ADR-002, sorteio dos pesos</td><td>sorteio uniforme normalizado: números entre 0 e 1, cada um dividido pela soma, como no autoestudo [1]</td><td>as bordas da nuvem ficam pouco povoadas, e a melhor carteira sorteada tende a ficar abaixo da melhor possível</td></tr>
+            <tr><td>ADR-001</td><td>cotações até 13/11/2026, janela comum dos ativos, 9 pregões para conferir à mão e 252 para a nuvem</td><td>turnos 1 e 2</td><td><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/docs/adrs/ADR-001-janela-dos-dados.md" data-nome="docs/adrs/ADR-001-janela-dos-dados.md"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>ADR-001</code> janela dos dados</button></td></tr>
+            <tr><td>ADR-002</td><td>sorteio uniforme normalizado: números entre 0 e 1, cada um dividido pela soma, como no autoestudo [1]</td><td>turno 3</td><td><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/docs/adrs/ADR-002-sorteio-dos-pesos.md" data-nome="docs/adrs/ADR-002-sorteio-dos-pesos.md"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>ADR-002</code> sorteio dos pesos</button></td></tr>
+            <tr><td>ADR-003</td><td>restrições da otimização: pesos entre 0 e 1, somando 1</td><td>turno 6, depois do encontro</td><td><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/docs/adrs/ADR-003-restricoes-da-otimizacao.md" data-nome="docs/adrs/ADR-003-restricoes-da-otimizacao.md"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>ADR-003</code> restrições</button></td></tr>
           </tbody>
         </table>
         <div class="faixa-nota">
           <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#gavel"></use></svg>
-          <p>As duas são do professor e documentam decisões do kit. Servem de exemplo de formato. A ADR do A3 é individual e registra uma decisão que você tomou.</p>
+          <p>As três são do professor e servem de exemplo de formato. A ADR do A3 é individual e registra uma decisão que você tomou.</p>
         </div>
-        <aside class="notes">Dois minutos de leitura em dupla, uma ADR para cada um. Pergunta de fechamento do bloco: qual decisão do grupo, hoje, mereceria uma ADR própria? Exemplos: número de simulações, semente, como tratar ativo sem cotação.</aside>
+        <aside class="notes">Dois minutos de leitura em dupla, uma ADR para cada um. A ADR-003 sustenta o turno 6 e fica para depois do encontro. Os botões abrem o arquivo do kit no próprio slide; Esc fecha. Pergunta de fechamento do bloco: qual decisão do grupo, hoje, mereceria uma ADR própria? Exemplos: número de simulações, semente, como tratar ativo sem cotação. Consequência escrita na ADR-001: 252 pregões cobrem só o último ano. Na ADR-002: as bordas da nuvem ficam pouco povoadas.</aside>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3] [4]</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [1] [3] [4]</p>
           <p class="footer-page">9</p>
         </div>
       </section>
@@ -299,39 +308,54 @@
       </section>
 
       <!-- 11 -->
-      <section class="exercise-slide" id="turno1" data-ficha>
+      <section class="exercise-slide" id="turno1" data-atividade>
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area slide-title-area-cronometro">
           <div>
             <div class="accent-bar"></div>
-            <h2>Turno 1: retorno da carteira em um pregão</h2>
+            <h2>Turno 1: retorno em um pregão</h2>
           </div>
-          <div class="cronometro" id="cronometro-turno1" data-minutos="5"></div>
+          <div class="cronometro" id="cronometro-turno1" data-minutos="5" data-ampulheta></div>
         </div>
-        <table class="tabela-leitura tabela-compacta tabela-turno">
-          <thead><tr><th>Função</th><th>Onde</th><th>Quem implementa</th><th>Entrega</th></tr></thead>
-          <tbody>
-            <tr><td><code>retorno_do_dia(pesos, retornos_do_dia)</code></td><td>Colab, notebook da Aula 04</td><td>você, à mão e sem IA, com a dupla revisando</td><td><code>conferir_turno1</code> em OK</td></tr>
-          </tbody>
-        </table>
-        <ol class="exercise-steps">
-          <li>No notebook, preencham <code>ATIVOS</code> com a carteira montada no portal e <code>PREGOES = 9</code>.</li>
-          <li>Escrevam o valor esperado do teste: a primeira linha da coluna Carteira na tabela dos 9 pregões do portal.</li>
-          <li>Rodem o teste, vejam falhar e escrevam o corpo da função em até três linhas.</li>
-        </ol>
-        <div class="faixa-nota checagem-pratica">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
-          <p><strong>Checagem aos 3 min:</strong> o teste já falhou uma vez. <strong>Debrief:</strong> que conta a função faz com os dois vetores? <a href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula04.ipynb" target="_blank" rel="noopener">Notebook no Colab</a></p>
+        <div class="atividade">
+          <div class="at-oque"><span class="at-rotulo">O que</span><p>Escrever à mão, sem IA, a função <code>retorno_do_dia(pesos, retornos_do_dia)</code>. O colega da dupla revisa.</p></div>
+          <div class="at-onde"><span class="at-rotulo">Onde</span><div class="at-acessos"><a class="at-acesso" href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula04.ipynb" target="_blank" rel="noopener">Notebook no Colab<svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#open_in_new"></use></svg></a><a class="at-acesso" href="../simulador/" target="_blank" rel="noopener">Portal<svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#open_in_new"></use></svg></a><span class="at-divisor"></span><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/docs/adrs/ADR-001-janela-dos-dados.md" data-nome="docs/adrs/ADR-001-janela-dos-dados.md"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>ADR-001</code> janela dos dados</button></div></div>
+          <div class="at-como at-como-folgado">
+            <span class="at-rotulo">Como</span>
+            <ol class="exercise-steps">
+                <li class="fragment">No notebook, preencham <code>ATIVOS</code> com a carteira do portal e mantenham <code>PREGOES = 9</code>.</li>
+                <li class="fragment">Em <code>ESPERADO_TURNO1</code>, digitem o retorno da carteira no primeiro dos 9 pregões do portal.</li>
+                <li class="fragment">Rodem a conferência e vejam AINDA NÃO.</li>
+                <li class="fragment">Escrevam o corpo da função, em uma linha, e rodem de novo.</li>
+            </ol>
+          </div>
+          <div class="at-apoio">
+            <p class="at-apoio-barra"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#code"></use></svg>Ferramentas do Python para este turno</p>
+            <pre class="at-codigo"><code>qtd   = [3, 2]        <span class="c"># exemplo: uma compra</span>
+preco = [4.0, 2.5]
+
+<span class="c"># zip anda nas duas listas ao mesmo tempo</span>
+list(zip(qtd, preco)) <span class="c"># [(3, 4.0), (2, 2.5)]</span>
+
+<span class="c"># sum soma os itens de uma lista</span>
+sum([12.0, 5.0])      <span class="c"># 17.0</span>
+
+<span class="c"># numpy multiplica par a par e soma</span>
+np.dot(qtd, preco)    <span class="c"># 17.0</span></code></pre>
+          </div>
+          <div class="at-tempo"><div data-ampulheta-espera></div><p class="at-tempo-minutos">5 min</p></div>
+          <div class="at-pronto"><span class="at-rotulo">Pronto quando</span><p><code>conferir_turno1</code> imprime OK no notebook.</p></div>
         </div>
+        <aside class="notes checagem-pratica">Checagem aos 3 min: o teste já falhou uma vez. Debrief: que conta a função faz com os dois vetores? O bloco de ferramentas mostra zip, sum e np.dot com dados de uma compra; a linha da solução é da dupla. A ADR-001 explica por que o período é de 9 pregões: cabe em uma tabela que se confere com calculadora. Quem travar por mais de 2 minutos recebe a pergunta do slide anterior, sobre o peso zero e o peso 1.</aside>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3]</p>
           <p class="footer-page">11</p>
         </div>
       </section>
 
       <!-- 12 -->
-      <section class="exercise-slide" id="turno2" data-ficha>
+      <section class="exercise-slide" id="turno2" data-atividade>
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area slide-title-area-cronometro">
@@ -339,32 +363,48 @@
             <div class="accent-bar"></div>
             <h2>Turno 2: retorno anual e risco anual</h2>
           </div>
-          <div class="cronometro" id="cronometro-turno2" data-minutos="7"></div>
+          <div class="cronometro" id="cronometro-turno2" data-minutos="7" data-ampulheta></div>
         </div>
-        <table class="tabela-leitura tabela-compacta tabela-turno">
-          <thead><tr><th>Função</th><th>Onde</th><th>Quem implementa</th><th>Entrega</th></tr></thead>
-          <tbody>
-            <tr><td><code>metricas(pesos, retornos)</code></td><td>Colab, notebook da Aula 04</td><td>você, à mão e sem IA, com a dupla revisando</td><td><code>conferir_turno2</code> em OK e <code>simulador.py</code> gravado</td></tr>
-          </tbody>
-        </table>
-        <ol class="exercise-steps">
-          <li>Escrevam os dois valores esperados que o portal mostrou para 9 pregões: retorno anual e risco anual.</li>
-          <li>Implementem: média dos retornos diários vezes 252, e desvio padrão amostral (<code>ddof=1</code>) vezes raiz de 252.</li>
-          <li>Rodem <code>conferir_turno2</code> e a última célula, que grava <code>simulador.py</code>.</li>
-          <li>No portal, em Progresso, marquem os turnos 1 e 2.</li>
-        </ol>
-        <div class="faixa-nota checagem-pratica">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
-          <p><strong>Checagem aos 4 min:</strong> os dois valores esperados estão escritos e o teste falha. <strong>Debrief:</strong> o que muda no risco anual se <code>PREGOES</code> passar de 9 para 21?</p>
+        <div class="atividade">
+          <div class="at-oque"><span class="at-rotulo">O que</span><p>Escrever à mão, sem IA, a função <code>metricas(pesos, retornos)</code>, que devolve o retorno anual e o risco anual.</p></div>
+          <div class="at-onde"><span class="at-rotulo">Onde</span><div class="at-acessos"><a class="at-acesso" href="https://colab.research.google.com/github/josercf/2026-2B-M08/blob/main/notebooks/aula04.ipynb" target="_blank" rel="noopener">Notebook no Colab<svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#open_in_new"></use></svg></a><a class="at-acesso" href="../simulador/#progresso" target="_blank" rel="noopener">Portal: Progresso<svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#open_in_new"></use></svg></a><span class="at-divisor"></span><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/docs/adrs/ADR-001-janela-dos-dados.md" data-nome="docs/adrs/ADR-001-janela-dos-dados.md"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>ADR-001</code> janela dos dados</button></div></div>
+          <div class="at-como at-como-folgado">
+            <span class="at-rotulo">Como</span>
+            <ol class="exercise-steps">
+                <li class="fragment">Digitem os dois valores do portal para 9 pregões: retorno anual e risco anual.</li>
+                <li class="fragment">Rodem a conferência e vejam AINDA NÃO.</li>
+                <li class="fragment">Escrevam o corpo em até três linhas: média diária vezes 252 e desvio amostral vezes raiz de 252.</li>
+                <li class="fragment">Rodem a última célula, que grava o <code>simulador.py</code>.</li>
+            </ol>
+          </div>
+          <div class="at-apoio">
+            <p class="at-apoio-barra"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#code"></use></svg>Ferramentas do Python para este turno</p>
+            <pre class="at-codigo"><code><span class="c"># exemplo: notas de duas provas</span>
+notas = pd.DataFrame({"P1": [6.0, 8.0, 4.0],
+                      "P2": [8.0, 4.0, 6.0]})
+m = notas @ [0.5, 0.5]  <span class="c"># uma conta por linha</span>
+                        <span class="c"># 7.0, 6.0 e 5.0</span>
+m.mean()                <span class="c"># 6.0</span>
+m.std(ddof=1)           <span class="c"># 1.0, desvio amostral</span>
+16 ** 0.5               <span class="c"># 4.0, raiz quadrada</span>
+<span class="c"># fator anual: um ano tem 252 pregões</span>
+
+def extremos(lista):    <span class="c"># devolve dois valores</span>
+    return min(lista), max(lista)
+menor, maior = extremos([4, 9, 2])  <span class="c"># 2 e 9</span></code></pre>
+          </div>
+          <div class="at-tempo"><div data-ampulheta-espera></div><p class="at-tempo-minutos">7 min</p></div>
+          <div class="at-pronto"><span class="at-rotulo">Pronto quando</span><p><code>conferir_turno2</code> imprime OK, <code>simulador.py</code> gravado e turnos 1 e 2 marcados no portal.</p></div>
         </div>
+        <aside class="notes checagem-pratica">Checagem aos 4 min: os dois valores esperados estão escritos e o teste falha. Debrief: o que muda no risco anual se PREGOES passar de 9 para 21? O bloco de ferramentas usa uma tabela de notas: o operador @ aplica os pesos a cada linha, mean e std(ddof=1) resumem a série, e ** 0.5 é a raiz. Erros comuns: desvio populacional, multiplicar o risco por 252 em vez da raiz, anualizar cada ativo antes de aplicar os pesos. Quem não fechar usa as duas funções comentadas no simulador.py do kit, com a liberação do professor.</aside>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3]</p>
           <p class="footer-page">12</p>
         </div>
       </section>
 
       <!-- 13: bloco 4 -->
-      <section class="exercise-slide" id="passagem" data-ficha>
+      <section class="exercise-slide" id="passagem" data-atividade>
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area slide-title-area-cronometro">
@@ -372,19 +412,32 @@
             <div class="accent-bar"></div>
             <h2>Passagem do Colab para o kit</h2>
           </div>
-          <div class="cronometro" id="cronometro-passagem" data-minutos="5"></div>
+          <div class="cronometro" id="cronometro-passagem" data-minutos="5" data-ampulheta></div>
         </div>
-        <ol class="exercise-steps">
-          <li>Baixem o <a href="../materiais/aula04-simulador.zip">aula04-simulador.zip</a> e descompactem dentro do repositório do grupo. Um kit por dupla.</li>
-          <li>No terminal, na pasta do kit, rodem <code>python checar_ambiente.py</code>.</li>
-          <li>Colem as duas funções do <code>simulador.py</code> do notebook no <code>simulador.py</code> do kit e rodem <code>python conferir.py 1</code> e <code>python conferir.py 2</code>.</li>
-          <li>Abram o agente na pasta do kit e façam o primeiro pedido: "Leia o SPEC.md e o AGENTS.md e diga o que o turno 3 pede, sem escrever código."</li>
-        </ol>
-        <div class="faixa-nota checagem-pratica">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
-          <p><strong>Checagem aos 3 min:</strong> <code>checar_ambiente.py</code> terminou sem erro. <strong>Debrief:</strong> dupla sem agente funcionando se junta a outra dupla do mesmo grupo.</p>
+        <div class="atividade atividade-arquivo">
+          <div class="at-oque"><span class="at-rotulo">O que</span><p>Levar as duas funções do notebook para o kit e abrir o agente na pasta do kit. Um kit por dupla.</p></div>
+          <div class="at-onde"><span class="at-rotulo">Onde</span><div class="at-acessos"><a class="at-acesso" href="../materiais/aula04-simulador.zip" target="_blank" rel="noopener">Kit: aula04-simulador.zip<svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#folder_zip"></use></svg></a><span class="at-divisor"></span><p class="at-lugar">terminal, na pasta do kit</p><span class="at-divisor"></span><p class="at-lugar">os dois arquivos que o agente lê estão ao lado</p></div></div>
+          <div class="at-como">
+            <span class="at-rotulo">Como</span>
+            <ol class="exercise-steps">
+                <li class="fragment">Baixem o kit e descompactem dentro do repositório do grupo.</li>
+                <li class="fragment">No terminal, na pasta do kit, rodem:<br><span class="comando"><code>python checar_ambiente.py</code><button type="button" class="copiar" data-copiar="python checar_ambiente.py" aria-label="Copiar: python checar_ambiente.py"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#content_copy"></use></svg></button></span></li>
+                <li class="fragment">Colem as duas funções no <code>simulador.py</code> do kit e rodem:<br><span class="comando"><code>python conferir.py 1</code><button type="button" class="copiar" data-copiar="python conferir.py 1" aria-label="Copiar: python conferir.py 1"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#content_copy"></use></svg></button></span><span class="comando"><code>python conferir.py 2</code><button type="button" class="copiar" data-copiar="python conferir.py 2" aria-label="Copiar: python conferir.py 2"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#content_copy"></use></svg></button></span></li>
+                <li class="fragment">Abram o agente na pasta do kit e façam o primeiro pedido:<br><span class="comando comando-frase"><code>Leia o SPEC.md e o AGENTS.md e diga o que o turno 3 pede, sem escrever código.</code><button type="button" class="copiar" data-copiar="Leia o SPEC.md e o AGENTS.md e diga o que o turno 3 pede, sem escrever código." aria-label="Copiar: Leia o SPEC.md e o AGENTS.md e diga o que o turno 3 pede, sem escrever código."><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#content_copy"></use></svg></button></span></li>
+            </ol>
+          </div>
+          <div class="doc-fixo" data-documento-abas>
+            <div class="doc-fixo-barra">
+              <button type="button" data-documento="../exemplos/aula04-simulador/SPEC.md" data-nome="SPEC.md"><code>SPEC.md</code></button>
+              <button type="button" data-documento="../exemplos/aula04-simulador/AGENTS.md" data-nome="AGENTS.md"><code>AGENTS.md</code></button>
+              <button type="button" class="doc-abrir doc-fixo-ampliar" data-documento="../exemplos/aula04-simulador/SPEC.md" data-nome="SPEC.md"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#fullscreen"></use></svg>Ampliar</button>
+            </div>
+            <div class="doc-fixo-corpo"></div>
+          </div>
+          <div class="at-tempo"><div data-ampulheta-espera></div><p class="at-tempo-minutos">5 min</p></div>
+          <div class="at-pronto"><span class="at-rotulo">Pronto quando</span><p><code>python conferir.py 2</code> imprime <code>TURNO 2: OK</code> e o agente descreveu o turno 3 sem escrever código.</p></div>
         </div>
-        <aside class="notes">O kit não baixa nada em aula. Quem não fechou os turnos 1 e 2 usa as duas funções que vêm comentadas no simulador.py do kit e segue. Não gastar tempo consertando ambiente: a dupla sem agente se junta a outra do mesmo grupo.</aside>
+        <aside class="notes checagem-pratica">Checagem aos 3 min: checar_ambiente.py terminou sem erro. Debrief: dupla sem agente funcionando se junta a outra dupla do mesmo grupo. O kit não baixa nada em aula. Quem não fechou os turnos 1 e 2 usa as duas funções que vêm comentadas no simulador.py do kit e segue. Não gastar tempo consertando ambiente. O painel da direita mostra o SPEC.md e o AGENTS.md do kit; Ampliar abre o arquivo em tela cheia.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3]</p>
           <p class="footer-page">13</p>
@@ -392,7 +445,7 @@
       </section>
 
       <!-- 14 -->
-      <section class="exercise-slide" id="turno3" data-ficha>
+      <section class="exercise-slide" id="turno3" data-atividade>
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area slide-title-area-cronometro">
@@ -400,25 +453,35 @@
             <div class="accent-bar"></div>
             <h2>Turno 3: sorteio dos pesos, com agente</h2>
           </div>
-          <div class="cronometro" id="cronometro-turno3" data-minutos="8"></div>
+          <div class="cronometro" id="cronometro-turno3" data-minutos="8" data-ampulheta></div>
         </div>
-        <table class="tabela-leitura tabela-compacta tabela-turno">
-          <thead><tr><th>Função</th><th>Onde</th><th>Quem implementa</th><th>Entrega</th></tr></thead>
-          <tbody>
-            <tr><td><code>sortear_pesos(k, rng)</code></td><td>kit, no terminal</td><td>o agente; a dupla escreve o teste</td><td><code>python conferir.py 3</code> com TURNO 3: OK</td></tr>
-          </tbody>
-        </table>
-        <ol class="exercise-steps">
-          <li>Leiam o bloco do turno 3 no <code>SPEC.md</code>, que vem preenchido como modelo.</li>
-          <li>Escrevam à mão o <code>assert</code> do teste da dupla em <code>tests/test_turno3.py</code>, rodem <code>pytest</code> e vejam falhar.</li>
-          <li>Peçam ao agente que implemente <code>sortear_pesos</code> até o <code>pytest</code> passar, sem alterar os testes.</li>
-          <li>Rodem <code>python conferir.py 3</code> e marquem o turno 3 no portal.</li>
-        </ol>
-        <div class="faixa-nota checagem-pratica">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
-          <p><strong>Checagem aos 4 min:</strong> o <code>assert</code> da dupla está escrito e falha. <strong>Debrief:</strong> que propriedades o teste verifica, já que o portal não dá o número?</p>
+        <div class="atividade">
+          <div class="at-oque"><span class="at-rotulo">O que</span><p>Escrever o teste da dupla e pedir ao agente a função <code>sortear_pesos(k, rng)</code>.</p></div>
+          <div class="at-onde"><span class="at-rotulo">Onde</span><div class="at-acessos"><p class="at-lugar">kit, no terminal</p><span class="at-divisor"></span><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/SPEC.md" data-nome="SPEC.md" data-secao="Turno 3"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>SPEC.md</code></button><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/AGENTS.md" data-nome="AGENTS.md"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>AGENTS.md</code></button><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/docs/adrs/ADR-002-sorteio-dos-pesos.md" data-nome="docs/adrs/ADR-002-sorteio-dos-pesos.md"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>ADR-002</code> sorteio dos pesos</button></div></div>
+          <div class="at-como at-como-folgado">
+            <span class="at-rotulo">Como</span>
+            <ol class="exercise-steps">
+                <li class="fragment">Leiam o bloco do turno 3 no <code>SPEC.md</code>, que vem preenchido como modelo.</li>
+                <li class="fragment">Em <code>tests/test_turno3.py</code>, escrevam à mão o <code>assert</code> do teste da dupla.</li>
+                <li class="fragment">Rodem <code>python -m pytest tests -q</code> e vejam o teste falhar.</li>
+                <li class="fragment">Peçam <code>sortear_pesos</code> ao agente, sem alterar os testes.</li>
+            </ol>
+          </div>
+          <div class="at-apoio">
+            <p class="at-apoio-barra"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#smart_toy"></use></svg>Pedido ao agente e assert de propriedade</p>
+            <table class="at-pedido"><tbody><tr><th>Turno</th><td>um por pedido: "implemente só o turno 3"</td></tr><tr><th>Spec</th><td>o arquivo que vale: <code>SPEC.md</code></td></tr><tr><th>Proibição</th><td>não alterar <code>tests/</code> nem <code>conferir.py</code></td></tr></tbody></table>
+            <pre class="at-codigo"><code>partes = [0.2, 0.3, 0.5]
+assert abs(sum(partes) - 1) &lt; 1e-9 <span class="c"># soma 1</span>
+notas = [7.5, 9.0, 10.0]
+assert all(n &lt;= 10 for n in notas) <span class="c"># todos</span>
+a = np.random.default_rng(7).integers(1, 7, 3)
+b = np.random.default_rng(7).integers(1, 7, 3)
+assert list(a) == list(b)       <span class="c"># mesma semente</span></code></pre>
+          </div>
+          <div class="at-tempo"><div data-ampulheta-espera></div><p class="at-tempo-minutos">8 min</p></div>
+          <div class="at-pronto"><span class="at-rotulo">Pronto quando</span><p><code>python conferir.py 3</code> imprime <code>TURNO 3: OK</code> e turno 3 marcado no portal.</p></div>
         </div>
-        <aside class="notes">O gerador aleatório do navegador e o do NumPy produzem sequências diferentes, então os testes dos turnos 3 a 5 verificam propriedades: soma 1, sem negativo, formato (k,), mesma semente devolve o mesmo vetor. O conferir.py roda testes de aceite fora de tests/, e o AGENTS.md proíbe o agente de editá-lo.</aside>
+        <aside class="notes checagem-pratica">Checagem aos 4 min: o assert da dupla está escrito e falha. Debrief: que propriedades o teste verifica, já que o portal não dá o número? O gerador aleatório do navegador e o do NumPy produzem sequências diferentes, então os testes dos turnos 3 a 5 verificam propriedades: soma 1, sem negativo, formato (k,), mesma semente devolve o mesmo vetor. O conferir.py roda testes de aceite fora de tests/, e o AGENTS.md proíbe o agente de editá-lo. A ADR-002 registra o método do sorteio. Dupla que pede o assert ao agente: o AGENTS.md manda recusar.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3]</p>
           <p class="footer-page">14</p>
@@ -426,7 +489,7 @@
       </section>
 
       <!-- 15: bloco 5 -->
-      <section class="exercise-slide" id="turno4" data-ficha>
+      <section class="exercise-slide" id="turno4" data-atividade>
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area slide-title-area-cronometro">
@@ -434,26 +497,35 @@
             <div class="accent-bar"></div>
             <h2>Turno 4: simular, com a spec do grupo</h2>
           </div>
-          <div class="cronometro" id="cronometro-turno4" data-minutos="13"></div>
+          <div class="cronometro" id="cronometro-turno4" data-minutos="13" data-ampulheta></div>
         </div>
-        <table class="tabela-leitura tabela-compacta tabela-turno">
-          <thead><tr><th>Função</th><th>Onde</th><th>Quem implementa</th><th>Entrega</th></tr></thead>
-          <tbody>
-            <tr><td><code>simular(retornos, n, semente, rf)</code></td><td>tela de spec do grupo e kit</td><td>o agente, a partir da spec e do teste do grupo</td><td><code>python conferir.py 4</code> com TURNO 4: OK e o gráfico de risco e retorno</td></tr>
-          </tbody>
-        </table>
-        <ol class="exercise-steps">
-          <li>Na tela de spec do grupo, com o link do Slack, preencham entrada, saída, casos de borda e critério de aceite.</li>
-          <li>Usem "Copiar como SPEC.md", colem no <code>SPEC.md</code> do kit e escrevam o <code>assert</code> do teste da dupla em <code>tests/test_turno4.py</code>.</li>
-          <li>Peçam <code>simular</code> ao agente e rodem <code>pytest</code> e <code>python conferir.py 4</code>.</li>
-          <li>Gerem o gráfico de risco e retorno e marquem o turno 4 no portal.</li>
-          <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Rodem com <code>n = 10000</code> e comparem a nuvem com a do portal.</li>
-        </ol>
-        <div class="faixa-nota checagem-pratica">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
-          <p><strong>Checagem aos 6 min:</strong> a spec está no <code>SPEC.md</code> e o teste falha. <strong>Debrief:</strong> que caso de borda o grupo escreveu?</p>
+        <div class="atividade">
+          <div class="at-oque"><span class="at-rotulo">O que</span><p>Escrever a spec e o teste do grupo e pedir ao agente a função <code>simular(retornos, n, semente, rf)</code>.</p></div>
+          <div class="at-onde"><span class="at-rotulo">Onde</span><div class="at-acessos"><a class="at-acesso" href="../simulador/#progresso" target="_blank" rel="noopener">Portal: Progresso, botão Abrir a spec do grupo<svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#open_in_new"></use></svg></a><span class="at-divisor"></span><p class="at-lugar">kit, no terminal</p><span class="at-divisor"></span><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/SPEC.md" data-nome="SPEC.md" data-secao="Turno 4"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>SPEC.md</code></button><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/AGENTS.md" data-nome="AGENTS.md"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>AGENTS.md</code></button></div></div>
+          <div class="at-como">
+            <span class="at-rotulo">Como</span>
+            <ol class="exercise-steps">
+                <li class="fragment">No portal, no turno 4, cliquem em Abrir a spec do grupo e preencham entrada, saída, casos de borda e critério de aceite.</li>
+                <li class="fragment">Usem Copiar como SPEC.md e colem no <code>SPEC.md</code> do kit.</li>
+                <li class="fragment">Escrevam o <code>assert</code> do teste da dupla em <code>tests/test_turno4.py</code> e vejam falhar.</li>
+                <li class="fragment">Peçam <code>simular</code> ao agente e, com o turno em OK, o gráfico de risco e retorno.</li>
+                <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Rodem com <code>n = 10000</code> e comparem com o portal.</li>
+            </ol>
+          </div>
+          <div class="at-apoio">
+            <p class="at-apoio-barra"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#smart_toy"></use></svg>Pedido ao agente e assert de propriedade</p>
+            <table class="at-pedido"><tbody><tr><th>Turno</th><td>um por pedido: o turno 4</td></tr><tr><th>Spec</th><td>o bloco do turno 4 do <code>SPEC.md</code></td></tr><tr><th>Proibição</th><td>não alterar <code>tests/</code> nem <code>conferir.py</code></td></tr></tbody></table>
+            <pre class="at-codigo"><code>t1 = pd.DataFrame({"x": [1, 2], "y": [3, 4]})
+t2 = pd.DataFrame({"x": [1, 2], "y": [3, 4]})
+assert t1.equals(t2)         <span class="c"># tabelas iguais</span>
+assert len(t1) == 2          <span class="c"># número de linhas</span>
+assert list(t1.columns) == ["x", "y"]
+assert (t1["y"] &gt; 0).all()   <span class="c"># a coluna inteira</span></code></pre>
+          </div>
+          <div class="at-tempo"><div data-ampulheta-espera></div><p class="at-tempo-minutos">13 min</p></div>
+          <div class="at-pronto"><span class="at-rotulo">Pronto quando</span><p><code>python conferir.py 4</code> imprime <code>TURNO 4: OK</code>, gráfico gerado e turno 4 marcado no portal.</p></div>
         </div>
-        <aside class="notes">A tela de spec é uma por grupo; cada dupla copia o texto para o próprio kit. O prazo da spec corre no próximo slide. Se a tela de spec falhar, o grupo escreve direto no SPEC.md do kit, nos mesmos cinco campos.</aside>
+        <aside class="notes checagem-pratica">Checagem aos 6 min: a spec está no SPEC.md e o teste falha. Debrief: que caso de borda o grupo escreveu? A spec é uma por grupo e abre pelo portal, na tela Progresso, pelo botão Abrir a spec do grupo, sem link distribuído; cada dupla copia o texto para o próprio kit. Para projetar a spec de um grupo, usar o próximo slide. Se a tela de spec falhar, o grupo escreve direto no SPEC.md do kit, nos mesmos cinco campos. Critério de aceite vago ("funciona"): perguntar qual teste reprova quando a função está errada.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3]</p>
           <p class="footer-page">15</p>
@@ -461,23 +533,6 @@
       </section>
 
       <!-- 16 -->
-      <section class="content-slide" id="specs-t4">
-        <div class="top-bar"></div>
-        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
-        <div class="slide-title-area">
-          <div class="accent-bar"></div>
-          <h2>Spec do turno 4: links dos grupos e prazo</h2>
-        </div>
-        <div class="painel-spec" data-adr-links data-sessao="m08-aula04-2026-11-18-t4" data-base=""
-             data-pagina="aula04-spec.html?g={grupo}&amp;turno=4" data-minutos="5"></div>
-        <aside class="notes">Os links aparecem sozinhos com a chave do professor no navegador (?quiz-chave=). Copiar os quatro para o Slack antes do bloco 5 e iniciar os 5 minutos quando os grupos abrirem a tela. O prazo trava a edição; +5 minutos estende para todos.</aside>
-        <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
-          <p class="footer-page">16</p>
-        </div>
-      </section>
-
-      <!-- 17 -->
       <section class="content-slide" id="specs-projetor">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -493,26 +548,27 @@
           <button type="button" data-grupo="G02">G02</button>
           <button type="button" data-grupo="G03">G03</button>
           <button type="button" data-grupo="G04">G04</button>
+          <a class="spec-abas-ver" data-spec-ver target="_blank" rel="noopener">Abrir esta spec em outra aba<svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#open_in_new"></use></svg></a>
         </div>
         <div class="spec-projetor">
-          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t4" data-grupo="G01" data-turno="4" data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}'></div>
-          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t4" data-grupo="G02" data-turno="4" data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
-          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t4" data-grupo="G03" data-turno="4" data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
-          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t4" data-grupo="G04" data-turno="4" data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
-          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t5" data-grupo="G01" data-turno="5" data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
-          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t5" data-grupo="G02" data-turno="5" data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
-          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t5" data-grupo="G03" data-turno="5" data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
-          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t5" data-grupo="G04" data-turno="5" data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
+          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t4" data-grupo="G01" data-turno="4" data-selos data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}'></div>
+          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t4" data-grupo="G02" data-turno="4" data-selos data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
+          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t4" data-grupo="G03" data-turno="4" data-selos data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
+          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t4" data-grupo="G04" data-turno="4" data-selos data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
+          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t5" data-grupo="G01" data-turno="5" data-selos data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
+          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t5" data-grupo="G02" data-turno="5" data-selos data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
+          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t5" data-grupo="G03" data-turno="5" data-selos data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
+          <div data-adr-comite data-sessao="m08-aula04-2026-11-18-t5" data-grupo="G04" data-turno="5" data-selos data-espera="Aguardando a spec do grupo" data-sem-titulo="Spec do grupo" data-sem-decisao="Critério de aceite ainda em branco" data-rotulos='{"contexto": "Entrada", "criterios": "Saída", "opcoes": "Casos de borda"}' hidden></div>
         </div>
-        <aside class="notes">Uma spec por vez. O critério de aceite fica em destaque. Projetar a spec de um grupo e perguntar aos outros: o teste que vocês escreveram passaria com esta spec? Este slide serve aos turnos 4 e 5.</aside>
+        <aside class="notes">Uma spec por vez. O critério de aceite fica em destaque. Projetar a spec de um grupo e perguntar aos outros: o teste que vocês escreveram passaria com esta spec? Este slide serve aos turnos 4 e 5: os grupos abrem a tela de spec pelo portal, na tela Progresso, botão Abrir a spec do grupo, e o texto aparece aqui enquanto é escrito, com o selo de quem editou cada campo e há quanto tempo. O link à direita das abas abre a visão somente leitura da spec em projeção.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
-          <p class="footer-page">17</p>
+          <p class="footer-page">16</p>
         </div>
       </section>
 
-      <!-- 18: bloco 6 -->
-      <section class="exercise-slide" id="turno5" data-ficha>
+      <!-- 17: bloco 6 -->
+      <section class="exercise-slide" id="turno5" data-atividade>
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area slide-title-area-cronometro">
@@ -520,51 +576,44 @@
             <div class="accent-bar"></div>
             <h2>Turno 5: tempo e posição da carteira</h2>
           </div>
-          <div class="cronometro" id="cronometro-turno5" data-minutos="12"></div>
+          <div class="cronometro" id="cronometro-turno5" data-minutos="12" data-ampulheta></div>
         </div>
-        <table class="tabela-leitura tabela-compacta tabela-turno">
-          <thead><tr><th>Função</th><th>Onde</th><th>Quem implementa</th><th>Entrega</th></tr></thead>
-          <tbody>
-            <tr><td><code>simular</code> com requisito de tempo e <code>posicionar(pesos, retornos, rf)</code></td><td>tela de spec do grupo e kit</td><td>o agente, a partir da spec e do teste do grupo</td><td><code>python conferir.py 5</code> com TURNO 5: OK e a carteira do grupo marcada na nuvem</td></tr>
-          </tbody>
-        </table>
-        <ol class="exercise-steps">
-          <li>Na tela de spec do turno 5, escrevam o requisito: 10.000 simulações, com 2 a 20 ativos, em menos de 10 segundos.</li>
-          <li>Escrevam o teste de tempo e o teste de <code>posicionar</code>, e vejam os dois falharem.</li>
-          <li>Peçam a implementação ao agente e rodem <code>python conferir.py 5</code>.</li>
-          <li>No portal, em Seus pesos, informem os pesos do Solver, marquem a carteira na nuvem e marquem o turno 5.</li>
-          <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Meçam o tempo com 2, 5 e 20 ativos e anotem os três valores.</li>
-        </ol>
-        <div class="faixa-nota checagem-pratica">
-          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#schedule"></use></svg>
-          <p><strong>Checagem aos 6 min:</strong> os dois testes estão escritos e falham. <strong>Debrief:</strong> a carteira do Solver caiu dentro ou na borda da nuvem?</p>
+        <div class="atividade">
+          <div class="at-oque"><span class="at-rotulo">O que</span><p>Especificar e testar o tempo de <code>simular</code> (10.000 simulações, com 2 a 20 ativos, em menos de 10 segundos) e <code>posicionar(pesos, retornos, rf)</code>, e pedir as duas ao agente.</p></div>
+          <div class="at-onde"><span class="at-rotulo">Onde</span><div class="at-acessos"><a class="at-acesso" href="../simulador/#progresso" target="_blank" rel="noopener">Portal: Progresso, botão Abrir a spec do grupo<svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#open_in_new"></use></svg></a><span class="at-divisor"></span><p class="at-lugar">kit, no terminal</p><span class="at-divisor"></span><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/SPEC.md" data-nome="SPEC.md" data-secao="Turno 5"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>SPEC.md</code></button><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/AGENTS.md" data-nome="AGENTS.md"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>AGENTS.md</code></button></div></div>
+          <div class="at-como">
+            <span class="at-rotulo">Como</span>
+            <ol class="exercise-steps">
+                <li class="fragment">No portal, no turno 5, cliquem em Abrir a spec do grupo e escrevam o limite de tempo e a spec de <code>posicionar</code>.</li>
+                <li class="fragment">Escrevam os testes de tempo e de <code>posicionar</code> e vejam os dois falharem.</li>
+                <li class="fragment">Peçam a implementação ao agente.</li>
+                <li class="fragment">No portal, em Seus pesos, informem os pesos do Solver e marquem a carteira na nuvem.</li>
+                <li class="passo-extensao"><span class="rotulo-extensao">Extensão</span>Meçam o tempo com 2, 5 e 20 ativos.</li>
+            </ol>
+          </div>
+          <div class="at-apoio">
+            <p class="at-apoio-barra"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#smart_toy"></use></svg>Pedido ao agente e assert de propriedade</p>
+            <table class="at-pedido"><tbody><tr><th>Turno</th><td>um por pedido: o turno 5</td></tr><tr><th>Spec</th><td>o bloco do turno 5 do <code>SPEC.md</code></td></tr><tr><th>Proibição</th><td>não alterar <code>tests/</code> nem <code>conferir.py</code></td></tr></tbody></table>
+            <pre class="at-codigo"><code>import time
+inicio = time.perf_counter()
+total = sum(range(1_000_000)) <span class="c"># chamada medida</span>
+segundos = time.perf_counter() - inicio
+assert segundos &lt; 2           <span class="c"># limite de tempo</span>
+ficha = {"nome": "Ana", "idade": 20}
+assert set(ficha) == {"nome", "idade"} <span class="c"># chaves</span></code></pre>
+          </div>
+          <div class="at-tempo"><div data-ampulheta-espera></div><p class="at-tempo-minutos">12 min</p></div>
+          <div class="at-pronto"><span class="at-rotulo">Pronto quando</span><p><code>python conferir.py 5</code> imprime <code>TURNO 5: OK</code>, carteira do Solver na nuvem e turno 5 marcado no portal.</p></div>
         </div>
-        <aside class="notes">O requisito de tempo é o do barema do A3. Primeiro turno a cortar se o encontro atrasar: vira tarefa da sprint, e o bloco 6 fecha o turno 4.</aside>
+        <aside class="notes checagem-pratica">Checagem aos 6 min: os dois testes estão escritos e falham. Debrief: a carteira do Solver caiu dentro ou na borda da nuvem? O requisito de tempo é o do barema do A3. Primeiro turno a cortar se o encontro atrasar: vira tarefa da sprint, e o bloco 6 fecha o turno 4. Para projetar a spec de um grupo, voltar ao slide das specs e escolher Turno 5. Erro comum: teste de tempo com 100 simulações no lugar de 10.000.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3]</p>
-          <p class="footer-page">18</p>
+          <p class="footer-page">17</p>
         </div>
       </section>
 
-      <!-- 19 -->
-      <section class="content-slide" id="specs-t5">
-        <div class="top-bar"></div>
-        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
-        <div class="slide-title-area">
-          <div class="accent-bar"></div>
-          <h2>Spec do turno 5: links dos grupos e prazo</h2>
-        </div>
-        <div class="painel-spec" data-adr-links data-sessao="m08-aula04-2026-11-18-t5" data-base=""
-             data-pagina="aula04-spec.html?g={grupo}&amp;turno=5" data-minutos="4"></div>
-        <aside class="notes">Mesma mecânica do turno 4, com outra sessão: os links são diferentes. Para projetar uma spec, voltar ao slide 17 e escolher Turno 5.</aside>
-        <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
-          <p class="footer-page">19</p>
-        </div>
-      </section>
-
-      <!-- 20: bloco 7 -->
-      <section class="content-slide" id="nuvens">
+      <!-- 18: bloco 7 -->
+      <section class="content-slide slide-telao" id="nuvens">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
@@ -572,9 +621,56 @@
           <h2>Nuvens dos grupos e placar dos turnos</h2>
         </div>
         <p class="pergunta-previsao">Em cada nuvem: onde cai a carteira de pesos iguais, e onde cai a carteira com os pesos do Solver?</p>
-        <iframe class="painel-portal" data-src="../simulador/?painel=1" title="Painel da sala com as nuvens dos grupos e o placar dos turnos"></iframe>
-        <p class="painel-link">Uma simulação por grupo, aberta pelo avatar. <a href="../simulador/?painel=1" target="_blank" rel="noopener">Abrir o painel em outra aba</a></p>
-        <aside class="notes">Abrir uma simulação de cada grupo. Comparar com a previsão do bloco 1. A carteira de pesos iguais fica na parte densa da nuvem; a do Solver tende a ficar na borda ou fora dela, porque foi otimizada. A melhor carteira sorteada é a melhor entre as sorteadas, e a otimização fica para depois deste encontro (ver o material de apoio). O placar é declaração das duplas, conferida na circulação.</aside>
+        <iframe class="painel-portal" data-src="../simulador/?painel=1&amp;telao=1" title="Painel da sala com as nuvens dos grupos e o placar dos turnos"></iframe>
+        <aside class="notes">Abrir uma simulação de cada grupo, pelo avatar. Comparar com a previsão do bloco 1. A carteira de pesos iguais fica na parte densa da nuvem; a do Solver tende a ficar na borda ou fora dela, porque foi otimizada. A melhor carteira sorteada é a melhor entre as sorteadas: o próximo slide mostra a distância até a carteira ótima. O placar é declaração das duplas, conferida na circulação. Convidar um visitante a escolher qual nuvem abrir.</aside>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; <a href="../simulador/?painel=1&amp;telao=1" target="_blank" rel="noopener">Abrir o painel em outra aba</a></p>
+          <p class="footer-page">18</p>
+        </div>
+      </section>
+
+      <!-- 19 -->
+      <section class="content-slide" id="fronteira">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>O sorteio para em Sharpe 0,41, e a ótima tem 0,92</h2>
+        </div>
+        <div class="widget" data-widget="aula04-nuvem" data-fonte="../assets/data/aula04-nuvem.json"
+             data-inicial="10" data-largura="1000" data-altura="280"></div>
+        <div class="faixa-nota">
+          <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#query_stats"></use></svg>
+          <p>Nenhuma das 10.000 sorteadas passa da fronteira, e a otimização chega à ótima sem sortear. Dados: 15 ativos do acervo, 1.423 retornos de 14/12/2020 a 31/08/2026, sem os ativos dos grupos.</p>
+        </div>
+        <aside class="notes">Demonstração de 6 a 8 minutos, pelo professor. 1) Clicar 10, 100, 1.000 e 10.000 e ler em voz alta o melhor Sharpe de cada passo: -0,10, 0,15, 0,28 e 0,41. 2) Perguntar: onde está a melhor carteira, e quantos sorteios faltam para chegar nela? Ouvir duas respostas. 3) Ligar "Ótimas e fronteira": a carteira de máximo Sharpe chega a 0,92 e a de variância mínima tem volatilidade de 9,67%. 4) Fechar: sortear mais não alcança a ótima, porque o sorteio só avalia as carteiras que sorteou; a otimização procura os pesos e chega lá sem sortear. 5) Dizer que a implementação é o turno 6 do kit, para depois do encontro, e que ela é a base do A4. A cesta é a de 15 ativos do acervo, na janela comum da ADR-009; os ativos dos grupos ficam fora do gráfico.</aside>
+        <div class="slide-footer">
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [2] [4]</p>
+          <p class="footer-page">19</p>
+        </div>
+      </section>
+
+      <!-- 20 -->
+      <section class="quiz-slide" id="quiz-sorteada">
+        <div class="top-bar"></div>
+        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
+        <div class="slide-title-area">
+          <div class="accent-bar"></div>
+          <h2>Quiz 1 de 2: a melhor carteira sorteada</h2>
+        </div>
+        <div class="quiz-vivo quiz-vivo-texto" data-quiz-vivo data-sessao="m08-aula04-2026-11-18" data-pergunta="fecho-sorteada" data-correta="2"
+             data-rodadas="1" data-tempo="0"
+             data-enunciado="O grupo sorteou 10.000 carteiras e escolheu a de maior Índice de Sharpe. Por que ela não é a carteira ótima?">
+          <div class="quiz-vivo-pergunta">
+            <p class="quiz-vivo-enunciado">O grupo sorteou 10.000 carteiras e escolheu a de maior Índice de Sharpe. Por que ela não é a carteira ótima?</p>
+            <ol class="quiz-vivo-opcoes">
+              <li>porque o sorteio usa retornos de outro período</li>
+              <li>porque o Sharpe da carteira sorteada usa outra taxa livre de risco</li>
+              <li>porque ela é a melhor entre as sorteadas, e a otimização procura os pesos sem sortear</li>
+            </ol>
+          </div>
+        </div>
+        <aside class="notes">É o ponto que o barema do A3 chama de tratar a melhor carteira simulada como a carteira ótima. O A3 pede a leitura escrita de por que a simulação não substitui a otimização. A evidência de sala é o slide anterior (0,41 contra 0,92) e a carteira do Solver marcada sobre a nuvem do grupo.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
           <p class="footer-page">20</p>
@@ -582,66 +678,12 @@
       </section>
 
       <!-- 21 -->
-      <section class="quiz-slide" id="quiz-propriedades">
-        <div class="top-bar"></div>
-        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
-        <div class="slide-title-area">
-          <div class="accent-bar"></div>
-          <h2>Quiz 1 de 3: testes de propriedade</h2>
-        </div>
-        <div class="quiz-vivo quiz-vivo-texto" data-quiz-vivo data-sessao="m08-aula04-2026-11-18" data-pergunta="fecho-propriedades" data-correta="2"
-             data-rodadas="1" data-tempo="0"
-             data-enunciado="Por que os testes dos turnos 3 a 5 verificam propriedades, como soma 1 e mesma semente, em vez de um número lido no portal?">
-          <div class="quiz-vivo-pergunta">
-            <p class="quiz-vivo-enunciado">Por que os testes dos turnos 3 a 5 verificam propriedades, como soma 1 e mesma semente, em vez de um número lido no portal?</p>
-            <ol class="quiz-vivo-opcoes">
-              <li>o portal calcula retorno e risco com outra fórmula</li>
-              <li>o pytest só compara números inteiros</li>
-              <li>o sorteio do navegador e o do NumPy geram sequências diferentes</li>
-            </ol>
-          </div>
-        </div>
-        <aside class="notes">Os turnos 1 e 2 são determinísticos, então o portal serve de valor esperado. Do turno 3 em diante há sorteio, e os dois geradores não produzem a mesma sequência.</aside>
-        <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
-          <p class="footer-page">21</p>
-        </div>
-      </section>
-
-      <!-- 22 -->
-      <section class="quiz-slide" id="quiz-sorteada">
-        <div class="top-bar"></div>
-        <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
-        <div class="slide-title-area">
-          <div class="accent-bar"></div>
-          <h2>Quiz 2 de 3: a melhor carteira sorteada</h2>
-        </div>
-        <div class="quiz-vivo quiz-vivo-texto" data-quiz-vivo data-sessao="m08-aula04-2026-11-18" data-pergunta="fecho-sorteada" data-correta="0"
-             data-rodadas="1" data-tempo="0"
-             data-enunciado="O grupo sorteou 10.000 carteiras. A de maior Índice de Sharpe é:">
-          <div class="quiz-vivo-pergunta">
-            <p class="quiz-vivo-enunciado">O grupo sorteou 10.000 carteiras. A de maior Índice de Sharpe é:</p>
-            <ol class="quiz-vivo-opcoes">
-              <li>a melhor entre as sorteadas, que uma otimização ainda pode superar</li>
-              <li>a carteira ótima de Markowitz para esses ativos</li>
-              <li>a carteira de menor risco possível com esses ativos</li>
-            </ol>
-          </div>
-        </div>
-        <aside class="notes">O A3 pede a leitura escrita de por que a simulação não substitui a otimização. A carteira do Solver marcada sobre a nuvem é a evidência de sala.</aside>
-        <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
-          <p class="footer-page">22</p>
-        </div>
-      </section>
-
-      <!-- 23 -->
       <section class="quiz-slide" id="quiz-conferir">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
         <div class="slide-title-area">
           <div class="accent-bar"></div>
-          <h2>Quiz 3 de 3: conferência do código do agente</h2>
+          <h2>Quiz 2 de 2: conferência do código do agente</h2>
         </div>
         <div class="quiz-vivo quiz-vivo-texto" data-quiz-vivo data-sessao="m08-aula04-2026-11-18" data-pergunta="fecho-conferir" data-correta="1"
              data-rodadas="1" data-tempo="0"
@@ -658,11 +700,11 @@
         <aside class="notes">O conferir.py traz testes de aceite fora da pasta tests/. Se o agente tiver alterado um teste para passar, o conferir.py reprova.</aside>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3]</p>
-          <p class="footer-page">23</p>
+          <p class="footer-page">21</p>
         </div>
       </section>
 
-      <!-- 24 -->
+      <!-- 22 -->
       <section class="content-slide" id="a3">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -683,15 +725,21 @@
         </table>
         <div class="faixa-nota">
           <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#event"></use></svg>
-          <p>A3 Motor de Simulação de Monte Carlo, peso 3. Review da Sprint 3 em 19/11/2026 e entrega até sexta, 20/11/2026, 23h59. A ADR do A3 trata de uma decisão sua; as duas do kit são exemplo e não contam como entrega [5].</p>
+          <p>A3 Motor de Simulação de Monte Carlo, peso 3. Review da Sprint 3 em 19/11/2026 e entrega até sexta, 20/11/2026, 23h59. A ADR do A3 trata de uma decisão sua; as do kit são exemplo [5].</p>
         </div>
+        <div class="depois-turno6">
+          <span class="at-rotulo">Depois do encontro</span>
+          <p>O turno 6 do kit é a base do A4, Otimizador de Carteira com Fronteira Eficiente, que exige a fronteira sobreposta à nuvem.</p>
+          <button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/SPEC.md" data-nome="SPEC.md" data-secao="Turno 6"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>SPEC.md</code></button><button type="button" class="doc-abrir" data-documento="../exemplos/aula04-simulador/docs/adrs/ADR-003-restricoes-da-otimizacao.md" data-nome="docs/adrs/ADR-003-restricoes-da-otimizacao.md"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#description"></use></svg><code>ADR-003</code></button>
+        </div>
+        <aside class="notes">O turno 6 traz variancia_minima(retornos), maximo_sharpe(retornos, rf) e fronteira(retornos, pontos=50), com scipy.optimize.minimize (SLSQP) e pesos entre 0 e 1 somando 1. O aceite é python conferir.py 6 imprimindo TURNO 6: OK. A spec do turno 6 já vem preenchida no SPEC.md, e a ADR-003 do kit registra as restrições da otimização. A Aula 05 parte do turno 6.</aside>
         <div class="slide-footer">
-          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [5]</p>
-          <p class="footer-page">24</p>
+          <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3 &middot; [3] [5]</p>
+          <p class="footer-page">22</p>
         </div>
       </section>
 
-      <!-- 25 -->
+      <!-- 23 -->
       <section class="content-slide" id="referencias">
         <div class="top-bar"></div>
         <img class="inteli-logo-header" src="../assets/img/inteli-logo-positiva.svg" alt="Logo Inteli">
@@ -702,18 +750,18 @@
         <ol class="ref-columns">
           <li id="ref-1">CAETANO, M. A. L. <em>Python e mercado financeiro</em>. Blucher, 2021. cap. 9, seções 9.2 e 9.5. Autoestudo: Carteiras e simulação de Monte Carlo com Python.</li>
           <li id="ref-2">CAETANO, M. A. L. <em>Python e mercado financeiro</em>. Blucher, 2021. cap. 9, seção 9.3. Autoestudo: Da nuvem à fronteira eficiente de Markowitz.</li>
-          <li id="ref-3"><a href="../materiais/aula04-simulador.zip">Kit do simulador</a>: <code>SPEC.md</code>, <code>simulador.py</code>, testes, <code>conferir.py</code> e duas ADRs de exemplo.</li>
+          <li id="ref-3"><a href="../materiais/aula04-simulador.zip">Kit do simulador</a>: <code>SPEC.md</code>, <code>simulador.py</code>, testes, <code>conferir.py</code> e as ADRs de exemplo.</li>
           <li id="ref-4"><a href="https://github.com/josercf/2026-2B-M08/blob/main/docs/adrs/ADR-009-tratamento-de-ausencia-unico-com-janela-comum.md" target="_blank" rel="noopener">ADR-009</a>: tratamento de ausência único do módulo, com janela comum.</li>
           <li id="ref-5"><a href="https://gist.github.com/josercf/fc714afe20773401dc9d56f65174b441" target="_blank" rel="noopener">Modelo de ADR do curso</a>.</li>
           <li id="ref-6"><a href="https://github.com/josercf/2026-2B-M08/blob/main/docs/adrs/ADR-018-aula04-em-turnos-com-portal-e-agente.md" target="_blank" rel="noopener">ADR-018</a>: Aula 04 em turnos, com portal e agente.</li>
         </ol>
         <div class="slide-footer">
           <p class="footer-bar">Módulo 08 AdmTech &middot; Aula 04 &middot; Sprint 3</p>
-          <p class="footer-page">25</p>
+          <p class="footer-page">23</p>
         </div>
       </section>
 
-      <!-- 26 -->
+      <!-- 24 -->
       <section class="end-slide" id="encerramento">
         <h1>Até 01/12/2026</h1>
         <h3>Aula 05: Validação e Robustez do Modelo</h3>
@@ -739,6 +787,9 @@
   <script src="../assets/js/inteli-aula02-dados.js"></script>
   <script src="../assets/js/inteli-adr.js"></script>
   <script src="../assets/js/aula04-turnos.js"></script>
+  <script src="../assets/js/aula04-documento.js"></script>
+  <script src="../assets/js/inteli-widgets.js"></script>
+  <script src="../assets/js/widgets/aula04-nuvem.js"></script>
   <script src="../assets/js/inteli-zoom.js"></script>
   <script src="../assets/js/inteli-tela-cheia.js"></script>
   <script src="../assets/js/inteli-print.js"></script>

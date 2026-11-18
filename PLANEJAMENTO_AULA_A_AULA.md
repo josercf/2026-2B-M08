@@ -188,9 +188,9 @@ Depois do encontro
 ### Aula 04 - Semana 6 - Da Nuvem à Fronteira: Monte Carlo e Otimização de Markowitz  (Sprint 3)
 
 Data: 18/11/2026 (quarta), conforme a Adalove da turma 2026-2B-T19. Horário a confirmar. Aula 28 do módulo na planilha.
-Entrega que alimenta: A3 Motor de Simulação de Monte Carlo (peso 3), com review da Sprint 3 em 19/11/2026 e entrega em 20/11/2026, 23h59. O A4 Otimizador de Carteira com Fronteira Eficiente (peso 3), que a Adalove lista nas Sprints 3 e 4, deixa de ser alimentado por este encontro (ADR-018).
+Entrega que alimenta: A3 Motor de Simulação de Monte Carlo (peso 3), com review da Sprint 3 em 19/11/2026 e entrega em 20/11/2026, 23h59. O A4 Otimizador de Carteira com Fronteira Eficiente (peso 3), que a Adalove lista nas Sprints 3 e 4, é alimentado pela demonstração da fronteira no bloco 7 e pelo turno 6 do kit, feito depois do encontro (ADR-018, adendo de 17/11/2026).
 O que a aula anterior deixou pronto: a Aula 03 deixou prontas as funções de retorno e de volatilidade da carteira escritas em Python, com testes de unidade, e a matriz de correlação da cesta.
-O que esta aula deixa pronto: um módulo `simulador.py` por dupla, com testes, que calcula o retorno e o risco de uma carteira, sorteia N carteiras e devolve retorno, risco e Índice de Sharpe de cada uma, com o gráfico da nuvem e a carteira do grupo marcada sobre ela. A otimização com SLSQP, as carteiras de variância mínima e de máximo Sharpe e a fronteira saem do encontro.
+O que esta aula deixa pronto: um módulo `simulador.py` por dupla, com testes, que calcula o retorno e o risco de uma carteira, sorteia N carteiras e devolve retorno, risco e Índice de Sharpe de cada uma, com o gráfico da nuvem e a carteira do grupo marcada sobre ela. A fronteira e as carteiras de variância mínima e de máximo Sharpe são demonstradas no bloco 7, sobre a nuvem da cesta do acervo, e a implementação da otimização com SLSQP fica no turno 6 do kit, feito depois do encontro.
 
 Formato redesenhado em 17/11/2026 (ADR-018). O roteiro anterior, com o motor pronto, o SLSQP e a
 fronteira de 50 pontos, corresponde aos artefatos `-v1` (`aulas/aula04-v1.html`,
@@ -233,9 +233,11 @@ Metodologia ativa (105 min)
     nuvem. Fecha com `python conferir.py 5` em OK e a marcação no placar. É o primeiro turno a
     virar tarefa da sprint se o encontro atrasar.
   Bloco 7 (90 a 105 min)  Nuvens dos quatro grupos no projetor, com a leitura de onde caem a
-    carteira de pesos iguais e a carteira com os pesos do Solver. Quiz ao vivo de três perguntas e
-    amarração com a Sprint 3: o A3 (peso 3, review em 19/11/2026 e entrega em 20/11/2026, 23h59),
-    com a ADR individual sobre decisão do próprio aluno.
+    carteira de pesos iguais e a carteira com os pesos do Solver. Demonstração da fronteira, de 6
+    a 8 minutos: a nuvem de 10.000 carteiras da cesta do acervo, com a fronteira e as duas
+    carteiras ótimas por cima. Quiz ao vivo de duas perguntas e amarração com a Sprint 3: o A3
+    (peso 3, review em 19/11/2026 e entrega em 20/11/2026, 23h59), com a ADR individual sobre
+    decisão do próprio aluno, e o turno 6 do kit como base do A4.
 
 Depois do encontro
   Avanço do A3: rodar o simulador com a cesta completa do grupo, medir o tempo com 2 a 20 ativos,
@@ -244,10 +246,10 @@ Depois do encontro
     ADR individual.
   Leitura posterior: material e notebook da versão v1, sobre otimização com restrições e
     fronteira eficiente.
-  Pendência aberta em 17/11/2026 (ADR-018): a otimização com SLSQP e a fronteira saíram deste
-    encontro, e a Aula 05 e o A4 dependem delas, porque a Aula 05 reutiliza a função `otimizar`.
-    Falta decidir se o conteúdo vira autoestudo com o material v1, abertura da Aula 05 ou encontro
-    extra.
+  Otimização (decisão de 17/11/2026): a fronteira e as duas carteiras ótimas são demonstradas no
+    bloco 7 deste encontro. A implementação é o turno 6 do kit, feito depois do encontro:
+    `variancia_minima`, `maximo_sharpe` e `fronteira`, com SLSQP e aceite por
+    `python conferir.py 6`. A Aula 05 e o A4 partem do turno 6.
 
 ### Aula 05 - Semana 8 - Validação e Robustez do Modelo  (Sprint 4)
 

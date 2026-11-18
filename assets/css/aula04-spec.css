@@ -1,0 +1,146 @@
+/* Tela de spec da Aula 04 (aulas/aula04-spec.html, assets/js/aula04-spec.js):
+   barra de quem está na spec, pedido de iniciais, selo de quem editou cada
+   campo e visão somente leitura (?ver=1). A grade do formulário continua em
+   assets/css/aula04-turnos.css e assets/css/inteli-adr.css; este arquivo só
+   acrescenta. Só tokens, canto reto (GRA-01) e pesos 300, 600 e 700 (TIP-04). */
+
+.spec-area { display: flex; flex-direction: column; gap: 10px; }
+.spec-area .adr-online.spec-online { flex: 1 1 auto; min-height: 0; height: auto; }
+
+/* ------------------------------------------------------------------ barra */
+
+.spec-barra {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 44px;
+  padding: 0 0 0 14px;
+  background: var(--seg-superficie);
+  border-left: 6px solid var(--seg-primaria);
+}
+.spec-barra[hidden], .spec-iniciais[hidden], .spec-eu[hidden], .spec-outros[hidden], .spec-leitura[hidden], .spec-selo[hidden] { display: none; }
+
+.reveal .spec-presentes { display: flex; align-items: center; gap: 12px; margin: 0 auto 0 0; font-size: 16px; font-weight: 600; color: var(--seg-primaria); }
+.spec-fichas { display: inline-flex; align-items: center; gap: 6px; }
+.spec-ficha {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 30px;
+  padding: 0 6px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+/* Mesmas cores dos avatares do portal (assets/css/simulador.css). */
+.spec-ficha[data-grupo="G01"] { background: var(--inteli-roxo); color: var(--inteli-branco); }
+.spec-ficha[data-grupo="G02"] { background: var(--inteli-verde); color: var(--inteli-roxo); }
+.spec-ficha[data-grupo="G03"] { background: var(--inteli-coral); color: var(--inteli-roxo); }
+.spec-ficha[data-grupo="G04"] { background: var(--inteli-cinza-medio); color: var(--inteli-roxo); }
+.spec-ficha-eu { box-shadow: 0 0 0 2px var(--seg-superficie), 0 0 0 4px var(--inteli-roxo); margin: 0 4px; }
+.spec-ninguem { font-weight: 300; }
+
+.reveal .spec-eu { margin: 0; padding-right: 14px; font-size: 15px; font-weight: 600; color: var(--seg-primaria); }
+
+.spec-iniciais { align-self: stretch; display: flex; align-items: center; gap: 10px; padding: 0 0 0 14px; background: var(--seg-primaria); color: var(--inteli-branco); font-size: 16px; font-weight: 600; }
+.spec-iniciais input {
+  width: 76px;
+  height: 34px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 0;
+  background: var(--inteli-branco);
+  color: var(--seg-texto);
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+.spec-iniciais input:focus { outline: 3px solid var(--seg-secundaria); outline-offset: 0; }
+.spec-iniciais button {
+  align-self: stretch;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 0;
+  background: var(--seg-secundaria);
+  color: var(--inteli-roxo);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.spec-outros { align-self: stretch; display: flex; align-items: stretch; font-size: 15px; font-weight: 600; }
+.reveal .spec-outros a { display: flex; align-items: center; padding: 0 12px; color: var(--seg-primaria); text-decoration: none; border-left: 1px solid var(--seg-borda); }
+.reveal .spec-outros a:hover { background: var(--seg-secundaria); }
+.reveal .spec-outros a[aria-current="page"] { background: var(--seg-primaria); color: var(--inteli-branco); }
+.spec-outros-separador { width: 14px; }
+
+/* ------------------------------------------------------------------- selo */
+
+/* O selo ocupa o canto direito da linha do rótulo; a dica do rótulo encolhe
+   com reticências para nunca passar por baixo dele. */
+.reveal .adr-online.spec-online [data-campo] > label { padding-right: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.spec-selo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  background: var(--seg-superficie);
+  color: var(--seg-primaria);
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  transition: background-color 400ms ease-out;
+}
+.spec-selo-quem { font-weight: 700; }
+.spec-selo-quando { font-weight: 600; }
+.spec-selo[data-vivo="sim"] { background: var(--seg-secundaria); }
+.spec-selo[data-vivo="sim"]::before { content: ""; width: 8px; height: 8px; margin-right: 6px; background: var(--seg-primaria); animation: spec-pulso 1.2s ease-in-out infinite; }
+@keyframes spec-pulso { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+
+.adr-online.spec-online [data-campo][data-vivo="sim"] input,
+.adr-online.spec-online [data-campo][data-vivo="sim"] textarea { border-color: var(--seg-secundaria); box-shadow: inset 5px 0 0 var(--seg-secundaria); }
+
+/* -------------------------------------------------------- somente leitura */
+
+.spec-leitura {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr 1fr auto;
+  gap: 10px 22px;
+}
+.spec-leitura-campo { position: relative; display: flex; flex-direction: column; gap: 4px; min-height: 0; }
+.spec-leitura-campo[data-campo="titulo"] { grid-column: 1 / -1; }
+.reveal .spec-leitura-rotulo { margin: 0; font-size: 16px; font-weight: 600; line-height: 22px; color: var(--seg-primaria); }
+.reveal .spec-leitura-texto {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 8px 12px;
+  overflow: hidden;
+  border-left: 5px solid var(--seg-borda);
+  background: var(--seg-superficie);
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.3;
+  white-space: pre-line;
+  transition: border-color 400ms ease-out;
+}
+.reveal .spec-leitura-campo[data-campo="titulo"] .spec-leitura-texto { font-size: 22px; font-weight: 600; }
+.reveal .spec-leitura-campo[data-campo="decisao"] .spec-leitura-texto { border-left-color: var(--seg-primaria); }
+.reveal .spec-leitura-texto[data-vazio="sim"] { color: var(--seg-texto-suave); font-weight: 600; }
+.reveal .spec-leitura-campo[data-vivo="sim"] .spec-leitura-texto { border-left-color: var(--seg-secundaria); }
+.reveal .spec-leitura-estado { grid-column: 1 / -1; margin: 0; font-size: 15px; color: var(--seg-texto-suave); }
+.reveal .spec-leitura-estado[data-tipo="erro"] { color: var(--inteli-coral); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  .spec-selo, .spec-selo::before, .spec-leitura-texto { animation: none; transition: none; }
+}

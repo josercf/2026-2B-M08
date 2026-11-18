@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aula 04 - Spec do turno - Grupo</title>
 
-  <!-- Tela de spec da Aula 04 (ADR-018). Abre com ?g=G01&t=<token>&turno=4 (ou 5); o link de cada
-       grupo sai do slide "Spec do turno N: links dos grupos e prazo" de aulas/aula04.html.
+  <!-- Tela de spec da Aula 04 (ADR-018). Abre com ?g=G01&t=<token>&turno=4 (ou 5)&a=<iniciais>.
+       O endereço sai do botão "Abrir a spec do grupo" da tela Progresso do portal
+       (simulador/), ou do slide "Spec do turno N: links dos grupos e prazo" de aulas/aula04.html;
+       sem a=, a tela pede as iniciais antes de liberar a edição. O autor gravado são as iniciais,
+       nunca o nome. Com ?g=G01&turno=4&ver=1 abre a visão somente leitura, sem token e sem campo.
        Reaproveita o formulário da ADR online (assets/js/inteli-adr.js) na sessão
        m08-aula04-2026-11-18-t4 ou -t5. O banco só aceita os campos da ADR, então:
        titulo = Função, contexto = Entrada, criterios = Saída, opcoes = Casos de borda,
@@ -17,6 +20,7 @@
   <link rel="stylesheet" href="../assets/css/inteli-theme.css">
   <link rel="stylesheet" href="../assets/css/inteli-adr.css">
   <link rel="stylesheet" href="../assets/css/aula04-turnos.css">
+  <link rel="stylesheet" href="../assets/css/aula04-spec.css">
   <link rel="stylesheet" href="../assets/css/inteli-print.css" media="print">
 </head>
 <body>
@@ -33,8 +37,19 @@
           </div>
           <p class="adr-cronometro" data-adr-cronometro data-fase="espera">Prazo ainda não iniciado</p>
         </div>
-        <div class="adr-area">
-          <p class="spec-aviso" data-spec-aviso hidden>Este endereço precisa do grupo e do turno. Abra o link que o professor enviou no Slack, no formato <code>aula04-spec.html?g=G01&amp;t=...&amp;turno=4</code>.</p>
+        <div class="adr-area spec-area">
+          <p class="spec-aviso" data-spec-aviso hidden>Este endereço precisa do grupo e do turno. Abra a spec pelo botão "Abrir a spec do grupo", na tela <a href="../simulador/#progresso">Progresso do portal</a>.</p>
+          <div class="spec-barra" data-spec-barra hidden>
+            <p class="spec-presentes"><span class="spec-presentes-rotulo">Na spec agora</span><span class="spec-fichas" data-spec-fichas aria-live="polite"></span></p>
+            <div class="spec-iniciais" data-spec-iniciais hidden>
+              <span id="spec-iniciais-rotulo">Suas iniciais, de 1 a 3 letras</span>
+              <input id="spec-iniciais" type="text" maxlength="3" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="AB" aria-labelledby="spec-iniciais-rotulo">
+              <button type="button" data-spec-entrar>Entrar na spec</button>
+            </div>
+            <p class="spec-eu" data-spec-eu hidden></p>
+            <nav class="spec-outros" data-spec-outros aria-label="Specs dos outros grupos e do outro turno" hidden></nav>
+          </div>
+          <div class="spec-leitura" data-spec-leitura hidden></div>
           <form class="adr-online spec-online" data-adr data-spec data-sessao="m08-aula04-2026-11-18-t4" data-grupo="G01">
             <div data-campo="titulo">
               <label for="spec-funcao">Função <small>nome e parâmetros, em uma linha</small></label>

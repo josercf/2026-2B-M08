@@ -1,6 +1,7 @@
 -- Aula 04 (M08): portal de simulação de carteiras, painel da sala e placar dos turnos.
 -- Roda no mesmo projeto Supabase do quiz ao vivo (exemplos/quiz-supabase/quiz.sql).
--- É idempotente e só cria objetos com prefixo sim_. Nada do que já existe é tocado.
+-- É idempotente e só cria objetos com prefixo sim_. Nada do que já existe é alterado;
+-- a única escrita fora do prefixo é o token de spec do grupo, em adr_tokens.
 --
 -- Modelo:
 --   sim_participantes  quem entrou no portal: iniciais e grupo, sem o nome
@@ -116,6 +117,29 @@ begin
   return p_feito;
 end $$;
 
+-- Portal: link da tela de spec do grupo do participante, para o turno 4 ou 5, sem
+-- o professor distribuir endereço. Devolve grupo, sessão da spec e o token que a
+-- ADR online (exemplos/aula02-supabase/aula02.sql) exige para gravar; cria o
+-- token se ainda não existir. É a única referência a um objeto fora do prefixo
+-- sim_: uma linha nova em adr_tokens, que adr_links criaria do mesmo jeito.
+-- Visitante não edita spec.
+create or replace function sim_spec_link(p_participante uuid, p_turno int)
+returns jsonb language plpgsql security definer set search_path = public, extensions as $$
+declare v_sessao text; v_grupo text; v_spec text; v_token text;
+begin
+  select sessao, grupo into v_sessao, v_grupo from sim_participantes where id = p_participante;
+  if v_sessao is null then raise exception 'participante desconhecido'; end if;
+  if v_grupo = 'VIS' then raise exception 'visitante não edita a spec do grupo'; end if;
+  if p_turno not in (4, 5) then raise exception 'só os turnos 4 e 5 têm spec do grupo'; end if;
+  v_spec := v_sessao || '-t' || p_turno;
+  insert into adr_tokens (sessao, grupo, token)
+  values (v_spec, v_grupo, encode(gen_random_bytes(8), 'hex'))
+  on conflict on constraint adr_tokens_pkey do nothing;
+  select t.token into v_token from adr_tokens t where t.sessao = v_spec and t.grupo = v_grupo;
+  return jsonb_build_object('grupo', v_grupo, 'sessao', v_spec, 'turno', p_turno, 'token', v_token);
+end $$;
+
 grant execute on function sim_entrar(text, text, text) to anon, authenticated;
+grant execute on function sim_spec_link(uuid, int) to anon, authenticated;
 grant execute on function sim_salvar(uuid, text[], int, int, int, jsonb) to anon, authenticated;
 grant execute on function sim_marcar(uuid, int, boolean) to anon, authenticated;

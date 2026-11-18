@@ -10,6 +10,8 @@
        e as cotações de assets/data/aula04-cotacoes.json.
          ?demo=1    sala em memória, para ensaio e testes
          ?painel=1  abre direto no painel, para o projetor
+         ?painel=1&telao=1  só o painel, sem barra de topo nem rodapé, dimensionado
+                    para o iframe do deck (cerca de 1170x520) e para tela cheia
        Telas por hash: #entrar, #montar, #simular, #painel, #progresso, #ver=<id>. -->
   <link rel="stylesheet" href="../assets/css/inteli-brand.css">
   <link rel="stylesheet" href="../assets/css/simulador.css">
@@ -237,7 +239,7 @@
     <section class="tela tela-progresso" data-tela="progresso" hidden>
       <header class="tela-cabeca">
         <h1>Progresso da dupla</h1>
-        <p>Marque o turno quando o teste da dupla passar. Só uma pessoa da dupla marca, para o placar contar duplas. A marcação entra no painel e pode ser desfeita.</p>
+        <p>Marque o turno quando o teste da dupla passar. Só uma pessoa da dupla marca, para o placar contar duplas. A marcação entra no painel e pode ser desfeita. Nos turnos 4 e 5, a spec do grupo abre pelo botão do próprio turno.</p>
       </header>
       <ol class="turnos" id="turnos">
         <li class="turno">
@@ -255,10 +257,18 @@
         <li class="turno">
           <label><input type="checkbox" data-turno="4"><span class="turno-caixa" aria-hidden="true"><svg class="icone"><use href="../assets/icons/icones.svg#check"></use></svg></span>
             <span class="turno-texto"><strong>Turno 4 <code>simular</code></strong><span>Tabela com pesos, retorno, risco e Sharpe de cada carteira, e o gráfico. No kit, implementado pelo agente.</span></span></label>
+          <div class="turno-spec" data-spec="4">
+            <a class="botao-secundario turno-spec-botao" id="spec-t4" target="_blank" rel="noopener" aria-disabled="true" aria-describedby="spec-t4-nota"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#edit_note"></use></svg>Abrir a spec do grupo</a>
+            <p class="turno-spec-nota" id="spec-t4-nota" role="status"></p>
+          </div>
         </li>
         <li class="turno">
           <label><input type="checkbox" data-turno="5"><span class="turno-caixa" aria-hidden="true"><svg class="icone"><use href="../assets/icons/icones.svg#check"></use></svg></span>
             <span class="turno-texto"><strong>Turno 5 desempenho e <code>posicionar</code></strong><span>10.000 simulações em menos de 10 s e a carteira dada marcada sobre a nuvem. No kit, implementado pelo agente.</span></span></label>
+          <div class="turno-spec" data-spec="5">
+            <a class="botao-secundario turno-spec-botao" id="spec-t5" target="_blank" rel="noopener" aria-disabled="true" aria-describedby="spec-t5-nota"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#edit_note"></use></svg>Abrir a spec do grupo</a>
+            <p class="turno-spec-nota" id="spec-t5-nota" role="status"></p>
+          </div>
         </li>
       </ol>
       <p class="ajuda" id="progresso-nota"></p>
@@ -278,6 +288,14 @@
         </div>
         <p class="painel-legenda">Os números contam as duplas que concluíram cada turno. Toque em um avatar para abrir a simulação da pessoa.</p>
       </header>
+      <div class="telao-cabeca">
+        <img class="telao-marca" src="../assets/img/inteli-logo-negativa.svg" alt="Inteli">
+        <div class="telao-titulo"><h2>Painel da sala</h2><p>Simulador de carteiras, Aula 04</p></div>
+        <p class="telao-numero telao-numero-principal"><strong class="numero-destaque-valor" id="telao-pessoas">0</strong><span id="telao-pessoas-rotulo">pessoas na sala</span></p>
+        <p class="telao-numero"><strong class="numero-destaque-valor" id="telao-carteiras">0</strong><span>com carteira montada</span></p>
+        <p class="telao-numero"><strong class="numero-destaque-valor" id="telao-turnos">0</strong><span id="telao-turnos-rotulo">turnos concluídos</span></p>
+        <p class="telao-vivo" id="telao-vivo"><span class="telao-pulso" aria-hidden="true"></span><span id="telao-hora">Conectando</span></p>
+      </div>
       <div class="vazio" id="painel-vazio" hidden>
         <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#groups"></use></svg>
         <h2>Ninguém entrou na sala ainda</h2>
@@ -289,7 +307,7 @@
 
     <!-- 6. Ver a simulação de um participante -->
     <section class="tela tela-ver" data-tela="ver" hidden>
-      <p class="voltar"><a href="#painel">Voltar ao painel</a></p>
+      <p class="voltar"><a href="#painel"><svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#groups"></use></svg>Voltar ao painel</a></p>
       <div class="vazio" id="ver-vazio" hidden>
         <svg class="icone" aria-hidden="true"><use href="../assets/icons/icones.svg#person"></use></svg>
         <h2 id="ver-vazio-titulo"></h2>
@@ -303,6 +321,7 @@
             <p id="ver-parametros"></p>
           </div>
         </header>
+        <dl class="ver-numeros" id="ver-numeros"></dl>
         <div id="ver-nuvem"></div>
       </div>
     </section>

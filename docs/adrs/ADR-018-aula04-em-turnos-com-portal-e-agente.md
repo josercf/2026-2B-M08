@@ -76,3 +76,20 @@ e teste escritos pelo grupo, e a otimização com SLSQP e a fronteira eficiente 
 - ADR-004 (sala de aula invertida em três tempos), ADR-005 (animações e widgets), ADR-009
   (tratamento de ausência único com janela comum), ADR-017 (Aula 03 técnica, com a versão anterior
   preservada como `-v1`).
+
+## Adendo de 17/11/2026: a fronteira é demonstrada no encontro e a otimização vira o turno 6
+
+Na revisão do deck publicado, o professor apontou que o título do encontro, "Da Nuvem à
+Fronteira: Monte Carlo e Otimização de Markowitz", promete a otimização, que tinha saído do
+encontro. A decisão foi ajustada:
+
+- O bloco 7 ganha uma demonstração de 6 a 8 minutos da fronteira e das duas carteiras ótimas
+  sobre a nuvem de 10.000 carteiras, com o widget `aula04-nuvem` do acervo, que usa a cesta de
+  15 ativos e a janela de 1.423 retornos. O quiz final passa de três para duas perguntas.
+- O kit ganha o turno 6, para depois do encontro: `variancia_minima`, `maximo_sharpe` e
+  `fronteira`, com spec preenchida, teste da dupla, aceite por propriedades em
+  `python conferir.py 6` e a ADR de exemplo sobre as restrições. O turno 6 é a base do A4.
+- A consequência negativa registrada acima muda: a otimização continua sem prática em encontro,
+  mas deixa de ficar sem caminho. A Aula 05 parte do turno 6 do kit. Fica em aberto se a Aula 05
+  abre conferindo o turno 6 dos grupos.
+

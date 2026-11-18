@@ -128,9 +128,10 @@
       </section>
 
       <section class="doc-secao" id="turnos">
-        <h2>3. Roteiro dos cinco turnos</h2>
+        <h2>3. Roteiro dos turnos</h2>
         <p>Todo turno segue a mesma sequência: ler a spec, escrever o teste à mão, rodar e ver o
-        teste falhar, implementar, rodar de novo, ver passar e marcar o turno no portal.</p>
+        teste falhar, implementar, rodar de novo, ver passar e marcar o turno no portal. Os turnos 1 a 5 acontecem
+        no encontro, e o turno 6 fica para depois dele.</p>
         <div class="doc-tabela-rolagem">
           <table class="doc-tabela">
             <thead><tr><th>Turno</th><th>Função</th><th>Onde</th><th>Quem implementa</th><th>Entrega</th></tr></thead>
@@ -140,6 +141,7 @@
               <tr><td>3</td><td><code>sortear_pesos(k, rng)</code></td><td>kit</td><td>o agente, com a spec pronta e o teste da dupla</td><td><code>python conferir.py 3</code> em OK</td></tr>
               <tr><td>4</td><td><code>simular(retornos, n, semente, rf)</code></td><td>tela de spec e kit</td><td>o agente, com a spec e o teste da dupla</td><td><code>python conferir.py 4</code> em OK e o gráfico de risco e retorno</td></tr>
               <tr><td>5</td><td><code>simular</code> com requisito de tempo e <code>posicionar(pesos, retornos, rf)</code></td><td>tela de spec e kit</td><td>o agente, com a spec e o teste da dupla</td><td><code>python conferir.py 5</code> em OK e a carteira do grupo marcada na nuvem</td></tr>
+              <tr><td>6, depois do encontro</td><td><code>variancia_minima(retornos)</code>, <code>maximo_sharpe(retornos, rf)</code> e <code>fronteira(retornos, pontos=50)</code></td><td>kit</td><td>o agente, com a spec pronta e o teste da dupla</td><td><code>python conferir.py 6</code> em OK</td></tr>
             </tbody>
           </table>
         </div>
@@ -155,8 +157,14 @@
         <h3>A spec dos turnos 4 e 5</h3>
         <p>A spec tem cinco campos: Função, Entrada, Saída, Casos de borda e Critério de aceite. A
         do turno 3 vem preenchida no <code>SPEC.md</code> e serve de modelo. As dos turnos 4 e 5 o
-        grupo escreve na tela de spec, pelo link que o professor envia, e leva para o
-        <code>SPEC.md</code> de cada dupla com o botão "Copiar como SPEC.md".</p>
+        grupo escreve na tela de spec, aberta pelo <a href="../simulador/#progresso">portal</a>: na tela
+        Progresso, botão "Abrir a spec do grupo" do turno 4 ou do turno 5. Cada dupla leva o texto para o
+        próprio <code>SPEC.md</code> com o botão "Copiar como SPEC.md". A spec do turno 6 já vem
+        preenchida no <code>SPEC.md</code> do kit.</p>
+        <h3>Documentos que sustentam cada turno</h3>
+        <p>A ADR-001 do kit (janela dos dados) sustenta os turnos 1 e 2, a ADR-002 (sorteio dos
+        pesos) sustenta o turno 3 e a ADR-003 (restrições da otimização) sustenta o turno 6. As
+        três ficam em <code>docs/adrs/</code>, dentro do kit, e abrem nos slides dos turnos.</p>
       </section>
 
       <section class="doc-secao" id="definicoes">
@@ -220,15 +228,24 @@
           <li>a leitura escrita da nuvem, com a explicação de por que a simulação não substitui a
           otimização;</li>
           <li>o <code>SPEC.md</code> com plano de testes, o README e as docstrings;</li>
-          <li>a ADR individual de cada aluno, sobre uma decisão que ele tomou. As duas ADRs do kit
+          <li>a ADR individual de cada aluno, sobre uma decisão que ele tomou. As ADRs do kit
           são do professor, servem de exemplo de formato e não contam como entrega.</li>
         </ul>
-        <p><strong>Leitura posterior sobre otimização.</strong> A otimização com restrições e a
-        fronteira eficiente não foram trabalhadas neste encontro. O
-        <a href="aula04-v1.html">material da versão anterior da Aula 04</a> cobre o assunto, com o
+        <p><strong>Turno 6: a otimização.</strong> O encontro fecha com a demonstração da fronteira
+        sobre a nuvem de 10.000 carteiras da cesta de 15 ativos do acervo: a melhor carteira
+        sorteada tem Índice de Sharpe 0,41, e a de máximo Sharpe chega a 0,92. A implementação é o
+        turno 6 do kit, feito depois do encontro: <code>variancia_minima(retornos)</code>,
+        <code>maximo_sharpe(retornos, rf)</code> e <code>fronteira(retornos, pontos=50)</code>, com
+        <code>scipy.optimize.minimize</code> (SLSQP) e pesos entre 0 e 1 somando 1. O turno termina
+        quando <code>python conferir.py 6</code> imprime <code>TURNO 6: OK</code>. O turno 6 é a
+        base do A4, Otimizador de Carteira com Fronteira Eficiente, que exige a fronteira
+        sobreposta à nuvem, e a Aula 05 parte dele.</p>
+        <p><strong>Leitura de apoio sobre otimização.</strong> O
+        <a href="aula04-v1.html">material da versão anterior da Aula 04</a> explica a otimização
+        com restrições e a fronteira eficiente, com o
         <a href="../aulas/aula04-v1.html">deck</a> e o
         <a href="https://github.com/josercf/2026-2B-M08/blob/main/notebooks/aula04-v1.ipynb" target="_blank" rel="noopener">notebook</a>
-        correspondentes. A Aula 05 e o A4 partem desse conteúdo.</p>
+        correspondentes.</p>
         <p>As fontes estão na <a href="../referencias/aula04.html">página de referências</a>.</p>
       </section>
 

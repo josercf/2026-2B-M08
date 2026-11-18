@@ -9,12 +9,19 @@
 //     salvar(id, simulacao)     -> Promise  {ativos, pregoes, n, semente, pesos | null}
 //     marcar(id, turno, feito)  -> Promise
 //     sala()                    -> Promise<[{id, iniciais, grupo, carteira | null, turnos: [int]}]>
+//     specLink(id, turno)       -> Promise<{grupo, sessao, turno, token, demo}>  (turnos 4 e 5)
 //     assinar(aoMudar)          -> função que cancela
 //
 // Queda para memória: com ?demo=1, sem a biblioteca ou sem a configuração, a
 // sala já nasce em memória. Em aula, se uma chamada ao banco falhar ou passar
 // de 6 segundos, a sala troca para memória, avisa quem assinou e segue: o aluno
 // continua simulando e só deixa de aparecer no painel dos outros.
+//
+// specLink é a exceção: um erro dela não derruba a sala. A função sim_spec_link
+// pode ainda não existir no banco, e isso não é motivo para tirar o aluno do
+// painel; o portal mostra a mensagem e a sala segue no Supabase. Em memória ela
+// devolve o token fixo TOKEN_DEMO e demo: true, e o portal abre a tela de spec
+// com ?quiz-demo=1, que aceita esse token.
 //
 // O banco usa as funções de exemplos/aula04-supabase/aula04.sql e não escreve
 // em tabela nenhuma diretamente. Não guarda nome: só iniciais e grupo.
@@ -23,6 +30,7 @@
 
   var ESPERA = 6000;
   var INTERVALO = 3000;
+  var TOKEN_DEMO = 'demo-aula04';
 
   function demo() {
     return /[?&]demo=1/.test(window.location.search);
@@ -92,6 +100,12 @@
       marcar: function (id, turno, feito) {
         return rpc('sim_marcar', { p_participante: id, p_turno: turno, p_feito: feito });
       },
+      specLink: function (id, turno) {
+        return rpc('sim_spec_link', { p_participante: id, p_turno: turno }).then(function (r) {
+          if (!r || !r.token) throw new Error('o banco não devolveu o token da spec');
+          return { grupo: r.grupo, sessao: r.sessao, turno: r.turno, token: r.token, demo: false };
+        });
+      },
       sala: function () {
         return Promise.all([
           tabela('sim_participantes', 'id, iniciais, grupo, criado_em'),
@@ -154,6 +168,14 @@
       sala: function () {
         var e = ler();
         return Promise.resolve(montarSala(e.participantes, e.carteiras, e.turnos));
+      },
+      // Mesmas recusas de sim_spec_link, com o token fixo de demonstração.
+      specLink: function (id, turno) {
+        var pessoa = ler().participantes.filter(function (p) { return p.id === id; })[0];
+        if (!pessoa) return Promise.reject(new Error('participante desconhecido'));
+        if (pessoa.grupo === 'VIS') return Promise.reject(new Error('visitante não edita a spec do grupo'));
+        if (turno !== 4 && turno !== 5) return Promise.reject(new Error('só os turnos 4 e 5 têm spec do grupo'));
+        return Promise.resolve({ grupo: pessoa.grupo, sessao: sessao + '-t' + turno, turno: turno, token: TOKEN_DEMO, demo: true });
       },
       escutar: function (f) { ouvintes.push(f); }
     };
@@ -227,6 +249,11 @@
       });
     };
     sala.sala = function () { return chamar('sala', []); };
+    // Sem `chamar`: o erro volta para o portal e a sala continua onde está.
+    sala.specLink = function (id, turno) {
+      if (sala.tipo === 'memoria') return idLocal(id).then(function (local) { return atual.specLink(local, turno); });
+      return atual.specLink(id, turno);
+    };
     sala.assinar = function (aoMudar) {
       assinantes.push(aoMudar);
       if (sala.tipo === 'supabase' && !vigia) vigia = setInterval(avisar, INTERVALO);
@@ -238,5 +265,5 @@
     return sala;
   }
 
-  window.SimuladorDados = { abrir: abrir, demo: demo };
+  window.SimuladorDados = { abrir: abrir, demo: demo, TOKEN_DEMO: TOKEN_DEMO };
 })();

@@ -515,3 +515,291 @@ def test_em_390_por_844_nenhuma_tela_estoura_a_largura(navegador, servidor):
         assert erros == []
     finally:
         contexto.close()
+
+
+# ---------------------------------------------------------------------- telão
+
+SESSAO = "m08-aula04-2026-11-18"
+TELAO = "?demo=1&painel=1&telao=1"
+
+
+def _semear(page, grupos, carteira_de=()):
+    """Grava uma sala em memória: {grupo: quantidade}. `carteira_de` lista os ids com carteira."""
+    sala = {"participantes": [], "carteiras": [], "turnos": []}
+    for grupo, quantidade in grupos.items():
+        for i in range(quantidade):
+            pid = "m%s%02d" % (grupo.lower(), i)
+            sala["participantes"].append({"id": pid, "iniciais": "%s%s" % (chr(65 + i % 26), chr(66 + i % 25)), "grupo": grupo})
+            if pid in carteira_de:
+                sala["carteiras"].append({"participante": pid, "ativos": ["PETR4", "VALE3", "ITUB4"], "pregoes": 252,
+                                          "n": 1000, "semente": 77, "pesos": None})
+    page.evaluate("s => localStorage.setItem('inteli-simulador-demo:%s', JSON.stringify(s))" % SESSAO, sala)
+
+
+def _caixas(page, seletor):
+    return page.eval_on_selector_all(
+        seletor, "nos => nos.map(n => { const r = n.getBoundingClientRect();"
+        " return {topo: r.top, base: r.bottom, esq: r.left, dir: r.right}; })")
+
+
+def test_telao_mostra_os_cinco_blocos_sem_rolagem_em_1170_por_520_com_8_avatares(navegador, servidor):
+    contexto, erros = _contexto(navegador, 1170, 520)
+    try:
+        page = _abrir(contexto, servidor + "?demo=1")
+        _semear(page, {"G01": 8, "G02": 3, "G03": 1})
+        page.goto(servidor + TELAO, wait_until="load")
+        page.wait_for_selector(".painel-linha[data-grupo='G01'] .painel-avatar")
+
+        # Só o painel: sem barra de navegação, sem rodapé e sem pedir entrada.
+        assert not page.is_visible(".sim-topo") and not page.is_visible(".sim-rodape")
+        assert not page.is_visible(".tela-entrar") and not page.is_visible(".tela-painel .tela-cabeca")
+        assert page.evaluate("document.documentElement.scrollHeight") <= 520
+        assert page.evaluate("document.documentElement.scrollWidth") <= 1170
+
+        # Os quatro grupos e os visitantes, inteiros dentro da janela.
+        assert page.eval_on_selector_all(".painel-linha", "nos => nos.map(n => n.dataset.grupo)") == \
+            ["G01", "G02", "G03", "G04", "VIS"]
+        for linha in _caixas(page, ".painel-linha"):
+            assert linha["topo"] >= 0 and linha["base"] <= 520.5 and linha["base"] - linha["topo"] >= 60, linha
+
+        # Oito avatares em uma linha só, com pelo menos 48px, sem invadir o placar.
+        avatares = _caixas(page, ".painel-linha[data-grupo='G01'] .painel-avatar")
+        placar = _caixas(page, ".painel-linha[data-grupo='G01'] .placar")[0]
+        assert len(avatares) == 8 and len({round(a["topo"]) for a in avatares}) == 1
+        assert all(a["dir"] - a["esq"] >= 48 and a["dir"] <= placar["esq"] for a in avatares)
+        assert page.get_attribute(".painel-linha[data-grupo='G01']", "data-densidade") == "1"
+
+        # Contagem de pessoas em destaque e atualização automática.
+        assert page.inner_text("#telao-pessoas") == "12"
+        assert page.evaluate("parseFloat(getComputedStyle(document.querySelector('#telao-pessoas')).fontSize)") >= 40
+        aluno = _abrir(contexto, servidor + "?demo=1", limpar=False)
+        _entrar(aluno, "ZZ", "G04")
+        page.wait_for_function("document.querySelector('#telao-pessoas').textContent === '13'")
+        page.wait_for_selector(".painel-linha[data-grupo='G04'] .painel-avatar")
+        assert erros == []
+    finally:
+        contexto.close()
+
+
+def test_telao_com_mais_de_10_no_grupo_reduz_o_avatar_e_cabe_na_linha(navegador, servidor):
+    contexto, erros = _contexto(navegador, 1170, 520)
+    try:
+        page = _abrir(contexto, servidor + "?demo=1")
+        _semear(page, {"G02": 17, "VIS": 4})
+        page.goto(servidor + TELAO, wait_until="load")
+        page.wait_for_selector(".painel-linha[data-grupo='G02'][data-densidade='2'] .painel-avatar")
+        linha = _caixas(page, ".painel-linha[data-grupo='G02']")[0]
+        avatares = _caixas(page, ".painel-linha[data-grupo='G02'] .painel-avatar")
+        assert len(avatares) == 17
+        assert all(a["topo"] >= linha["topo"] and a["base"] <= linha["base"] for a in avatares)
+        assert len({round(a["topo"]) for a in avatares}) == 2  # duas linhas de avatares
+        assert page.evaluate("document.documentElement.scrollHeight") <= 520
+        assert erros == []
+    finally:
+        contexto.close()
+
+
+@pytest.mark.parametrize("largura,altura", [(1170, 520), (1920, 1080)])
+def test_avatar_no_telao_abre_a_simulacao_em_tela_inteira_e_volta_ao_painel(navegador, servidor, largura, altura):
+    contexto, erros = _contexto(navegador, largura, altura)
+    try:
+        page = _abrir(contexto, servidor + "?demo=1")
+        _semear(page, {"G01": 8, "G03": 2}, carteira_de=("mg0102",))
+        page.goto(servidor + TELAO, wait_until="load")
+        page.click(".painel-avatar[data-id='mg0102']")
+        page.wait_for_selector("#ver-nuvem .nuvem-tela[data-pronto='sim']")
+        assert page.evaluate("location.hash") == "#ver=mg0102"
+        assert not page.is_visible(".sim-topo") and not page.is_visible(".sim-rodape")
+        assert page.evaluate("document.documentElement.scrollHeight") <= altura
+
+        # Nuvem grande: ocupa a altura livre abaixo da faixa e mais da metade da largura.
+        nuvem = _caixas(page, "#ver-nuvem .nuvem-tela")[0]
+        assert nuvem["base"] - nuvem["topo"] >= altura * 0.7 and nuvem["dir"] - nuvem["esq"] >= largura * 0.55
+        assert nuvem["base"] <= altura + 0.5
+        # Leitura em texto e os três números, inteiros dentro da janela.
+        assert "maior Sharpe" in page.inner_text("#ver-nuvem .leitura")
+        for seletor in ("#ver-nuvem .leitura", "#ver-numeros", "#ver-nuvem .legenda"):
+            caixa = _caixas(page, seletor)[0]
+            assert caixa["topo"] >= 0 and caixa["base"] <= altura + 0.5 and caixa["dir"] <= largura + 0.5, seletor
+        assert page.locator("#ver-numeros dt").all_inner_texts() == ["Maior Sharpe", "Retorno anual", "Risco anual"]
+        assert "Simulação de" in page.inner_text("#ver-titulo")
+
+        page.click(".voltar a")
+        page.wait_for_selector(".tela-painel:not([hidden]) .painel-linha[data-grupo='G01'] .painel-avatar")
+        assert page.evaluate("location.hash") == "#painel"
+        # Quem ainda não montou carteira abre o aviso, com o caminho de volta.
+        page.click(".painel-avatar[data-id='mg0100']")
+        page.wait_for_selector("#ver-vazio:not([hidden])")
+        assert page.is_visible(".voltar a")
+        # Endereço de outra tela não sai do painel.
+        page.goto(servidor + TELAO + "#montar", wait_until="load")
+        page.wait_for_selector(".tela-painel:not([hidden])")
+        assert erros == []
+    finally:
+        contexto.close()
+
+
+def test_painel_sem_telao_continua_com_a_barra_de_navegacao(sala):
+    contexto, url = sala
+    page = _abrir(contexto, url.replace("?demo=1", "?demo=1&painel=1"))
+    page.wait_for_selector(".tela-painel:not([hidden])")
+    assert page.is_visible(".sim-topo") and page.is_visible(".sim-rodape")
+    assert not page.is_visible(".telao-cabeca")
+    assert "sim-telao" not in page.get_attribute("body", "class")
+    assert page.is_visible("#painel-vazio")  # sala vazia, como antes
+
+
+# ---------------------------------------------------------- spec do grupo
+
+def _consulta(url):
+    import urllib.parse
+    partes = urllib.parse.urlparse(url)
+    return partes.path, {k: v[0] for k, v in urllib.parse.parse_qs(partes.query).items()}
+
+
+def test_botao_da_spec_no_progresso_abre_a_tela_do_grupo_em_nova_aba(sala):
+    contexto, url = sala
+    page = _abrir(contexto, url)
+    _entrar(page, "JR", "G02")
+    page.click(".sim-nav a[data-nav='progresso']")
+    page.wait_for_selector("#spec-t4[data-estado='pronto']")
+    page.wait_for_selector("#spec-t5[data-estado='pronto']")
+    assert page.locator(".turno-spec").count() == 2  # só os turnos 4 e 5
+    assert page.inner_text("#spec-t4").strip() == "Abrir a spec do grupo"
+    assert page.get_attribute("#spec-t4", "target") == "_blank"
+    _, t5 = _consulta(page.get_attribute("#spec-t5", "href"))
+    assert (t5["g"], t5["turno"], t5["a"]) == ("G02", "5", "JR")
+
+    with contexto.expect_page() as nova:
+        page.click("#spec-t4")
+    spec = nova.value
+    spec.wait_for_selector("form[data-adr][data-pronto='sim']")
+    caminho, consulta = _consulta(spec.url)
+    assert caminho == "/aulas/aula04-spec.html"
+    assert (consulta["g"], consulta["turno"], consulta["a"]) == ("G02", "4", "JR")
+    # Sala em memória: token fixo de demonstração e o parâmetro que a tela de spec aceita.
+    assert consulta["t"] == "demo-aula04" and consulta["quiz-demo"] == "1"
+    assert "Spec do turno 4: grupo G02" in spec.inner_text("#spec h2")
+    assert spec.get_attribute("form[data-adr]", "data-iniciais") == "JR"
+    assert spec.get_attribute("form[data-adr] [name=contexto]", "readonly") is None
+    # A tela Progresso continua onde estava, e marcar o turno não depende do atalho.
+    assert page.is_visible(".tela-progresso")
+    page.click("#turnos li:nth-child(4) > label")
+    assert page.is_checked("input[data-turno='4']")
+
+
+def test_visitante_ve_o_botao_da_spec_desabilitado_com_a_explicacao(sala):
+    contexto, url = sala
+    page = _abrir(contexto, url)
+    _entrar(page, "ZZ", "VIS")
+    page.click(".sim-nav a[data-nav='progresso']")
+    for turno in (4, 5):
+        botao = "#spec-t%d" % turno
+        page.wait_for_selector(botao + "[data-estado='visitante']")
+        assert page.get_attribute(botao, "aria-disabled") == "true"
+        assert page.get_attribute(botao, "href") is None
+        assert "Visitante não edita a spec do grupo" in page.inner_text(botao + "-nota")
+    page.click("#spec-t4")
+    page.wait_for_timeout(300)
+    assert len(contexto.pages) == 1  # nenhuma aba nova
+
+
+def test_painel_tem_atalho_da_spec_somente_leitura_de_cada_grupo(sala):
+    contexto, url = sala
+    page = _abrir(contexto, url)
+    _entrar(page, "AB", "G03")
+    for endereco in (url.replace("?demo=1", "?demo=1&painel=1"), url.replace("?demo=1", TELAO)):
+        painel = _abrir(contexto, endereco, limpar=False)
+        painel.wait_for_selector(".painel-linha[data-grupo='G03'] .painel-avatar")
+        for grupo in ("G01", "G02", "G03", "G04"):
+            links = painel.locator(".painel-linha[data-grupo='%s'] .painel-specs a" % grupo)
+            assert links.all_inner_texts() == ["Spec T4", "Spec T5"]
+            for i, turno in enumerate(("4", "5")):
+                caminho, consulta = _consulta(links.nth(i).get_attribute("href"))
+                assert caminho.endswith("/aulas/aula04-spec.html")
+                assert (consulta["g"], consulta["turno"], consulta["ver"]) == (grupo, turno, "1")
+                assert "t" not in consulta and "a" not in consulta  # leitura não leva token
+                assert links.nth(i).get_attribute("target") == "_blank"
+        assert painel.locator(".painel-linha[data-grupo='VIS'] .painel-specs").count() == 0
+        painel.close()
+
+    painel = _abrir(contexto, url.replace("?demo=1", TELAO), limpar=False)
+    with contexto.expect_page() as nova:
+        painel.click(".painel-linha[data-grupo='G03'] .painel-specs a[data-turno='5']")
+    leitura = nova.value
+    leitura.wait_for_selector("[data-spec-leitura][data-pronto='sim']")
+    assert "Spec do turno 5: grupo G03" in leitura.inner_text("#spec h2")
+    assert leitura.locator("input, textarea").count() == 0
+
+
+# Biblioteca do Supabase de mentira: a sala fica no modo "supabase" sem rede. As
+# funções sim_entrar, sim_salvar e sim_marcar respondem; sim_spec_link devolve o
+# erro do PostgREST para função inexistente até window.__specNoBanco virar true.
+SUPABASE_FALSO = """
+window.__sala = { participantes: [], carteiras: [], turnos: [] };
+window.supabase = { createClient: function () {
+  var s = window.__sala;
+  function ok(data) { return Promise.resolve({ data: data, error: null }); }
+  return {
+    rpc: function (nome, a) {
+      if (nome === 'sim_entrar') {
+        var id = '0000000' + s.participantes.length + '-aaaa-4bbb-8ccc-000000000000';
+        s.participantes.push({ id: id, sessao: a.p_sessao, iniciais: a.p_iniciais, grupo: a.p_grupo, criado_em: String(Date.now()) });
+        return ok(id);
+      }
+      if (nome === 'sim_spec_link') {
+        if (!window.__specNoBanco) {
+          return Promise.resolve({ data: null, error: { message:
+            'Could not find the function public.sim_spec_link(p_participante, p_turno) in the schema cache' } });
+        }
+        var p = s.participantes.filter(function (x) { return x.id === a.p_participante; })[0];
+        return ok({ grupo: p.grupo, sessao: p.sessao + '-t' + a.p_turno, turno: a.p_turno, token: 'tok' + a.p_turno });
+      }
+      if (nome === 'sim_marcar') { s.turnos.push({ participante: a.p_participante, turno: a.p_turno }); return ok(true); }
+      return ok(null);
+    },
+    from: function (tabela) {
+      var linhas = s[tabela.replace('sim_', '')] || [];
+      return { select: function () { return { eq: function () { return ok(linhas); } }; } };
+    }
+  };
+} };
+"""
+
+
+def test_erro_do_rpc_da_spec_pede_o_professor_e_nao_derruba_a_sala(navegador, servidor):
+    contexto, erros = _contexto(navegador)
+    try:
+        contexto.route("**/supabase.js", lambda rota: rota.fulfill(
+            status=200, content_type="application/javascript", body=SUPABASE_FALSO))
+        page = _abrir(contexto, servidor)
+        assert page.get_attribute("body", "data-sala") == "supabase"
+        _entrar(page, "JR", "G01")
+        page.click(".sim-nav a[data-nav='progresso']")
+        page.wait_for_selector("#spec-t4[data-estado='erro']")
+        page.wait_for_selector("#spec-t5[data-estado='erro']")
+        nota = page.inner_text("#spec-t4-nota")
+        assert "ainda não está ativo no banco" in nota and "Chame o professor" in nota
+        assert page.get_attribute("#spec-t4", "href") is None
+
+        # A sala segue no banco: sem aviso de queda, turno marcado no banco e painel lido dele.
+        assert not page.is_visible("#aviso")
+        page.click("#turnos li:nth-child(1) label")
+        page.wait_for_function("document.body.dataset.marcado === '1'")
+        assert page.evaluate("window.__sala.turnos.length") == 1
+        page.click(".sim-nav a[data-nav='painel']")
+        page.wait_for_selector(".placar-celula[data-grupo='G01'][data-turno='1'][data-contagem='1']")
+        assert not page.is_visible("#aviso")
+        assert "quiz-demo" not in page.get_attribute(".painel-linha[data-grupo='G01'] .painel-specs a", "href")
+
+        # Com a função aplicada no banco, o clique refaz o pedido e o atalho fica pronto.
+        page.click(".sim-nav a[data-nav='progresso']")
+        page.wait_for_selector("#spec-t4[data-estado='erro']")
+        page.evaluate("window.__specNoBanco = true")
+        page.click("#spec-t4")
+        page.wait_for_selector("#spec-t4[data-estado='pronto']")
+        _, consulta = _consulta(page.get_attribute("#spec-t4", "href"))
+        assert consulta == {"g": "G01", "t": "tok4", "turno": "4", "a": "JR"}  # sem quiz-demo
+        assert erros == []
+    finally:
+        contexto.close()

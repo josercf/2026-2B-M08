@@ -4,7 +4,9 @@ A auditoria de 13/10/2026 (C-07) mediu práticas de 8 a 12 minutos que pediam
 abrir notebook, carregar dado, executar, comparar, discutir e escrever ADR.
 O componente do tema (aulas/_fixture-tema.html, slide "Exercício") deixa a
 missão obrigatória sem rótulo, marca a extensão com .passo-extensao e põe a
-checagem intermediária e o debrief numa .faixa-nota.checagem-pratica. O C-08
+checagem intermediária e o debrief numa .faixa-nota.checagem-pratica ou, quando
+o slide mostra o critério de pronto do aluno, nas notas do apresentador
+(aside.notes.checagem-pratica). O C-08
 pede a trilha mínima de preparo na seção "Preparação" de cada material.
 """
 import glob
@@ -57,9 +59,18 @@ def test_pratica_em_camadas(deck, pid, minutos, corpo):
     for item in re.findall(r'<li class="passo-extensao">(.*?)</li>', lista, re.S):
         assert '<span class="rotulo-extensao">Extensão</span>' in item
 
+    # Duas formas aceitas, com o mesmo conteúdo obrigatório. A faixa visível é a do tema.
+    # A Aula 04 em turnos (17/11/2026) leva a checagem e o debrief para as notas do
+    # apresentador, porque são deixa de condução do professor; nessa forma o slide
+    # precisa mostrar ao aluno o critério de pronto no lugar da faixa.
     faixa = re.search(r'<div class="faixa-nota checagem-pratica">(.*?)</div>', corpo, re.S)
-    assert faixa, "sem checagem intermediária"
-    checagem = _texto(faixa.group(1))
+    notas = re.search(r'<aside class="notes checagem-pratica">(.*?)</aside>', corpo, re.S)
+    assert faixa or notas, "sem checagem intermediária"
+    if not faixa:
+        pronto = re.search(r'<div class="at-pronto"><span class="at-rotulo">Pronto quando</span><p>(.+?)</p></div>',
+                           corpo, re.S)
+        assert pronto and _texto(pronto.group(1)).strip(), "checagem nas notas exige o critério de pronto no slide"
+    checagem = _texto((faixa or notas).group(1))
     n = int(re.search(r"Checagem aos (\d+) min", checagem).group(1))
     assert 0 < n < minutos
     assert "Debrief:" in checagem

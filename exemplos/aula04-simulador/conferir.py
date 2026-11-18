@@ -1,7 +1,7 @@
-"""Testes de aceite do professor para os cinco turnos do simulador.
+"""Testes de aceite do professor para os seis turnos do simulador.
 
 Uso:
-    python conferir.py        confere os cinco turnos
+    python conferir.py        confere os seis turnos
     python conferir.py 3      confere só o turno 3
 
 Imprime "TURNO n: OK" quando o turno passa e sai com código 0. Quando falta
@@ -12,6 +12,11 @@ Este arquivo é do professor e não deve ser editado. Ele verifica propriedades
 do resultado: soma dos pesos, formato da tabela, repetição com a mesma semente
 e tempo. Nenhuma verificação depende do valor de um sorteio específico. Usa só
 a biblioteca padrão, NumPy e pandas, e lê apenas os arquivos da pasta dados/.
+
+O turno 6 (otimização) também é conferido por propriedades, sem SciPy: uma
+carteira ótima não pode ser melhorada por nenhuma carteira candidata nem por
+uma mistura dela com uma candidata. As candidatas são 10.000 carteiras
+sorteadas aqui dentro, mais as carteiras de um ativo só.
 """
 import importlib
 import os
@@ -25,6 +30,14 @@ PASTA = os.path.dirname(os.path.abspath(__file__))
 PREGOES_ANO = 252
 EXATO = 1e-8
 LIMITE_SEGUNDOS = 10.0
+# Tolerâncias do turno 6. O otimizador é numérico, então a conferência aceita
+# resíduo pequeno: 0,000001 na soma e nos limites dos pesos, 0,002 ponto
+# percentual no risco e no retorno, 0,0001 no Sharpe.
+TOL_PESO = 1e-6
+TOL_RISCO = 2e-5
+TOL_SHARPE = 1e-4
+CANDIDATAS = 10_000
+FRACOES = (1.0, 0.2, 0.05, 0.01)   # parte da carteira trocada pela candidata
 
 
 class Falta(Exception):
@@ -369,7 +382,279 @@ def turno5(sim, precos, rf):
     return faltas
 
 
-TURNOS = {1: turno1, 2: turno2, 3: turno3, 4: turno4, 5: turno5}
+# --- turno 6 --------------------------------------------------------------------
+
+CAUSAS = ("Causas comuns: devolver a melhor carteira sorteada da tabela de simular no lugar "
+          "de otimizar (a melhor carteira sorteada ainda pode ser melhorada, como a mistura "
+          "acima mostra); parar o SLSQP cedo, com a tolerância padrão (aperte com o parâmetro "
+          "options do minimize, chave \"ftol\"); ou minimizar uma função diferente da pedida.")
+
+
+def _candidatas(retornos):
+    """Carteiras de comparação: 10.000 sorteadas mais as de um ativo só.
+
+    Devolve (pesos, nomes, retorno anual dos ativos, covariância anual, variância
+    de cada candidata, retorno de cada candidata).
+    """
+    k = retornos.shape[1]
+    rng = np.random.default_rng(2026)
+    sorteadas = rng.random((CANDIDATAS, k))
+    sorteadas /= sorteadas.sum(axis=1, keepdims=True)
+    pesos = np.vstack([sorteadas, np.eye(k)])
+    nomes = ["uma carteira sorteada"] * CANDIDATAS + ["a carteira só de %s" % ativo
+                                                      for ativo in retornos.columns]
+    media = retornos.mean().to_numpy() * PREGOES_ANO
+    cov = retornos.cov().to_numpy() * PREGOES_ANO
+    variancias = np.einsum("ij,jk,ik->i", pesos, cov, pesos)
+    return pesos, nomes, media, cov, variancias, pesos @ media
+
+
+def _melhor_mistura(pesos, candidatas, rf=None, retorno_minimo=None):
+    """Procura uma mistura de `pesos` com uma candidata que seja melhor que `pesos`.
+
+    Com rf, melhor é ter Sharpe maior; sem rf, é ter risco menor. Com
+    retorno_minimo, só entram misturas que rendem pelo menos esse retorno.
+    Devolve None ou (ganho, fração, nome da candidata, valor atual, valor da mistura).
+    """
+    matriz, nomes, media, cov, variancias, retornos_cand = candidatas
+    variancia = float(pesos @ cov @ pesos)
+    retorno = float(pesos @ media)
+    cruzada = matriz @ (cov @ pesos)
+    atual = (retorno - rf) / np.sqrt(variancia) if rf is not None else np.sqrt(variancia)
+    achado = None
+    for fracao in FRACOES:
+        var_mix = ((1 - fracao) ** 2 * variancia + 2 * fracao * (1 - fracao) * cruzada
+                   + fracao ** 2 * variancias)
+        risco_mix = np.sqrt(np.maximum(var_mix, 0))
+        ret_mix = (1 - fracao) * retorno + fracao * retornos_cand
+        if rf is not None:
+            ganho = (ret_mix - rf) / np.maximum(risco_mix, 1e-300) - atual
+            valor_mix = atual + ganho
+        else:
+            ganho = atual - risco_mix
+            valor_mix = risco_mix
+        if retorno_minimo is not None:
+            ganho = np.where(ret_mix >= retorno_minimo - 1e-9, ganho, -np.inf)
+        posicao = int(np.argmax(ganho))
+        if achado is None or ganho[posicao] > achado[0]:
+            achado = (float(ganho[posicao]), fracao, nomes[posicao], float(atual),
+                      float(valor_mix[posicao]))
+    limite = TOL_SHARPE if rf is not None else TOL_RISCO
+    return achado if achado[0] > limite else None
+
+
+def _descrever_mistura(achado):
+    _, fracao, nome, _, _ = achado
+    if fracao >= 1:
+        return nome[0].upper() + nome[1:]
+    return ("Uma mistura de %s da carteira devolvida com %s de %s"
+            % (pct(1 - fracao, 0), pct(fracao, 0), nome.replace("a carteira só de ", "")
+               if nome.startswith("a carteira só") else nome))
+
+
+def _pesos_otimos(valor, k, origem):
+    """Converte o resultado de uma otimização em vetor e confere soma e limites."""
+    try:
+        pesos = np.asarray(valor, dtype=float)
+    except (TypeError, ValueError):
+        raise Falta("%s devolveu %r, e o esperado é um vetor de números." % (origem, valor))
+    if pesos.shape != (k,):
+        raise Falta("%s devolveu um resultado de formato %s, e o esperado é um vetor do NumPy "
+                    "com %d pesos, um por ativo, na ordem das colunas de retornos. Se a função "
+                    "devolve o objeto do minimize, o vetor de pesos está no atributo x dele."
+                    % (origem, pesos.shape, k))
+    if np.isnan(pesos).any():
+        raise Falta("%s devolveu NaN (um valor que não é número) entre os pesos." % origem)
+    faltas = []
+    if abs(pesos.sum() - 1) > TOL_PESO:
+        faltas.append("%s devolveu pesos que somam %.4f, e os pesos de uma carteira precisam "
+                      "somar 1. O otimizador só respeita a soma se ela entrar em constraints: "
+                      "uma restrição de igualdade (type \"eq\") cuja função devolve zero quando "
+                      "a soma dos pesos é 1." % (origem, pesos.sum()))
+    if pesos.min() < -TOL_PESO or pesos.max() > 1 + TOL_PESO:
+        faltas.append("%s devolveu peso fora do intervalo de 0 a 1 (menor %.4f, maior %.4f). A "
+                      "carteira não vende a descoberto: passe ao minimize o argumento bounds, "
+                      "com um par (mínimo, máximo) por ativo." % (origem, pesos.min(), pesos.max()))
+    return pesos, faltas
+
+
+def _conferir_otima(pesos, candidatas, origem, rf=None):
+    """Lista do que falta para `pesos` ser a carteira ótima (risco sem rf, Sharpe com rf)."""
+    k = len(pesos)
+    achado = _melhor_mistura(pesos, candidatas, rf)
+    if achado is None:
+        return []
+    _, _, _, atual, novo = achado
+    if rf is None:
+        medida = "tem risco anual de %s, menor que os %s" % (pct(novo, 3), pct(atual, 3))
+        nome = "a de menor risco"
+    else:
+        medida = ("tem Sharpe de %.4f, maior que o %.4f" % (novo, atual)).replace(".", ",")
+        nome = "a de maior Sharpe"
+    if k > 1 and np.allclose(pesos, 1.0 / k, atol=1e-6):
+        return ["%s devolveu pesos iguais (%s em cada ativo), que são o ponto inicial da "
+                "otimização, e essa carteira não é %s. %s %s da carteira devolvida. Confira se "
+                "o minimize foi chamado e se a função devolve os pesos encontrados por ele (o "
+                "atributo x do resultado). Se o minimize foi chamado e os pesos não saíram do "
+                "ponto inicial, a função objetivo tem valores muito pequenos (variância diária, "
+                "por exemplo) e o SLSQP parou na tolerância padrão: use a variância anual e "
+                "aperte a chave \"ftol\" do parâmetro options."
+                % (origem, pct(1.0 / k, 1), nome, _descrever_mistura(achado), medida)]
+    return ["%s não devolveu a carteira ótima. %s %s da carteira devolvida, com as mesmas "
+            "restrições. %s" % (origem, _descrever_mistura(achado), medida, CAUSAS)]
+
+
+def _fronteira(valor, retornos, pontos, origem):
+    """Confere o formato da tabela da fronteira. Devolve (tabela, matriz de pesos)."""
+    if not isinstance(valor, pd.DataFrame):
+        raise Falta("%s devolveu %s, e o esperado é uma tabela (DataFrame do pandas)."
+                    % (origem, type(valor).__name__))
+    colunas_peso = ["w_%s" % ativo for ativo in retornos.columns]
+    esperadas = colunas_peso + ["retorno", "risco"]
+    if list(valor.columns) != esperadas:
+        raise Falta("%s devolveu as colunas %s, e o esperado é %s, nesta ordem."
+                    % (origem, list(valor.columns), esperadas))
+    if len(valor) != pontos:
+        raise Falta("%s devolveu %d linhas, e o esperado é uma linha por retorno alvo: %d."
+                    % (origem, len(valor), pontos))
+    try:
+        numeros = valor.to_numpy(dtype=float)
+    except (TypeError, ValueError):
+        raise Falta("%s devolveu uma tabela com valor que não é número." % origem)
+    if np.isnan(numeros).any():
+        raise Falta("%s devolveu uma tabela com NaN (um valor que não é número)." % origem)
+    return valor, numeros[:, :len(colunas_peso)]
+
+
+def _conferir_fronteira(tabela, pesos, retornos, candidatas, origem):
+    faltas = []
+    _, _, media, cov, _, _ = candidatas
+    pontos = len(tabela)
+    somas = pesos.sum(axis=1)
+    if np.abs(somas - 1).max() > TOL_PESO:
+        linha = int(np.abs(somas - 1).argmax())
+        faltas.append("Na linha %d de %s os pesos somam %.4f, e os pesos de cada linha precisam "
+                      "somar 1. A restrição de soma 1 continua valendo em cada ponto da "
+                      "fronteira, ao lado da restrição do retorno alvo: constraints aceita uma "
+                      "lista com as duas." % (linha, origem, somas[linha]))
+    if pesos.min() < -TOL_PESO or pesos.max() > 1 + TOL_PESO:
+        faltas.append("%s tem peso fora do intervalo de 0 a 1 (menor %.4f, maior %.4f). Passe "
+                      "bounds ao minimize em cada ponto da fronteira."
+                      % (origem, pesos.min(), pesos.max()))
+    if faltas:
+        return faltas
+    retorno = tabela["retorno"].to_numpy(dtype=float)
+    risco = tabela["risco"].to_numpy(dtype=float)
+    ref_retorno = pesos @ media
+    ref_risco = np.sqrt(np.einsum("ij,jk,ik->i", pesos, cov, pesos))
+    if np.abs(retorno - ref_retorno).max() > TOL_RISCO:
+        linha = int(np.abs(retorno - ref_retorno).argmax())
+        faltas.append("Na linha %d de %s a coluna retorno vale %s e o retorno anual dos pesos "
+                      "dessa linha é %s. Se a coluna guarda o retorno alvo, os pesos não "
+                      "atingiram o alvo: confira a restrição de igualdade do retorno e se a "
+                      "otimização convergiu (resultado.success)."
+                      % (linha, origem, pct(retorno[linha], 3), pct(ref_retorno[linha], 3)))
+    if np.abs(risco - ref_risco).max() > TOL_RISCO:
+        linha = int(np.abs(risco - ref_risco).argmax())
+        faltas.append("Na linha %d de %s a coluna risco vale %s e o risco anual dos pesos dessa "
+                      "linha é %s. Use a definição do turno 2: desvio padrão amostral (ddof=1) "
+                      "vezes a raiz de 252. A variância que o otimizador minimiza é o quadrado "
+                      "do risco." % (linha, origem, pct(risco[linha], 3), pct(ref_risco[linha], 3)))
+    if faltas:
+        return faltas
+    passos = np.diff(retorno)
+    if (passos <= 0).any():
+        if np.abs(passos).max() <= TOL_RISCO:
+            faltas.append("Todas as linhas de %s têm o mesmo retorno (%s). Sintoma comum: a "
+                          "restrição do retorno alvo foi criada com lambda dentro do laço e "
+                          "todas enxergam o último alvo. O README mostra como fixar o valor de "
+                          "cada volta do laço em um argumento padrão do lambda."
+                          % (origem, pct(retorno[0])))
+        else:
+            linha = int(np.argmax(passos <= 0)) + 1
+            faltas.append("A coluna retorno de %s precisa estar em ordem crescente, e a linha "
+                          "%d (%s) não é maior que a anterior (%s). Cada linha vem de uma "
+                          "otimização própria, com um retorno alvo maior que o da linha anterior."
+                          % (origem, linha, pct(retorno[linha], 3), pct(retorno[linha - 1], 3)))
+        return faltas
+    achado = _melhor_mistura(pesos[0], candidatas)
+    if achado is not None:
+        faltas.append("O primeiro ponto de %s precisa ser a carteira de variância mínima, e ele "
+                      "tem risco anual de %s. %s tem risco de %s. O primeiro retorno alvo é o "
+                      "retorno da carteira que variancia_minima devolve."
+                      % (origem, pct(achado[3], 3), _descrever_mistura(achado), pct(achado[4], 3)))
+    if abs(retorno[-1] - media.max()) > TOL_RISCO:
+        faltas.append("O último ponto de %s tem retorno de %s, e o esperado é o maior retorno "
+                      "anual entre os ativos: %s, de %s."
+                      % (origem, pct(retorno[-1], 3), pct(media.max(), 3),
+                         retornos.columns[int(media.argmax())]))
+    if faltas:
+        return faltas
+    if np.abs(passos - passos.mean()).max() > TOL_RISCO:
+        faltas.append("Os retornos alvo de %s precisam ser igualmente espaçados entre o primeiro "
+                      "(%s) e o último (%s), e o maior passo é %s para um passo médio de %s. O "
+                      "NumPy tem uma função que devolve números igualmente espaçados entre dois "
+                      "extremos." % (origem, pct(retorno[0]), pct(retorno[-1]),
+                                     pct(passos.max(), 3), pct(passos.mean(), 3)))
+        return faltas
+    piores = []
+    for linha in range(pontos):
+        achado = _melhor_mistura(pesos[linha], candidatas, retorno_minimo=retorno[linha])
+        if achado is not None:
+            piores.append((linha, achado))
+    if piores:
+        linha, achado = max(piores, key=lambda item: item[1][0])
+        faltas.append("%d dos %d pontos de %s não estão na fronteira. Na linha %d, com retorno "
+                      "de %s, a carteira devolvida tem risco de %s. %s rende pelo menos esse "
+                      "retorno com risco de %s. Cada ponto da fronteira é a carteira de menor "
+                      "risco para o retorno alvo: uma otimização por alvo, com a restrição de "
+                      "soma 1 e a restrição do retorno. Montar a fronteira com as melhores "
+                      "carteiras sorteadas deixa os pontos acima do risco mínimo."
+                      % (len(piores), pontos, origem, linha, pct(retorno[linha]),
+                         pct(achado[3], 3), _descrever_mistura(achado), pct(achado[4], 3)))
+    return faltas
+
+
+def turno6(sim, precos, rf):
+    faltas = []
+    minima = obter(sim, "variancia_minima")
+    sharpe = obter(sim, "maximo_sharpe")
+    fronteira = obter(sim, "fronteira")
+    completos = list(precos.dropna(axis=1).columns)
+    cinco = ["PETR4", "VALE3", "ITUB4", "WEGE3", "ABEV3"]
+    cestas = [("2 ativos", ["PETR4", "VALE3"]), ("5 ativos", cinco),
+              ("15 ativos", completos[:15])]
+    for descricao, ativos in cestas:
+        retornos = tabela_de_retornos(precos, ativos, 252)
+        candidatas = _candidatas(retornos)
+        k = len(ativos)
+        for funcao, argumentos, taxa in ((minima, (retornos,), None), (sharpe, (retornos, rf), rf)):
+            origem = "%s com %s" % (funcao.__name__, descricao)
+            pesos, problemas = _pesos_otimos(chamar(funcao, *argumentos), k, origem)
+            faltas.extend(problemas or _conferir_otima(pesos, candidatas, origem, taxa))
+        if faltas:
+            return faltas
+    um = tabela_de_retornos(precos, ["PETR4"], 63)
+    for funcao, argumentos in ((minima, (um,)), (sharpe, (um, rf))):
+        origem = "Caso de borda de um ativo só: %s" % funcao.__name__
+        pesos, problemas = _pesos_otimos(chamar(funcao, *argumentos), 1, origem)
+        faltas.extend(problemas)
+    retornos = tabela_de_retornos(precos, cinco, 252)
+    candidatas = _candidatas(retornos)
+    for pontos, argumentos in ((50, (retornos,)), (12, (retornos, 12))):
+        origem = ("fronteira(retornos)" if pontos == 50 else "fronteira(retornos, 12)")
+        tabela, pesos = _fronteira(chamar(fronteira, *argumentos), retornos, pontos, origem)
+        problemas = _conferir_fronteira(tabela, pesos, retornos, candidatas, origem)
+        faltas.extend(problemas)
+        if problemas:
+            return faltas
+    recusa = espera_erro(fronteira, (retornos, 1), "Caso de borda pontos = 1 (SPEC.md)")
+    if recusa:
+        faltas.append(recusa)
+    return faltas
+
+
+TURNOS = {1: turno1, 2: turno2, 3: turno3, 4: turno4, 5: turno5, 6: turno6}
 
 
 def conferir(turnos):
@@ -412,9 +697,9 @@ def conferir(turnos):
 def main(argumentos):
     if not argumentos:
         return conferir(sorted(TURNOS))
-    if len(argumentos) == 1 and argumentos[0] in ("1", "2", "3", "4", "5"):
+    if len(argumentos) == 1 and argumentos[0] in ("1", "2", "3", "4", "5", "6"):
         return conferir([int(argumentos[0])])
-    print("Uso: python conferir.py [turno]   (turno de 1 a 5; sem argumento, confere os cinco)")
+    print("Uso: python conferir.py [turno]   (turno de 1 a 6; sem argumento, confere os seis)")
     return 2
 
 

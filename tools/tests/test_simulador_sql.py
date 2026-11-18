@@ -21,7 +21,7 @@ def test_so_cria_objetos_com_prefixo_sim():
     for nome in re.findall(r"create policy (\w+)", sql):
         assert nome.startswith("sim_"), nome
     assert len(re.findall(r"create table if not exists", sql)) == 3
-    assert len(re.findall(r"create or replace function", sql)) == 3
+    assert len(re.findall(r"create or replace function", sql)) == 4
 
 
 def test_nao_altera_nem_remove_o_que_existe():
@@ -34,8 +34,12 @@ def test_nao_altera_nem_remove_o_que_existe():
         assert alvo.startswith("sim_"), alvo
     # A única remoção de linha é a do turno do próprio participante.
     assert re.findall(r"delete from (\w+)", sql) == ["sim_turnos"]
-    for prefixo in ("quiz_", "adr_", "moeda_"):
+    for prefixo in ("quiz_", "moeda_"):
         assert prefixo not in sql, prefixo
+    # Única exceção: o token de spec do grupo, linha nova em adr_tokens (sim_spec_link).
+    assert set(re.findall(r"adr_\w+", sql)) == {"adr_tokens", "adr_tokens_pkey"}
+    assert re.findall(r"insert into (\w+)", sql).count("adr_tokens") == 1
+    assert "update adr_" not in sql and "delete from adr_" not in sql
 
 
 def test_toda_tabela_tem_rls_e_nenhuma_guarda_nome():
@@ -52,4 +56,4 @@ def test_escrita_so_por_funcao():
     sql = _sql()
     assert "for insert" not in sql and "for update" not in sql and "for delete" not in sql
     assert "for all" not in sql
-    assert sql.count("security definer") == 3
+    assert sql.count("security definer") == 4

@@ -8,6 +8,15 @@
 // localStorage, para a pessoa voltar sem entrar de novo. Com ?demo=1 ela fica no
 // sessionStorage: cada aba é um participante, e duas abas do mesmo navegador
 // servem de ensaio da sala.
+//
+// Modo telão (?painel=1&telao=1): só o painel e a simulação aberta por um
+// avatar, sem barra de topo, rodapé nem entrada. É o que o deck embute no slide
+// e o que o professor abre em tela cheia. O tamanho de tudo sai de unidades de
+// viewport em assets/css/simulador.css (bloco "telão").
+//
+// Spec do grupo: a tela Progresso monta o endereço de aulas/aula04-spec.html
+// com grupo, token, turno e iniciais (sala.specLink), e o painel leva à visão
+// somente leitura da spec de cada grupo (?ver=1).
 (function () {
   'use strict';
 
@@ -30,6 +39,10 @@
   var N = window.SimuladorNucleo;
   var DEMO = window.SimuladorDados.demo();
   var PAINEL_DIRETO = /[?&]painel=1/.test(window.location.search);
+  var TELAO = PAINEL_DIRETO && /[?&]telao=1/.test(window.location.search);
+  var SPEC = '../aulas/aula04-spec.html';
+  var TURNOS_COM_SPEC = [4, 5];
+  var CHEIO = 10;              // avatares de um grupo que cabem em uma linha do telão
   var CHAVE_EU = 'inteli-simulador-eu:' + SESSAO;
 
   var cotacoes = null;
@@ -43,6 +56,9 @@
   var salvamentos = 0;
   var relogioSalvar = null;
   var pedidoPainel = 0;
+  var atalhos = {};            // atalhos da spec já resolvidos: chave -> {url} ou {erro}
+
+  if (TELAO) document.body.classList.add('sim-telao');
 
   // ------------------------------------------------------------ utilidades
 
@@ -235,6 +251,8 @@
     var destino = window.location.hash.replace(/^#/, '');
     if (!destino) destino = PAINEL_DIRETO ? 'painel' : (eu ? 'montar' : 'entrar');
     if (destino.indexOf('ver=') === 0) { mostrar('ver'); abrirSimulacaoDe(destino.slice(4)); return; }
+    // O telão só tem painel e simulação: qualquer outro destino volta ao painel.
+    if (TELAO && destino !== 'painel') { window.location.replace('#painel'); return; }
     if (TELAS.indexOf(destino) < 0) destino = eu ? 'montar' : 'entrar';
     if (!eu && destino !== 'entrar' && destino !== 'painel') { window.location.replace('#entrar'); return; }
     if (eu && destino === 'entrar') { window.location.replace('#montar'); return; }
@@ -741,6 +759,7 @@
     tela.setAttribute('data-pronto', 'nao');
     var calculo = calcular(parametros);
     raiz.calculo = calculo;
+    ajustarAoTelao(raiz, calculo);
     desenharNuvem(tela, calculo);
 
     var sharpe = calculo.resultado.sharpe;
@@ -784,12 +803,24 @@
     ligarDica(raiz);
   }
 
+  // No telão o canvas é absoluto dentro do palco, e o palco tem a altura que a
+  // grade da tela lhe dá. A nuvem é desenhada nessa altura.
+  function ajustarAoTelao(raiz, calculo) {
+    if (!TELAO) return;
+    calculo.altura = Math.max(200, $('.nuvem-palco', raiz).clientHeight);
+    calculo.escala = Math.max(1.15, Math.min(2.2, window.innerHeight / 470));
+  }
+
   // Nuvem em canvas: risco no eixo x, retorno no eixo y, cor pelo Sharpe.
   function desenharNuvem(tela, calculo) {
     var largura = tela.parentNode.clientWidth;
     if (!largura) return;
     var estreito = largura < 520;
-    var altura = calculo.enxuta ? Math.max(240, Math.min(460, Math.round(largura * 0.8)))
+    // No telão a altura vem do palco, que ocupa o que sobra da tela, e `e`
+    // aumenta letra, margem e ponto para a leitura do fundo da sala.
+    var e = calculo.escala || 1;
+    var altura = calculo.altura ? calculo.altura
+      : calculo.enxuta ? Math.max(240, Math.min(460, Math.round(largura * 0.8)))
       : Math.max(280, Math.min(480, Math.round(largura * (estreito ? 0.82 : 0.56))));
     var area = prepararTela(tela, altura);
     var ctx = area.ctx;
@@ -817,7 +848,7 @@
     xMin -= fx; xMax += fx; yMin -= fy; yMax += fy;
 
     var m = calculo.enxuta ? { esq: 18, dir: 18, topo: 18, base: 18 }
-      : { esq: estreito ? 50 : 64, dir: 20, topo: 22, base: estreito ? 44 : 50 };
+      : { esq: (estreito ? 50 : 64) * e, dir: 20 * e, topo: 22 * e, base: (estreito ? 44 : 50) * e };
     var w = area.largura - m.esq - m.dir;
     var h = area.altura - m.topo - m.base;
     function x(risco) { return m.esq + w * (risco - xMin) / (xMax - xMin); }
@@ -829,7 +860,7 @@
       var casasX = ex.passo >= 0.01 ? 0 : ex.passo >= 0.001 ? 1 : 2;
       var casasY = ey.passo >= 0.01 ? 0 : ey.passo >= 0.001 ? 1 : 2;
       ctx.lineWidth = 1;
-      ctx.font = fonte(12, 300);
+      ctx.font = fonte(Math.round(12 * e), 300);
       ctx.fillStyle = tinta(branco, 0.82);
       ctx.strokeStyle = tinta(branco, 0.1);
       ctx.textAlign = 'right';
@@ -844,11 +875,11 @@
         ctx.beginPath(); ctx.moveTo(Math.round(x(v)) + 0.5, m.topo); ctx.lineTo(Math.round(x(v)) + 0.5, m.topo + h); ctx.stroke();
         ctx.fillText(porcento(v, casasX), x(v), m.topo + h + 8);
       });
-      ctx.font = fonte(12, 600);
+      ctx.font = fonte(Math.round(12 * e), 600);
       ctx.fillStyle = tinta(branco);
-      ctx.fillText('Risco anual', m.esq + w / 2, area.altura - 18);
+      ctx.fillText('Risco anual', m.esq + w / 2, area.altura - 18 * e);
       ctx.save();
-      ctx.translate(14, m.topo + h / 2);
+      ctx.translate(14 * e, m.topo + h / 2);
       ctx.rotate(-Math.PI / 2);
       ctx.textBaseline = 'middle';
       ctx.fillText('Retorno anual', 0, 0);
@@ -860,7 +891,7 @@
       ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(m.esq, y(calculo.rf)); ctx.lineTo(m.esq + w, y(calculo.rf)); ctx.stroke();
       ctx.setLineDash([]);
-      ctx.font = fonte(12, 600);
+      ctx.font = fonte(Math.round(12 * e), 600);
       ctx.textAlign = 'right';
       ctx.textBaseline = 'bottom';
       ctx.fillStyle = tinta(branco);
@@ -869,7 +900,7 @@
 
     // Pontos em faixas de Sharpe, da menor para a maior: os melhores ficam por cima.
     var FAIXAS = 20;
-    var raio = n <= 10 ? 6 : n <= 100 ? 4.5 : n <= 1000 ? 2.6 : 1.7;
+    var raio = (n <= 10 ? 6 : n <= 100 ? 4.5 : n <= 1000 ? 2.6 : 1.7) * (1 + (e - 1) * 0.6);
     var alfa = n <= 100 ? 0.95 : n <= 1000 ? 0.8 : 0.62;
     var faixas = [];
     for (var f = 0; f < FAIXAS; f++) faixas.push([]);
@@ -891,18 +922,19 @@
 
     calculo.marcas.forEach(function (marca) {
       var cx = x(marca.risco), cy = y(marca.retorno);
-      ctx.lineWidth = 2.5;
+      var d = 10 * e;
+      ctx.lineWidth = 2.5 * e;
       if (marca.id === 'melhor') {
-        ctx.beginPath(); ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+        ctx.beginPath(); ctx.arc(cx, cy, 8 * e, 0, Math.PI * 2);
         ctx.fillStyle = tinta(verde); ctx.fill();
         ctx.strokeStyle = tinta(branco); ctx.stroke();
       } else if (marca.id === 'iguais') {
-        ctx.beginPath(); ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+        ctx.beginPath(); ctx.arc(cx, cy, 7 * e, 0, Math.PI * 2);
         ctx.fillStyle = tinta(roxo); ctx.fill();
         ctx.strokeStyle = tinta(branco); ctx.stroke();
       } else {
         ctx.beginPath();
-        ctx.moveTo(cx, cy - 10); ctx.lineTo(cx + 10, cy); ctx.lineTo(cx, cy + 10); ctx.lineTo(cx - 10, cy);
+        ctx.moveTo(cx, cy - d); ctx.lineTo(cx + d, cy); ctx.lineTo(cx, cy + d); ctx.lineTo(cx - d, cy);
         ctx.closePath();
         ctx.fillStyle = tinta(coral); ctx.fill();
         ctx.strokeStyle = tinta(branco); ctx.stroke();
@@ -1050,9 +1082,92 @@
     $('#progresso-nota').textContent = eu && eu.grupo === 'VIS'
       ? 'Visitantes ficam fora do placar da sala.'
       : turnos.length + ' de 5 turnos marcados. Nos turnos 1 e 2, o valor esperado do teste é o número que a tela Montar mostra em 9 pregões.';
+    atualizarAtalhos(false);
+  }
+
+  // Atalho da spec do grupo, nos turnos 4 e 5. O endereço é resolvido quando a
+  // tela abre e vira um link comum com target="_blank": o clique é do próprio
+  // navegador, e nenhum bloqueador de pop-up entra no caminho.
+  function specDeEdicao(r) {
+    return SPEC + '?g=' + r.grupo + '&t=' + encodeURIComponent(r.token) + '&turno=' + r.turno +
+      '&a=' + encodeURIComponent(eu.iniciais) + (r.demo ? '&quiz-demo=1' : '');
+  }
+  function specDeLeitura(grupo, turno) {
+    return SPEC + '?g=' + grupo + '&turno=' + turno + '&ver=1' + (sala.tipo === 'memoria' ? '&quiz-demo=1' : '');
+  }
+
+  function mensagemDaSpec(falha) {
+    var detalhe = (falha && falha.message) || 'erro desconhecido';
+    if (/sim_spec_link|function|schema cache/i.test(detalhe)) {
+      return 'O atalho da spec ainda não está ativo no banco da aula. Chame o professor e, depois do aviso dele, clique de novo neste botão.';
+    }
+    return 'A spec do grupo não abriu (' + detalhe + '). Chame o professor ou clique de novo para tentar outra vez.';
+  }
+
+  function pintarAtalho(turno, estado, texto, url) {
+    var botao = $('#spec-t' + turno);
+    botao.setAttribute('data-estado', estado);
+    botao.removeAttribute('href');
+    botao.removeAttribute('role');
+    botao.removeAttribute('tabindex');
+    botao.removeAttribute('aria-disabled');
+    if (url) botao.setAttribute('href', url);
+    else if (estado === 'erro') { botao.setAttribute('role', 'button'); botao.setAttribute('tabindex', '0'); }
+    else botao.setAttribute('aria-disabled', 'true');
+    $('#spec-t' + turno + '-nota').textContent = texto;
+  }
+
+  function chaveDoAtalho(turno) { return eu.id + ':' + turno + ':' + sala.tipo; }
+
+  function aplicarAtalho(turno, atalho) {
+    if (atalho.pedindo) pintarAtalho(turno, 'preparando', 'Preparando o atalho da spec.');
+    else if (atalho.erro) pintarAtalho(turno, 'erro', atalho.erro);
+    else {
+      pintarAtalho(turno, 'pronto', 'Abre em nova aba, com o grupo ' + eu.grupo + ' e as iniciais ' + eu.iniciais + '.' +
+        (atalho.demo ? ' Sala sem banco: esta spec fica só neste navegador.' : ''), atalho.url);
+    }
+  }
+
+  // `repetir` refaz o pedido que terminou em erro (clique no botão). A troca
+  // da sala para memória muda a chave, e o pedido é refeito sozinho.
+  function atualizarAtalhos(repetir) {
+    if (!eu) return;
+    TURNOS_COM_SPEC.forEach(function (turno) {
+      if (eu.grupo === 'VIS') {
+        pintarAtalho(turno, 'visitante', 'Visitante não edita a spec do grupo. Para editar, saia e entre de novo com o seu grupo.');
+        return;
+      }
+      var chave = chaveDoAtalho(turno);
+      var atalho = atalhos[chave];
+      if (atalho && !(repetir && atalho.erro)) { aplicarAtalho(turno, atalho); return; }
+      atalhos[chave] = { pedindo: true };
+      aplicarAtalho(turno, atalhos[chave]);
+      sala.specLink(eu.id, turno).then(function (r) {
+        atalhos[chave] = { url: specDeEdicao(r), demo: r.demo };
+      }, function (falha) {
+        atalhos[chave] = { erro: mensagemDaSpec(falha) };
+      }).then(function () {
+        if (!eu || telaAtual !== 'progresso') return;
+        if (chave === chaveDoAtalho(turno)) aplicarAtalho(turno, atalhos[chave]);
+        else atualizarAtalhos(false);
+        document.body.setAttribute('data-spec', TURNOS_COM_SPEC.map(function (t) { return $('#spec-t' + t).getAttribute('data-estado'); }).join(','));
+      });
+    });
   }
 
   function prepararProgresso() {
+    TURNOS_COM_SPEC.forEach(function (turno) {
+      var botao = $('#spec-t' + turno);
+      function semEndereco(evento) {
+        if (botao.hasAttribute('href')) return;
+        evento.preventDefault();
+        if (botao.getAttribute('data-estado') === 'erro') atualizarAtalhos(true);
+      }
+      botao.addEventListener('click', semEndereco);
+      botao.addEventListener('keydown', function (evento) {
+        if (evento.key === 'Enter' || evento.key === ' ') semEndereco(evento);
+      });
+    });
     $$('#turnos input').forEach(function (caixa) {
       caixa.addEventListener('change', function () {
         var turno = Number(caixa.getAttribute('data-turno'));
@@ -1084,26 +1199,55 @@
     var grade = $('#painel-grade');
     var primeiraVez = !Object.keys(conhecidos).length;
     limpar(grade);
-    $('#painel-vazio').hidden = lista.length > 0;
-    grade.hidden = !lista.length;
+    // O telão mostra os cinco blocos mesmo com a sala vazia: o slide não muda de forma.
+    $('#painel-vazio').hidden = TELAO || lista.length > 0;
+    grade.hidden = !TELAO && !lista.length;
     $('.painel-turnos').hidden = !lista.length;
     var comCarteira = lista.filter(function (p) { return p.carteira; }).length;
+    var concluidos = lista.reduce(function (soma, p) { return soma + (p.grupo === 'VIS' ? 0 : p.turnos.length); }, 0);
+    $('#telao-pessoas').textContent = inteiro(lista.length);
+    $('#telao-pessoas-rotulo').textContent = lista.length === 1 ? 'pessoa na sala' : 'pessoas na sala';
+    $('#telao-carteiras').textContent = inteiro(comCarteira);
+    $('#telao-turnos').textContent = inteiro(concluidos);
+    $('#telao-turnos-rotulo').textContent = concluidos === 1 ? 'turno concluído' : 'turnos concluídos';
+    var semBanco = sala.tipo === 'memoria' && !DEMO;
+    $('#telao-vivo').classList.toggle('telao-vivo-alerta', semBanco);
+    $('#telao-hora').textContent = semBanco ? 'Sem conexão com o banco'
+      : 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR');
+    document.body.setAttribute('data-painel', String(lista.length));
     $('#painel-resumo').textContent = !lista.length ? 'Sala ' + SESSAO + '.'
       : inteiro(lista.length) + (lista.length === 1 ? ' pessoa na sala, ' : ' pessoas na sala, ') +
         inteiro(comCarteira) + ' com carteira montada.';
 
     GRUPOS.forEach(function (grupo) {
       var membros = lista.filter(function (p) { return p.grupo === grupo.id; });
-      if (grupo.id === 'VIS' && !membros.length) return;
-      var linha = criar('section', { classe: 'painel-linha', 'data-grupo': grupo.id, 'aria-label': grupo.nome });
-      linha.appendChild(criar('div', { classe: 'painel-grupo' }, [
+      if (grupo.id === 'VIS' && !membros.length && !TELAO) return;
+      var linha = criar('section', {
+        classe: 'painel-linha', 'data-grupo': grupo.id, 'aria-label': grupo.nome,
+        'data-densidade': membros.length <= CHEIO ? '1' : membros.length <= CHEIO * 2 + 2 ? '2' : '3'
+      });
+      var cabeca = criar('div', { classe: 'painel-grupo' }, [
         criar('span', { classe: 'painel-cor', 'data-grupo': grupo.id, 'aria-hidden': 'true' }),
         criar('h2', { texto: grupo.nome }),
-        criar('p', { texto: membros.length === 1 ? '1 pessoa' : membros.length + ' pessoas' })
-      ]));
+        criar('p', { classe: 'painel-quantos', texto: membros.length === 1 ? '1 pessoa' : membros.length + ' pessoas' })
+      ]);
+      if (grupo.id !== 'VIS') {
+        // Visão somente leitura da spec do grupo, para projetar sem link.
+        cabeca.appendChild(criar('p', { classe: 'painel-specs' }, TURNOS_COM_SPEC.map(function (turno) {
+          return criar('a', {
+            href: specDeLeitura(grupo.id, turno), target: '_blank', rel: 'noopener', 'data-turno': turno,
+            'aria-label': 'Abrir a spec do turno ' + turno + ' do ' + grupo.nome + ' em nova aba, somente leitura',
+            texto: 'Spec T' + turno
+          });
+        })));
+      }
+      linha.appendChild(cabeca);
 
       var avatares = criar('div', { classe: 'painel-avatares' });
-      if (!membros.length) avatares.appendChild(criar('p', { classe: 'painel-sem', texto: 'Ninguém do grupo entrou.' }));
+      // No telão, acima de CHEIO os avatares encolhem e se dividem em 2 ou 3 linhas iguais.
+      var fileiras = Number(linha.getAttribute('data-densidade'));
+      avatares.style.setProperty('--por-linha', String(Math.ceil(membros.length / fileiras) || 1));
+      if (!membros.length) avatares.appendChild(criar('p', { classe: 'painel-sem', texto: grupo.id === 'VIS' ? 'Nenhum visitante.' : 'Ninguém do grupo entrou.' }));
       membros.forEach(function (pessoa) {
         var rotulo = pessoa.iniciais + ', ' + grupo.nome + (pessoa.carteira ? ': abrir a simulação' : ': ainda sem carteira');
         var link = criar('a', {
@@ -1173,6 +1317,14 @@
       corpo.hidden = false;
       var raiz = $('#ver-nuvem');
       mostrarSimulacao(raiz, c, eu && eu.id === pessoa.id ? null : pessoa.iniciais);
+      // Os três números do melhor Sharpe, em destaque no telão.
+      var melhor = raiz.calculo.marcas[0];
+      var numeros = $('#ver-numeros');
+      limpar(numeros);
+      [['Maior Sharpe', numero(melhor.sharpe, 2)], ['Retorno anual', porcento(melhor.retorno, 1)], ['Risco anual', porcento(melhor.risco, 1)]]
+        .forEach(function (par) {
+          numeros.appendChild(criar('div', {}, [criar('dt', { texto: par[0] }), criar('dd', { classe: 'numero-destaque-valor', texto: par[1] })]));
+        });
       aplicarDecimal();
     });
   }
@@ -1182,7 +1334,10 @@
   function redesenhar() {
     if (telaAtual === 'montar') desenharEvolucao();
     if (telaAtual === 'simular' && $('#simular-nuvem').calculo) desenharNuvem($('#simular-nuvem .nuvem-tela'), $('#simular-nuvem').calculo);
-    if (telaAtual === 'ver' && $('#ver-nuvem').calculo) desenharNuvem($('#ver-nuvem .nuvem-tela'), $('#ver-nuvem').calculo);
+    if (telaAtual === 'ver' && $('#ver-nuvem').calculo) {
+      ajustarAoTelao($('#ver-nuvem'), $('#ver-nuvem').calculo);
+      desenharNuvem($('#ver-nuvem .nuvem-tela'), $('#ver-nuvem').calculo);
+    }
     if (telaAtual === 'entrar') desenharVitrine();
   }
 
@@ -1200,6 +1355,7 @@
       sala.assinar(function () {
         atualizarAviso();
         if (telaAtual === 'painel') carregarPainel();
+        if (telaAtual === 'progresso') atualizarAtalhos(false);
       });
       atualizarAviso();
       document.body.setAttribute('data-sala', sala.tipo);
@@ -1216,9 +1372,12 @@
   $('#tentar').addEventListener('click', partir);
   window.addEventListener('hashchange', rota);
   var larguraAnterior = window.innerWidth;
+  var alturaAnterior = window.innerHeight;
   window.addEventListener('resize', function () {
-    if (window.innerWidth === larguraAnterior) return;
+    // Fora do telão a altura não muda o desenho (e muda a toda hora no celular).
+    if (window.innerWidth === larguraAnterior && (!TELAO || window.innerHeight === alturaAnterior)) return;
     larguraAnterior = window.innerWidth;
+    alturaAnterior = window.innerHeight;
     redesenhar();
   });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(redesenhar);

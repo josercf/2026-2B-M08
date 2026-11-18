@@ -112,3 +112,120 @@ def test_posicionar_recusa_pesos_que_nao_somam_um(precos):
         sim.posicionar([0.5, 0.6], rets, 0.14)
     with pytest.raises(ValueError):
         sim.posicionar([1.5, -0.5], rets, 0.14)
+
+
+# --- turno 6: otimização de Markowitz ------------------------------------------
+
+RF = 0.14
+# Tolerâncias numéricas do turno 6: o SLSQP roda com ftol de 1e-12, e a nuvem
+# pode encostar na ótima (com 2 ativos ela cobre a reta inteira dos pesos).
+TOL_PESO = 1e-9
+TOL_RISCO = 1e-8
+TOL_SHARPE = 1e-6
+CESTAS = {2: ["ITUB4", "WEGE3"], 5: ["PETR4", "VALE3", "ITUB4", "WEGE3", "ABEV3"]}
+
+
+def _cesta(precos, k):
+    ativos = CESTAS.get(k) or list(precos.dropna(axis=1).columns[:k])
+    return sim.retornos(precos, ativos, 252)
+
+
+def _pesos_validos(pesos, k):
+    pesos = np.asarray(pesos)
+    assert pesos.shape == (k,)
+    assert abs(pesos.sum() - 1) < TOL_PESO
+    assert pesos.min() >= 0 and pesos.max() <= 1
+
+
+@pytest.mark.parametrize("k", [2, 5, 15])
+def test_pesos_das_carteiras_otimas_somam_um_e_ficam_entre_zero_e_um(precos, k):
+    rets = _cesta(precos, k)
+    _pesos_validos(sim.variancia_minima(rets), k)
+    _pesos_validos(sim.maximo_sharpe(rets, RF), k)
+
+
+@pytest.mark.parametrize("k", [2, 5, 15])
+def test_nenhuma_das_dez_mil_carteiras_sorteadas_supera_as_otimas(precos, k):
+    rets = _cesta(precos, k)
+    nuvem = sim.simular(rets, 10_000, 42, RF)
+    minima = sim.posicionar(sim.variancia_minima(rets), rets, RF)
+    sharpe = sim.posicionar(sim.maximo_sharpe(rets, RF), rets, RF)
+    assert nuvem["risco"].min() >= minima["risco"] - TOL_RISCO
+    assert nuvem["sharpe"].max() <= sharpe["sharpe"] + TOL_SHARPE
+    assert minima["risco"] <= sharpe["risco"] + TOL_RISCO
+    assert sharpe["sharpe"] >= minima["sharpe"] - TOL_SHARPE
+
+
+@pytest.mark.parametrize("k", [2, 5, 15])
+def test_fronteira_tem_cinquenta_pontos_retorno_crescente_e_domina_a_nuvem(precos, k):
+    rets = _cesta(precos, k)
+    fronteira = sim.fronteira(rets)
+    assert len(fronteira) == 50
+    assert list(fronteira.columns) == ["w_%s" % c for c in rets.columns] + ["retorno", "risco"]
+    assert (np.diff(fronteira["retorno"]) > 0).all()
+    assert (np.diff(fronteira["risco"]) > -TOL_RISCO).all()
+    nuvem = sim.simular(rets, 10_000, 42, RF)
+    for _, ponto in fronteira.iterrows():
+        _pesos_validos(ponto.iloc[:k].to_numpy(), k)
+        retorno, risco = sim.metricas(ponto.iloc[:k].to_numpy(), rets)
+        assert ponto["retorno"] == pytest.approx(retorno, abs=1e-9)
+        assert ponto["risco"] == pytest.approx(risco, abs=1e-9)
+        acima = nuvem[nuvem["retorno"] >= ponto["retorno"]]
+        assert acima.empty or acima["risco"].min() >= ponto["risco"] - TOL_RISCO
+
+
+def test_fronteira_comeca_na_variancia_minima_e_termina_no_ativo_de_maior_retorno(precos):
+    rets = _cesta(precos, 5)
+    fronteira = sim.fronteira(rets)
+    minima = sim.variancia_minima(rets)
+    retorno, risco = sim.metricas(minima, rets)
+    assert fronteira["retorno"].iloc[0] == pytest.approx(retorno, abs=1e-9)
+    assert fronteira["risco"].iloc[0] == pytest.approx(risco, abs=1e-7)
+    assert np.allclose(fronteira.iloc[0, :5].to_numpy(), minima, atol=1e-4)
+    medias = rets.mean() * 252
+    assert fronteira["retorno"].iloc[-1] == pytest.approx(medias.max(), abs=1e-12)
+    assert fronteira["w_%s" % medias.idxmax()].iloc[-1] == pytest.approx(1, abs=1e-6)
+    assert np.allclose(np.diff(fronteira["retorno"], 2), 0, atol=1e-12)
+
+
+def test_fronteira_aceita_outro_numero_de_pontos_e_recusa_menos_de_dois(precos):
+    rets = _cesta(precos, 5)
+    assert len(sim.fronteira(rets, pontos=12)) == 12
+    assert len(sim.fronteira(rets, 2)) == 2
+    with pytest.raises(ValueError, match="dois pontos"):
+        sim.fronteira(rets, 1)
+
+
+def test_ativo_de_retorno_dominante_recebe_todo_o_peso_no_maximo_sharpe():
+    rng = np.random.default_rng(0)
+    ruido = rng.normal(0, 0.01, (252, 4))
+    ruido -= ruido.mean(axis=0)
+    rets = pd.DataFrame(ruido + np.array([-0.0005, 0.002, -0.0005, -0.0005]),
+                        columns=["A", "B", "C", "D"])
+    pesos = sim.maximo_sharpe(rets, 0.10)
+    _pesos_validos(pesos, 4)
+    assert pesos[1] > 0.99
+    assert sim.variancia_minima(rets).max() < 0.5
+
+
+def test_carteira_de_um_ativo_so_recebe_peso_um(precos):
+    rets = sim.retornos(precos, ["PETR4"], 63)
+    assert sim.variancia_minima(rets) == pytest.approx([1.0])
+    assert sim.maximo_sharpe(rets, RF) == pytest.approx([1.0])
+
+
+def test_otimizacao_que_nao_converge_levanta_erro(precos, monkeypatch):
+    class Falhou:
+        success, message, x = False, "limite de iterações", np.array([0.5, 0.5])
+
+    monkeypatch.setattr(sim, "minimize", lambda *a, **k: Falhou())
+    with pytest.raises(RuntimeError, match="não convergiu: limite de iterações"):
+        sim.variancia_minima(_cesta(precos, 2))
+
+
+def test_fronteira_de_cinquenta_pontos_com_cinco_ativos_em_menos_de_dez_segundos(precos):
+    rets = _cesta(precos, 5)
+    inicio = time.perf_counter()
+    fronteira = sim.fronteira(rets)
+    assert time.perf_counter() - inicio < 10
+    assert len(fronteira) == 50

@@ -1,0 +1,440 @@
+/* Aula 04 em turnos (ADR-018): slide de atividade e documentos do kit.
+   Só tokens, canto reto (GRA-01) e nenhuma família de fonte declarada aqui:
+   o mono vem de <code> e <pre>, o título de <h1> a <h4> (inteli-brand.css).
+
+   Slide de atividade (section[data-atividade]): quatro respostas na mesma
+   posição em todo turno. O que, Onde, Como e Pronto quando. A coluna da
+   direita traz o apoio do turno e a ampulheta do cronômetro. */
+
+.reveal .slides section[data-atividade] .slide-title-area { margin-bottom: 14px; }
+
+.atividade {
+  /* Altura fixa, e não flex: 1. O check_slides.py mede cada slide com
+     display: block, e sem altura própria a grade cresceria até o fim do
+     arquivo aberto no painel. 528px = 648 (fim da área útil) - 120 (fim do
+     título de uma linha). Título em duas linhas estoura e o validador acusa. */
+  flex: none;
+  height: 528px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 455px 140px;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "oque   oque   oque"
+    "onde   onde   onde"
+    "como   apoio  tempo"
+    "pronto pronto tempo";
+  gap: 10px 24px;
+}
+
+/* Passagem: a coluna da direita é o arquivo aberto, mais estreito que o código. */
+.atividade.atividade-arquivo { grid-template-columns: minmax(0, 1fr) 430px 140px; }
+
+/* Rótulo de cada resposta: label em Manrope 600 (TIP-04), caixa alta. */
+.reveal .at-rotulo {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--inteli-branco);
+  background: var(--seg-primaria);
+}
+
+.at-oque, .at-onde { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 14px; align-items: center; }
+.at-oque { grid-area: oque; }
+.at-onde { grid-area: onde; }
+.at-oque .at-rotulo, .at-onde .at-rotulo { text-align: center; }
+.reveal .at-oque p { margin: 0; font-size: 22px; font-weight: 300; line-height: 1.3; }
+.reveal .at-oque p code { font-size: 19px; font-weight: 700; }
+
+.at-acessos { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.reveal .at-acessos .at-lugar { margin: 0; font-size: 19px; font-weight: 600; }
+.reveal .at-acessos .at-divisor { width: 2px; align-self: stretch; background: var(--seg-borda); }
+
+/* Acesso que sai do slide: abre em nova aba. */
+.reveal a.at-acesso {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--inteli-branco);
+  background: var(--seg-primaria);
+  border: 2px solid var(--seg-primaria);
+  text-decoration: none;
+}
+.reveal a.at-acesso .icone { font-size: 20px; color: var(--seg-secundaria); }
+.reveal a.at-acesso:hover, .reveal a.at-acesso:focus-visible { background: var(--seg-base); color: var(--seg-texto); }
+.reveal a.at-acesso:hover .icone, .reveal a.at-acesso:focus-visible .icone { color: var(--seg-texto); }
+
+/* Documento do kit: abre na sobreposição, sem sair do slide. */
+.reveal button.doc-abrir {
+  font: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--seg-texto);
+  background: var(--seg-base);
+  border: 2px solid var(--seg-primaria);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 var(--seg-secundaria);
+  cursor: pointer;
+}
+.reveal button.doc-abrir code { font-size: 16px; font-weight: 700; background: transparent; padding: 0; }
+.reveal button.doc-abrir .icone { font-size: 20px; color: var(--seg-primaria); }
+.reveal button.doc-abrir:hover, .reveal button.doc-abrir:focus-visible { background: var(--seg-superficie); }
+
+/* Como: passos numerados, um fragment por passo. */
+.at-como { grid-area: como; min-height: 0; display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.reveal .at-como .exercise-steps { list-style: none; padding: 0; gap: 8px; width: 100%; counter-reset: passo; }
+.reveal .at-como .exercise-steps li {
+  position: relative;
+  margin: 0;
+  padding-left: 44px;
+  min-height: 30px;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1.34;
+  counter-increment: passo;
+}
+.reveal .at-como .exercise-steps li::before {
+  content: counter(passo);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--inteli-branco);
+  background: var(--seg-primaria);
+}
+.reveal .at-como .exercise-steps li code { font-size: 16px; font-weight: 700; }
+.reveal .at-como .exercise-steps li.passo-extensao { counter-increment: none; padding-left: 0; }
+.reveal .at-como .exercise-steps li.passo-extensao::before { content: none; }
+.reveal .at-como .exercise-steps .rotulo-extensao { font-size: var(--escala-complementar); }
+/* O passo recém-revelado fica marcado até o seguinte aparecer. */
+.reveal .at-como .exercise-steps li.fragment.current-fragment::before { background: var(--seg-destaque); }
+
+/* Comando em bloco copiável (assets/js/aula04-turnos.js). */
+.comando {
+  display: inline-flex;
+  align-items: stretch;
+  margin: 3px 6px 0 0;
+  vertical-align: middle;
+  background: var(--seg-primaria);
+}
+.reveal .at-como .exercise-steps li .comando code {
+  padding: 3px 10px;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--inteli-branco);
+  background: transparent;
+}
+.reveal .comando button.copiar {
+  font: inherit;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  color: var(--seg-primaria);
+  background: var(--seg-secundaria);
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+.reveal .comando button.copiar .icone { font-size: 18px; min-width: 18px; min-height: 18px; }
+.reveal .comando button.copiar[data-copiado]::after {
+  content: "copiado";
+  position: absolute;
+  left: 100%;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--seg-texto);
+  background: var(--seg-secundaria);
+  z-index: 2;
+}
+.reveal .comando button.copiar[data-copiado="falhou"]::after { content: "selecione e copie"; background: var(--seg-superficie); }
+.reveal .at-como .comando-frase code { white-space: normal; }
+
+/* Apoio do turno: ferramentas do Python, com aparência de arquivo. */
+.at-apoio { grid-area: apoio; min-height: 0; display: flex; flex-direction: column; border: 2px solid var(--seg-primaria); background: var(--seg-base); }
+.reveal .at-apoio-barra {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: var(--escala-complementar);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--seg-texto);
+  background: var(--seg-superficie);
+  border-bottom: 2px solid var(--seg-primaria);
+}
+.at-apoio-barra .icone { font-size: 18px; min-width: 18px; min-height: 18px; color: var(--seg-primaria); }
+.reveal .at-codigo {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 10px 14px;
+  width: auto;
+  box-shadow: none;
+  overflow: hidden;
+  color: var(--inteli-branco);
+  background: var(--seg-primaria);
+}
+.reveal .at-codigo code {
+  display: block;
+  padding: 0;
+  max-height: none;
+  overflow: visible;
+  font-size: 15px;
+  line-height: 21px;
+  white-space: pre;
+  color: var(--inteli-branco);
+  background: transparent;
+}
+.at-codigo .c { color: var(--seg-secundaria); }
+
+/* Pedido ao agente: o que entra no pedido, em três linhas. */
+.reveal .at-pedido { width: 100%; border-collapse: collapse; margin: 0; }
+.reveal .at-pedido th, .reveal .at-pedido td {
+  padding: 4px 12px;
+  font-size: 16px;
+  line-height: 1.3;
+  text-align: left;
+  vertical-align: top;
+  border: 0;
+  border-bottom: 1px solid var(--seg-borda);
+}
+.reveal .at-pedido th { width: 128px; font-weight: 700; white-space: nowrap; }
+.reveal .at-pedido td { font-weight: 300; }
+.reveal .at-pedido code { font-size: 14px; font-weight: 700; }
+.reveal .at-apoio-barra.at-apoio-barra-meio { border-top: 0; }
+
+/* Tempo: a ampulheta em espera ocupa o lugar da ampulheta do cronômetro. */
+.at-tempo { grid-area: tempo; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.at-tempo [data-ampulheta-espera] { width: 140px; opacity: 0.4; }
+.at-tempo [data-ampulheta-espera] svg { display: block; width: 100%; height: auto; overflow: visible; }
+.reveal .at-tempo-minutos { margin: 0; font-size: var(--escala-subtitulo); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+.reveal .slides section[data-atividade] .ampulheta {
+  top: var(--ampulheta-topo, 250px);
+  left: var(--ampulheta-esquerda, 1074px);
+  right: auto;
+  width: var(--ampulheta-largura, 150px);
+}
+.reveal .slides section[data-atividade].com-ampulheta [data-ampulheta-espera] { visibility: hidden; }
+
+/* Pronto quando: o critério que o aluno confere sozinho. */
+.at-pronto {
+  grid-area: pronto;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 8px 14px 8px 0;
+  background: var(--seg-superficie);
+  border-left: 6px solid var(--seg-secundaria);
+}
+.reveal .at-pronto .at-rotulo { margin-left: 12px; color: var(--seg-texto); background: var(--seg-secundaria); }
+.reveal .at-pronto p { margin: 0; font-size: 18px; font-weight: 300; line-height: 1.35; }
+.reveal .at-pronto p code { font-size: 16px; font-weight: 700; }
+
+/* Anúncio da atividade (#anatomia): tabela dos cinco turnos e o ciclo de um turno. */
+.reveal .anuncio-frase { margin: 0 0 10px; font-size: 22px; font-weight: 300; line-height: 1.35; }
+.reveal .tabela-turnos td, .reveal .tabela-turnos th { padding: 6px 12px; }
+.reveal .tabela-turnos td { font-size: 18px; }
+.reveal .tabela-turnos td:first-child { width: 70px; }
+.reveal .tabela-turnos td code { font-size: 16px; font-weight: 700; }
+.ciclo-area { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
+.ciclo-topo { display: flex; align-items: center; gap: 14px; }
+.reveal .ciclo-topo p { margin: 0 0 0 auto; font-size: 18px; font-weight: 300; }
+.reveal .ciclo { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.5fr); gap: 0; background: var(--seg-superficie); border-left: 6px solid var(--seg-secundaria); }
+.reveal .ciclo li { margin: 0; padding: 12px 14px; display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 600; line-height: 1.25; }
+.reveal .ciclo li + li { border-left: 2px solid var(--seg-base); }
+.reveal .ciclo .pn { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; font-weight: 700; color: var(--inteli-branco); background: var(--seg-primaria); }
+
+/* Tabela das ADRs de exemplo: uma linha por ADR, com o botão que abre o arquivo. */
+.reveal .tabela-adrs td { font-size: 20px; padding: 8px 14px; vertical-align: middle; }
+.reveal .tabela-adrs td:nth-child(3) { white-space: nowrap; }
+.reveal .slides section#adrs-kit .faixa-nota { margin-top: 26px; }
+.reveal .tabela-adrs td:first-child { white-space: nowrap; }
+.reveal .tabela-adrs td:last-child { white-space: nowrap; }
+
+/* Painel do portal em modo telão: ocupa toda a área útil do slide. */
+.reveal .slides section.slide-telao .slide-title-area { margin-bottom: 12px; }
+.reveal .slides section.slide-telao .painel-portal { flex: 1 1 auto; min-height: 0; height: auto; margin-top: 0; }
+.reveal .slides section.slide-telao .pergunta-previsao { margin: 0 0 10px; padding: 8px 16px; font-size: 20px; }
+.reveal .slide-footer .footer-bar a { font-weight: 600; }
+
+/* ---------------------------------------------------------------------------
+   Documento do kit (assets/js/aula04-documento.js): texto convertido do
+   Markdown, no painel fixo do slide e na sobreposição. */
+.doc-texto { color: var(--seg-texto); background: var(--seg-base); overflow-y: auto; overscroll-behavior: contain; }
+.doc-texto > :first-child { margin-top: 0; }
+.doc-texto h1, .doc-texto h2, .doc-texto h3, .doc-texto h4 { margin: 1.1em 0 0.4em; font-weight: 700; line-height: 1.2; color: var(--seg-texto); text-transform: none; }
+.doc-texto h1 { font-size: 1.5em; padding-bottom: 0.3em; border-bottom: 3px solid var(--seg-secundaria); }
+.doc-texto h2 { font-size: 1.22em; padding-left: 0.5em; border-left: 6px solid var(--seg-secundaria); }
+.doc-texto h3, .doc-texto h4 { font-size: 1.05em; }
+.doc-texto p, .doc-texto li { margin: 0 0 0.55em; font-size: 1em; font-weight: 300; line-height: 1.45; }
+.doc-texto ul, .doc-texto ol { margin: 0 0 0.7em; padding-left: 1.4em; display: block; }
+.doc-texto strong { font-weight: 700; }
+.doc-texto code { font-size: 0.86em; font-weight: 700; padding: 0.05em 0.3em; color: var(--seg-texto); background: var(--seg-superficie); }
+.doc-texto pre { margin: 0 0 0.8em; padding: 0.7em 0.9em; width: auto; box-shadow: none; overflow-x: auto; background: var(--seg-primaria); }
+.doc-texto pre code { padding: 0; font-weight: 300; color: var(--inteli-branco); background: transparent; }
+.doc-texto blockquote { margin: 0 0 0.8em; padding: 0.5em 0.9em; width: auto; box-shadow: none; font-style: normal; background: var(--seg-superficie); border-left: 6px solid var(--seg-destaque); }
+.doc-texto blockquote p { margin: 0; font-weight: 600; }
+.doc-texto table { width: 100%; margin: 0 0 0.8em; border-collapse: collapse; }
+.doc-texto th, .doc-texto td { padding: 0.35em 0.6em; font-size: 0.92em; text-align: left; vertical-align: top; border: 0; border-bottom: 1px solid var(--seg-borda); }
+.doc-texto th { font-weight: 700; border-bottom: 2px solid var(--seg-primaria); }
+.doc-texto a { color: var(--seg-texto); text-decoration: underline; text-decoration-color: var(--seg-destaque); text-decoration-thickness: 2px; }
+.doc-texto .doc-erro { font-weight: 600; }
+.doc-texto[data-estado="carregando"] { font-weight: 600; }
+
+/* Painel fixo: arquivo aberto na coluna direita do slide, com uma aba por arquivo. */
+.doc-fixo { grid-area: apoio; min-height: 0; display: flex; flex-direction: column; border: 2px solid var(--seg-primaria); background: var(--seg-base); }
+.doc-fixo-barra { display: flex; align-items: stretch; background: var(--seg-primaria); }
+.reveal .doc-fixo-barra button {
+  font: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  line-height: 1.3;
+  color: var(--inteli-branco);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: pointer;
+}
+.reveal .doc-fixo-barra button code { font-size: 15px; font-weight: 700; color: inherit; background: transparent; padding: 0; }
+.reveal .doc-fixo-barra button[aria-pressed="true"] { color: var(--seg-texto); background: var(--seg-base); }
+.reveal .doc-fixo-barra button.doc-fixo-ampliar { margin-left: auto; font-size: var(--escala-complementar); font-weight: 600; color: var(--seg-secundaria); border: 0; }
+.reveal .doc-fixo-barra button.doc-fixo-ampliar .icone { font-size: 18px; min-width: 18px; min-height: 18px; color: var(--seg-secundaria); }
+.reveal .doc-fixo-barra button.doc-fixo-ampliar:hover { background: transparent; text-decoration: underline; }
+.reveal .doc-fixo-corpo { flex: 1 1 auto; min-height: 0; padding: 12px 16px; font-size: 15px; }
+.reveal .doc-fixo-corpo p, .reveal .doc-fixo-corpo li { font-size: 1em; line-height: 1.45; }
+.reveal .doc-fixo-corpo h1 { font-size: 1.35em; }
+.reveal .doc-fixo-corpo h2 { font-size: 1.15em; }
+
+/* Sobreposição: fora do .reveal, medida pela janela do navegador, para o
+   texto ter o mesmo tamanho relativo em qualquer projetor. */
+.doc-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3vh 3vw;
+  box-sizing: border-box;
+  background: color-mix(in srgb, var(--seg-primaria) 72%, transparent);
+}
+.doc-popup[hidden] { display: none; }
+.doc-popup-janela {
+  width: min(88vw, 150vh);
+  max-height: 92vh;
+  height: 92vh;
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(16px, 1.72vw, 34px);
+  color: var(--seg-texto);
+  background: var(--seg-base);
+  border: 3px solid var(--seg-primaria);
+  box-shadow: 0.6em 0.6em 0 var(--seg-secundaria);
+}
+.doc-popup-barra { display: flex; align-items: center; gap: 1em; padding: 0.45em 0.5em 0.45em 1em; color: var(--inteli-branco); background: var(--seg-primaria); }
+.doc-popup-nome { margin: 0; flex: 1 1 auto; font-size: 0.9em; font-weight: 700; }
+.doc-popup-nome code { font-size: 1em; font-weight: 700; padding: 0; color: var(--inteli-branco); background: transparent; }
+.doc-popup-nome::before { content: ""; display: inline-block; width: 0.55em; height: 0.55em; margin-right: 0.6em; background: var(--seg-secundaria); }
+.doc-popup-link { font-size: 0.72em; font-weight: 600; color: var(--inteli-branco); text-decoration: underline; text-decoration-color: var(--seg-destaque); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.doc-popup-fechar {
+  font: inherit;
+  padding: 0.3em 0.8em;
+  font-size: 0.72em;
+  font-weight: 700;
+  color: var(--seg-texto);
+  background: var(--seg-secundaria);
+  border: 0;
+  border-radius: 0;
+  cursor: pointer;
+}
+.doc-popup-fechar:hover, .doc-popup-fechar:focus-visible { background: var(--inteli-branco); }
+.doc-popup-corpo { flex: 1 1 auto; min-height: 0; padding: 1.1em 1.6em 1.4em; }
+.doc-popup-corpo:focus { outline: none; }
+
+@media print {
+  .doc-popup { display: none; }
+}
+
+/* Amarração (#a3): o turno 6, depois do encontro, e os dois arquivos que o sustentam. */
+.depois-turno6 {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  gap: 14px;
+  align-items: center;
+  padding: 8px 14px 8px 0;
+  background: var(--seg-superficie);
+  border-left: 6px solid var(--seg-destaque);
+}
+.reveal .depois-turno6 .at-rotulo { margin-left: 12px; }
+.reveal .depois-turno6 p { margin: 0; font-size: 18px; font-weight: 300; line-height: 1.35; }
+
+/* Turno de quatro passos, sem extensão: a lista usa a altura que sobra. */
+.reveal .at-como.at-como-folgado .exercise-steps { gap: 14px; }
+.reveal .at-como.at-como-folgado .exercise-steps li { font-size: 20px; }
+.reveal .at-como.at-como-folgado .exercise-steps li code { font-size: 17px; }
+
+/* Specs no projetor: selo de quem editou cada campo por último e há quanto
+   tempo (data-selos, assets/js/inteli-adr.js). Edição recente (data-vivo="sim")
+   ganha fundo verde e marcador, como na tela de spec (aula04-spec.css). */
+.reveal .spec-projetor .adr-comite-selo {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 12px;
+  padding: 2px 10px;
+  vertical-align: middle;
+  font-size: var(--escala-densa);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+  color: var(--seg-texto);
+  background: var(--seg-superficie);
+  border-left: 4px solid var(--seg-borda);
+}
+.reveal .spec-projetor .adr-comite-selo[data-vivo="sim"] { background: var(--seg-secundaria); border-left-color: var(--seg-primaria); }
+.reveal .spec-projetor .adr-comite-selo[data-vivo="sim"]::before { content: ""; width: 8px; height: 8px; margin-right: 6px; background: var(--seg-primaria); animation: selo-projetor 1.2s ease-in-out infinite; }
+@keyframes selo-projetor { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .reveal .spec-projetor .adr-comite-selo[data-vivo="sim"]::before { animation: none; }
+}
+.reveal .spec-abas a.spec-abas-ver { margin-left: auto; align-self: center; display: inline-flex; align-items: center; gap: 6px; font-size: 18px; font-weight: 600; }
+.spec-abas-ver .icone { font-size: 20px; }
+/* No rótulo do campo, o selo fica na linha de baixo, alinhado ao rótulo. */
+.reveal .spec-projetor dt .adr-comite-selo { display: flex; width: fit-content; margin: 2px 0 6px; }
